@@ -81,9 +81,13 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/petroleum-cost','CostManagementController@getDataPetroleumCost');
         Route::post('/parking-cost', 'CostManagementController@getDataParkingCost');
         Route::post('/other-cost', 'CostManagementController@getDataParkingCost');
+        
+        
         /*Get Data View */
-        Route::get('/fuel-cost/fuelcost', 'CostManagementController@getDataFuelCost');
+        Route::get('/fuel-cost/fuelCost', 'CostManagementController@getDataFuelCost');
         Route::get('/fuel-cost/getVehicle', 'CostManagementController@getDataVehicle');
+        Route::get('/fuel-cost/Garage-Vehicle', 'CostManagementController@getDataGarageAndVehicle');
+        Route::get('/petroleum-cost/petroleum-cost', 'CostManagementController@getDataPetroleumCost');
 
 
 
@@ -92,6 +96,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/fuel-cost/modify', 'CostManagementController@postModifyFuelCost');
         Route::post('/fuel-price-type/modify', 'CostManagementController@postModifyPriceType');
 
+        Route::post('/fuel-cost-add-vehicle-garage/add-vehicle-garage', 'CostManagementController@postModifyVehicleAndGarage');
 
 
     });

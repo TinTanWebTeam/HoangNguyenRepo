@@ -1,5 +1,5 @@
 <style>
-    #frmControl {
+    #divControl {
         z-index: 3;
         position: fixed;
         top: 40%;
@@ -7,32 +7,6 @@
         right: 0px;
         width: 40%;
         height: 100%;
-    }
-
-    .btn-del-edit {
-        float: left;
-        padding-right: 5px;
-    }
-
-    .fixed {
-        top: 72px;
-        position: fixed;
-        right: 20px;
-        z-index: 2;
-    }
-
-    .menu-toggles {
-        cursor: pointer
-    }
-
-    .icon-center {
-        line-height: 130%;
-        padding-left: 3%;
-        font-size: 13px;
-    }
-
-    ol.breadcrumb {
-        border-bottom: 2px solid #e7e7e7
     }
 
     div.col-lg-12 {
@@ -64,12 +38,13 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
+                            <th>Stt</th>
                             <th>Số xe</th>
-                            <th>Ghi chú</th>
-                            <th>Thời gian thay nhớt</th>
+                            <th>Thời gian đổ</th>
                             <th>Số lít</th>
                             <th>Đơn giá</th>
                             <th>Tổng chi phí</th>
+                            <th>Ghi chú</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
@@ -82,129 +57,178 @@
         </div> <!-- end table-reposive -->
     </div> <!-- end .col-md-12-->
 </div> <!-- end .row -->
-<div id="frmControl" class="col-md-offset-4 col-md-8">
-    <div class="panel panel-primary">
-        <div class="panel-heading">Thêm mới chi phí thay nhớt
-            <div class="menu-toggles pull-right" onclick="petroleumCostView.hide()">
-                <i class="glyphicon glyphicon-remove"></i>
+
+
+<div class="row">
+    <div id="divControl" class="col-md-offset-4 col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Thêm mới chi phí thay nhớt
+                <div class="menu-toggles pull-right" onclick="petroleumCostView.hide()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
+            </div>
+            <div class="panel-body">
+                <form role="form" id="formUser">
+                    <div class="form-body">
+                        <div class="col-md-12 ">
+                            <div class="row ">
+                                <div class="col-md-4 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="NumberVehicle"><b>Mã xe</b></label>
+                                        <input type="text" class="form-control"
+                                               id="NumberVehicle"
+                                               name="NumberVehicle"
+                                               placeholder="Số xe"
+                                               autofocus>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="Transport"><b>Loại phí</b></label>
+                                        <select name="" id="" class="form-control">
+                                            <option value="">Nhiên liệu</option>
+                                            <option value="">Thay nhớt</option>
+                                            <option value="">Đậu bãi</option>
+                                            <option value="" selected>Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="Price"><b>Đơn giá</b></label>
+                                        <input type="text" class="form-control"
+                                               id="Price"
+                                               name="Price"
+                                               placeholder="00.00">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="TotalPrice"><b>Thời gian thay nhớt</b></label>
+                                        <input type="date" class="form-control"
+                                               id="TotalPrice"
+                                               name="TotalPrice"
+                                               placeholder="Tổng chi phí">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-6 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="liter"><b>Số lít</b></label>
+                                        <input type="text" class="form-control"
+                                               id="liter"
+                                               name="liter"
+                                               placeholder="Số lít">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="TotalPrice"><b>Tổng chi phí</b></label>
+                                        <input type="text" class="form-control"
+                                               id="TotalPrice"
+                                               name="TotalPrice"
+                                               placeholder="Tổng chi phí">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <div class="panel-body">
-            <form role="form" id="formUser">
-                <div class="form-body">
-                    <div class="col-md-12 ">
-                        <div class="row ">
-                            <div class="col-md-4 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="NumberVehicle"><b>Mã xe</b></label>
-                                    <input type="text" class="form-control"
-                                           id="NumberVehicle"
-                                           name="NumberVehicle"
-                                           placeholder="Số xe"
-                                           autofocus>
-                                </div>
-                            </div>
-                            <div class="col-md-4 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Loại phí</b></label>
-                                    <select name="" id="" class="form-control">
-                                        <option value="">Nhiên liệu</option>
-                                        <option value="">Thay nhớt</option>
-                                        <option value="">Đậu bãi</option>
-                                        <option value="" selected>Khác</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="Price"><b>Đơn giá</b></label>
-                                    <input type="text" class="form-control"
-                                           id="Price"
-                                           name="Price"
-                                           placeholder="00.00">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="TotalPrice"><b>Thời gian thay nhớt</b></label>
-                                    <input type="date" class="form-control"
-                                           id="TotalPrice"
-                                           name="TotalPrice"
-                                           placeholder="Tổng chi phí">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="liter"><b>Số lít</b></label>
-                                    <input type="text" class="form-control"
-                                           id="liter"
-                                           name="liter"
-                                           placeholder="Số lít">
-                                </div>
-                            </div>
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="TotalPrice"><b>Tổng chi phí</b></label>
-                                    <input type="text" class="form-control"
-                                           id="TotalPrice"
-                                           name="TotalPrice"
-                                           placeholder="Tổng chi phí">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-actions noborder">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="">
-                                    Hoàn tất
-                                </button>
-                                <button type="button" class="btn default" onclick="">Huỷ</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
     </div>
-</div> <!-- end #frmControl -->
+</div>
+<!-- end #frmControl -->
 <script>
     $(function () {
         if (typeof (petroleumCostView) === 'undefined') {
             petroleumCostView = {
                 table: null,
+                data: null,
+                action: null,
+                tablePetroleumCosts: null,
+                idDelete: null,
+                current: null,
                 show: function () {
-                    $('.menu-toggle').hide();
-                    $('#frmControl').slideDown();
+                    $('.menu-toggle').fadeOut();
+                    $('#divControl').fadeIn(300);
                 },
                 hide: function () {
-                    $('#frmControl').slideUp('', function () {
-                        $('.menu-toggle').show();
+                    $('#divControl').fadeOut(300, function () {
+                        $('.menu-toggle').fadeIn();
                     });
                 },
                 loadData: function () {
-                    $.post(url + 'petroleum-cost', {_token: _token, formDate: null, toDate: null}, function (list) {
-                        petroleumCostView.data = list;
-                        petroleumCostView.fillDataToDatatable(list);
-                    })
+                    $.ajax({
+                        url: url + 'petroleum-cost/petroleum-cost',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            petroleumCostView.tablePetroleumCosts = data['petroleumCosts'];
+                            petroleumCostView.fillDataToDatatable(data['petroleumCosts']);
+                           console.log(petroleumCostView.tablePetroleumCosts);
+
+                        } else {
+                            petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
                 },
                 fillDataToDatatable: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].fullNumber = data[i]['vehicles_code'] + '-' + data[i]['vehicles_vehicleNumber'];
+                    }
                     petroleumCostView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'vehicles_vehicleNumber'},
-                            {data: 'note'},
-                            {data: 'created_at'},
+                            {data: 'id'},
+                            {data: 'fullNumber'},
+                            {
+                                data: 'dateRefuel',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                                }
+                            },
+
                             {data: 'literNumber'},
                             {data: 'prices_price'},
-                            {data: 'cost'},
+                            {data: 'totalCost'},
+                            {data: 'noteCost'},
                             {
                                 render: function () {
                                     var tr = '';
