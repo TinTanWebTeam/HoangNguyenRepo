@@ -101,7 +101,7 @@ class RolesTableSeeder extends Seeder
         //16
         Role::create([
             'name' => 'VehicleOutside',
-            'description' => 'Xe ngoài'
+            'description' => 'Nhà xe ngoài'
         ]);
         //17
         Role::create([

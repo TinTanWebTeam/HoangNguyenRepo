@@ -14,6 +14,7 @@ class PortfolioManagementController extends Controller
     }
     public function getViewCity()
     {
+        
         return view('partials.City');
     }
 }

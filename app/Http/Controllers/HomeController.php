@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Role;
 use Illuminate\Http\Request;
 
 
@@ -13,6 +14,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+
         $array_url = [
             'Admin'               => '',
             'UserManagement'      => 'user-management',

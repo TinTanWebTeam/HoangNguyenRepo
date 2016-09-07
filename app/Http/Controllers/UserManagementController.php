@@ -12,6 +12,7 @@ class UserManagementController extends Controller
     public function getViewUserManagement()
     {
 
-        return view('partials.UserManagement');
+        $role = Role::where('active',1)->whereBetween('id',[2,10])->pluck('description')->toArray();
+        return view('partials.UserManagement')->with('roles',$role);
     }
 }
