@@ -106,12 +106,12 @@ class RolesTableSeeder extends Seeder
         //17
         Role::create([
             'name' => 'DebtCustomer',
-            'description' => 'Quản lý công nợ'
+            'description' => 'Công nợ khách hàng'
         ]);
         //18
         Role::create([
             'name' => 'DebtVehicleOutside',
-            'description' => 'Quản lý công nợ'
+            'description' => 'Công nợ nhà xe ngoài'
         ]);
         //19
         Role::create([

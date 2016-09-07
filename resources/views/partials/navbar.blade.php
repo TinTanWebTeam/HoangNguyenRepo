@@ -33,11 +33,12 @@
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 @foreach($filtered as $key => $value)
+
                     @if(count($value) == 0)
                         @if($key != 'Admin')
                             <li>
-                                <a href="javascript:;" role-name="{{$key}}" data-url="{{ $array_url[$key] }}" onclick="getContentByUrl(this)"><i
-                                            class="fa {{ $array_icon[$key] }}"></i> {{ \App\Role::where('name', $key)->pluck('description')[0] }}
+                                <a href="javascript:;" role-name="{{$key}}" data-url="{{ $array_url[$key] }}" onclick="getContentByUrl(this)">
+                                    <i class="fa {{ $array_icon[$key] }}"></i> {{ \App\Role::where('name', $key)->pluck('description')[0] }}
                                 </a>
                             </li>
                         @endif
