@@ -69,7 +69,7 @@
         <div class="col-md-6 col-sm-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div style="color: #00a859;font-size: 17px;">Thêm mới | Chỉnh sửa
+                    <div style="color: #00a859;font-size: 17px;">Thêm mới | Chỉnh sửa 
                         <button type="button" class="btn btn-info btn-circle pull-right"
                                 onclick="userView.addNewUser('')"><i
                                     class="fa fa-plus"></i>
