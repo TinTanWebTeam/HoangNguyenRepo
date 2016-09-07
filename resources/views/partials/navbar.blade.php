@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">Hoàng Nguy?n</a>
+        <a class="navbar-brand" href="index.html">Hoàng Nguyên</a>
         <ul class="nav navbar-top-links navbar-right pull-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -46,8 +46,9 @@
                         <li>
                             <a href="#" role-name="{{$key}}" data-url="{{ $array_url[$key] }}"><i class="
                                fa {{ $array_icon[$key] }}
-                                        "></i> {{ \App\Role::where('name', $key)->pluck('description')[0] }}
-                                <span class="fa arrow"></span></a>
+                                        "></i> {{ \App\Role::where('name', $key)->pluck('description')[0]}}
+                                <span class="fa arrow"></span>
+                            </a>
                             <ul class="nav nav-second-level">
                                 @foreach($value as $key2 => $value2)
                                     <li>
