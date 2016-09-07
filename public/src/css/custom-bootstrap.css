@@ -1,0 +1,29 @@
+.navbar{
+    min-height: 53px;
+}
+.navbar-header{
+    float: none;
+}
+.navbar-brand{
+    font-size: 18px;
+    height: 53px;
+    padding: 15px 15px;
+}
+.navbar-default .sidebar{
+    margin-top: 3px;
+}
+@media (max-width: 768px) {
+    .navbar-default .sidebar{
+        margin-top: 1px;
+    }
+    .nav .navbar-top-links .navbar-right{
+        display: none;
+    }
+    .navbar{
+        height: 53px;
+    }
+    .navbar-toggle{
+        padding: 3px 5px;
+    }
+}
+

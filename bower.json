@@ -1,0 +1,21 @@
+{
+  "name": "LaravelNew",
+  "description": "Some Front-End Package For Laravel",
+  "main": "",
+  "authors": [
+    "nvnghia <nvnghia0202@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "font-awesome": "^4.6.3",
+    "jquery-validation": "^1.15.0",
+    "datatables.net": "^1.10.12",
+    "datatables.net-dt": "^1.10.12",
+    "metisMenu": "^2.5.2",
+    "moment": "^2.14.1",
+    "lodash": "^4.15.0"
+  }
+}
