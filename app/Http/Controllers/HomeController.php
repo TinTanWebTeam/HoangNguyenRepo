@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Role;
-use App\SubRole;
-use Auth;
+
 use Illuminate\Http\Request;
 
 
@@ -65,13 +63,16 @@ class HomeController extends Controller
             'DivisiveDriver'      => [],
             'Report'              => [],
         ];
-        $array_roleid = Role::whereIn
-            ('id',
-                SubRole::where
-                ('user_id', Auth::user()->id)->pluck('role_id')
-                ->toArray())
+
+
+
+
+        $array_roleid = \App\Role::whereIn(
+            'id',
+            \App\SubRole::where('user_id', \Auth::user()->id)->pluck('role_id')->toArray())
             ->pluck('name')
             ->toArray();
+
         //Collection
         $collection = collect($array_auth);
         $filtered = $collection->only($array_roleid);
