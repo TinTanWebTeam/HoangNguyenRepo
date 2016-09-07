@@ -10,6 +10,7 @@ class VehicleManagementController extends Controller
 {
     public function getViewVehicleInside()
     {
+       
         return view('partials.VehicleInside');
     }
     public function getViewVehicleOutside()

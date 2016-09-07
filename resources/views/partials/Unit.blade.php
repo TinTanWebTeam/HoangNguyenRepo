@@ -91,14 +91,11 @@
                                        placeholder="Nhập đơn vị tính">
                             </div>
 
-
-
                         </div>
                         <div class="form-actions noborder">
                             <div class="form-group" style="padding-left: 15px;padding-bottom: 15px">
                                 <button type="button" class="btn btn-primary"
-                                        onclick="">
-                                    Hoàn tất
+                                        onclick="">Hoàn tất
                                 </button>
                                 <button type="button" class="btn default" onclick="">Huỷ</button>
                             </div>
