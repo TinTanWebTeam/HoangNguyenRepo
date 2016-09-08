@@ -24,7 +24,7 @@
     .fixed {
         position: fixed;
         right: 15px;
-
+        z-index: 2
     }
     *:focus {
         outline: none;
@@ -35,14 +35,13 @@
 <div class="row">
     <div class="col-md-12">
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12" style="float:left">
                 <h5 class="blue">Quản lý người dùng</h5>
-                <div class="menu-toggle  pull-right fixed" style="z-index: 2"; >
-                    <div class="btn btn-primary btn-circle btn-md">
-                        <i class="glyphicon glyphicon-plus" onclick="show()"></i>
+                <div class="menu-toggle  pull-right fixed" >
+                    <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                        <i class="glyphicon glyphicon-plus"></i>
                     </div>
                 </div>
-
                 <hr>
             </div>
             <!-- /.col-lg-12 -->
@@ -348,7 +347,12 @@
         </div> <!-- end table-reposive -->
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading">Đăng ký người dùng</div>
+                <div class="panel-heading">Đăng ký người dùng
+                    <div class="menu-toggles pull-right" onclick="aaa()">
+                        <i class="glyphicon glyphicon-remove " ></i>
+                    </div>
+                </div>
+
                 <div class="panel-body">
                     <form role="form" id="formUser">
                         <div class="form-body">
@@ -453,6 +457,14 @@
 </div> <!-- end .row -->
 <script>
     function show() {
-        $('#frmControl').fadeToggle();
+//        $('#frmControl').fadeIn();
+        $('#frmControl').h();
+        $('.menu-toggle').hide();
+    }
+    function aaa() {
+        $('.menu-toggle').show();
+        $('#frmControl').fadeOut();
+
+
     }
 </script>
