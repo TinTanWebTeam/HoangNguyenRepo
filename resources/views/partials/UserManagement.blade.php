@@ -67,12 +67,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -87,12 +87,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -107,12 +107,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -127,12 +127,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -147,12 +147,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -167,12 +167,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -187,12 +187,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -207,12 +207,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -227,12 +227,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -247,12 +247,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -267,12 +267,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -287,12 +287,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -307,17 +307,16 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
                         </div>
-
                     </td>
                 </tr>
                 <tr>
@@ -327,12 +326,12 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>
-                        <div class="menu-toggle btn-del-edit">
+                        <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </div>
                         </div>
-                        <div class="menu-toggle">
+                        <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </div>
@@ -349,25 +348,26 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">Đăng ký người dùng
                     <div class="menu-toggles pull-right" onclick="hide()">
-                        <i class="glyphicon glyphicon-remove " ></i>
+                        <i class="glyphicon glyphicon-remove" ></i>
                     </div>
                 </div>
 
                 <div class="panel-body">
                     <form role="form" id="formUser">
                         <div class="form-body">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
+                            <div class="col-md-12 ">
+                                <div class="row " >
+                                    <div class="col-md-6 "  >
+                                        <div class="form-group form-md-line-input " >
                                             <label for="FullName"><b>Họ và tên</b></label>
                                             <input type="text" class="form-control"
                                                    id="FullName"
                                                    name="FullName"
-                                                   placeholder="Nhập họ tên">
+                                                   placeholder="Nhập họ tên"
+                                                   autofocus >
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
                                             <label for="Name"><b>Tên đăng nhập</b></label>
                                             <input type="text" class="form-control"
@@ -377,8 +377,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
+                                <div class="row ">
+                                    <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
                                             <label for="Password"><b>Mật khẩu</b></label>
                                             <input type="password" class="form-control"
@@ -387,7 +387,7 @@
                                                    placeholder="Mật khẩu có ít nhất 6 kí tự">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input ">
                                             <label for="PasswordConfirm"><b>Nhập lại mật khẩu</b></label>
                                             <input type="Password" class="form-control"
@@ -457,11 +457,12 @@
 </div> <!-- end .row -->
 <script>
     function show() {
-        $('#frmControl').fadeIn();
         $('.menu-toggle').hide();
+        $('#frmControl').slideDown();
     }
     function hide() {
-        $('.menu-toggle').show();
-        $('#frmControl').fadeOut();
+        $('#frmControl').slideUp('', function(){
+            $('.menu-toggle').show();
+        });
     }
 </script>
