@@ -8,7 +8,7 @@
         position: fixed;
         top: 200px;
         display: none;
-        right: 10px;
+        right: 0px;
     }
 </style>
 
