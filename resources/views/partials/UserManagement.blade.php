@@ -457,7 +457,6 @@
 </div> <!-- end .row -->
 <script>
     function show() {
-//        $('#frmControl').fadeIn();
         $('#frmControl').fadeIn();
         $('.menu-toggle').hide();
     }
