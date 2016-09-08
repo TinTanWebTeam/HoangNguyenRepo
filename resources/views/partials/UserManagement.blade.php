@@ -348,7 +348,7 @@
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
                 <div class="panel-heading">Đăng ký người dùng
-                    <div class="menu-toggles pull-right" onclick="aaa()">
+                    <div class="menu-toggles pull-right" onclick="hide()">
                         <i class="glyphicon glyphicon-remove " ></i>
                     </div>
                 </div>
@@ -458,10 +458,10 @@
 <script>
     function show() {
 //        $('#frmControl').fadeIn();
-        $('#frmControl').h();
+        $('#frmControl').fadeIn();
         $('.menu-toggle').hide();
     }
-    function aaa() {
+    function hide() {
         $('.menu-toggle').show();
         $('#frmControl').fadeOut();
 
