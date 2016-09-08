@@ -16,13 +16,13 @@
 </div>
 {{--End Modal--}}
 
-<div class="row">
-    <div class="col-lg-12">
-        <h4 style="color:#2196f3">Quản lý nhà xe ngoài</h4>
-
-        <hr style="margin-top: 0px;">
+<div class="panel-heading">
+    <div style="color:#2196f3;font-size: 17px;">Danh sách nhà xe ngoài
+        <button type="button" class="btn btn-danger btn-circle pull-right"
+                onclick="userView.deleteUser()"><i
+                    class="fa fa-times"></i>
+        </button>
     </div>
-    <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
 <div class="row">

@@ -2,11 +2,13 @@
     .menu-open .menu-side {
         right: 0;
     }
-
+    .btn-del-edit{
+        float: left;padding-right: 5px
+    }
     .menu-side {
-        -webkit-transition: right 0.2s ease;
-        -moz-transition: right 0.2s ease;
-        transition: right 0.2s ease;
+        -webkit-transition: right 0.5s ease;
+        -moz-transition: right 0.5s ease;
+        transition: right 0.5s ease;
     }
 
     .menu-side {
@@ -16,23 +18,34 @@
         position: fixed;
         top: 0;
         right: -431px;
-        width: 410px;
+        width: 400px;
         height: 100%;
-        padding: 53px 10px 10px 10px;
+        padding: 70px 10px 10px 10px;
+        z-index:2;
     }
 </style>
 
 <div class="row" onwheel="mouseScroll()">
     <div class="col-md-12">
-        <h1>Quản lý khách hàng</h1>
-        <header>
-            <div class="menu-toggle">
-                <div class="btn btn-primary btn-circle">
-                    <i class="fa fa-plus"></i>
-                </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 style="color:#2196f3">Quản lý khách hàng
+                    <div class="pull-right menu-toggle">
+                        <button type="button" class="btn btn-primary btn-ms">Thêm mới</button>
+                    </div>
+               </h5>
+                <hr style="margin-top: 0px;">
             </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <header>
             <nav class="menu-side">
-                <form>
+                <div class="menu-toggle">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
+              <form>
+
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email address</label>
                         <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
@@ -61,12 +74,13 @@
             <table class="table table-bordered table-hover order-column" id="tableUserList"
                    style="margin-bottom: 0px;">
                 <thead>
-                <tr>
+                <tr class="active">
                     <th>Số xe</th>
                     <th>Thời gian đổ dầu</th>
                     <th>Số lít</th>
                     <th>Đơn giá</th>
                     <th>Tổng chi phí</th>
+                    <th>Xóa / Sửa</th>
                 </tr>
                 </thead>
                 <tbody id="tbodyUserList">
@@ -76,38 +90,24 @@
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                </tr>
+                    <td>
+                        <div class="menu-toggle btn-del-edit">
+                            <div class="btn btn-danger btn-circle">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </div>
+                        </div>
+                        <div class="menu-toggle">
+                            <div class="btn btn-danger  btn-circle">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                            </div>
+                        </div>
+                    </td>
+                  </tr>
                 </tbody>
-            </table>
-
-        </div>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus hic nostrum officiis possimus
-            praesentium
-            quo ut. Ab, dolorum error, id, illo in ipsam maiores molestiae obcaecati quasi sapiente sint soluta?</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
+        </table>
     </div>
 </div>
-
+</div>
 <script>
     (function () {
         var header = $('header');
@@ -118,10 +118,10 @@
     })();
 
     function mouseScroll() {
-        if(document.body.scrollTop > 53){
+        if (document.body.scrollTop > 70) {
             $('nav.menu-side').css('padding-top', '0px');
         } else {
-            $('nav.menu-side').css('padding-top', '53px');
+            $('nav.menu-side').css('padding-top', '50px');
         }
     }
 </script>
