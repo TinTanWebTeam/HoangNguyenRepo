@@ -463,7 +463,5 @@
     function hide() {
         $('.menu-toggle').show();
         $('#frmControl').fadeOut();
-
-
     }
 </script>
