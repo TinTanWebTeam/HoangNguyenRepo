@@ -35,7 +35,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="row">
-            <div class="col-lg-12" style="float:left">
+            <div class="col-lg-12">
                 <h5 class="blue">Quản lý người dùng</h5>
                 <div class="menu-toggle  pull-right fixed" >
                     <div class="btn btn-primary btn-circle btn-md" onclick="show()">
