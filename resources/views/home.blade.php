@@ -4,6 +4,10 @@
     Dashboard
 @endsection
 
+@section('styles')
+    <link rel="stylesheet" href="{{ URL::to('src/css/sidebar.css') }}">
+@endsection
+
 @section('content')
     @include('partials.dashboard')
 @endsection

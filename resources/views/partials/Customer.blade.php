@@ -1,147 +1,127 @@
-{{--Model--}}
-<div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body" id="modalContent">Chắt chắn xoá ?</div>
-            <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" data-dismiss="modal" name="modalClose">Đóng</button>
-                <button type="button" class="btn green" name="modalAgree"
-                        onclick="">Tiếp tục
-                </button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-{{--End Modal--}}
+<style>
+    .menu-open .menu-side {
+        right: 0;
+    }
 
-<div class="row">
-    <div class="col-lg-12">
-        <h4 style="color: #0a6ebd">Quản lý khách hàng </h4>
-        <hr style="margin-top: 0px;">
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-<!-- /.row -->
-<div class="row">
-    <div class="col-md-6 col-sm-6" style="height: 660px; overflow: scroll">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div style="color: #0a6ebd;font-size: 17px;">Danh sách khách hàng
-                    {{--<button type="button" class="btn btn-danger btn-circle pull-right"--}}
-                    {{--onclick="userView.deleteUser()"><i--}}
-                    {{--class="fa fa-times"></i>--}}
-                    {{--</button>--}}
+    .menu-side {
+        -webkit-transition: right 0.2s ease;
+        -moz-transition: right 0.2s ease;
+        transition: right 0.2s ease;
+    }
+
+    .menu-side {
+        background-color: #333;
+        border-left: 1px solid #000;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        right: -431px;
+        width: 410px;
+        height: 100%;
+        padding: 53px 10px 10px 10px;
+    }
+</style>
+
+<div class="row" onwheel="mouseScroll()">
+    <div class="col-md-12">
+        <h1>Quản lý khách hàng</h1>
+        <header>
+            <div class="menu-toggle">
+                <div class="btn btn-primary btn-circle">
+                    <i class="fa fa-plus"></i>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover order-column" id="tableUserList"
-                       style="margin-bottom: 0px;">
-                    <thead>
-                    <tr>
-                        <th>Mã</th>
-                        <th>Họ và tên</th>
-                        <th>Địa chỉ</th>
-                        <th>Điện thoại</th>
-                        <th>Email</th>
-                        <th>Ghi chú</th>
-                    </tr>
-                    </thead>
-                    <tbody id="tbodyUserList">
-                    {{--@if($users)--}}
-                    {{--@foreach($users as $item)--}}
-                    {{--<tr id="{{$item->id}}" onclick="userView.viewListUser(this)"--}}
-                    {{--style="cursor: pointer">--}}
-                    {{--<td>{{$item->name}}</td>--}}
-                    {{--<td>{{$item->fullName}}</td>--}}
-                    {{--<td>{{$item->email}}</td>--}}
-                    {{--<td>{{$item->Position()->name}}</td>--}}
-                    {{--<td>{{$item->Role()->name}}</td>--}}
-                    {{--</tr>--}}
-                    {{--@endforeach--}}
-                    {{--@endif--}}
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div style="color: #0a6ebd;font-size: 17px;">Thêm mới | Chỉnh sửa
-                    <button type="button" class="btn btn-primary btn-circle pull-right"
-                            onclick="userView.addNewUser('')"><i
-                                class="fa fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="portlet-body form">
-                <form role="form" id="formUser">
-                    <div class="form-body">
-                        <div class="col-md-12">
-                            <div class="form-group form-md-line-input" style="display:none">
-                                <input type="text" class="form-control" name="Id" id="Id">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="RoleId"><b>Mã</b></label>
-                                <input type="text" class="form-control"
-                                       id="Name"
-                                       name="Name"
-                                       placeholder="Nhập mã">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="PositionId"><b>Họ và tên</b></label>
-                                <input type="text" class="form-control"
-                                       id="Name"
-                                       name="Name"
-                                       placeholder="Nhập họ và tên">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="Name"><b>Địa chỉ</b></label>
-                                <input type="text" class="form-control"
-                                       id="Name"
-                                       name="Name"
-                                       placeholder="Nhập địa chỉ">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="Password"><b>Điện thoại</b></label>
-                                <input type="password" class="form-control"
-                                       id="Password"
-                                       name="Password"
-                                       placeholder="Nhập điện thoại">
-                            </div>
-                            <div class="form-group form-md-line-input ">
-                                <label for="PasswordConfirm"><b>Email</b></label>
-                                <input type="Password" class="form-control"
-                                       id="PasswordConfirm"
-                                       name="PasswordConfirm"
-                                       maxlength="20"
-                                       minlength="6"
-                                       placeholder="Nhập email">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="FullName"><b>Ghi chú</b></label>
-                                <input type="text" class="form-control"
-                                       id="FullName"
-                                       name="FullName"
-                                       placeholder="Nhập ghi chú">
-                            </div>
-
-                        </div>
-                        <div class="form-actions noborder">
-                            <div class="form-group" style="padding-left: 15px;">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="userView.addNewAndUpdateUser()">
-                                    Hoàn tất
-                                </button>
-                                <button type="button" class="btn default" onclick="userView.Cancel()">Huỷ</button>
-                            </div>
-                        </div>
+            <nav class="menu-side">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
                     </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputFile">File input</label>
+                        <input type="file" id="exampleInputFile">
+                        <p class="help-block">Example block-level help text here.</p>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Check me out
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
                 </form>
-            </div>
+            </nav>
+        </header>
+
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover order-column" id="tableUserList"
+                   style="margin-bottom: 0px;">
+                <thead>
+                <tr>
+                    <th>Số xe</th>
+                    <th>Thời gian đổ dầu</th>
+                    <th>Số lít</th>
+                    <th>Đơn giá</th>
+                    <th>Tổng chi phí</th>
+                </tr>
+                </thead>
+                <tbody id="tbodyUserList">
+                <tr>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                </tr>
+                <tr>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                </tr>
+                <tr>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                </tr>
+                </tbody>
+            </table>
+
         </div>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus hic nostrum officiis possimus
+            praesentium
+            quo ut. Ab, dolorum error, id, illo in ipsam maiores molestiae obcaecati quasi sapiente sint soluta?</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, rem soluta. Animi aperiam architecto, autem consequuntur cupiditate deleniti ducimus ea eligendi id impedit nesciunt odio quaerat quam quisquam totam velit?</p>
     </div>
 </div>
+
+<script>
+    (function () {
+        var header = $('header');
+        $('.menu-toggle').bind('click', function () {
+            header.toggleClass('menu-open');
+            return false;
+        });
+    })();
+
+    function mouseScroll() {
+        if(document.body.scrollTop > 53){
+            $('nav.menu-side').css('padding-top', '0px');
+        } else {
+            $('nav.menu-side').css('padding-top', '53px');
+        }
+    }
+</script>
