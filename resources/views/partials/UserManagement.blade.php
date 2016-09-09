@@ -1,35 +1,25 @@
 <style>
     .btn-del-edit {
         float: left;
-        padding-right: 5px
+        padding-right: 5px;
     }
-
     #frmControl {
         z-index: 1;
         position: fixed;
         top: 10%;
         display: none;
         right: 0px;
-    }
-
-    .blue {
-        color: #2196f3
-    }
-
-    div#frmControl {
         width: 40%;
         height: 100%;
     }
-
+    .blue {
+        color: #2196f3
+    }
     .fixed {
         position: fixed;
         right: 15px;
         z-index: 2
     }
-    *:focus {
-        outline: none;
-    }
-
 </style>
 
 <div class="row">
@@ -48,7 +38,7 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-bordered table-hover order-column">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr class="active">
                     <th>Tài khoản</th>
@@ -80,266 +70,6 @@
 
                     </td>
                 </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="btn-del-edit">
-                            <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-
                 </tbody>
             </table>
 
@@ -449,7 +179,6 @@
                             </div>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div> <!-- end #frmControl -->

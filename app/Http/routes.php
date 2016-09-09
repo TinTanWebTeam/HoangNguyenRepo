@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth'], function(){
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         Route::get('/vehicle-inside', 'VehicleManagementController@getViewVehicleInside');
-        Route::get('/vehicle-outside', 'DebtManagementController@getViewDebtVehicleOutside');
+        Route::get('/vehicle-outside', 'VehicleManagementController@getViewVehicleOutside');
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');
