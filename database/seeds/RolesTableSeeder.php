@@ -133,5 +133,25 @@ class RolesTableSeeder extends Seeder
             'name' => 'OtherCost',
             'description' => 'Khác'
         ]);
+        //23
+        Role::create([
+            'name' => 'RevenueReport',
+            'description' => 'Doanh thu'
+        ]);
+        //24
+        Role::create([
+            'name' => 'HistoryDeliveryReport',
+            'description' => 'Lịch sử giao hàng'
+        ]);
+        //25
+        Role::create([
+            'name' => 'CustomerPostage',
+            'description' => 'Theo khách hàng'
+        ]);
+        //26
+        Role::create([
+            'name' => 'MonthPostage',
+            'description' => 'Theo tháng'
+        ]);
     }
 }

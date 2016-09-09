@@ -26,7 +26,7 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-lg-12">
-                <h5 class="blue">Quản lý chi phí nhiên liệu</h5>
+                <h5 class="blue">Quản lý cước phí vận chuyển theo khách hàng</h5>
                 <div class="menu-toggle  pull-right fixed" >
                     <div class="btn btn-primary btn-circle btn-md" onclick="show()">
                         <i class="glyphicon glyphicon-plus"></i>
@@ -41,16 +41,14 @@
             <table class="table table-bordered table-hover" id="table-data">
                 <thead>
                 <tr class="active">
-                    <th>Số xe</th>
-                    <th>Loại chi phí</th>
-                    <th>Đơn giá</th>
-                    <th>Tổng chi phí</th>
+                    <th>Mã</th>
+                    <th>Mã khách hàng</th>
+                    <th>Cước phí</th>
                     <th>Sửa/ Xóa</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
@@ -74,7 +72,7 @@
         </div> <!-- end table-reposive -->
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading">Thêm mới chi phí khác
+                <div class="panel-heading">Cập nhật cước phí vận chuyển
                     <div class="menu-toggles pull-right" onclick="hide()">
                         <i class="glyphicon glyphicon-remove" ></i>
                     </div>
@@ -87,7 +85,7 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Số xe</b></label>
+                                            <label for="FullName"><b>Mã</b></label>
                                             <input type="text" class="form-control"
                                                    id="FullName"
                                                    name="FullName"
@@ -97,7 +95,7 @@
                                     </div>
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Loại chi phí</b></label>
+                                            <label for="FullName"><b>Mã khách hàng</b></label>
                                             <input type="text" class="form-control"
                                                    id="FullName"
                                                    name="FullName"
@@ -106,25 +104,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row ">
-                                    <div class="col-md-6 ">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="Password"><b>Đơn giá</b></label>
-                                            <input type="password" class="form-control"
-                                                   id="Password"
-                                                   name="Password"
-                                                   placeholder="Mật khẩu có ít nhất 6 kí tự">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 ">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="PasswordConfirm"><b>Tổng chi phí</b></label>
-                                            <input type="Password" class="form-control"
-                                                   id="PasswordConfirm"
-                                                   name="PasswordConfirm"
-                                                   maxlength="20"
-                                                   minlength="6"
-                                                   placeholder="Nhập lại mật khẩu">
+                                <div class="row">
+                                    <div class="col-md-12 "  >
+                                        <div class="form-group form-md-line-input " >
+                                            <label for="FullName"><b>Cước phí</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="FullName"
+                                                   name="FullName"
+                                                   placeholder="Nhập họ tên"
+                                                   autofocus >
                                         </div>
                                     </div>
                                 </div>

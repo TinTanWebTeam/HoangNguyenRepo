@@ -4,7 +4,7 @@
         padding-right: 5px;
     }
     #frmControl {
-        z-index: 1;
+        z-index: 3;
         position: fixed;
         top: 40%;
         display: none;
@@ -37,7 +37,7 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-bordered table-hover" id="table-test">
+            <table class="table table-bordered table-hover" id="table-data">
                 <thead>
                 <tr class="active">
                     <th>Mã yêu cầu</th>
@@ -208,10 +208,7 @@
             $('.menu-toggle').show();
         });
     }
-
-
-    $('#table-test').DataTable({
+    $('#table-data').DataTable({
         language: languageOptions
     });
-
 </script>

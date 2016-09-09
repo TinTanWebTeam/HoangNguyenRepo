@@ -1,171 +1,153 @@
-{{--Model--}}
-<div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body" id="modalContent">Chắt chắn xoá ?</div>
-            <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" data-dismiss="modal" name="modalClose">Đóng</button>
-                <button type="button" class="btn green" name="modalAgree"
-                        onclick="">Tiếp tục
-                </button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-{{--End Modal--}}
+<style>
+    .btn-del-edit {
+        float: left;
+        padding-right: 5px;
+    }
+    #frmControl {
+        z-index: 3;
+        position: fixed;
+        top: 53%;
+        display: none;
+        right: 0px;
+        width: 40%;
+        height: 100%;
+    }
+    .blue {
+        color: #2196f3
+    }
+    .fixed {
+        position: fixed;
+        right: 15px;
+        z-index: 2
+    }
+</style>
 
-<div class="panel-heading">
-    <div style="color:#2196f3;font-size: 17px;">Danh sách nhà xe ngoài
-        <button type="button" class="btn btn-danger btn-circle pull-right"
-                onclick="userView.deleteUser()"><i
-                    class="fa fa-times"></i>
-        </button>
-    </div>
-</div>
-<!-- /.row -->
 <div class="row">
-    {{--<div class="col-md-6 col-sm-6" style="height: 660px; overflow: scroll">--}}
-    <div class="col-md-6 col-sm-6" >
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div style="color:#2196f3;font-size: 17px;">Danh sách nhà xe ngoài
-                    <button type="button" class="btn btn-danger btn-circle pull-right"
-                    onclick="userView.deleteUser()"><i
-                    class="fa fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover order-column" id="tableUserList"
-                       style="margin-bottom: 0px;">
-                    <thead>
-                    <tr>
-                        <th>Mã nhà xe</th>
-                        <th>Tên nhà xe</th>
-                        <th>Địa chỉ</th>
-                        <th>Biển số xe</th>
-
-                    </tr>
-                    </thead>
-                    <tbody id="tbodyVehicleList">
-                    <tr>
-                        <td>MX001</td>
-                        <td>Nguyen van a</td>
-                        <td>09000</td>
-                        <td>59x..</td>
-                    </tr>
-
-                    {{--@if($users)--}}
-                    {{--@foreach($users as $item)--}}
-                    {{--<tr id="{{$item->id}}" onclick="userView.viewListUser(this)"--}}
-                    {{--style="cursor: pointer">--}}
-                    {{--<td>{{$item->name}}</td>--}}
-                    {{--<td>{{$item->fullName}}</td>--}}
-                    {{--<td>{{$item->email}}</td>--}}
-                    {{--<td>{{$item->Position()->name}}</td>--}}
-                    {{--<td>{{$item->Role()->name}}</td>--}}
-                    {{--</tr>--}}
-                    {{--@endforeach--}}
-                    {{--@endif--}}
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div style="color:#2196f3;font-size: 17px;">Thêm mới | Chỉnh sửa
-                    <button type="button" class="btn btn-primary btn-circle pull-right"
-                            onclick="userView.addNewUser('')"><i
-                                class="fa fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="portlet-body form">
-                <form role="form" id="formUser">
-                    <div class="form-body">
-                        <div class="col-md-12">
-                            <div class="form-group form-md-line-input" style="display:none">
-                                <input type="text" class="form-control" name="Id" id="Id">
-                            </div>
-                            <div class="form-group form-md-line-input"></div>
-                            <div class="form-group form-md-line-input">
-                                <label for="NameDriver"><b>Tên nhà xe</b></label>
-                                <input type="text" class="form-control"
-                                       id="NameDriver"
-                                       name="NameDriver"
-                                       placeholder="Nhập tên tài xế">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="CodeDriver"><b>Mã nhà xe</b></label>
-                                <input type="text" class="form-control"
-                                       id="CodeDriver"
-                                       name="CodeDriver"
-                                       placeholder="Mã xe">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="Andress"><b>Địa chỉ</b></label>
-                                <input type="text" class="form-control"
-                                       id="Andress"
-                                       name="Andress"
-                                       placeholder="Andress...">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="Telephone"><b>Số điện thoại</b></label>
-                                <input type="text" class="form-control"
-                                       id="Telephone"
-                                       name="Telephone"
-                                       placeholder="090...">
-                            </div>
-
-                            <div class="form-group form-md-line-input">
-                                <label for="Contact"><b>Người liên hệ</b></label>
-                                <input type="text" class="form-control"
-                                       id="Contact"
-                                       name="Contact"
-                                       placeholder="nguyen van a">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="TelContact"><b>Số điện thoại người liên hệ</b></label>
-                                <input type="text" class="form-control"
-                                       id="TelContact"
-                                       name="TelContact"
-                                       placeholder="090">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="Kg"><b>Trọng tải xe</b></label>
-                                <input type="text" class="form-control"
-                                       id="Kg"
-                                       name="Kg"
-                                       placeholder="Kg">
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <label for="Met"><b>Kích thước xe</b></label>
-                                <input type="text" class="form-control"
-                                       id="Met"
-                                       name="Met"
-                                       placeholder="Met">
-                            </div>
-
-                        </div>
-                        <div class="form-actions noborder">
-                            <div class="form-group" style="padding-left: 15px;padding-bottom: 15px">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="userView.addNewAndUpdateUser()">
-                                    Hoàn tất
-                                </button>
-                                <button type="button" class="btn default" onclick="userView.Cancel()">Huỷ</button>
-                            </div>
-                        </div>
-
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="blue">Quản lý công nợ nhà xe ngoài</h5>
+                <div class="menu-toggle  pull-right fixed" >
+                    <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                        <i class="glyphicon glyphicon-plus"></i>
                     </div>
-                </form>
+                </div>
+                <hr>
             </div>
+            <!-- /.col-lg-12 -->
         </div>
-    </div>
-</div>
 
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="table-data">
+                <thead>
+                <tr class="active">
+                    <th>Mã yêu cầu</th>
+                    <th>Mã nhà xe</th>
+                    <th>Tổng nợ</th>
+                    <th>Đã trả</th>
+                    <th>Trạng thái</th>
+                    <th>Sửa/ Xóa</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>aaaa</td>
+                    <td>
+                        <div class="btn-del-edit">
+                            <div class="btn btn-success  btn-circle">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                            </div>
+                        </div>
+                        <div class="btn-del-edit">
+                            <div class="btn btn-danger btn-circle">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div> <!-- end table-reposive -->
+        <div id="frmControl" class="col-md-offset-4 col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Thanh toán cước cho nhà xe ngoài
+                    <div class="menu-toggles pull-right" onclick="hide()">
+                        <i class="glyphicon glyphicon-remove" ></i>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <form role="form" id="formUser">
+                        <div class="form-body">
+                            <div class="col-md-12 ">
+                                <div class="row " >
+                                    <div class="col-md-6 "  >
+                                        <div class="form-group form-md-line-input " >
+                                            <label for="FullName"><b>Mã yêu cầu</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="FullName"
+                                                   name="FullName"
+                                                   placeholder="Nhập họ tên"
+                                                   autofocus >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 "  >
+                                        <div class="form-group form-md-line-input " >
+                                            <label for="FullName"><b>Mã nhà xe</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="FullName"
+                                                   name="FullName"
+                                                   placeholder="Nhập họ tên"
+                                                   autofocus >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 "  >
+                                        <div class="form-group form-md-line-input " >
+                                            <label for="FullName"><b>Tiền thanh toán</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="FullName"
+                                                   name="FullName"
+                                                   placeholder="Nhập họ tên"
+                                                   autofocus >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> <!-- end #frmControl -->
+    </div> <!-- end .col-md-12-->
+</div> <!-- end .row -->
+<script>
+    function show() {
+        $('.menu-toggle').hide();
+        $('#frmControl').slideDown();
+    }
+    function hide() {
+        $('#frmControl').slideUp('', function(){
+            $('.menu-toggle').show();
+        });
+    }
+    $('#table-data').DataTable({
+        language: languageOptions
+    });
+</script>

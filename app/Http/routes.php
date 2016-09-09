@@ -60,13 +60,15 @@ Route::group(['middleware' => 'auth'], function(){
     });
     //Cu?c phí
     Route::group(['middleware' => 'PostageManagement'], function () {
-        Route::get('/postage-management', 'PostageManagementController@getViewPostageManagement');
+        Route::get('/customer-postage', 'PostageManagementController@getViewCustomerPostage');
+        Route::get('/month-postage', 'PostageManagementController@getViewMonthPostage');
     });
     Route::group(['middleware' => 'DivisiveDriver'], function () {
         Route::get('/divisive-driver', 'DivisiveDriverController@getViewDivisiveDriver');
     });
     Route::group(['middleware' => 'Report'], function () {
-        Route::get('/report', 'ReportController@getViewReport');
+        Route::get('/revenue-report', 'ReportController@getViewRevenueReport');
+        Route::get('/history-delivery-report', 'ReportController@getViewHistoryDeliveryReport');
     });
 });
 

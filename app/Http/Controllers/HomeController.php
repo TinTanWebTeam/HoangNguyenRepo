@@ -16,28 +16,32 @@ class HomeController extends Controller
     {
 
         $array_url = [
-            'Admin'               => '',
-            'UserManagement'      => 'user-management',
-            'CustomerManagement'  => 'customer-management',
-            'PortfolioManagement' => 'portfolio-management',
-            'VehicleManagement'   => 'vehicle-management',
-            'DebtManagement'      => 'debt-management',
-            'CostManagement'      => 'cost-management',
-            'PostageManagement'   => 'postage-management',
-            'DivisiveDriver'      => 'divisive-driver',
-            'Report'              => 'report',
-            'Customer'            => 'customer',
-            'DeliveryRequirement' => 'delivery-requirement',
-            'Unit'                => 'unit',
-            'City'                => 'city',
-            'VehicleInside'       => 'vehicle-inside',
-            'VehicleOutside'      => 'vehicle-outside',
-            'DebtCustomer'        => 'debt-customer',
-            'DebtVehicleOutside'  => 'debt-vehicle-outside',
-            'FuelCost'            => 'fuel-cost',
-            'PetroleumCost'       => 'petroleum-cost',
-            'ParkingCost'         => 'parking-cost',
-            'OtherCost'           => 'other-cost'
+            'Admin'                 => '',
+            'UserManagement'        => 'user-management',
+            'CustomerManagement'    => 'customer-management',
+            'PortfolioManagement'   => 'portfolio-management',
+            'VehicleManagement'     => 'vehicle-management',
+            'DebtManagement'        => 'debt-management',
+            'CostManagement'        => 'cost-management',
+            'PostageManagement'     => 'postage-management',
+            'DivisiveDriver'        => 'divisive-driver',
+            'Report'                => 'report',
+            'Customer'              => 'customer',
+            'DeliveryRequirement'   => 'delivery-requirement',
+            'Unit'                  => 'unit',
+            'City'                  => 'city',
+            'VehicleInside'         => 'vehicle-inside',
+            'VehicleOutside'        => 'vehicle-outside',
+            'DebtCustomer'          => 'debt-customer',
+            'DebtVehicleOutside'    => 'debt-vehicle-outside',
+            'FuelCost'              => 'fuel-cost',
+            'PetroleumCost'         => 'petroleum-cost',
+            'ParkingCost'           => 'parking-cost',
+            'OtherCost'             => 'other-cost',
+            'RevenueReport'         => 'revenue-report',
+            'HistoryDeliveryReport' => 'history-delivery-report',
+            'CustomerPostage'       => 'customer-postage',
+            'MonthPostage'          => 'month-postage'
         ];
 
         $array_icon = [
@@ -61,9 +65,9 @@ class HomeController extends Controller
             'VehicleManagement'   => ['VehicleInside', 'VehicleOutside'],
             'DebtManagement'      => ['DebtCustomer', 'DebtVehicleOutside'],
             'CostManagement'      => ['FuelCost', 'PetroleumCost', 'ParkingCost', 'OtherCost'],
-            'PostageManagement'   => [],
+            'PostageManagement'   => ['CustomerPostage', 'MonthPostage'],
             'DivisiveDriver'      => [],
-            'Report'              => [],
+            'Report'              => ['RevenueReport', 'HistoryDeliveryReport'],
         ];
 
 

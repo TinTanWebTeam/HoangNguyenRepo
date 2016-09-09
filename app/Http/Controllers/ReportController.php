@@ -8,8 +8,12 @@ use App\Http\Requests;
 
 class ReportController extends Controller
 {
-    public function getViewReport()
+    public function getViewRevenueReport()
     {
-        return view('partials.Report');
+        return view('partials.RevenueReport');
+    }
+    public function getViewHistoryDeliveryReport()
+    {
+        return view('partials.HistoryDeliveryReport');
     }
 }
