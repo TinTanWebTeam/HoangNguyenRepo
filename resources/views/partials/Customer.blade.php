@@ -91,11 +91,11 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="Code"><b>Mã</b></label>
+                                            <label for="Code"><b>Mã khách hàng</b></label>
                                             <input type="text" class="form-control"
                                                    id="Code"
                                                    name="Code"
-                                                   placeholder="Nhập mã khách hàng"
+                                                   placeholder="Mã khách hàng"
                                                    autofocus >
                                         </div>
                                     </div>
@@ -105,7 +105,7 @@
                                             <input type="text" class="form-control"
                                                    id="FullName"
                                                    name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   placeholder="Tên khách hàng"
                                                    autofocus >
                                         </div>
                                     </div>
@@ -148,7 +148,7 @@
                                             <input type="text" class="form-control"
                                                    id="Note"
                                                    name="Note"
-                                                   placeholder="...">
+                                                   placeholder="ghi chú">
                                         </div>
                                     </div>
                                 </div>

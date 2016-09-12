@@ -118,17 +118,17 @@
                                             <input type="text" class="form-control"
                                                    id="Code"
                                                    name="Code"
-                                                   placeholder="Nhập mã"
+                                                   placeholder="Mã yêu cầu"
                                                    autofocus >
                                         </div>
                                     </div>
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Khách hàng</b></label>
+                                            <label for="FullName"><b>Tên khách hàng</b></label>
                                             <input type="text" class="form-control"
                                                    id="FullName"
                                                    name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   placeholder="Tên khách hàng"
                                                    autofocus >
                                         </div>
                                     </div>
