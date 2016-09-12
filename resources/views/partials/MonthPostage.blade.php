@@ -20,6 +20,9 @@
         right: 15px;
         z-index: 2
     }
+    .menu-toggles{
+        cursor: pointer
+    }
 </style>
 
 <div class="row">

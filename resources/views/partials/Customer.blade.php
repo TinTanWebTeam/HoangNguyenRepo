@@ -20,13 +20,16 @@
         right: 15px;
         z-index: 2
     }
+    .menu-toggles{
+        cursor: pointer
+    }
 </style>
 
 <div class="row">
     <div class="col-md-12">
         <div class="row">
             <div class="col-lg-12">
-                <h5 class="blue">Quản lý khách hàng</h5>
+                <h5 class="blue ">Quản lý khách hàng</h5>
                 <div class="menu-toggle  pull-right fixed" >
                     <div class="btn btn-primary btn-circle btn-md" onclick="show()">
                         <i class="glyphicon glyphicon-plus"></i>
@@ -78,9 +81,9 @@
         </div> <!-- end table-reposive -->
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading">Thêm mới khách hàng
+                <div class="panel-heading " >Thêm mới khách hàng
                     <div class="menu-toggles pull-right" onclick="hide()">
-                        <i class="glyphicon glyphicon-remove" ></i>
+                          <i class="glyphicon glyphicon-remove" ></i>
                     </div>
                 </div>
 
