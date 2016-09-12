@@ -6,7 +6,7 @@
     #frmControl {
         z-index: 3;
         position: fixed;
-        top: 40%;
+        top: 20%;
         display: none;
         right: 0px;
         width: 40%;
@@ -112,7 +112,6 @@
                                                    autofocus >
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-6 ">
@@ -136,7 +135,7 @@
 
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6 ">
+                                    <div class="col-md-12 ">
                                         <div class="form-group form-md-line-input ">
                                             <label for="Email"><b>Email</b></label>
                                             <input type="email" class="form-control"
@@ -145,25 +144,26 @@
                                                    placeholder="email@example.com">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
                                         <div class="form-group form-md-line-input">
                                             <label for="Note"><b>Ghi chú</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="Note"
-                                                   name="Note"
-                                                   placeholder="ghi chú">
+                                                <textarea class="form-control" id="Note" name="Note" rows="3" cols="3"
+                                                          placeholder="Nhập ghi chú"></textarea>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="form-actions noborder">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary"
-                                            onclick="">
-                                        Hoàn tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                            <div class="col-md-6">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="">
+                                            Hoàn tất
+                                        </button>
+                                        <button type="button" class="btn default" onclick="">Huỷ</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

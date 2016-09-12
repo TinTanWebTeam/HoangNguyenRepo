@@ -126,13 +126,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-actions noborder">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary"
-                                            onclick="">
-                                        Hoàn tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                            <div class="col-md-6">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="">
+                                            Hoàn tất
+                                        </button>
+                                        <button type="button" class="btn default" onclick="">Huỷ</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
