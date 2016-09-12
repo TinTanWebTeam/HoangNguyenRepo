@@ -118,7 +118,7 @@
                                             <input type="text" class="form-control"
                                                    id="Payments"
                                                    name="Payments"
-                                                   placeholder="Tiền thanh toán"
+                                                   placeholder="00.00"
                                                    autofocus >
                                         </div>
                                     </div>
