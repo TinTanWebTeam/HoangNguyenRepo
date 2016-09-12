@@ -85,21 +85,21 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Mã</b></label>
+                                            <label for="Code"><b>Mã</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="Code"
+                                                   name="Code"
+                                                   placeholder="Mã"
                                                    autofocus >
                                         </div>
                                     </div>
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Tháng</b></label>
+                                            <label for="Month"><b>Tháng</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="Month"
+                                                   name="Month"
+                                                   placeholder="Tháng"
                                                    autofocus >
                                         </div>
                                     </div>
@@ -107,11 +107,11 @@
                                 <div class="row">
                                     <div class="col-md-12 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Cước phí</b></label>
+                                            <label for="Cost"><b>Cước phí</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="Cost"
+                                                   name="Cost"
+                                                   placeholder="00.00"
                                                    autofocus >
                                         </div>
                                     </div>

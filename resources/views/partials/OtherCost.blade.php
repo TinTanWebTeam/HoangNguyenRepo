@@ -87,21 +87,21 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Số xe</b></label>
+                                            <label for="NumberVehicle"><b>Số xe</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="NumberVehicle"
+                                                   name="NumberVehicle"
+                                                   placeholder="Số xe"
                                                    autofocus >
                                         </div>
                                     </div>
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Loại chi phí</b></label>
+                                            <label for="CostType"><b>Loại chi phí</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="CostType"
+                                                   name="CostType"
+                                                   placeholder="Loại chi phí"
                                                    autofocus >
                                         </div>
                                     </div>
@@ -109,22 +109,20 @@
                                 <div class="row ">
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Password"><b>Đơn giá</b></label>
-                                            <input type="password" class="form-control"
-                                                   id="Password"
-                                                   name="Password"
-                                                   placeholder="Mật khẩu có ít nhất 6 kí tự">
+                                            <label for="Price"><b>Đơn giá</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Price"
+                                                   name="Price"
+                                                   placeholder="00.00">
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="PasswordConfirm"><b>Tổng chi phí</b></label>
-                                            <input type="Password" class="form-control"
-                                                   id="PasswordConfirm"
-                                                   name="PasswordConfirm"
-                                                   maxlength="20"
-                                                   minlength="6"
-                                                   placeholder="Nhập lại mật khẩu">
+                                            <label for="TotalPrice"><b>Tổng chi phí</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="TotalPrice"
+                                                   name="TotalPrice"
+                                                   placeholder="00.00">
                                         </div>
                                     </div>
                                 </div>

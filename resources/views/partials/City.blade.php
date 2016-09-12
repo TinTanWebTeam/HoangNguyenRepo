@@ -93,11 +93,11 @@
                                     </div>
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Tên tỉnh thành</b></label>
+                                            <label for="City"><b>Tên tỉnh thành</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="City"
+                                                   name="City"
+                                                   placeholder="Nhập tỉnh thành"
                                                    autofocus >
                                         </div>
                                     </div>

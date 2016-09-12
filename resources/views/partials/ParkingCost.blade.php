@@ -91,87 +91,75 @@
                         <div class="form-body">
                             <div class="col-md-12 ">
                                 <div class="row " >
-                                    <div class="col-md-12 "  >
+                                    <div class="col-md-6"  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Số xe</b></label>
+                                            <label for="NumberVehicle"><b>Số xe</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="NumberVehicle"
+                                                   name="NumberVehicle"
+                                                   placeholder="Số xe"
                                                    autofocus >
                                         </div>
                                     </div>
-
-
-                                </div>
-                                <div class="row ">
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Ngày đậu bãi</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
-                                                   autofocus >
+                                            <label for="Date"><b>Ngày đậu bãi</b></label>
+                                            <input type="date" class="form-control"
+                                                   id="Date"
+                                                   name="Date"
+                                                   value="{{date("")}}">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row " >
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="TimeIn"><b>Giờ vào</b></label>
+                                            <input type="Time" class="form-control"
+                                                   id="TimeIn"
+                                                   name="TimeIn">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="TimeOut"><b>Giờ ra</b></label>
+                                            <input type="time" class="form-control"
+                                                   id="TimeOut"
+                                                   name="TimeOut">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row " >
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="PasswordConfirm"><b>Số giờ đậu</b></label>
-                                            <input type="Password" class="form-control"
-                                                   id="PasswordConfirm"
-                                                   name="PasswordConfirm"
-                                                   maxlength="20"
-                                                   minlength="6"
-                                                   placeholder="Nhập lại mật khẩu">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 ">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="Name"><b>Giờ vào</b></label>
+                                            <label for="TotalTime"><b>Số giờ đậu</b></label>
                                             <input type="text" class="form-control"
-                                                   id="Name"
-                                                   name="Name"
-                                                   placeholder="Tên đăng nhập có ít nhất 6 kí tự">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 ">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="Password"><b>Giờ ra</b></label>
-                                            <input type="password" class="form-control"
-                                                   id="Password"
-                                                   name="Password"
-                                                   placeholder="Mật khẩu có ít nhất 6 kí tự">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 ">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="PasswordConfirm"><b>Đơn giá</b></label>
-                                            <input type="Password" class="form-control"
-                                                   id="PasswordConfirm"
-                                                   name="PasswordConfirm"
-                                                   maxlength="20"
-                                                   minlength="6"
-                                                   placeholder="Nhập lại mật khẩu">
+                                                   id="TotalTime"
+                                                   name="TotalTime"
+                                                   placeholder="Số giờ đậu">
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="PasswordConfirm"><b>Tổng chi phí</b></label>
-                                            <input type="Password" class="form-control"
-                                                   id="PasswordConfirm"
-                                                   name="PasswordConfirm"
-                                                   maxlength="20"
-                                                   minlength="6"
-                                                   placeholder="Nhập lại mật khẩu">
+                                            <label for="Price"><b>Đơn giá</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Price"
+                                                   name="Price"
+                                                   placeholder="00.00">
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="row " >
+                                    <div class="col-md-12 ">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="TotalPrice"><b>Tổng chi phí</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="TotalPrice"
+                                                   name="TotalPrice"
+                                                   placeholder="00.00">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-actions noborder">
                                 <div class="form-group">

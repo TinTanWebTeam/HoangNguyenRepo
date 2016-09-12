@@ -83,21 +83,21 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Mã</b></label>
+                                            <label for="Code"><b>Mã</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="Code"
+                                                   name="Code"
+                                                   placeholder="Mã"
                                                    autofocus >
                                         </div>
                                     </div>
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Tên đơn vị tính</b></label>
+                                            <label for="UnitName"><b>Tên đơn vị tính</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="UnitName"
+                                                   name="UnitName"
+                                                   placeholder="Nhập đơn vị tính"
                                                    autofocus >
                                         </div>
                                     </div>

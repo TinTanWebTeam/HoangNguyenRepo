@@ -89,11 +89,11 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Mã yêu cầu</b></label>
+                                            <label for="CodeRequest"><b>Mã yêu cầu</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="CodeRequest"
+                                                   name="CodeRequest"
+                                                   placeholder="Mã yêu cầu"
                                                    autofocus >
                                         </div>
                                     </div>
@@ -103,7 +103,7 @@
                                             <input type="text" class="form-control"
                                                    id="FullName"
                                                    name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   placeholder="Tên khách hàng"
                                                    autofocus >
                                         </div>
                                     </div>
@@ -112,13 +112,11 @@
                                 <div class="row">
                                     <div class="col-md-12 ">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="PasswordConfirm"><b>Tiền thanh toán</b></label>
-                                            <input type="Password" class="form-control"
-                                                   id="PasswordConfirm"
-                                                   name="PasswordConfirm"
-                                                   maxlength="20"
-                                                   minlength="6"
-                                                   placeholder="Nhập lại mật khẩu">
+                                            <label for="Payments"><b>Tiền thanh toán</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Payments"
+                                                   name="Payments"
+                                                   placeholder="00.00">
                                         </div>
                                     </div>
                                 </div>

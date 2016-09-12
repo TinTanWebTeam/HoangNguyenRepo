@@ -93,56 +93,52 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Mã</b></label>
+                                            <label for="Code"><b>Mã</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="Code"
+                                                   name="Code"
+                                                   placeholder="Mã"
                                                    autofocus >
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Name"><b>Số xe</b></label>
+                                            <label for="NumberVehicle"><b>Số xe</b></label>
                                             <input type="text" class="form-control"
-                                                   id="Name"
-                                                   name="Name"
-                                                   placeholder="Tên đăng nhập có ít nhất 6 kí tự">
+                                                   id="NumberVehicle"
+                                                   name="NumberVehicle"
+                                                   placeholder="Số xe">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Password"><b>Trọng tải</b></label>
-                                            <input type="password" class="form-control"
-                                                   id="Password"
-                                                   name="Password"
-                                                   placeholder="Mật khẩu có ít nhất 6 kí tự">
+                                            <label for="Kg"><b>Trọng tải</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Kg"
+                                                   name="Kg"
+                                                   placeholder="Trọng tải">
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="PasswordConfirm"><b>Kích thước</b></label>
-                                            <input type="Password" class="form-control"
-                                                   id="PasswordConfirm"
-                                                   name="PasswordConfirm"
-                                                   maxlength="20"
-                                                   minlength="6"
-                                                   placeholder="Nhập lại mật khẩu">
+                                            <label for="Size"><b>Kích thước</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Size"
+                                                   name="Size"
+                                                   placeholder="Kích thước">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Email"><b>Tài xế</b></label>
+                                            <label for="Driver"><b>Tài xế</b></label>
                                             <input type="text" class="form-control"
-                                                   id="Email"
-                                                   name="Email"
-                                                   onclick=""
-                                                   onchange=""
-                                                   placeholder="Nhập email">
+                                                   id="Driver"
+                                                   name="Driver"
+                                                   placeholder="Tài xế">
                                         </div>
                                     </div>
                                 </div>

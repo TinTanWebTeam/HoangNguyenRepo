@@ -136,9 +136,7 @@
                                             <input type="text" class="form-control"
                                                    id="Email"
                                                    name="Email"
-                                                   onclick=""
-                                                   onchange=""
-                                                   placeholder="Nhập email">
+                                                   placeholder="email@example.com">
                                             <label id="Email" style="display: none; color: red">Email đã tồn tại</label>
                                         </div>
                                     </div>

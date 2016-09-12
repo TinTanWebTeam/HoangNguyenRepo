@@ -114,11 +114,11 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Mã yêu cầu</b></label>
+                                            <label for="Code"><b>Mã yêu cầu</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="Code"
+                                                   name="Code"
+                                                   placeholder="Nhập mã"
                                                    autofocus >
                                         </div>
                                     </div>
@@ -137,20 +137,20 @@
                                 <div class="row ">
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Name"><b>Ngày yêu cầu</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="Name"
-                                                   name="Name"
-                                                   placeholder="Tên đăng nhập có ít nhất 6 kí tự">
+                                            <label for="Date"><b>Ngày yêu cầu</b></label>
+                                            <input type="date" class="form-control"
+                                                   id="Date"
+                                                   name="Date"
+                                                   value={{date('')}}>
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Password"><b>Số lượng hàng</b></label>
-                                            <input type="password" class="form-control"
-                                                   id="Password"
-                                                   name="Password"
-                                                   placeholder="Mật khẩu có ít nhất 6 kí tự">
+                                            <label for="Number"><b>Số lượng hàng</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="Number"
+                                                   name="Number"
+                                                   placeholder="0">
                                         </div>
                                     </div>
 
@@ -158,25 +158,20 @@
                                 <div class="row">
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="PasswordConfirm"><b>Nơi vận chuyển</b></label>
-                                            <input type="Password" class="form-control"
-                                                   id="PasswordConfirm"
-                                                   name="PasswordConfirm"
-                                                   maxlength="20"
-                                                   minlength="6"
-                                                   placeholder="Nhập lại mật khẩu">
+                                            <label for="Transport"><b>Nơi vận chuyển</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Transport"
+                                                   name="Transport"
+                                                   placeholder="Vị trí vận chuyển">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Email"><b>Trạng thái</b></label>
+                                            <label for="Status"><b>Trạng thái</b></label>
                                             <input type="text" class="form-control"
-                                                   id="Email"
-                                                   name="Email"
-                                                   onclick=""
-                                                   onchange=""
-                                                   placeholder="Nhập email">
-                                            <label id="Email" style="display: none; color: red">Email đã tồn tại</label>
+                                                   id="Status"
+                                                   name="Status"
+                                                   placeholder="Trạng thái">
                                         </div>
                                     </div>
                                 </div>

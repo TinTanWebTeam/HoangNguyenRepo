@@ -91,21 +91,21 @@
                                 <div class="row " >
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Nhà xe</b></label>
+                                            <label for="HouseVehicle"><b>Nhà xe</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="HouseVehicle"
+                                                   name="HouseVehicle"
+                                                   placeholder="Nhà xe"
                                                    autofocus >
                                         </div>
                                     </div>
                                     <div class="col-md-6 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Tên hàng</b></label>
+                                            <label for="NameGoods"><b>Tên hàng</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
+                                                   id="NameGoods"
+                                                   name="NameGoods"
+                                                   placeholder="Tên hàng"
                                                    autofocus >
                                         </div>
                                     </div>
@@ -113,12 +113,12 @@
                                 <div class="row">
                                     <div class="col-md-12 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Tiền trả trước</b></label>
+                                            <label for="PrepayCost"><b>Tiền trả trước</b></label>
                                             <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Nhập họ tên"
-                                                   autofocus >
+                                                   id="PrepayCost"
+                                                   name="PrepayCost"
+                                                   placeholder="00.00"
+                                                   >
                                         </div>
                                     </div>
                                 </div>
