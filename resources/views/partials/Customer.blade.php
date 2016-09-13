@@ -49,12 +49,14 @@
                     <th>Địa chỉ</th>
                     <th>Số điện thoại</th>
                     <th>Email</th>
+                    <th>Mã số thuế</th>
                     <th>Ghi chú</th>
                     <th>Sửa/ Xóa</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
+                    <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
@@ -135,13 +137,22 @@
 
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12 ">
+                                    <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input ">
                                             <label for="Email"><b>Email</b></label>
                                             <input type="email" class="form-control"
                                                    id="Email"
                                                    name="Email"
                                                    placeholder="email@example.com">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="Email"><b>Mã số thuế</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Email"
+                                                   name="Email"
+                                                   placeholder="AX900">
                                         </div>
                                     </div>
                                 </div>

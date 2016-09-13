@@ -46,16 +46,14 @@
                 <tr class="active">
                     <th>Mã nhà xe</th>
                     <th>Tên nhà xe</th>
+                    <th>Người liên hệ</th>
                     <th>Địa chỉ</th>
                     <th>Số điện thoại</th>
-                    <th>Người liên hệ</th>
-                    <th>Số điện thoại người liên hệ</th>
                     <th>Sửa/ Xóa</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
@@ -115,11 +113,11 @@
                                 <div class="row ">
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Adress"><b>Địa chỉ</b></label>
+                                            <label for="Name"><b>Người liên hệ</b></label>
                                             <input type="text" class="form-control"
-                                                   id="Adress"
-                                                   name="Adress"
-                                                   placeholder="Địa chỉ">
+                                                   id="Name"
+                                                   name="Name"
+                                                   placeholder="Người liên hệ">
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">
@@ -135,11 +133,11 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Name"><b>Người liên hệ</b></label>
+                                            <label for="Adress"><b>Địa chỉ</b></label>
                                             <input type="text" class="form-control"
-                                                   id="Name"
-                                                   name="Name"
-                                                   placeholder="Người liên hệ">
+                                                   id="Adress"
+                                                   name="Adress"
+                                                   placeholder="Địa chỉ">
                                         </div>
                                     </div>
                                 </div>

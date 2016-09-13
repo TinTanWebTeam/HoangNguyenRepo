@@ -6,7 +6,7 @@
     #frmControl {
         z-index: 3;
         position: fixed;
-        top: 40%;
+        top: 27%;
         display: none;
         right: 0px;
         width: 40%;
@@ -30,7 +30,7 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-lg-12">
-                <h5 class="blue">Quản lý xe công ty</h5>
+                <h5 class="blue">Quản lý xe</h5>
                 <div class="menu-toggle  pull-right fixed" >
                     <div class="btn btn-primary btn-circle btn-md" onclick="show()">
                         <i class="glyphicon glyphicon-plus"></i>
@@ -46,17 +46,19 @@
                 <thead>
                 <tr class="active">
                     <th>Mã xe</th>
+                    <th>Mã nhà xe</th>
+                    <th>Mã loại xe</th>
+                    <th>Mã vùng</th>
                     <th>Số xe</th>
-                    <th>Trọng tải</th>
                     <th>Kích thước</th>
-                    <th>Tài xế</th>
-                    <th>Số điện thoại</th>
-                    <th>Địa chỉ liên lạc</th>
+                    <th>Trọng tải</th>
+                    <th>Mã tài xế</th>
                     <th>Sửa/ Xóa</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
+                    <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
@@ -84,7 +86,7 @@
         </div> <!-- end table-reposive -->
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading">Thêm mới xe công ty
+                <div class="panel-heading">Thêm mới xe
                     <div class="menu-toggles pull-right" onclick="hide()">
                         <i class="glyphicon glyphicon-remove" ></i>
                     </div>
@@ -107,7 +109,7 @@
                                     </div>
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="NumberVehicle"><b>Số xe</b></label>
+                                            <label for="NumberVehicle"><b>Mã nhà xe</b></label>
                                             <input type="text" class="form-control"
                                                    id="NumberVehicle"
                                                    name="NumberVehicle"
@@ -118,11 +120,31 @@
                                 <div class="row ">
                                     <div class="col-md-6 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Kg"><b>Trọng tải</b></label>
+                                            <label for="NumberVehicle"><b>Mã loại xe</b></label>
                                             <input type="text" class="form-control"
-                                                   id="Kg"
-                                                   name="Kg"
-                                                   placeholder="Trọng tải">
+                                                   id="NumberVehicle"
+                                                   name="NumberVehicle"
+                                                   placeholder="Số xe">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="NumberVehicle"><b>Mã vùng</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="NumberVehicle"
+                                                   name="NumberVehicle"
+                                                   placeholder="Số xe">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="NumberVehicle"><b>Số xe</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="NumberVehicle"
+                                                   name="NumberVehicle"
+                                                   placeholder="Số xe">
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">
@@ -136,7 +158,17 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="Kg"><b>Trọng tải</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Kg"
+                                                   name="Kg"
+                                                   placeholder="Trọng tải">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
                                             <label for="Driver"><b>Tài xế</b></label>
                                             <input type="text" class="form-control"
