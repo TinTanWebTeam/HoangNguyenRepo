@@ -25,15 +25,13 @@ Route::group(['middleware' => ['guest']],function (){
  * */
 
 Route::group(['middleware' => 'auth'], function(){
-
     Route::get('/index','HomeController@index');
-
-
     Route::group(['middleware' => 'Admin'], function () {
-
     });
     Route::group(['middleware' => 'UserManagement'], function () {
-        Route::get('/user-management', 'UserManagementController@getViewUserManagement');
+//        Route::get('/user-management', 'UserManagementController@getViewUserManagement');
+        Route::get('/position','UserManagementController@getViewPosition');
+        Route::get('/create-user','UserManagementController@getViewCreateUser');
     });
     Route::group(['middleware' => 'CustomerManagement'], function () {
         Route::get('/customer', 'CustomerManagementController@getViewCustomer');

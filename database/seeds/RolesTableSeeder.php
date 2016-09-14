@@ -24,6 +24,7 @@ class RolesTableSeeder extends Seeder
         	'description' => 'Quản lý người dùng'
         ]);
 
+
         //3
         Role::create([
             'name' => 'CustomerManagement',
@@ -152,6 +153,16 @@ class RolesTableSeeder extends Seeder
         Role::create([
             'name' => 'MonthPostage',
             'description' => 'Theo tháng'
+        ]);
+        //27
+        Role::create([
+            'name' => 'Position',
+            'description' => 'Chức vụ'
+        ]);
+        //28
+        Role::create([
+            'name' => 'CreateUser',
+            'description' => 'Tạo người dùng'
         ]);
     }
 }

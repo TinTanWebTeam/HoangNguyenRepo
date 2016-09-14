@@ -145,10 +145,9 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
                                             <label for="Position_id"><b>Chức vụ</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="Position_id"
-                                                   name="Position_id"
-                                                   placeholder="Chức vụ">
+                                            <select class="form-control" id="Position_id">
+                                                    <option value="">----</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

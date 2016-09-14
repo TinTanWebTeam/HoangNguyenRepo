@@ -18,6 +18,8 @@ class HomeController extends Controller
         $array_url = [
             'Admin'                 => '',
             'UserManagement'        => 'user-management',
+            'Position'              => 'position',
+            'CreateUser'            => 'create-user',
             'CustomerManagement'    => 'customer-management',
             'PortfolioManagement'   => 'portfolio-management',
             'VehicleManagement'     => 'vehicle-management',
@@ -59,7 +61,7 @@ class HomeController extends Controller
 
         $array_auth = [
             'Admin'               => [],
-            'UserManagement'      => [],
+            'UserManagement'      => ['Position','CreateUser'],
             'CustomerManagement'  => ['Customer', 'DeliveryRequirement'],
             'PortfolioManagement' => ['Unit', 'City'],
             'VehicleManagement'   => ['VehicleInside', 'VehicleOutside'],

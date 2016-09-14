@@ -72,6 +72,7 @@ class SubRoleTableSeeder extends Seeder
             'created_by' => 1,
             'updated_by' => 1
         ]);
+      
 //        SubRole::create([
 //            'user_id'    => 1,
 //            'role_id'    => 11,

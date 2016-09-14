@@ -10,16 +10,15 @@ use App\Role;
 
 class UserManagementController extends Controller
 {
-    public function getViewUserManagement()
+    public function getViewCreateUser()
     {
         $role = Role::where('active',1)->whereBetween('id',[2,10])->pluck('description','id')->toArray();
-       
         return view('partials.UserManagement')->with('roles',$role);
     }
-    public  function postViewUserManagement(Request $request)
-    {
-
+    public  function getViewPosition(){
+        return view('partials.position');
     }
+   
 
 
 
