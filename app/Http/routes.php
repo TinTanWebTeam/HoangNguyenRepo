@@ -66,7 +66,7 @@ Route::group(['middleware' => 'auth'], function(){
     });
 });
 
-Route::Post('/post-viewPosition','UserManagementController@postViewPosition');
+Route::Post('/post-position','UserManagementController@postViewPosition');
 
 
 

@@ -14,7 +14,7 @@ class UserManagementController extends Controller
     public function getViewCreateUser()
     {
         $role = Role::where('active',1)->whereBetween('id',[2,10])->pluck('description','id')->toArray();
-        return view('partials.UserManagement')->with('roles',$role);
+        return view('partials.CreateUser')->with('roles',$role);
     }
     public  function getViewPosition(){
         $position = Position::where('active',1)->get();
@@ -23,7 +23,8 @@ class UserManagementController extends Controller
 
     public function postViewPosition(Request $request)
     {
-        return view('partials.Position');
+        dd('a');
+        //return view('partials.Position');
     }
 
 
