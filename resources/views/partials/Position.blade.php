@@ -191,6 +191,13 @@
                         positionView.viewListPosition(positionView.goBack);
                     }
                 },
+                viewListPosition: function (element) {
+                    positionView.goBack = element;
+                    positionView.idPositionView = $(element).attr("id");
+                    $("tbody#tbodyPositionList").find("tr").removeClass("active");
+                    $(element).addClass("active");
+                },
+
 
             }
         }
