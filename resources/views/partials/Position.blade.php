@@ -23,17 +23,17 @@
         cursor: pointer
     }
     ol.breadcrumb{border-bottom: 2px solid #e7e7e7}
+    div.col-lg-12{height: 40px; }
+
 </style>
 <!-- start View list -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
             <!-- .panel-heading -->
-            {{--<div class="row panel-heading">--}}
-                {{--<div class="col-lg-12">--}}
             <div class="row">
                 <div class="col-lg-12" >
-                    <ol class="breadcrumb" style="">
+                    <ol class="breadcrumb">
                         <li><a href="javascript:;">Trang chủ</a></li>
                         <li><a href="javascript:;">QL người dùng</a></li>
                         <li class="active">Chức vụ</li>
@@ -66,7 +66,7 @@
                                         <td>{{$item->code}}</td>
                                         <td>{{$item->name}}</td>
                                         <td>{{$item->description}}</td>
-                                        <td>
+                                        <td style="width: 80px">
                                             <div class=" btn-del-edit">
                                                 <div class="btn btn-success btn-circle" onclick="show()">
                                                     <i class="glyphicon glyphicon-pencil"></i>
