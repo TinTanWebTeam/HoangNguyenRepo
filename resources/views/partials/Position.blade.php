@@ -87,7 +87,7 @@
                 <div class="panel-body">
                     <form role="form" id="formPosition">
                         <div class="form-body">
-                            <div class="form-group form-md-line-input" style="display:block">
+                            <div class="form-group form-md-line-input" style="display:none">
                                 <input type="text" class="form-control" name="Id" id="Id">
                             </div>
                             <div class="col-md-12 ">
