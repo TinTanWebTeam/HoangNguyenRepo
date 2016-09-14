@@ -46,6 +46,7 @@
                 <tr class="active">
                     <th>Mã</th>
                     <th>Chức vụ</th>
+                    <th>Mô tả</th>
                     <th>Sửa/ Xóa</th>
                 </tr>
                 </thead>
@@ -53,6 +54,7 @@
                 <tr>
                     <td>a</td>
                     <td>tai xế</td>
+                    <td>lái xe</td>
                     <td>
                         <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
@@ -80,7 +82,7 @@
                 </div>
 
                 <div class="panel-body">
-                    <form role="form" id="formUser">
+                    <form role="form" id="formPosition">
                         <div class="form-body">
                             <div class="col-md-12 ">
                                 <div class="row " >
@@ -90,7 +92,8 @@
                                             <input type="text" class="form-control"
                                                    id="Code"
                                                    name="Code"
-                                                   placeholder="Mã chức vụ"   autofocus >
+                                                   placeholder="Mã chức vụ"
+                                                   autofocus >
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -99,20 +102,18 @@
                                             <input type="text" class="form-control"
                                                    id="Position"
                                                    name="Position"
-                                                   placeholder="Chức vụ"
-                                                    >
+                                                   placeholder="Chức vụ">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row " >
+                                <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group form-md-line-input " >
                                             <label for="Code"><b>Mô ta</b></label>
                                             <input type="text" class="form-control"
                                                    id="Code"
                                                    name="Code"
-                                                   placeholder="Mã chức vụ"
-                                                    >
+                                                   placeholder="Mô tả">
                                         </div>
                                     </div>
                                 </div>
