@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Position;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -16,9 +17,15 @@ class UserManagementController extends Controller
         return view('partials.UserManagement')->with('roles',$role);
     }
     public  function getViewPosition(){
+        $position = Position::where('active',1)->get();
+        return view('partials.position')->with('positions',$position);
+    }
+
+    public function postViewPosition(Request $request)
+    {
         return view('partials.position');
     }
-   
+
 
 
 
