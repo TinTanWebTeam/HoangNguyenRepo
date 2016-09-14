@@ -29,16 +29,18 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-lg-12">
-                <h5 class="blue ">Quản lý khách hàng</h5>
-                <div class="menu-toggle  pull-right fixed" >
-                    <div class="btn btn-primary btn-circle btn-md" onclick="show()">
-                        <i class="glyphicon glyphicon-plus"></i>
-                    </div>
-                </div>
-                <hr>
+                <ol class="breadcrumb">
+                    <li><a href="javascript:;">Trang chủ</a></li>
+                    <li><a href="javascript:;">QL khách hàng</a></li>
+                    <li class="active">Khách hàng</li>
+                </ol>
             </div>
-            <!-- /.col-lg-12 -->
-        </div>
+            <div class="menu-toggle  pull-right fixed" >
+                <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </div>
+            </div>
+        </div> <!-- /.row -->
 
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="table-data">
