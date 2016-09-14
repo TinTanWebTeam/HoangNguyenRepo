@@ -88,7 +88,7 @@
                         <div class="form-body">
                             <div class="col-md-12 ">
                                 <div class="row " >
-                                    <div class="col-md-6 "  >
+                                    <div class="col-md-12 "  >
                                         <div class="form-group form-md-line-input " >
                                             <label for="NumberVehicle"><b>Số xe</b></label>
                                             <input type="text" class="form-control"
@@ -98,19 +98,21 @@
                                                    autofocus >
                                         </div>
                                     </div>
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
-                                            <label for="CostType"><b>Loại chi phí</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="CostType"
-                                                   name="CostType"
-                                                   placeholder="Loại chi phí"
-                                                   autofocus >
-                                        </div>
-                                    </div>
+
                                 </div>
                                 <div class="row ">
-                                    <div class="col-md-6 ">
+                                    <div class="col-md-4 "  >
+                                        <div class="form-group form-md-line-input " >
+                                            <label for="Transport"><b>Loại phí</b></label>
+                                            <select name="" id="" class="form-control">
+                                                <option value="">Nhiên liệu</option>
+                                                <option value="">Thay nhớt</option>
+                                                <option value="">Đậu bãi</option>
+                                                <option value="" selected>Khác</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 ">
                                         <div class="form-group form-md-line-input">
                                             <label for="Price"><b>Đơn giá</b></label>
                                             <input type="text" class="form-control"
@@ -119,7 +121,7 @@
                                                    placeholder="00.00">
                                         </div>
                                     </div>
-                                    <div class="col-md-6 ">
+                                    <div class="col-md-4 ">
                                         <div class="form-group form-md-line-input ">
                                             <label for="TotalPrice"><b>Tổng chi phí</b></label>
                                             <input type="text" class="form-control"

@@ -90,9 +90,9 @@
                         <div class="form-body">
                             <div class="col-md-12 ">
                                 <div class="row " >
-                                    <div class="col-md-6 "  >
+                                    <div class="col-md-4 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="NumberVehicle"><b>Số xe</b></label>
+                                            <label for="NumberVehicle"><b>Mã xe</b></label>
                                             <input type="text" class="form-control"
                                                    id="NumberVehicle"
                                                    name="NumberVehicle"
@@ -100,17 +100,37 @@
                                                    autofocus >
                                         </div>
                                     </div>
-                                    <div class="col-md-6 "  >
+                                    <div class="col-md-4 "  >
                                         <div class="form-group form-md-line-input " >
-                                            <label for="Time"><b>Thời gian đổ dầu</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="Time"
-                                                   name="Time"
-                                                   placeholder="Thời gian đổ dầu"
-                                                   autofocus >
+                                            <label for="Transport"><b>Loại phí</b></label>
+                                            <select name="" id="" class="form-control">
+                                                <option value="">Nhiên liệu</option>
+                                                <option value="">Thay nhớt</option>
+                                                <option value="">Đậu bãi</option>
+                                                <option value="" selected>Khác</option>
+                                            </select>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-4 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="Price"><b>Đơn giá</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Price"
+                                                   name="Price"
+                                                   placeholder="00.00">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="TotalPrice"><b>Thời gian đổ dầu</b></label>
+                                            <input type="date" class="form-control"
+                                                   id="TotalPrice"
+                                                   name="TotalPrice"
+                                                   placeholder="Tổng chi phí">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-6 ">
@@ -123,18 +143,6 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="Price"><b>Đơn giá</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="Price"
-                                                   name="Price"
-                                                   placeholder="00.00">
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 ">
                                         <div class="form-group form-md-line-input ">
                                             <label for="TotalPrice"><b>Tổng chi phí</b></label>
                                             <input type="text" class="form-control"
@@ -144,7 +152,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="col-md-6">
                                 <div class="form-actions noborder">

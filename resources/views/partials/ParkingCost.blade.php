@@ -94,7 +94,7 @@
                         <div class="form-body">
                             <div class="col-md-12 ">
                                 <div class="row " >
-                                    <div class="col-md-6"  >
+                                    <div class="col-md-12"  >
                                         <div class="form-group form-md-line-input " >
                                             <label for="NumberVehicle"><b>Số xe</b></label>
                                             <input type="text" class="form-control"
@@ -104,7 +104,10 @@
                                                    autofocus >
                                         </div>
                                     </div>
-                                    <div class="col-md-6 "  >
+
+                                </div>
+                                <div class="row " >
+                                    <div class="col-md-4 "  >
                                         <div class="form-group form-md-line-input " >
                                             <label for="Date"><b>Ngày đậu bãi</b></label>
                                             <input type="date" class="form-control"
@@ -113,9 +116,7 @@
                                                    value="{{date("")}}">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row " >
-                                    <div class="col-md-6 ">
+                                    <div class="col-md-4 ">
                                         <div class="form-group form-md-line-input">
                                             <label for="TimeIn"><b>Giờ vào</b></label>
                                             <input type="Time" class="form-control"
@@ -123,7 +124,7 @@
                                                    name="TimeIn">
                                         </div>
                                     </div>
-                                    <div class="col-md-6 ">
+                                    <div class="col-md-4 ">
                                         <div class="form-group form-md-line-input">
                                             <label for="TimeOut"><b>Giờ ra</b></label>
                                             <input type="time" class="form-control"
@@ -133,13 +134,15 @@
                                     </div>
                                 </div>
                                 <div class="row " >
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="TotalTime"><b>Số giờ đậu</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="TotalTime"
-                                                   name="TotalTime"
-                                                   placeholder="Số giờ đậu">
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input " >
+                                            <label for="Transport"><b>Loại phí</b></label>
+                                            <select name="" id="" class="form-control">
+                                                <option value="">Nhiên liệu</option>
+                                                <option value="">Thay nhớt</option>
+                                                <option value="">Đậu bãi</option>
+                                                <option value="" selected>Khác</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6 ">

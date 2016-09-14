@@ -43,32 +43,26 @@
             <table class="table table-bordered table-hover" id="table-data">
                 <thead>
                 <tr class="active">
-                    <th>Mã yêu cầu</th>
-                    <th>Mã hàng</th>
-                    <th>Mã tài xế</th>
-                    <th>Mã xe</th>
-                    <th>Mã khách hàng</th>
-                    <th>Trọng tải</th>
+                    <th>Số xe</th>
+                    <th>Tên hàng</th>
+                    <th>Nơi nhận</th>
+                    <th>Nơi giao</th>
+                    <th>Số lượng</th>
+                    <th>Khách hàng</th>
                     <th>Doanh thu</th>
                     <th>Giao xe</th>
+                    <th>Chi phí khác</th>
                     <th>Nhận</th>
                     <th>Lợi nhuận</th>
-                    <th>Ghi chú</th>
                     <th>Số chứng từ</th>
-                    <th>Số hàng trên chứng từ </th>
                     <th>Người nhận</th>
                     <th>Ngày nhận</th>
                     <th>Trạng thái</th>
-                    <th>Nơi nhận</th>
-                    <th>Nơi giao</th>
                     <th>Sửa/ Xóa</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
@@ -116,14 +110,22 @@
                         <div class="form-body">
                             <div class="col-md-12 ">
                                 <div class="row " >
-                                    <div class="col-md-3 "  >
-                                        <div class="form-group form-md-line-input " >
-                                            <label for="Code"><b>Mã yêu cầu</b></label>
+                                    <div class="col-md-3 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="Date"><b>Mã xe</b></label>
                                             <input type="text" class="form-control"
-                                                   id="Code"
-                                                   name="Code"
-                                                   placeholder="Mã yêu cầu"
-                                                   autofocus >
+                                                   id="Date"
+                                                   name="Date"
+                                                   value={{date('')}}>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="Number"><b>Mã khách hàng</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="Number"
+                                                   name="Number"
+                                                   placeholder="0">
                                         </div>
                                     </div>
                                     <div class="col-md-3 "  >
@@ -136,36 +138,18 @@
                                                    autofocus >
                                         </div>
                                     </div>
-                                    <div class="col-md-3 "  >
-                                        <div class="form-group form-md-line-input " >
-                                            <label for="FullName"><b>Mã tài xế</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="FullName"
-                                                   name="FullName"
-                                                   placeholder="Tên khách hàng"
-                                                   autofocus >
-                                        </div>
-                                    </div>
                                     <div class="col-md-3 ">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Date"><b>Mã xe</b></label>
-                                            <input type="date" class="form-control"
-                                                   id="Date"
-                                                   name="Date"
-                                                   value={{date('')}}>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row ">
-                                    <div class="col-md-3 ">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="Number"><b>Mã khách hàng</b></label>
+                                            <label for="Number"><b>Số lượng</b></label>
                                             <input type="number" class="form-control"
                                                    id="Number"
                                                    name="Number"
                                                    placeholder="0">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row ">
+
                                     <div class="col-md-3 ">
                                         <div class="form-group form-md-line-input">
                                             <label for="Number"><b>Trọng tải</b></label>
@@ -193,9 +177,7 @@
                                                    placeholder="Trạng thái">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 ">
+                                    <div class="col-md-3 ">
                                         <div class="form-group form-md-line-input">
                                             <label for="Number"><b>Nhận</b></label>
                                             <input type="number" class="form-control"
@@ -204,22 +186,43 @@
                                                    placeholder="0">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 ">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="Transport"><b>Lợi nhuận</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="Transport"
-                                                   name="Transport"
-                                                   placeholder="Vị trí vận chuyển">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Status"><b>Ghi chú</b></label>
+                                            <label for="Status"><b>Người nhận</b></label>
                                             <input type="text" class="form-control"
                                                    id="Status"
                                                    name="Status"
                                                    placeholder="Trạng thái">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="Number"><b>Ngày nhận</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="Number"
+                                                   name="Number"
+                                                   placeholder="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="Status"><b>Nơi nhận</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="Status"
+                                                   name="Status"
+                                                   placeholder="Trạng thái">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 ">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="Number"><b>Nơi giao</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="Number"
+                                                   name="Number"
+                                                   placeholder="0">
                                         </div>
                                     </div>
                                 </div>
@@ -244,7 +247,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="Status"><b>Người nhận</b></label>
+                                            <label for="Status"><b>Ghi chú</b></label>
                                             <input type="text" class="form-control"
                                                    id="Status"
                                                    name="Status"
@@ -252,17 +255,6 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="Number"><b>Ngày nhận</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="Number"
-                                                   name="Number"
-                                                   placeholder="0">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 ">
                                         <div class="form-group form-md-line-input ">
                                             <label for="Transport"><b>Trạng thái</b></label>
                                             <input type="text" class="form-control"
@@ -271,26 +263,50 @@
                                                    placeholder="Vị trí vận chuyển">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="Status"><b>Nơi nhận</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="Status"
-                                                   name="Status"
-                                                   placeholder="Trạng thái">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="Transport"><b>Số chứng từ nhận</b></label>
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <select name="" id="" class="form-control">
+                                                        <option value="">abc</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="btn btn-primary btn-sm btn-circle">
+                                                        <i class="glyphicon glyphicon-plus"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
-                                    <div class="col-md-4 ">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="Number"><b>Nơi giao</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="Number"
-                                                   name="Number"
-                                                   placeholder="0">
+                                    <div class="col-md-2">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="Transport"><b>Chi phí</b></label>
+                                            <select name="" id="" class="form-control">
+                                                <option value="">Nhiên liệu</option>
+                                                <option value="">Thay nhớt</option>
+                                                <option value="">Đậu bãi</option>
+                                                <option value="" selected>Khác</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="Transport"><b>Số tiền</b></label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="Transport"><b>Ghi chú</b></label>
+                                            <input type="text" class="form-control">
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="col-md-6">
                                 <div class="form-actions noborder">
