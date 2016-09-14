@@ -45,7 +45,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
@@ -159,7 +158,8 @@
             </form>
         </div>
     </div>
-</div> <!-- end #frmControl -->
+</div>
+<!-- end #frmControl -->
 
 <script>
     $(function () {
@@ -180,15 +180,6 @@
                         }
                     }
                 },
-//                addNewPosition: function () {
-//                    //$("div#modalConfirm").modal("hide");
-//                    $("input[name=Id]").val("");
-//                    positionView.resetForm();
-//                },
-
-//                firstToUpperCase: function (str) {
-//                    return str.substr(0, 1).toUpperCase() + str.substr(1);
-//                },
                 Cancel: function () {
                     positionView.resetForm();
                 },
@@ -200,79 +191,7 @@
                         positionView.viewListPosition(positionView.goBack);
                     }
                 },
-                viewListPosition: function (element) {
-                    positionView.goBack = element;
-                    positionView.idPositionView = $(element).attr("id");
-                    $("tbody#tbodyPositionList").find("tr").removeClass("active blue");
-                    $(element).addClass("active blue");
-                    $.post(url + "/post-position", {
-                        _token: _token,
-                        idPosition: positionView.idPositionView
-                    }, function (data) {
-                        $("input[name=Id]").empty().val(positionView.idPositionView)
-                        for (var propertyName in data) {
-                            $("input[id=" + positionView.firstToUpperCase(propertyName) + "]").val(data[propertyName]);
-                        }
-                    })
-                },
-                fillTbody: function (data) {
-                    $("tbody#tbodyPositionList").empty();
-                    var row = "";
-                    for (var i = 0; i < data["listPosition"].length; i++) {
-                        var tr = "";
-                        tr += "<tr id=" + data["listPosition"][i]["id"] + " onclick='positionView.viewListPosition(this)' style='cursor: pointer'>";
-                        tr += "<td>" + data["listPosition"][i]["name"] + "</td>";
-                        tr += "<td>" + data["listPosition"][i]["description"] + "</td>";
-                        row += tr;
-                    }
-                    $("tbody#tbodyPositionList").append(row);
-                    positionView.idPositionView = null;
-                    positionView.addNewPosition();
-                },
-                addNewAndUpdatePosition: function () {
-                    positionView.resetPositionObject();
-                    for (var i = 0; i < Object.keys(positionView.PositionViewObject).length; i++) {
-                        positionView.PositionViewObject[Object.keys(positionView.PositionViewObject)[i]] = $("#" + Object.keys(positionView.PositionViewObject)[i]).val();
-                    }
-                    $("#formPosition").validate({
-                        rules: {
-                            Name: 'required'
-                        },
-                        messages: {
-                            Name: "Tên chức vụ không được rỗng",
-                        }
-                    });
-                    if ($("#formPosition").valid()) {
-                        $.post(url + "admin/addNewAndUpdatePosition", {
-                            _token: _token,
-                            addNewOrUpdateId: $("input[name=Id]").val(),
-                            dataPosition: positionView.PositionViewObject
-                        }, function (data) {
-                            if (data[0] === 1) {
-                                $("div#modalConfirm").modal("show");
-                                $("div#modalContent").empty().append("Thêm mới thành công");
-                                $("button[name=modalAgree]").hide();
-                                positionView.fillTbody(data);
-                            } else if (data[0] === 2) {
-                                $("div#modalConfirm").modal("show");
-                                $("div#modalContent").empty().append("Chỉnh sửa thành công");
-                                $("button[name=modalAgree]").hide();
-                                positionView.fillTbody(data);
-                            } else if (data[0] === 0) {
-                                $("div#modalConfirm").modal("show");
-                                $("div#modalContent").empty().append("Chỉnh sửa KHÔNG thành công");
-                                $("button[name=modalAgree]").hide();
-                            }
-                            else {
-                                $("div#modalConfirm").modal("show");
-                                $("div#modalContent").empty().append("Thêm mới KHÔNG thành công");
-                                $("button[name=modalAgree]").hide();
-                            }
-                        })
-                    }else{
-                        $("form#formPosition").find("label[class=error]").css("color","red");
-                    }
-                }
+
             }
         }
     })
