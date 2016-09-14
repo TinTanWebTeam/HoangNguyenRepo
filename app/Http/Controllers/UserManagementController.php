@@ -18,12 +18,12 @@ class UserManagementController extends Controller
     }
     public  function getViewPosition(){
         $position = Position::where('active',1)->get();
-        return view('partials.position')->with('positions',$position);
+        return view('partials.Position')->with('positions',$position);
     }
 
     public function postViewPosition(Request $request)
     {
-        return view('partials.position');
+        return view('partials.Position');
     }
 
 

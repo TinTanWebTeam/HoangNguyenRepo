@@ -37,10 +37,6 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/customer', 'CustomerManagementController@getViewCustomer');
         Route::get('/delivery-requirement', 'CustomerManagementController@getViewDeliveryRequirement');
     });
-    Route::group(['middleware' => 'PortfolioManagement'], function () {
-        Route::get('/unit', 'PortfolioManagementController@getViewUnit');
-        Route::get('/city', 'PortfolioManagementController@getViewCity');
-    });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         Route::get('/vehicle-inside', 'VehicleManagementController@getViewVehicleInside');
         Route::get('/vehicle-outside', 'VehicleManagementController@getViewVehicleOutside');

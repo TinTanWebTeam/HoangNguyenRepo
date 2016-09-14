@@ -21,44 +21,44 @@ class RolesTableSeeder extends Seeder
         //2
         Role::create([
         	'name' => 'UserManagement',
-        	'description' => 'Quản lý người dùng'
+        	'description' => 'QL người dùng'
         ]);
 
 
         //3
         Role::create([
             'name' => 'CustomerManagement',
-            'description' => 'Quản lý khách hàng'
+            'description' => 'QL khách hàng'
         ]);
 
         //4
         Role::create([
             'name' => 'PortfolioManagement',
-            'description' => 'Quản lý danh mục'
+            'description' => 'QL danh mục'
         ]);
 
         //5
         Role::create([
             'name' => 'VehicleManagement',
-            'description' => 'Quản lý xe'
+            'description' => 'QL xe'
         ]);
 
         //6
         Role::create([
             'name' => 'DebtManagement',
-            'description' => 'Quản lý công nợ'
+            'description' => 'QL công nợ'
         ]);
 
         //7
         Role::create([
             'name' => 'CostManagement',
-            'description' => 'Quản lý chi phí'
+            'description' => 'QL chi phí'
         ]);
 
         //8
         Role::create([
             'name' => 'PostageManagement',
-            'description' => 'Quản lý cước phí'
+            'description' => 'QL cước phí'
         ]);
 
         //9
@@ -82,87 +82,78 @@ class RolesTableSeeder extends Seeder
         //12
         Role::create([
             'name' => 'DeliveryRequirement',
-            'description' => 'Yêu cầu giao hàng'
+            'description' => 'Đơn hàng'
         ]);
+
         //13
-        Role::create([
-            'name' => 'Unit',
-            'description' => 'Đơn vị tính'
-        ]);
-        //14
-        Role::create([
-            'name' => 'City',
-            'description' => 'Tỉnh thành'
-        ]);
-        //15
         Role::create([
             'name' => 'VehicleInside',
             'description' => 'Xe'
         ]);
-        //16
+        //14
         Role::create([
             'name' => 'VehicleOutside',
             'description' => 'Nhà xe ngoài'
         ]);
-        //17
+        //15
         Role::create([
             'name' => 'DebtCustomer',
-            'description' => 'Công nợ khách hàng'
+            'description' => 'Khách hàng'
         ]);
-        //18
+        //16
         Role::create([
             'name' => 'DebtVehicleOutside',
-            'description' => 'Công nợ nhà xe ngoài'
+            'description' => 'Nhà xe ngoài'
         ]);
-        //19
+        //17
         Role::create([
             'name' => 'FuelCost',
             'description' => 'Nhiên liệu'
         ]);
-        //20
+        //18
         Role::create([
             'name' => 'PetroleumCost',
             'description' => 'Thay nhớt'
         ]);
-        //21
+        //19
         Role::create([
             'name' => 'ParkingCost',
             'description' => 'Đậu bãi'
         ]);
-        //22
+        //20
         Role::create([
             'name' => 'OtherCost',
             'description' => 'Khác'
         ]);
-        //23
+        //21
         Role::create([
             'name' => 'RevenueReport',
             'description' => 'Doanh thu'
         ]);
-        //24
+        //22
         Role::create([
             'name' => 'HistoryDeliveryReport',
             'description' => 'Lịch sử giao hàng'
         ]);
-        //25
+        //23
         Role::create([
             'name' => 'CustomerPostage',
-            'description' => 'Theo khách hàng'
+            'description' => 'Khách hàng'
         ]);
-        //26
+        //24
         Role::create([
             'name' => 'MonthPostage',
-            'description' => 'Theo tháng'
+            'description' => 'Tháng'
         ]);
-        //27
+        //25
         Role::create([
             'name' => 'Position',
             'description' => 'Chức vụ'
         ]);
-        //28
+        //26
         Role::create([
             'name' => 'CreateUser',
-            'description' => 'Tạo người dùng'
+            'description' => 'Tài khoản'
         ]);
     }
 }

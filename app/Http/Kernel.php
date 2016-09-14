@@ -52,7 +52,7 @@ class Kernel extends HttpKernel
         'Admin' => \App\Http\Middleware\Admin::class,
         'UserManagement' => \App\Http\Middleware\UserManagement::class,
         'CustomerManagement' => \App\Http\Middleware\CustomerManagement::class,
-        'PortfolioManagement' => \App\Http\Middleware\PortfolioManagement::class,
+
         'VehicleManagement' => \App\Http\Middleware\VehicleManagement::class,
         'DebtManagement' => \App\Http\Middleware\DebtManagement::class,
         'CostManagement' => \App\Http\Middleware\CostManagement::class,
