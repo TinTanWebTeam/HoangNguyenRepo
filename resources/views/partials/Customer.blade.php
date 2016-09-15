@@ -3,6 +3,7 @@
         float: left;
         padding-right: 5px;
     }
+
     #frmControl {
         z-index: 3;
         position: fixed;
@@ -12,16 +13,25 @@
         width: 40%;
         height: 100%;
     }
+
     .blue {
         color: #2196f3
     }
+
     .fixed {
         position: fixed;
         right: 15px;
         z-index: 2
     }
-    .menu-toggles{
+
+    .menu-toggles {
         cursor: pointer
+    }
+
+    .icon-center {
+        line-height: 130%;
+        padding-left: 3%;
+        font-size: 13px;
     }
 </style>
 
@@ -35,9 +45,9 @@
                     <li class="active">Khách hàng</li>
                 </ol>
             </div>
-            <div class="menu-toggle  pull-right fixed" >
-                <div class="btn btn-primary btn-circle btn-md" onclick="show()">
-                    <i class="glyphicon glyphicon-plus"></i>
+            <div class="menu-toggle  pull-right fixed">
+                <div class="btn btn-primary btn-circle btn-md" onclick="customerView.show()">
+                    <i class="glyphicon glyphicon-plus icon-center"></i>
                 </div>
             </div>
         </div> <!-- /.row -->
@@ -58,25 +68,68 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
-                    <td>aaaa</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
                     <td>
                         <div class="btn-del-edit">
                             <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
+                                <i class="glyphicon glyphicon-pencil icon-center"></i>
                             </div>
                         </div>
                         <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
+                                <i class="glyphicon glyphicon-remove icon-center"></i>
                             </div>
                         </div>
 
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>
+                        <div class="btn-del-edit">
+                            <div class="btn btn-success  btn-circle">
+                                <i class="glyphicon glyphicon-pencil icon-center"></i>
+                            </div>
+                        </div>
+                        <div class="btn-del-edit">
+                            <div class="btn btn-danger btn-circle">
+                                <i class="glyphicon glyphicon-remove icon-center"></i>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>
+                        <div class="btn-del-edit">
+                            <div class="btn btn-success  btn-circle">
+                                <i class="glyphicon glyphicon-pencil icon-center"></i>
+                            </div>
+                        </div>
+                        <div class="btn-del-edit">
+                            <div class="btn btn-danger btn-circle">
+                                <i class="glyphicon glyphicon-remove icon-center"></i>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
@@ -85,9 +138,9 @@
         </div> <!-- end table-reposive -->
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading " >Thêm mới khách hàng
-                    <div class="menu-toggles pull-right" onclick="hide()">
-                          <i class="glyphicon glyphicon-remove" ></i>
+                <div class="panel-heading ">Thêm mới khách hàng
+                    <div class="menu-toggles pull-right" onclick="customerView.hide()">
+                        <i class="glyphicon glyphicon-remove"></i>
                     </div>
                 </div>
 
@@ -95,25 +148,25 @@
                     <form role="form" id="formUser">
                         <div class="form-body">
                             <div class="col-md-12 ">
-                                <div class="row " >
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
+                                <div class="row ">
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input ">
                                             <label for="Code"><b>Mã khách hàng</b></label>
                                             <input type="text" class="form-control"
                                                    id="Code"
                                                    name="Code"
                                                    placeholder="Mã khách hàng"
-                                                   autofocus >
+                                                   autofocus>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input ">
                                             <label for="FullName"><b>Họ và tên</b></label>
                                             <input type="text" class="form-control"
                                                    id="FullName"
                                                    name="FullName"
                                                    placeholder="Tên khách hàng"
-                                                   autofocus >
+                                                   autofocus>
                                         </div>
                                     </div>
                                 </div>
@@ -162,8 +215,8 @@
                                     <div class="col-md-12">
                                         <div class="form-group form-md-line-input">
                                             <label for="Note"><b>Ghi chú</b></label>
-                                                <textarea class="form-control" id="Note" name="Note" rows="3" cols="3"
-                                                          placeholder="Nhập ghi chú"></textarea>
+                                            <textarea class="form-control" id="Note" name="Note" rows="3" cols="3"
+                                                      placeholder="Nhập ghi chú"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -187,16 +240,36 @@
     </div> <!-- end .col-md-12-->
 </div> <!-- end .row -->
 <script>
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
-    }
-    function hide() {
-        $('#frmControl').slideUp('', function(){
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
-    });
+    $(function () {
+        if (typeof customerView === 'undefined') {
+            customerView = {
+                table: null,
+                show: function () {
+                    $('.menu-toggle').hide();
+                    $('#frmControl').slideDown();
+                },
+                hide: function () {
+                    $('#frmControl').slideUp('', function () {
+                        $('.menu-toggle').show();
+                    });
+                },
+                loadData: function () {
+                    customerView.table = $('#table-data').DataTable({
+                        language: languageOptions,
+                        drawCallback: function () {
+                            var api = this.api(),
+                                    sum = 0;
+                            api.rows(":not('.sgrouptotal')").every(function () {
+                                sum += parseFloat(this.data()[1]);
+                            });
+                            $(api.column(1).footer()).text(sum);
+                        }
+                    })
+                }
+            };
+            customerView.loadData();
+        } else {
+            customerView.loadData();
+        }
+    }());
 </script>

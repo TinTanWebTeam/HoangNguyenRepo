@@ -22,6 +22,11 @@
     .menu-toggles{
         cursor: pointer
     }
+    .icon-center {
+        line-height: 130%;
+        padding-left: 3%;
+        font-size: 13px;
+    }
     ol.breadcrumb{border-bottom: 2px solid #e7e7e7}
     div.col-lg-12{height: 40px; }
 
@@ -40,7 +45,7 @@
                     </ol>
                     <div class="pull-right menu-toggle fixed">
                         <div class="btn btn-primary btn-circle btn-md" onclick="show()">
-                            <i class="glyphicon glyphicon-plus"></i>
+                            <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
                 </div>
@@ -68,12 +73,12 @@
                                         <td style="width: 80px">
                                             <div class=" btn-del-edit">
                                                 <div class="btn btn-success btn-circle" onclick="show()">
-                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                    <i class="glyphicon glyphicon-pencil icon-center"></i>
                                                 </div>
                                             </div>
                                             <div class="btn-del-edit">
                                                 <div class="btn btn-danger btn-circle">
-                                                    <i class="glyphicon glyphicon-remove"></i>
+                                                    <i class="glyphicon glyphicon-remove icon-center"></i>
                                                 </div>
                                             </div>
                                         </td>
@@ -165,6 +170,7 @@
     $(function () {
         if (typeof (positionView) === 'undefined') {
             positionView = {
+                table: null,
                 goBack: null,
                 idPositionView: null,
                 PositionViewObject: {
@@ -197,25 +203,24 @@
                     $("tbody#tbodyPositionList").find("tr").removeClass("active");
                     $(element).addClass("active");
                 },
-
-
-            }
+                show: function() {
+                    $('.menu-toggle').hide();
+                    $('#frmControl').slideDown();
+                },
+                hide: function() {
+                    $('#frmControl').slideUp('', function(){
+                        $('.menu-toggle').show();
+                    });
+                },
+                loadData: function() {
+                    positionView.table = $('#table-data').DataTable({
+                        language: languageOptions
+                    });
+                }
+            };
+        } else {
+            positionView.loadData();
         }
-    })
-
-
-
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
-    }
-    function hide() {
-        $('#frmControl').slideUp('', function(){
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
     });
 </script>
 
