@@ -50,7 +50,7 @@
                         <li class="active">Phân tài</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="divisiveDriverView.show()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
