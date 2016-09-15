@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SubRole extends Model
 {
-    protected $table = 'sub_roles';
+    protected $table = 'subRoles';
     protected $fillable = [
         'user_id',
         'role_id',
