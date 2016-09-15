@@ -60,7 +60,7 @@
                         <!-- Button -->
                         <div class="col-sm-12 controls text-center">
                             <button class="btn btn-success" type="submit">
-                                Signin
+                                Sign In
                             </button>
                         </div>
                     </div>
