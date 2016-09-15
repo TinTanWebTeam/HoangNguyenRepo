@@ -23,6 +23,7 @@ class CreateCustomersTable extends Migration
             $table->integer('createdBy,');
             $table->integer('updatedBy');
             $table->boolean('active');
+            $table->integer('customerType_id');
             $table->timestamps();
         });
     }
