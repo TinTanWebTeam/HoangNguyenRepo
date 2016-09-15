@@ -3,6 +3,7 @@
         float: left;
         padding-right: 5px;
     }
+
     #frmControl {
         z-index: 3;
         position: fixed;
@@ -12,17 +13,20 @@
         width: 40%;
         height: 100%;
     }
+
     .blue {
         color: #2196f3
     }
+
     .fixed {
         position: fixed;
         right: 15px;
         z-index: 2
     }
-    .menu-toggles{
-         cursor: pointer
-     }
+
+    .menu-toggles {
+        cursor: pointer
+    }
 </style>
 
 <div class="row">
@@ -30,8 +34,11 @@
         <div class="row">
             <div class="col-lg-12">
                 <h5 class="blue">Quản lý công nợ nhà xe ngoài</h5>
-                <div class="menu-toggle  pull-right fixed" >
-                    <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                <div class="menu-toggle  pull-right fixed">
+                    <div class="btn btn-warning btn-circle btn-md">
+                        <i class="glyphicon glyphicon-upload icon-center"></i>
+                    </div>
+                    <div class="btn btn-primary btn-circle btn-md" onclick="debtVehicleOutsideView.show()">
                         <i class="glyphicon glyphicon-plus"></i>
                     </div>
                 </div>
@@ -44,7 +51,6 @@
             <table class="table table-bordered table-hover" id="table-data">
                 <thead>
                 <tr class="active">
-                    <th>Mã yêu cầu</th>
                     <th>Mã nhà xe</th>
                     <th>Tổng nợ</th>
                     <th>Đã trả</th>
@@ -54,7 +60,6 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
@@ -74,14 +79,23 @@
                     </td>
                 </tr>
                 </tbody>
+                <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tfoot>
             </table>
 
         </div> <!-- end table-reposive -->
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
                 <div class="panel-heading">Thanh toán cước cho nhà xe ngoài
-                    <div class="menu-toggles pull-right" onclick="hide()">
-                        <i class="glyphicon glyphicon-remove" ></i>
+                    <div class="menu-toggles pull-right" onclick="debtVehicleOutsideView.hide()">
+                        <i class="glyphicon glyphicon-remove"></i>
                     </div>
                 </div>
 
@@ -89,37 +103,27 @@
                     <form role="form" id="formUser">
                         <div class="form-body">
                             <div class="col-md-12 ">
-                                <div class="row " >
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
-                                            <label for="CodeRequest"><b>Mã yêu cầu</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="CodeRequest"
-                                                   name="CodeRequest"
-                                                   placeholder="Mã yêu cầu"
-                                                   autofocus >
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
+                                <div class="row ">
+                                    <div class="col-md-12 ">
+                                        <div class="form-group form-md-line-input ">
                                             <label for="CodeHouseVehicle"><b>Mã nhà xe</b></label>
                                             <input type="text" class="form-control"
                                                    id="CodeHouseVehicle"
                                                    name="CodeHouseVehicle"
                                                    placeholder="Mã nhà xe"
-                                                   autofocus >
+                                                   autofocus>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12 "  >
-                                        <div class="form-group form-md-line-input " >
+                                    <div class="col-md-12 ">
+                                        <div class="form-group form-md-line-input ">
                                             <label for="Payments"><b>Tiền thanh toán</b></label>
                                             <input type="text" class="form-control"
                                                    id="Payments"
                                                    name="Payments"
                                                    placeholder="00.00"
-                                                   autofocus >
+                                                   autofocus>
                                         </div>
                                     </div>
                                 </div>
@@ -143,16 +147,39 @@
     </div> <!-- end .col-md-12-->
 </div> <!-- end .row -->
 <script>
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
+    if (typeof debtVehicleOutsideView === 'undefined') {
+        debtVehicleOutsideView = {
+            table: null,
+            show: function () {
+                $('.menu-toggle').hide();
+                $('#frmControl').slideDown();
+            },
+            hide: function () {
+                $('#frmControl').slideUp('', function () {
+                    $('.menu-toggle').show();
+                });
+            },
+            loadData: function () {
+                debtVehicleOutsideView.table = $('#table-data').DataTable({
+                    language: languageOptions,
+                    drawCallback: function () {
+                        var api = this.api(),
+                                sum = 0;
+                        api.rows(":not('.sgrouptotal')").every(function () {
+                            sum += parseFloat(this.data()[1]);
+                        });
+                        $(api.column(1).footer()).text(sum);
+                        api.rows(":not('.sgrouptotal')").every(function () {
+                            sum += parseFloat(this.data()[2]);
+                        });
+                        $(api.column(2).footer()).text(sum);
+                    }
+                });
+            }
+        };
+        debtVehicleOutsideView.loadData();
+    } else {
+        debtVehicleOutsideView.loadData();
     }
-    function hide() {
-        $('#frmControl').slideUp('', function(){
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
-    });
+
 </script>

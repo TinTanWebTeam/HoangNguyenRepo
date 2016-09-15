@@ -3,6 +3,7 @@
         float: left;
         padding-right: 5px;
     }
+
     #frmControl {
         z-index: 3;
         position: fixed;
@@ -12,15 +13,18 @@
         width: 40%;
         height: 100%;
     }
+
     .blue {
         color: #2196f3
     }
+
     .fixed {
         position: fixed;
         right: 15px;
         z-index: 2
     }
-    .menu-toggles{
+
+    .menu-toggles {
         cursor: pointer
     }
 </style>
@@ -30,8 +34,8 @@
         <div class="row">
             <div class="col-lg-12">
                 <h5 class="blue">Quản lý cước phí vận chuyển theo tháng</h5>
-                <div class="menu-toggle  pull-right fixed" >
-                    <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                <div class="menu-toggle  pull-right fixed">
+                    <div class="btn btn-primary btn-circle btn-md" onclick="monthPostageView.show()">
                         <i class="glyphicon glyphicon-plus"></i>
                     </div>
                 </div>
@@ -76,8 +80,8 @@
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
                 <div class="panel-heading">Cập nhật cước phí vận chuyển
-                    <div class="menu-toggles pull-right" onclick="hide()">
-                        <i class="glyphicon glyphicon-remove" ></i>
+                    <div class="menu-toggles pull-right" onclick="monthPostageView.hide()">
+                        <i class="glyphicon glyphicon-remove"></i>
                     </div>
                 </div>
 
@@ -85,37 +89,37 @@
                     <form role="form" id="formUser">
                         <div class="form-body">
                             <div class="col-md-12 ">
-                                <div class="row " >
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
+                                <div class="row ">
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input ">
                                             <label for="Code"><b>Mã</b></label>
                                             <input type="text" class="form-control"
                                                    id="Code"
                                                    name="Code"
                                                    placeholder="Mã"
-                                                   autofocus >
+                                                   autofocus>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
+                                    <div class="col-md-6 ">
+                                        <div class="form-group form-md-line-input ">
                                             <label for="Month"><b>Tháng</b></label>
                                             <input type="text" class="form-control"
                                                    id="Month"
                                                    name="Month"
                                                    placeholder="Tháng"
-                                                   autofocus >
+                                                   autofocus>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12 "  >
-                                        <div class="form-group form-md-line-input " >
+                                    <div class="col-md-12 ">
+                                        <div class="form-group form-md-line-input ">
                                             <label for="Cost"><b>Cước phí</b></label>
                                             <input type="text" class="form-control"
                                                    id="Cost"
                                                    name="Cost"
                                                    placeholder="00.00"
-                                                   autofocus >
+                                                   autofocus>
                                         </div>
                                     </div>
                                 </div>
@@ -139,16 +143,26 @@
     </div> <!-- end .col-md-12-->
 </div> <!-- end .row -->
 <script>
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
+    if (typeof monthPostageView === 'undefined') {
+        monthPostageView = {
+            show: function () {
+                $('.menu-toggle').hide();
+                $('#frmControl').slideDown();
+            },
+            hide: function () {
+                $('#frmControl').slideUp('', function () {
+                    $('.menu-toggle').show();
+                });
+            },
+            loadData: function () {
+                $('#table-data').DataTable({
+                    language: languageOptions
+                });
+            }
+        };
+        monthPostageView.loadData();
+    } else {
+        monthPostageView.loadData();
     }
-    function hide() {
-        $('#frmControl').slideUp('', function(){
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
-    });
+
 </script>

@@ -31,7 +31,7 @@
             <div class="col-lg-12">
                 <h5 class="blue">Quản lý cước phí vận chuyển theo khách hàng</h5>
                 <div class="menu-toggle  pull-right fixed" >
-                    <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                    <div class="btn btn-primary btn-circle btn-md" onclick="customerPostageView.show()">
                         <i class="glyphicon glyphicon-plus"></i>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
                 <div class="panel-heading">Cập nhật cước phí vận chuyển
-                    <div class="menu-toggles pull-right" onclick="hide()">
+                    <div class="menu-toggles pull-right" onclick="customerPostageView.hide()">
                         <i class="glyphicon glyphicon-remove" ></i>
                     </div>
                 </div>
@@ -139,16 +139,27 @@
     </div> <!-- end .col-md-12-->
 </div> <!-- end .row -->
 <script>
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
+    if(typeof customerPostageView === 'undefined') {
+        customerPostageView = {
+            table : null,
+            show: function() {
+                $('.menu-toggle').hide();
+                $('#frmControl').slideDown();
+            },
+            hide: function() {
+                $('#frmControl').slideUp('', function(){
+                    $('.menu-toggle').show();
+                });
+            },
+            loadData: function(){
+                $('#table-data').DataTable({
+                    language: languageOptions
+                });
+            }
+        };
+        customerPostageView.loadData();
+    } else {
+        customerPostageView.loadData();
     }
-    function hide() {
-        $('#frmControl').slideUp('', function(){
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
-    });
+
 </script>

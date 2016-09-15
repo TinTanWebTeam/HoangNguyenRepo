@@ -56,7 +56,6 @@
             <table class="table table-bordered table-hover" id="table-data">
                 <thead>
                 <tr class="active">
-                    <th>Mã yêu cầu</th>
                     <th>Mã khách hàng</th>
                     <th>Tổng nợ</th>
                     <th>Đã trả</th>
@@ -66,7 +65,6 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
                     <td>aaaa</td>
@@ -85,6 +83,15 @@
                     </td>
                 </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
 
         </div> <!-- end table-reposive -->
@@ -159,10 +166,23 @@
             },
             loadData: function () {
                 debtCustomerView.table = $('#table-data').DataTable({
-                    language: languageOptions
+                    language: languageOptions,
+                    drawCallback: function () {
+                        var api = this.api(),
+                                sum = 0;
+                        api.rows(":not('.sgrouptotal')").every(function () {
+                            sum += parseFloat(this.data()[1]);
+                        });
+                        $(api.column(1).footer()).text(sum);
+                        api.rows(":not('.sgrouptotal')").every(function () {
+                            sum += parseFloat(this.data()[2]);
+                        });
+                        $(api.column(2).footer()).text(sum);
+                    }
                 });
             }
         };
+        debtCustomerView.loadData();
     } else {
         debtCustomerView.loadData();
     }
