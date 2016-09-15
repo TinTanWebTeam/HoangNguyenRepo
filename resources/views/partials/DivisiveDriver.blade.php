@@ -161,13 +161,14 @@
                     });
                 },
                 loadData: function () {
-                    customerView.table = $('#table-data').DataTable({
+                    divisiveDriverView.table = $('#table-data').DataTable({
                         language: languageOptions
                     })
                 }
             };
+            divisiveDriverView.loadData();
         } else {
-            customerView.loadData();
+            divisiveDriverView.loadData();
         }
     })();
 </script>
