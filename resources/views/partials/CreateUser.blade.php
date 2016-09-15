@@ -73,25 +73,30 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-success  btn-circle" onclick="CreateUserView.show()">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </div>
-                                </div>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-danger btn-circle">
-                                        <i class="glyphicon glyphicon-remove"></i>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                        @if($users)
+                            @foreach($users as $item)
+                                <tr id="{{$item->id}}" onclick=""
+                                    style="cursor: pointer">
+                                    <td>{{$item->username}}</td>
+                                    <td>{{$item->fullname}}</td>
+                                    <td>{{$item->email}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-success  btn-circle" onclick="CreateUserView.show()">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </div>
+                                        </div>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-danger btn-circle">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div> <!-- end table-reposive -->
@@ -99,7 +104,6 @@
         </div> <!-- end .row -->
     </div>
 </div>
-
 
 
 <div id="frmControl" class="col-md-offset-4 col-md-8">
