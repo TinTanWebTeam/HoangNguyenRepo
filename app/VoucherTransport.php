@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class VoucherTransport extends Model
 {
-    //
+    protected $table = 'voucherTransports';
 }
