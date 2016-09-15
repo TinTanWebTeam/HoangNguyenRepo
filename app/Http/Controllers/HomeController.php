@@ -85,4 +85,9 @@ class HomeController extends Controller
 
         return view('home', ['filtered' => $filtered, 'array_icon' => $array_icon, 'array_url' => $array_url]);
     }
+
+    public function getDashboard()
+    {
+        return view('partials.dashboard');
+    }
 }

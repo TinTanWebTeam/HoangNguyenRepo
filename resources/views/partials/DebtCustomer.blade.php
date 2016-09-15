@@ -3,6 +3,7 @@
         float: left;
         padding-right: 5px;
     }
+
     #frmControl {
         z-index: 3;
         position: fixed;
@@ -12,16 +13,24 @@
         width: 40%;
         height: 100%;
     }
+
     .blue {
         color: #2196f3
     }
+
     .fixed {
         position: fixed;
         right: 15px;
         z-index: 2;
     }
-    .menu-toggles{
+
+    .menu-toggles {
         cursor: pointer
+    }
+    .icon-center {
+        line-height: 130%;
+        padding-left: 3%;
+        font-size: 13px;
     }
 </style>
 
@@ -30,9 +39,12 @@
         <div class="row">
             <div class="col-lg-12">
                 <h5 class="blue">Quản lý công nợ khách hàng</h5>
-                <div class="menu-toggle  pull-right fixed" >
-                    <div class="btn btn-primary btn-circle btn-md" onclick="show()">
-                        <i class="glyphicon glyphicon-plus"></i>
+                <div class="menu-toggle  pull-right fixed">
+                    <div class="btn btn-warning btn-circle btn-md">
+                        <i class="glyphicon glyphicon-upload icon-center"></i>
+                    </div>
+                    <div class="btn btn-primary btn-circle btn-md" onclick="debtCustomerView.show()">
+                        <i class="glyphicon glyphicon-plus icon-center"></i>
                     </div>
                 </div>
                 <hr>
@@ -61,16 +73,15 @@
                     <td>aaaa</td>
                     <td>
                         <div class="btn-del-edit">
-                            <div class="btn btn-success  btn-circle">
-                                <i class="glyphicon glyphicon-pencil"></i>
+                            <div class="btn btn-success btn-circle">
+                                <i class="glyphicon glyphicon-pencil icon-center"></i>
                             </div>
                         </div>
                         <div class="btn-del-edit">
                             <div class="btn btn-danger btn-circle">
-                                <i class="glyphicon glyphicon-remove"></i>
+                                <i class="glyphicon glyphicon-remove icon-center"></i>
                             </div>
                         </div>
-
                     </td>
                 </tr>
                 </tbody>
@@ -80,8 +91,8 @@
         <div id="frmControl" class="col-md-offset-4 col-md-8">
             <div class="panel panel-primary">
                 <div class="panel-heading">Thanh toán cước phí
-                    <div class="menu-toggles pull-right" onclick="hide()">
-                        <i class="glyphicon glyphicon-remove" ></i>
+                    <div class="menu-toggles pull-right" onclick="debtCustomerView.hide()">
+                        <i class="glyphicon glyphicon-remove"></i>
                     </div>
                 </div>
 
@@ -89,25 +100,15 @@
                     <form role="form" id="formUser">
                         <div class="form-body">
                             <div class="col-md-12 ">
-                                <div class="row " >
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
-                                            <label for="CodeRequest"><b>Mã yêu cầu</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="CodeRequest"
-                                                   name="CodeRequest"
-                                                   placeholder="Mã yêu cầu"
-                                                   autofocus >
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 "  >
-                                        <div class="form-group form-md-line-input " >
+                                <div class="row ">
+                                    <div class="col-md-12 ">
+                                        <div class="form-group form-md-line-input ">
                                             <label for="FullName"><b>Khách hàng</b></label>
                                             <input type="text" class="form-control"
                                                    id="FullName"
                                                    name="FullName"
                                                    placeholder="Tên khách hàng"
-                                                   autofocus >
+                                                   autofocus>
                                         </div>
                                     </div>
 
@@ -144,16 +145,27 @@
     </div> <!-- end .col-md-12-->
 </div> <!-- end .row -->
 <script>
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
+    if (typeof debtCustomerView === 'undefined') {
+        debtCustomerView = {
+            table: null,
+            show: function () {
+                $('.menu-toggle').hide();
+                $('#frmControl').slideDown();
+            },
+            hide: function () {
+                $('#frmControl').slideUp('', function () {
+                    $('.menu-toggle').show();
+                });
+            },
+            loadData: function () {
+                debtCustomerView.table = $('#table-data').DataTable({
+                    language: languageOptions
+                });
+            }
+        };
+    } else {
+        debtCustomerView.loadData();
     }
-    function hide() {
-        $('#frmControl').slideUp('', function(){
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
-    });
+
+
 </script>

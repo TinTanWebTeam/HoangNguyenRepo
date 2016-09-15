@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">Hoàng Nguyễn</a>
+        <a class="navbar-brand" href="javascript:;">Hoàng Nguyễn</a>
         <ul class="nav navbar-top-links navbar-right pull-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">

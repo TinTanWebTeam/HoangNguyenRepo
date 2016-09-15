@@ -27,6 +27,9 @@
 
     @yield('styles')
 
+    <!-- jQuery -->
+    <script src=" {{ URL::to('libs/jquery/dist/jquery.min.js') }}"></script>
+
 </head>
 
 <body>
@@ -39,9 +42,6 @@
     <!-- /#page-wrapper -->
 </div>
 <!-- /#wrapper -->
-
-<!-- jQuery -->
-<script src=" {{ URL::to('libs/jquery/dist/jquery.min.js') }}"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src=" {{ URL::to('libs/bootstrap/dist/js/bootstrap.min.js') }}"></script>
@@ -61,6 +61,9 @@
 <!-- Datatables.net -->
 <script src="{{ URL::to('libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ URL::to('libs/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+
+<!-- Hightcharts -->
+<script src="{{ URL::to('libs/highcharts/highcharts.js') }}"></script>
 
 <!-- Global -->
 <script src=" {{ URL::to('src/js/global.js') }} "></script>
