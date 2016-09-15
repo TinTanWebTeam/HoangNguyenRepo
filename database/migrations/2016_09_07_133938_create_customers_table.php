@@ -18,9 +18,9 @@ class CreateCustomersTable extends Migration
             $table->string('fullName', 100);
             $table->string('address', 500);
             $table->string('phone', 50);
-            $table->string('email', 100);
+            $table->string('email', 100)->unique();
             $table->text('note', 500);
-            $table->integer('createdBy,');
+            $table->integer('createdBy');
             $table->integer('updatedBy');
             $table->boolean('active')->default(1);
             $table->integer('customerType_id');

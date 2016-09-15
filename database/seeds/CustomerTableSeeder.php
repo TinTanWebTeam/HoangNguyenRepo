@@ -1,6 +1,6 @@
 <?php
 
-use App\User;
+use App\Customer;
 use Illuminate\Database\Seeder;
 
 class CustomerTableSeeder extends Seeder
@@ -12,44 +12,50 @@ class CustomerTableSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
+        
+        Customer::create([
             'code'     => 'KH001',
             'fullName' => 'Nguyễn Văn Xinh',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
-            'email'    => 'nva@gmail.com',
+            'email'    => 'nvxinh@gmail.com',
+            'note'     => '',
             'createdBy'=> '1',
         ]);
-        User::create([
+        Customer::create([
             'code'     => 'KH002',
             'fullName' => 'Nguyễn Văn Nghĩa',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
-            'email'    => 'nva@gmail.com',
+            'email'    => 'nvnghia@gmail.com',
+            'note'     => '',
             'createdBy'=> '1',
         ]);
-        User::create([
+        Customer::create([
             'code'     => 'KH003',
             'fullName' => 'Nguyễn Văn Hòa',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
-            'email'    => 'nva@gmail.com',
+            'email'    => 'nvhoa@gmail.com',
+            'note'     => '',
             'createdBy'=> '1',
         ]);
-        User::create([
+        Customer::create([
             'code'     => 'KH004',
             'fullName' => 'Nguyễn Văn lãm',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
-            'email'    => 'nva@gmail.com',
+            'email'    => 'nvlam@gmail.com',
+            'note'     => '',
             'createdBy'=> '1',
         ]);
-        User::create([
+        Customer::create([
             'code'     => 'KH005',
             'fullName' => 'Nguyễn Văn Khởi',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
-            'email'    => 'nva@gmail.com',
+            'email'    => 'nvkhoi@gmail.com',
+            'note'     => '',
             'createdBy'=> '1',
         ]);
     }

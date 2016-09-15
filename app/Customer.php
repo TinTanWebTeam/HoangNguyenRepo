@@ -6,16 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
-    protected $table = 'customer';
+    protected $table = 'customers';
     protected $fillable = [
         'code',
-        'name',
+        'fullName',
         'address',
         'phone',
         'email',
         'note',
-        'createdBy',
-        'updatedBy',
-        'active'
+        'active',
+        'createdBy'
     ];
 }
