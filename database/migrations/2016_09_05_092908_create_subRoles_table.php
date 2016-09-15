@@ -12,7 +12,7 @@ class CreateSubRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sub_roles', function (Blueprint $table) {
+        Schema::create('subRoles', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('role_id')->unsigned();
@@ -32,6 +32,6 @@ class CreateSubRolesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('sub_roles');
+        Schema::drop('subRoles');
     }
 }
