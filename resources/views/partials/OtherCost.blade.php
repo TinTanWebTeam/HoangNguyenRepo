@@ -47,11 +47,11 @@
                 <div class="col-lg-12">
                     <ol class="breadcrumb">
                         <li><a href="javascript:;">Trang chủ</a></li>
-                        <li><a href="javascript:;">QL khách hàng</a></li>
-                        <li class="active">Khách hàng</li>
+                        <li><a href="javascript:;">QL chi phí</a></li>
+                        <li class="active">Khác</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="otherCostView.show()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
 <div id="frmControl" class="col-md-offset-4 col-md-8">
     <div class="panel panel-primary">
         <div class="panel-heading">Thêm mới chi phí khác
-            <div class="menu-toggles pull-right" onclick="hide()">
+            <div class="menu-toggles pull-right" onclick="otherCostView.hide()">
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
@@ -170,18 +170,29 @@
         </div>
     </div>
 </div> <!-- end #frmControl -->
-
 <script>
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
-    }
-    function hide() {
-        $('#frmControl').slideUp('', function () {
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
-    });
+    $(function () {
+        if (typeof (otherCostView) === 'undefined') {
+            otherCostView = {
+                table: null,
+                show: function () {
+                    $('.menu-toggle').hide();
+                    $('#frmControl').slideDown();
+                },
+                hide: function () {
+                    $('#frmControl').slideUp('', function () {
+                        $('.menu-toggle').show();
+                    });
+                },
+                loadData: function () {
+                    otherCostView.table = $('#table-data').DataTable({
+                        language: languageOptions
+                    })
+                }
+            };
+            otherCostView.loadData();
+        } else {
+            otherCostView.loadData();
+        }
+    })();
 </script>

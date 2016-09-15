@@ -53,7 +53,7 @@
                         <li class="active">Chức vụ</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="PositionView.show()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -74,14 +74,14 @@
                         <tbody id="tbodyPositionList">
                         @if($positions)
                             @foreach($positions as $item)
-                                <tr id="{{$item->id}}" onclick="positionView.viewListPosition(this)"
+                                <tr id="{{$item->id}}" onclick=""
                                     style="cursor: pointer">
                                     <td>{{$item->code}}</td>
                                     <td>{{$item->name}}</td>
                                     <td>{{$item->description}}</td>
-                                    <td style="width: 80px">
+                                    <td style="width: 100px">
                                         <div class=" btn-del-edit">
-                                            <div class="btn btn-success btn-circle" onclick="show()">
+                                            <div class="btn btn-success btn-circle" onclick="PositionView.show()">
                                                 <i class="glyphicon glyphicon-pencil icon-center"></i>
                                             </div>
                                         </div>
@@ -108,7 +108,7 @@
 <div id="frmControl" class="col-md-offset-4 col-md-8">
     <div class="panel panel-primary">
         <div class="panel-heading">Thêm mới chức vụ
-            <div class="menu-toggles pull-right" onclick="hide()">
+            <div class="menu-toggles pull-right" onclick="PositionView.hide()">
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
@@ -156,10 +156,10 @@
                         <div class="form-actions noborder">
                             <div class="form-group">
                                 <button type="button" class="btn btn-primary"
-                                        onclick="positionView.addNewAndUpdatePosition()">
+                                        onclick="">
                                     Hoàn tất
                                 </button>
-                                <button type="button" class="btn default" onclick="positionView.Cancel()">Huỷ</button>
+                                <button type="button" class="btn default" onclick="">Huỷ</button>
                             </div>
                         </div>
                     </div>
@@ -170,43 +170,12 @@
 </div>
 <!-- end #frmControl -->
 
+
 <script>
     $(function () {
-        if (typeof (positionView) === 'undefined') {
-            positionView = {
+        if (typeof (PositionView) === 'undefined') {
+            PositionView = {
                 table: null,
-                goBack: null,
-                idPositionView: null,
-                PositionViewObject: {
-                    Id: null,
-                    Code: null,
-                    Position: null,
-                    Description: null
-                },
-                resetPositionObject: function () {
-                    for (var propertyName in positionView.PositionViewObject) {
-                        if (positionView.PositionViewObject.hasOwnProperty(propertyName)) {
-                            positionView.PositionViewObject.propertyName = null;
-                        }
-                    }
-                },
-                Cancel: function () {
-                    positionView.resetForm();
-                },
-                resetForm: function () {
-                    if ($("input[name=Id]").val() === "") {
-                        var allinput = $("input");
-                        $("div[class=form-body]").find(allinput).val("");
-                    } else {
-                        positionView.viewListPosition(positionView.goBack);
-                    }
-                },
-                viewListPosition: function (element) {
-                    positionView.goBack = element;
-                    positionView.idPositionView = $(element).attr("id");
-                    $("tbody#tbodyPositionList").find("tr").removeClass("active");
-                    $(element).addClass("active");
-                },
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -217,14 +186,14 @@
                     });
                 },
                 loadData: function () {
-                    positionView.table = $('#table-data').DataTable({
+                    PositionView.table = $('#table-data').DataTable({
                         language: languageOptions
-                    });
+                    })
                 }
             };
+            PositionView.loadData();
         } else {
-            positionView.loadData();
+            PositionView.loadData();
         }
     });
 </script>
-

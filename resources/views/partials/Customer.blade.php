@@ -49,7 +49,7 @@
                         <li class="active">Khách hàng</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="customerView.show()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                             <td>1</td>
                             <td>
                                 <div class="btn-del-edit">
-                                    <div class="btn btn-success  btn-circle">
+                                    <div class="btn btn-success  btn-circle" onclick="customerView.show()">
                                         <i class="glyphicon glyphicon-pencil icon-center"></i>
                                     </div>
                                 </div>

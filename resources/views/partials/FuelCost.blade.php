@@ -52,7 +52,7 @@
                         <li class="active">Nhiên liệu</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="fuelCostView.show()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
 <div id="frmControl" class="col-md-offset-4 col-md-8">
     <div class="panel panel-primary">
         <div class="panel-heading">Thêm mới chi phí nhiên liệu
-            <div class="menu-toggles pull-right" onclick="hide()">
+            <div class="menu-toggles pull-right" onclick="fuelCostView.hide()">
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
@@ -194,16 +194,28 @@
 </div> <!-- end #frmControl -->
 
 <script>
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
-    }
-    function hide() {
-        $('#frmControl').slideUp('', function () {
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
-    });
+    $(function () {
+        if (typeof (fuelCostView) === 'undefined') {
+            fuelCostView = {
+                table: null,
+                show: function () {
+                    $('.menu-toggle').hide();
+                    $('#frmControl').slideDown();
+                },
+                hide: function () {
+                    $('#frmControl').slideUp('', function () {
+                        $('.menu-toggle').show();
+                    });
+                },
+                loadData: function () {
+                    fuelCostView.table = $('#table-data').DataTable({
+                        language: languageOptions
+                    })
+                }
+            };
+            fuelCostView.loadData();
+        } else {
+            fuelCostView.loadData();
+        }
+    })();
 </script>

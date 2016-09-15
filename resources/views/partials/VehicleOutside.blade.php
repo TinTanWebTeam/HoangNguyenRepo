@@ -51,7 +51,7 @@
                         <li class="active">Nhà xe ngoài</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="vehicleOutView.show()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
 <div id="frmControl" class="col-md-offset-4 col-md-8">
     <div class="panel panel-primary">
         <div class="panel-heading">Thêm mới nhà xe ngoài
-            <div class="menu-toggles pull-right" onclick="hide()">
+            <div class="menu-toggles pull-right" onclick="vehicleOutView.hide()">
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
@@ -183,16 +183,28 @@
 </div> <!-- end #frmControl -->
 
 <script>
-    function show() {
-        $('.menu-toggle').hide();
-        $('#frmControl').slideDown();
-    }
-    function hide() {
-        $('#frmControl').slideUp('', function () {
-            $('.menu-toggle').show();
-        });
-    }
-    $('#table-data').DataTable({
-        language: languageOptions
+    $(function () {
+        if (typeof (vehicleOutView) === 'undefined') {
+            vehicleOutView = {
+                table: null,
+                show: function () {
+                    $('.menu-toggle').hide();
+                    $('#frmControl').slideDown();
+                },
+                hide: function () {
+                    $('#frmControl').slideUp('', function () {
+                        $('.menu-toggle').show();
+                    });
+                },
+                loadData: function () {
+                    vehicleOutView.table = $('#table-data').DataTable({
+                        language: languageOptions
+                    })
+                }
+            };
+            vehicleOutView.loadData();
+        } else {
+            vehicleOutView.loadData();
+        }
     });
 </script>
