@@ -72,79 +72,7 @@ class SubRoleTableSeeder extends Seeder
             'created_by' => 1,
             'updated_by' => 1
         ]);
-      
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 11,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 12,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 13,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 14,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 15,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 16,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 17,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 18,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 19,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 20,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 21,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
-//        SubRole::create([
-//            'user_id'    => 1,
-//            'role_id'    => 22,
-//            'created_by' => 1,
-//            'updated_by' => 1
-//        ]);
+
         //user
         SubRole::create([
             'user_id'    => 2,
@@ -164,5 +92,10 @@ class SubRoleTableSeeder extends Seeder
             'created_by' => 1,
             'updated_by' => 1
         ]);
+
+        //ntbich
+        //nvhai
+        //nvnam
+        //nvvu
     }
 }

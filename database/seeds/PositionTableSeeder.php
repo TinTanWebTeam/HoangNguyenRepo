@@ -13,14 +13,28 @@ class PositionTableSeeder extends Seeder
      */
     public function run()
     {
+        Position::create([
+            'code' => 'TX0001',
+            'name' => 'Tài xế',
+            'description' => '',
+        ]);
 
-        $faker = Factory::create();
-        foreach (range(1,20) as $index){
-            Position::create([
-                'code' => 'CVXXX'. $index,
-                'name' => 'tài xế'. $index,
-                'description' => 'lai xe'. $index,
-            ]);
-        }
+        Position::create([
+            'code' => 'KT0001',
+            'name' => 'Kế toán',
+            'description' => '',
+        ]);
+
+        Position::create([
+            'code' => 'KK0001',
+            'name' => 'Kiểm kho',
+            'description' => '',
+        ]);
+
+        Position::create([
+            'code' => 'TN0001',
+            'name' => 'Thu ngân',
+            'description' => '',
+        ]);
     }
 }
