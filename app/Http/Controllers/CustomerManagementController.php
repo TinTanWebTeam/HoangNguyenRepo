@@ -16,6 +16,13 @@ class CustomerManagementController extends Controller
     }
     public function getViewDeliveryRequirement()
     {
-        return view('partials.DeliveryRequirement');
+        $orders = \DB::table('transports')
+            ->join('costs', 'costs.transport_id', '=', 'transports.id')
+            ->join('products', 'products.id', '=', 'transports.product_id')
+            ->join('customers', 'customers.id', '=', 'transports.customer_id')
+            ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
+            ->select('transports.*', 'products.name as products_name', 'customers.fullName as customers_fullName', 'vehicles.vehicleNumber as vehicles_vehicleNumber')
+            ->get();
+        return view('partials.DeliveryRequirement', ['orders' => $orders]);
     }
 }

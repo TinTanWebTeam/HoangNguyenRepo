@@ -83,37 +83,40 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-success  btn-circle">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </div>
-                                </div>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-danger btn-circle">
-                                        <i class="glyphicon glyphicon-remove"></i>
-                                    </div>
-                                </div>
+                        @if($orders)
+                            @foreach($orders as $order)
+                                <tr>
+                                    <td>{{ $order->vehicles_vehicleNumber }}</td>
+                                    <td>{{ $order->products_name }}</td>
+                                    <td>{{ $order->receivePlace }}</td>
+                                    <td>{{ $order->deliveryPlace }}</td>
+                                    <td>{{ $order->voucherQuantumProduct }}</td>
+                                    <td>{{ $order->customers_fullName }}</td>
+                                    <td>{{ $order->cashRevenue }}</td>
+                                    <td>{{ $order->cashDelivery }}</td>
+                                    <td>{{ $order->id }}</td>
+                                    <td>{{ $order->cashReceive }}</td>
+                                    <td>{{ $order->cashProfit }}</td>
+                                    <td>{{ $order->voucherNumber }}</td>
+                                    <td>{{ $order->receiver }}</td>
+                                    <td>{{ $order->receiveDate }}</td>
+                                    <td>{{ $order->status }}</td>
+                                    <td>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-success  btn-circle">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </div>
+                                        </div>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-danger btn-circle">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </div>
+                                        </div>
 
-                            </td>
-                        </tr>
-
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>
