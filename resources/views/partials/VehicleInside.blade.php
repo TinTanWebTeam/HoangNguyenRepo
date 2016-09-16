@@ -74,30 +74,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if($vehicles)
-                            @foreach($vehicles as $vehicle)
-                                <tr>
-                                    <td>{{ $vehicle->areaCode }}</td>
-                                    <td>{{ $vehicle->vehicleNumber }}</td>
-                                    <td>{{ $vehicle->vehicleTypes_name }}</td>
-                                    <td>{{ $vehicle->garages_name }}</td>
-                                    <td>{{ $vehicle->size }}</td>
-                                    <td>{{ $vehicle->weight }}</td>
-                                    <td>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle">
-                                                <i class="glyphicon glyphicon-pencil"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
+
 
                         </tbody>
                     </table>
@@ -224,6 +201,7 @@
         if (typeof (vehicleInsideView) === 'undefined') {
             vehicleInsideView = {
                 table: null,
+                data: null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -234,14 +212,54 @@
                     });
                 },
                 loadData: function () {
+                    $.post(url + 'vehicle-inside', {_token: _token, fromDate: null, toDate: null},function (listVehicles){
+                        vehicleInsideView.data = listVehicles;
+                        vehicleInsideView.fillDataToDatatable(listVehicles);
+                    });
+
+                },
+                localSearch: function(){
+                    var dataSearch = _.filter(vehicleInsideView.data, function(o){
+                        return o.vehicleNumber == "15432";
+                    });
+                    vehicleInsideView.table.destroy();
+                    vehicleInsideView.fillDataToDatatable(dataSearch);
+                },
+                fillDataToDatatable: function(data) {
                     vehicleInsideView.table = $('#table-data').DataTable({
-                        language: languageOptions
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'areaCode'},
+                            {data: 'vehicleNumber'},
+                            {data: 'vehicleTypes_name'},
+                            {data: 'garages_name'},
+                            {data: 'size'},
+                            {data: 'weight'},
+                            {
+                                render: function(){
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
                     })
                 }
             };
             vehicleInsideView.loadData();
         } else {
             vehicleInsideView.loadData();
+//            vehicleInsideView.fillDataToDatatable(vehicleInsideView.data);
         }
     });
 </script>

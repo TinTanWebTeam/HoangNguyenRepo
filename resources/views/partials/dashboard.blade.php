@@ -188,5 +188,5 @@
             dashboardView.loadChart2();
             dashboardView.loadChart3();
         }
-    })();
+    });
 </script>

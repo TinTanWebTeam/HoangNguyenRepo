@@ -68,55 +68,18 @@
                             <th>Tên hàng</th>
                             <th>Nơi nhận</th>
                             <th>Nơi giao</th>
-                            <th>Số lượng</th>
                             <th>Khách hàng</th>
                             <th>Doanh thu</th>
                             <th>Giao xe</th>
-                            <th>Chi phí khác</th>
                             <th>Nhận</th>
                             <th>Lợi nhuận</th>
-                            <th>Số chứng từ</th>
                             <th>Người nhận</th>
                             <th>Ngày nhận</th>
-                            <th>Trạng thái</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @if($orders)
-                            @foreach($orders as $order)
-                                <tr>
-                                    <td>{{ $order->vehicles_vehicleNumber }}</td>
-                                    <td>{{ $order->products_name }}</td>
-                                    <td>{{ $order->receivePlace }}</td>
-                                    <td>{{ $order->deliveryPlace }}</td>
-                                    <td>{{ $order->voucherQuantumProduct }}</td>
-                                    <td>{{ $order->customers_fullName }}</td>
-                                    <td>{{ $order->cashRevenue }}</td>
-                                    <td>{{ $order->cashDelivery }}</td>
-                                    <td>{{ $order->id }}</td>
-                                    <td>{{ $order->cashReceive }}</td>
-                                    <td>{{ $order->cashProfit }}</td>
-                                    <td>{{ $order->voucherNumber }}</td>
-                                    <td>{{ $order->receiver }}</td>
-                                    <td>{{ $order->receiveDate }}</td>
-                                    <td>{{ $order->status }}</td>
-                                    <td>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle">
-                                                <i class="glyphicon glyphicon-pencil"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </div>
-                                        </div>
 
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -140,38 +103,38 @@
                         <div class="row ">
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Date"><b>Mã xe</b></label>
+                                    <label for=""><b>Mã xe</b></label>
                                     <input type="text" class="form-control"
-                                           id="Date"
-                                           name="Date"
-                                           value={{date('')}}>
+                                           id=""
+                                           name=""
+                                           value=""
+                                           ondblclick="deliveryRequirementView.searchVehicle()">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Number"><b>Mã khách hàng</b></label>
-                                    <input type="number" class="form-control"
-                                           id="Number"
-                                           name="Number"
-                                           placeholder="0">
+                                    <label for=""><b>Mã khách hàng</b></label>
+                                    <input type="text" class="form-control"
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="FullName"><b>Mã hàng</b></label>
+                                    <label for=""><b>Mã hàng</b></label>
                                     <input type="text" class="form-control"
-                                           id="FullName"
-                                           name="FullName"
-                                           placeholder="Tên khách hàng"
-                                           autofocus>
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Number"><b>Số lượng</b></label>
-                                    <input type="number" class="form-control"
-                                           id="Number"
-                                           name="Number"
+                                    <label for=""><b>Số lượng</b></label>
+                                    <input type="" class="form-control"
+                                           id=""
+                                           name=""
                                            placeholder="0">
                                 </div>
                             </div>
@@ -180,37 +143,37 @@
 
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Number"><b>Trọng tải</b></label>
+                                    <label for=""><b>Trọng tải</b></label>
                                     <input type="number" class="form-control"
-                                           id="Number"
-                                           name="Number"
+                                           id=""
+                                           name=""
                                            placeholder="0">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Doanh thu</b></label>
+                                    <label for=""><b>Doanh thu</b></label>
                                     <input type="text" class="form-control"
-                                           id="Transport"
-                                           name="Transport"
-                                           placeholder="Vị trí vận chuyển">
+                                           id=""
+                                           name=""
+                                           placeholder="0">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Status"><b>Giao xe</b></label>
+                                    <label for=""><b>Giao xe</b></label>
                                     <input type="text" class="form-control"
-                                           id="Status"
-                                           name="Status"
-                                           placeholder="Trạng thái">
+                                           id=""
+                                           name=""
+                                           placeholder="0">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Number"><b>Nhận</b></label>
+                                    <label for=""><b>Nhận</b></label>
                                     <input type="number" class="form-control"
-                                           id="Number"
-                                           name="Number"
+                                           id=""
+                                           name=""
                                            placeholder="0">
                                 </div>
                             </div>
@@ -219,87 +182,87 @@
 
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Status"><b>Người nhận</b></label>
+                                    <label for=""><b>Người nhận</b></label>
                                     <input type="text" class="form-control"
-                                           id="Status"
-                                           name="Status"
-                                           placeholder="Trạng thái">
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Number"><b>Ngày nhận</b></label>
-                                    <input type="number" class="form-control"
-                                           id="Number"
-                                           name="Number"
-                                           placeholder="0">
+                                    <label for=""><b>Ngày nhận</b></label>
+                                    <input type="date" class="form-control"
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Status"><b>Nơi nhận</b></label>
+                                    <label for=""><b>Nơi nhận</b></label>
                                     <input type="text" class="form-control"
-                                           id="Status"
-                                           name="Status"
-                                           placeholder="Trạng thái">
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Number"><b>Nơi giao</b></label>
-                                    <input type="number" class="form-control"
-                                           id="Number"
-                                           name="Number"
-                                           placeholder="0">
+                                    <label for=""><b>Nơi giao</b></label>
+                                    <input type="text" class="form-control"
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Number"><b>Số chứng từ</b></label>
-                                    <input type="number" class="form-control"
-                                           id="Number"
-                                           name="Number"
-                                           placeholder="0">
+                                    <label for=""><b>Số chứng từ</b></label>
+                                    <input type="text" class="form-control"
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Số hàng trên chứng từ</b></label>
-                                    <input type="text" class="form-control"
-                                           id="Transport"
-                                           name="Transport"
-                                           placeholder="Vị trí vận chuyển">
+                                    <label for=""><b>Số hàng trên chứng từ</b></label>
+                                    <input type="number" class="form-control"
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Status"><b>Ghi chú</b></label>
+                                    <label for=""><b>Ghi chú</b></label>
                                     <input type="text" class="form-control"
-                                           id="Status"
-                                           name="Status"
-                                           placeholder="Trạng thái">
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Trạng thái</b></label>
+                                    <label for=""><b>Trạng thái</b></label>
                                     <input type="text" class="form-control"
-                                           id="Transport"
-                                           name="Transport"
-                                           placeholder="Vị trí vận chuyển">
+                                           id=""
+                                           name=""
+                                           placeholder="">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Số chứng từ nhận</b></label>
+                                    <label for=""><b>Số chứng từ nhận</b></label>
                                     <div class="row">
                                         <div class="col-md-10">
                                             <select name="" id="" class="form-control">
-                                                <option value="">abc</option>
+                                                <option value="">0</option>
                                             </select>
                                         </div>
                                         <div class="col-md-2">
@@ -313,7 +276,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Chi phí</b></label>
+                                    <label for=""><b>Chi phí</b></label>
                                     <select name="" id="" class="form-control">
                                         <option value="">Nhiên liệu</option>
                                         <option value="">Thay nhớt</option>
@@ -324,13 +287,13 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Số tiền</b></label>
-                                    <input type="text" class="form-control">
+                                    <label for=""><b>Số tiền</b></label>
+                                    <input type="number" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Ghi chú</b></label>
+                                    <label for=""><b>Ghi chú</b></label>
                                     <input type="text" class="form-control">
                                 </div>
                             </div>
@@ -353,12 +316,47 @@
     </div>
 </div> <!-- end #frmControl -->
 
+<!-- Modal vehicles -->
+<div class="modal fade" id="modal-vehicle">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+                    x
+                </button>
+                <h4 class="modal-title">
+                    Danh sách xe
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Mã vùng</th>
+                            <th>Số xe</th>
+                            <th>Loại xe</th>
+                            <th>Nhà xe</th>
+                            <th>Kích thước</th>
+                            <th>Trọng tải</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="vehicle-talbe-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(function () {
         if (typeof (deliveryRequirementView) === 'undefined') {
             deliveryRequirementView = {
                 table: null,
+                data: null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -369,14 +367,69 @@
                     });
                 },
                 loadData: function () {
+                    $.post(url + 'delivery-requirement', {_token: _token, fromDate: null, toDate: null}, function(listOrders){
+                        deliveryRequirementView.data = listOrders;
+                        deliveryRequirementView.fillDataToDatatable(listOrders);
+                    });
+                },
+                fillDataToDatatable: function(listOrders) {
                     deliveryRequirementView.table = $('#table-data').DataTable({
-                        language: languageOptions
+                        language: languageOptions,
+                        data: listOrders,
+                        columns : [
+                            {data: 'vehicles_vehicleNumber' },
+                            {data: 'products_name' },
+                            {data: 'receivePlace' },
+                            {data: 'deliveryPlace' },
+                            {data: 'customers_fullName' },
+                            {data: 'cashRevenue' },
+                            {data: 'cashDelivery' },
+                            {data: 'cashReceive' },
+                            {data: 'cashProfit' },
+                            {data: 'receiver' },
+                            {data: 'receiveDate' },
+                            {
+                                render: function(){
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
                     })
+                },
+                searchVehicle: function() {
+                    $.get(url + 'getAllVehicle',function (listVehicle) {
+                        var row = "";
+                        for (var i = 0; i < listVehicle.length; i++) {
+                            var tr = "<tr>";
+                            tr += "<td>" + listVehicle[i]['areaCode'] + "</td>";
+                            tr += "<td>"+ listVehicle[i]['vehicleNumber'] + "</td>";
+                            tr += "<td>" + listVehicle[i]['vehicleTypes_name'] + "</td>";
+                            tr += "<td>"+ listVehicle[i]['garages_name'] + "</td>";
+                            tr += "<td>" + listVehicle[i]['size'] + "</td>";
+                            tr += "<td>"+ listVehicle[i]['weight'] + "</td>";
+                            tr += "<td><button class='btn btn-xs btn-success' onclick=''><span class='glyphicon glyphicon-ok'></span></button></td>";
+                            tr += "</tr>";
+                            row += tr;
+                        }
+                        $("#vehicle-talbe-body").empty().append(row);
+                    });
+                    $("#modal-vehicle").modal("show");
                 }
             };
             deliveryRequirementView.loadData();
         } else {
             deliveryRequirementView.loadData();
         }
-    })();
+    });
 </script>

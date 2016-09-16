@@ -30,17 +30,24 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'Admin'], function () {
     });
     Route::group(['middleware' => 'UserManagement'], function () {
-//        Route::get('/user-management', 'UserManagementController@getViewUserManagement');
         Route::get('/position','UserManagementController@getViewPosition');
         Route::get('/user','UserManagementController@getViewUser');
     });
     Route::group(['middleware' => 'CustomerManagement'], function () {
+        //get View
         Route::get('/customer', 'CustomerManagementController@getViewCustomer');
         Route::get('/delivery-requirement', 'CustomerManagementController@getViewDeliveryRequirement');
+        //get Data
+        Route::post('/delivery-requirement', 'CustomerManagementController@getDataDeliveryRequirement');
+        //get Modal
+        Route::get('/getAllVehicle', 'VehicleManagementController@getAllVehicle');
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
+        //get View
         Route::get('/vehicle-inside', 'VehicleManagementController@getViewVehicleInside');
         Route::get('/vehicle-outside', 'VehicleManagementController@getViewVehicleOutside');
+        //get Data
+        Route::post('/vehicle-inside', 'VehicleManagementController@getDataVehicleInside');
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');
