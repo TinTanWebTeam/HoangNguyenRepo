@@ -52,7 +52,7 @@
                         <li class="active">Tài khoản</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="CreateUserView.show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="userView.show()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -68,23 +68,21 @@
                             <th>Họ và tên</th>
                             <th>Email</th>
                             <th>Chức vụ</th>
-                            <th>Quyền</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
                         <tbody>
                         @if($users)
-                            @foreach($users as $item)
-                                <tr id="{{$item->id}}" onclick=""
+                            @foreach($users as $user)
+                                <tr id="{{ $user->id }}" onclick=""
                                     style="cursor: pointer">
-                                    <td>{{$item->username}}</td>
-                                    <td>{{$item->fullname}}</td>
-                                    <td>{{$item->email}}</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ $user->username }}</td>
+                                    <td>{{ $user->fullname }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->positions_name }}</td>
                                     <td>
                                         <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle" onclick="CreateUserView.show()">
+                                            <div class="btn btn-success  btn-circle" onclick="userView.show()">
                                                 <i class="glyphicon glyphicon-pencil"></i>
                                             </div>
                                         </div>
@@ -109,7 +107,7 @@
 <div id="frmControl" class="col-md-offset-4 col-md-8">
     <div class="panel panel-primary">
         <div class="panel-heading">Đăng ký người dùng
-            <div class="menu-toggles pull-right" onclick="CreateUserView.hide()">
+            <div class="menu-toggles pull-right" onclick="userView.hide()">
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
@@ -216,8 +214,8 @@
 
 <script>
     $(function () {
-        if (typeof (CreateUserView) === 'undefined') {
-            CreateUserView = {
+        if (typeof (userView) === 'undefined') {
+            userView = {
                 table: null,
                 show: function () {
                     $('.menu-toggle').hide();
@@ -229,14 +227,14 @@
                     });
                 },
                 loadData: function () {
-                    CreateUserView.table = $('#table-data').DataTable({
+                    userView.table = $('#table-data').DataTable({
                         language: languageOptions
                     })
                 }
             };
-            CreateUserView.loadData();
+            userView.loadData();
         } else {
-            CreateUserView.loadData();
+            userView.loadData();
         }
     })();
 </script>

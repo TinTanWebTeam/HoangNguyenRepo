@@ -64,14 +64,12 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
-                            <th>Mã xe</th>
-                            <th>Mã nhà xe</th>
-                            <th>Mã loại xe</th>
                             <th>Mã vùng</th>
                             <th>Số xe</th>
+                            <th>Mã loại xe</th>
+                            <th>Mã nhà xe</th>
                             <th>Kích thước</th>
                             <th>Trọng tải</th>
-                            <th>Mã tài xế</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
@@ -79,14 +77,12 @@
                         @if($vehicles)
                             @foreach($vehicles as $vehicle)
                                 <tr>
-                                    <td>{{ $vehicle['code'] }}</td>
-                                    <td>{{ $vehicle['code'] }}</td>
-                                    <td>{{ $vehicle['code'] }}</td>
-                                    <td>{{ $vehicle['areaCode'] }}</td>
-                                    <td>{{ $vehicle['vehicleNumber'] }}</td>
-                                    <td>{{ $vehicle['size'] }}</td>
-                                    <td>{{ $vehicle['weight'] }}</td>
-                                    <td>{{ $vehicle['code'] }}</td>
+                                    <td>{{ $vehicle->areaCode }}</td>
+                                    <td>{{ $vehicle->vehicleNumber }}</td>
+                                    <td>{{ $vehicle->vehicleTypes_name }}</td>
+                                    <td>{{ $vehicle->garages_name }}</td>
+                                    <td>{{ $vehicle->size }}</td>
+                                    <td>{{ $vehicle->weight }}</td>
                                     <td>
                                         <div class="btn-del-edit">
                                             <div class="btn btn-success  btn-circle">

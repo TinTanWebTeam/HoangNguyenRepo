@@ -12,7 +12,11 @@ class VehicleManagementController extends Controller
 {
     public function getViewVehicleInside()
     {
-       $vehicles = Vehicle::all();
+        $vehicles = \DB::table('vehicles')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')->get();
+//        dd($vehicles);
         return view('partials.VehicleInside', ['vehicles' => $vehicles]);
     }
     public function getViewVehicleOutside()
