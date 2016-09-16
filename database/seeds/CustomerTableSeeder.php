@@ -34,7 +34,7 @@ class CustomerTableSeeder extends Seeder
             'note'     => '',
             'createdBy'=> '1',
             'updatedBy' => '1',
-            'taxCode' => '',
+            'taxCode' => '3700150020',
             'customerType_id' => '1'
         ]);
         Customer::create([
@@ -46,7 +46,7 @@ class CustomerTableSeeder extends Seeder
             'note'     => '',
             'createdBy'=> '1',
             'updatedBy' => '1',
-            'taxCode' => '',
+            'taxCode' => '1100678922',
             'customerType_id' => '1'
         ]);
         Customer::create([
@@ -58,7 +58,7 @@ class CustomerTableSeeder extends Seeder
             'note'     => '',
             'createdBy'=> '1',
             'updatedBy' => '1',
-            'taxCode' => '',
+            'taxCode' => '0303852860',
             'customerType_id' => '1'
         ]);
         Customer::create([
@@ -70,7 +70,7 @@ class CustomerTableSeeder extends Seeder
             'note'     => '',
             'createdBy'=> '1',
             'updatedBy' => '1',
-            'taxCode' => '',
+            'taxCode' => '0303551493',
             'customerType_id' => '1'
         ]);
     }
