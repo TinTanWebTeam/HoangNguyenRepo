@@ -152,7 +152,7 @@ class RoleTableSeeder extends Seeder
         ]);
         //26
         Role::create([
-            'name' => 'CreateUser',
+            'name' => 'User',
             'description' => 'Tài khoản'
         ]);
     }

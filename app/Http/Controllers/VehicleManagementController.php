@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Garage;
+use App\Vehicle;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -10,11 +12,12 @@ class VehicleManagementController extends Controller
 {
     public function getViewVehicleInside()
     {
-       
-        return view('partials.VehicleInside');
+       $vehicles = Vehicle::all();
+        return view('partials.VehicleInside', ['vehicles' => $vehicles]);
     }
     public function getViewVehicleOutside()
     {
-        return view('partials.VehicleOutside');
+        $garages = Garage::all();
+        return view('partials.VehicleOutside', ['garages' => $garages]);
     }
 }

@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'UserManagement'], function () {
 //        Route::get('/user-management', 'UserManagementController@getViewUserManagement');
         Route::get('/position','UserManagementController@getViewPosition');
-        Route::get('/create-user','UserManagementController@getViewCreateUser');
+        Route::get('/user','UserManagementController@getViewUser');
     });
     Route::group(['middleware' => 'CustomerManagement'], function () {
         Route::get('/customer', 'CustomerManagementController@getViewCustomer');
