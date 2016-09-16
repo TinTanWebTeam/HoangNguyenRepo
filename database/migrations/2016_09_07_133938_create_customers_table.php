@@ -22,6 +22,7 @@ class CreateCustomersTable extends Migration
             $table->text('note', 500);
             $table->integer('createdBy');
             $table->integer('updatedBy');
+            $table->string('taxCode');
             $table->boolean('active')->default(1);
             $table->integer('customerType_id');
             $table->timestamps();

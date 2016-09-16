@@ -14,49 +14,64 @@ class CustomerTableSeeder extends Seeder
     {
         
         Customer::create([
-            'code'     => 'KH001',
-            'fullName' => 'Nguyễn Văn Xinh',
+            'code'     => 'CT0001',
+            'fullName' => 'CTY TNHH BIA VÀ NƯỚC GIẢI KHÁT VN',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
-            'email'    => 'nvxinh@gmail.com',
+            'email'    => 'nuocgiaikhat@gmail.com',
             'note'     => '',
             'createdBy'=> '1',
+            'updatedBy' => '1',
+            'taxCode' => '0301876168',
+            'customerType_id' => '1'
         ]);
         Customer::create([
-            'code'     => 'KH002',
-            'fullName' => 'Nguyễn Văn Nghĩa',
+            'code'     => 'CT0002',
+            'fullName' => 'CTY CP THỰC PHẨM Á CHÂU',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
             'email'    => 'nvnghia@gmail.com',
             'note'     => '',
             'createdBy'=> '1',
+            'updatedBy' => '1',
+            'taxCode' => '',
+            'customerType_id' => '1'
         ]);
         Customer::create([
-            'code'     => 'KH003',
-            'fullName' => 'Nguyễn Văn Hòa',
+            'code'     => 'CT0003',
+            'fullName' => 'CTY TNHH SX TM DV ĐOÀN KẾT',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
             'email'    => 'nvhoa@gmail.com',
             'note'     => '',
             'createdBy'=> '1',
+            'updatedBy' => '1',
+            'taxCode' => '',
+            'customerType_id' => '1'
         ]);
         Customer::create([
-            'code'     => 'KH004',
-            'fullName' => 'Nguyễn Văn lãm',
+            'code'     => 'CT0004',
+            'fullName' => 'CTY TNHH INDO-TRANS KEPPEL LOGISTICS VIỆT NAM',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
             'email'    => 'nvlam@gmail.com',
             'note'     => '',
             'createdBy'=> '1',
+            'updatedBy' => '1',
+            'taxCode' => '',
+            'customerType_id' => '1'
         ]);
         Customer::create([
-            'code'     => 'KH005',
-            'fullName' => 'Nguyễn Văn Khởi',
+            'code'     => 'CT0005',
+            'fullName' => 'CTY TNHH AUNTEX',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
             'email'    => 'nvkhoi@gmail.com',
             'note'     => '',
             'createdBy'=> '1',
+            'updatedBy' => '1',
+            'taxCode' => '',
+            'customerType_id' => '1'
         ]);
     }
 }

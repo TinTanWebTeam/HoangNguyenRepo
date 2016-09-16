@@ -11,6 +11,11 @@ class CustomerTypeTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        \App\CustomerType::create([
+            'name' => 'Công ty'
+        ]);
+        \App\CustomerType::create([
+           'name' => 'Cá nhân'
+        ]);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use DB;
 
 class ProductTypeTableSeeder extends Seeder
 {
@@ -12,7 +11,6 @@ class ProductTypeTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('productTypes')->truncate();
         \App\ProductType::create([
            'name' => 'Thuốc'
         ]);
