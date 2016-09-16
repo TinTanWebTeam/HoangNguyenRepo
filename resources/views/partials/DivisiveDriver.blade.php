@@ -71,26 +71,31 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-success  btn-circle">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </div>
-                                </div>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-danger btn-circle">
-                                        <i class="glyphicon glyphicon-remove"></i>
-                                    </div>
-                                </div>
+                        @if($userVehicles)
+                            @foreach($userVehicles as $userVehicle)
+                                <tr>
+                                    <td>{{ $userVehicle->vehicles_areaCode }}</td>
+                                    <td>{{ $userVehicle->vehicles_vehicleNumber }}</td>
+                                    <td>{{ $userVehicle->garages_name }}</td>
+                                    <td>{{ $userVehicle->users_fullname }}</td>
+                                    <td>{{ $userVehicle->users_phone }}</td>
+                                    <td>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-success  btn-circle">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </div>
+                                        </div>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-danger btn-circle">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </div>
+                                        </div>
 
-                            </td>
-                        </tr>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+
                         </tbody>
                     </table>
                 </div>

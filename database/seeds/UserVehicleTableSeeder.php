@@ -35,5 +35,17 @@ class UserVehicleTableSeeder extends Seeder
             'createdBy'  => '1',
             'updatedBy'  => '1'
         ]);
+        \App\UserVehicle::create([
+            'vehicle_id' => '5',
+            'user_id'    => '5',
+            'createdBy'  => '1',
+            'updatedBy'  => '1'
+        ]);
+        \App\UserVehicle::create([
+            'vehicle_id' => '6',
+            'user_id'    => '6',
+            'createdBy'  => '1',
+            'updatedBy'  => '1'
+        ]);
     }
 }

@@ -64,32 +64,37 @@
                         <thead>
                         <tr class="active">
                             <th>Số xe</th>
-                            <th>Loại chi phí</th>
+                            <th>Ghi chú</th>
                             <th>Đơn giá</th>
                             <th>Tổng chi phí</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-success  btn-circle">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </div>
-                                </div>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-danger btn-circle">
-                                        <i class="glyphicon glyphicon-remove"></i>
-                                    </div>
-                                </div>
+                        @if($otherCosts)
+                            @foreach($otherCosts as $other)
+                                <tr>
+                                    <td>{{ $other->vehicles_vehicleNumber }}</td>
+                                    <td>{{ $other->note }}</td>
+                                    <td>{{ $other->prices_price }}</td>
+                                    <td>{{ $other->cost }}</td>
+                                    <td>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-success  btn-circle">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </div>
+                                        </div>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-danger btn-circle">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </div>
+                                        </div>
 
-                            </td>
-                        </tr>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+
                         </tbody>
                     </table>
                 </div>

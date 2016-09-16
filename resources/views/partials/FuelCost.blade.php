@@ -65,7 +65,8 @@
                         <thead>
                         <tr class="active">
                             <th>Số xe</th>
-                            <th>Thời gian đổ dầu</th>
+                            <th>Ghi chú</th>
+                            <th>Thời gian đổ</th>
                             <th>Số lít</th>
                             <th>Đơn giá</th>
                             <th>Tổng chi phí</th>
@@ -73,26 +74,32 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-success  btn-circle">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </div>
-                                </div>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-danger btn-circle">
-                                        <i class="glyphicon glyphicon-remove"></i>
-                                    </div>
-                                </div>
+                        @if($fuelCosts)
+                            @foreach($fuelCosts as $fuel)
+                                <tr>
+                                    <td>{{ $fuel->vehicles_vehicleNumber }}</td>
+                                    <td>{{ $fuel->note }}</td>
+                                    <td>{{ $fuel->created_at }}</td>
+                                    <td>{{ $fuel->literNumber }}</td>
+                                    <td>{{ $fuel->prices_price }}</td>
+                                    <td>{{ $fuel->cost }}</td>
+                                    <td>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-success  btn-circle">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </div>
+                                        </div>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-danger btn-circle">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </div>
+                                        </div>
 
-                            </td>
-                        </tr>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+
                         </tbody>
                     </table>
                 </div>

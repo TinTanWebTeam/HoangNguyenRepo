@@ -65,6 +65,7 @@
                         <thead>
                         <tr class="active">
                             <th>Số xe</th>
+                            <th>Ghi chú</th>
                             <th>Ngày đậu bãi</th>
                             <th>Giờ vào</th>
                             <th>Giờ ra</th>
@@ -75,28 +76,34 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-success  btn-circle">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </div>
-                                </div>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-danger btn-circle">
-                                        <i class="glyphicon glyphicon-remove"></i>
-                                    </div>
-                                </div>
+                        @if($parkingCosts)
+                            @foreach($parkingCosts as $parking)
+                                <tr>
+                                    <td>{{ $parking->vehicles_vehicleNumber }}</td>
+                                    <td>{{ $parking->note }}</td>
+                                    <td>{{ $parking->created_at }}</td>
+                                    <td>aaaa</td>
+                                    <td>aaaa</td>
+                                    <td>aaaa</td>
+                                    <td>{{ $parking->prices_price }}</td>
+                                    <td>{{ $parking->cost }}</td>
+                                    <td>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-success  btn-circle">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </div>
+                                        </div>
+                                        <div class="btn-del-edit">
+                                            <div class="btn btn-danger btn-circle">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </div>
+                                        </div>
 
-                            </td>
-                        </tr>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+
                         </tbody>
                     </table>
                 </div>

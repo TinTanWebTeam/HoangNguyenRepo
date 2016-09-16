@@ -55,5 +55,14 @@ class VehicleTableSeeder extends Seeder
             'size' => '12',
             'weight' => '5'
         ]);
+
+        \App\Vehicle::create([
+            'vehicleType_id' => '3',
+            'garage_id' => '3',
+            'areaCode' => '62N',
+            'vehicleNumber' => '5555',
+            'size' => '12',
+            'weight' => '5'
+        ]);
     }
 }
