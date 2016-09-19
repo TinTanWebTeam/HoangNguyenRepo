@@ -19,10 +19,10 @@ class CreateTransportsTable extends Migration
             $table->integer('customer_id');
             $table->integer('invoice_id');
             $table->float('weight');
-            $table->decimal('cashRevenue');
-            $table->decimal('cashDelivery');
-            $table->decimal('cashReceive');
-            $table->decimal('cashProfit');
+            $table->decimal('cashRevenue',18,0);
+            $table->decimal('cashDelivery',18,0);
+            $table->decimal('cashReceive',18,0);
+            $table->decimal('cashProfit',18,0);
             $table->text('note');
             $table->string('voucherNumber');
             $table->string('voucherQuantumProduct');

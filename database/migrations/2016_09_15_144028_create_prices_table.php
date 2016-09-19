@@ -15,7 +15,7 @@ class CreatePricesTable extends Migration
         Schema::create('prices', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('costPrice_id');
-            $table->decimal('price');
+            $table->decimal('price',18,0);
             $table->timestamps();
         });
     }

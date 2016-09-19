@@ -47,7 +47,7 @@
                         <li class="active">Thay nhớt</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="petroleumCost.show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="petroleumCostView.show()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -69,31 +69,31 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if($petroleumCosts)
-                            @foreach($petroleumCosts as $petro)
-                                <tr>
-                                    <td>{{ $petro->vehicles_vehicleNumber }}</td>
-                                    <td>{{ $petro->note }}</td>
-                                    <td>{{ $petro->created_at }}</td>
-                                    <td>{{ $petro->literNumber }}</td>
-                                    <td>{{ $petro->prices_price }}</td>
-                                    <td>{{ $petro->cost }}</td>
-                                    <td>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle">
-                                                <i class="glyphicon glyphicon-pencil"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </div>
-                                        </div>
+                        {{--@if($petroleumCosts)--}}
+                            {{--@foreach($petroleumCosts as $petro)--}}
+                                {{--<tr>--}}
+                                    {{--<td>{{ $petro->vehicles_vehicleNumber }}</td>--}}
+                                    {{--<td>{{ $petro->note }}</td>--}}
+                                    {{--<td>{{ $petro->created_at }}</td>--}}
+                                    {{--<td>{{ $petro->literNumber }}</td>--}}
+                                    {{--<td>{{ $petro->prices_price }}</td>--}}
+                                    {{--<td>{{ $petro->cost }}</td>--}}
+                                    {{--<td>--}}
+                                        {{--<div class="btn-del-edit">--}}
+                                            {{--<div class="btn btn-success  btn-circle">--}}
+                                                {{--<i class="glyphicon glyphicon-pencil"></i>--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
+                                        {{--<div class="btn-del-edit">--}}
+                                            {{--<div class="btn btn-danger btn-circle">--}}
+                                                {{--<i class="glyphicon glyphicon-remove"></i>--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
 
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
+                                    {{--</td>--}}
+                                {{--</tr>--}}
+                            {{--@endforeach--}}
+                        {{--@endif--}}
 
                         </tbody>
                     </table>
@@ -105,7 +105,7 @@
 <div id="frmControl" class="col-md-offset-4 col-md-8">
     <div class="panel panel-primary">
         <div class="panel-heading">Thêm mới chi phí thay nhớt
-            <div class="menu-toggles pull-right" onclick="petroleumCost.hide()">
+            <div class="menu-toggles pull-right" onclick="petroleumCostView.hide()">
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
@@ -196,8 +196,8 @@
 </div> <!-- end #frmControl -->
 <script>
     $(function () {
-        if (typeof (petroleumCost) === 'undefined') {
-            petroleumCost = {
+        if (typeof (petroleumCostView) === 'undefined') {
+            petroleumCostView = {
                 table: null,
                 show: function () {
                     $('.menu-toggle').hide();
@@ -209,14 +209,16 @@
                     });
                 },
                 loadData: function () {
-                    petroleumCost.table = $('#table-data').DataTable({
-                        language: languageOptions
+                    $.post(url + 'petroleum-cost',{_token:token, formDate:null, toDate:null}, function(list){
+                        petroleumCostView.data= list;
+                        petroleumCostView.fillDataToDatatable();
                     })
-                }
+                },
+               
             };
-            petroleumCost.loadData();
+            petroleumCostView.loadData();
         } else {
-            petroleumCost.loadData();
+            petroleumCostView.loadData();
         }
-    })();
+    });
 </script>

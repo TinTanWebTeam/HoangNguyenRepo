@@ -72,29 +72,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if($users)
-                            @foreach($users as $user)
-                                <tr id="{{ $user->id }}" onclick=""
-                                    style="cursor: pointer">
-                                    <td>{{ $user->username }}</td>
-                                    <td>{{ $user->fullname }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->positions_name }}</td>
-                                    <td>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle" onclick="userView.show()">
-                                                <i class="glyphicon glyphicon-pencil"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
                         </tbody>
                     </table>
                 </div> <!-- end table-reposive -->
@@ -227,8 +204,37 @@
                     });
                 },
                 loadData: function () {
+                    $.post(url + 'user', {_token: _token, fromDate: null, toDate: null}, function (list) {
+                        userView.data = list;
+                        userView.fillDataToDatatable(list);
+                    });
+                },
+                fillDataToDatatable: function (data) {
                     userView.table = $('#table-data').DataTable({
-                        language: languageOptions
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'username'},
+                            {data: 'fullname'},
+                            {data: 'email'},
+                            {data: 'positions_name'},
+                            {
+                                render: function () {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
                     })
                 }
             };
@@ -236,5 +242,5 @@
         } else {
             userView.loadData();
         }
-    })();
+    });
 </script>

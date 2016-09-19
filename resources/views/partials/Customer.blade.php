@@ -13,6 +13,7 @@
         width: 40%;
         height: 100%;
     }
+
     .fixed {
         top: 72px;
         position: fixed;
@@ -23,6 +24,7 @@
     .menu-toggles {
         cursor: pointer
     }
+
     .icon-center {
         line-height: 130%;
         padding-left: 3%;
@@ -72,32 +74,32 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if($customers)
-                            @foreach($customers as $customer)
-                                <tr>
-                                    <td>{{ $customer['code'] }}</td>
-                                    <td>{{ $customer['fullName'] }}</td>
-                                    <td>{{ $customer['address'] }}</td>
-                                    <td>{{ $customer['phone'] }}</td>
-                                    <td>{{ $customer['email'] }}</td>
-                                    <td>{{ $customer['taxCode'] }}</td>
-                                    <td>{{ $customer['note'] }}</td>
-                                    <td>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle" onclick="customerView.show()">
-                                                <i class="glyphicon glyphicon-pencil icon-center"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove icon-center"></i>
-                                            </div>
-                                        </div>
+                        {{--@if($customers)--}}
+                        {{--@foreach($customers as $customer)--}}
+                        {{--<tr>--}}
+                        {{--<td>{{ $customer['code'] }}</td>--}}
+                        {{--<td>{{ $customer['fullName'] }}</td>--}}
+                        {{--<td>{{ $customer['address'] }}</td>--}}
+                        {{--<td>{{ $customer['phone'] }}</td>--}}
+                        {{--<td>{{ $customer['email'] }}</td>--}}
+                        {{--<td>{{ $customer['taxCode'] }}</td>--}}
+                        {{--<td>{{ $customer['note'] }}</td>--}}
+                        {{--<td>--}}
+                        {{--<div class="btn-del-edit">--}}
+                        {{--<div class="btn btn-success  btn-circle" onclick="customerView.show()">--}}
+                        {{--<i class="glyphicon glyphicon-pencil icon-center"></i>--}}
+                        {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<div class="btn-del-edit">--}}
+                        {{--<div class="btn btn-danger btn-circle">--}}
+                        {{--<i class="glyphicon glyphicon-remove icon-center"></i>--}}
+                        {{--</div>--}}
+                        {{--</div>--}}
 
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
+                        {{--</td>--}}
+                        {{--</tr>--}}
+                        {{--@endforeach--}}
+                        {{--@endif--}}
                         </tbody>
                     </table>
                 </div>
@@ -223,16 +225,40 @@
                     });
                 },
                 loadData: function () {
+                    $.post(url + 'customer', {_token: _token, formDate: null, toDate: null}, function (list) {
+                        customerView.data = list;
+                        customerView.fillDataToDatatable(list);
+                    });
+                },
+                fillDataToDatatable: function (data) {
                     customerView.table = $('#table-data').DataTable({
                         language: languageOptions,
-                        drawCallback: function () {
-                            var api = this.api(),
-                                    sum = 0;
-                            api.rows(":not('.sgrouptotal')").every(function () {
-                                sum += parseFloat(this.data()[1]);
-                            });
-                            $(api.column(1).footer()).text(sum);
-                        }
+                        data: data,
+                        columns: [
+                            {data: 'code'},
+                            {data: 'fullName'},
+                            {data: 'address'},
+                            {data: 'phone'},
+                            {data: 'email'},
+                            {data: 'taxCode'},
+                            {data: 'note'},
+                            {
+                                render: function () {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
                     })
                 }
             };
@@ -240,5 +266,5 @@
         } else {
             customerView.loadData();
         }
-    }());
+    });
 </script>

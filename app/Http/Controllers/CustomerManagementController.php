@@ -11,9 +11,14 @@ class CustomerManagementController extends Controller
 {
     public function getViewCustomer()
     {
-        $customers = Customer::all();
-        return view('partials.Customer', ['customers' => $customers]);
+        return view('partials.Customer');
     }
+    public function getDataCustomer(){
+        $customers = Customer::all();
+        return $customers;
+    }
+
+
     public function getViewDeliveryRequirement()
     {
         return view('partials.DeliveryRequirement');

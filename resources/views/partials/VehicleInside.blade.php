@@ -212,20 +212,20 @@
                     });
                 },
                 loadData: function () {
-                    $.post(url + 'vehicle-inside', {_token: _token, fromDate: null, toDate: null},function (list){
+                    $.post(url + 'vehicle-inside', {_token: _token, fromDate: null, toDate: null}, function (list) {
                         vehicleInsideView.data = list;
                         vehicleInsideView.fillDataToDatatable(list);
                     });
 
                 },
-                localSearch: function(){
-                    var dataSearch = _.filter(vehicleInsideView.data, function(o){
+                localSearch: function () {
+                    var dataSearch = _.filter(vehicleInsideView.data, function (o) {
                         return o.vehicleNumber == "15432";
                     });
                     vehicleInsideView.table.destroy();
                     vehicleInsideView.fillDataToDatatable(dataSearch);
                 },
-                fillDataToDatatable: function(data) {
+                fillDataToDatatable: function (data) {
                     vehicleInsideView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -237,7 +237,7 @@
                             {data: 'size'},
                             {data: 'weight'},
                             {
-                                render: function(){
+                                render: function () {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
                                     tr += '<div class="btn btn-success  btn-circle">';

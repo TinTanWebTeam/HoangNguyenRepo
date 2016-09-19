@@ -71,29 +71,8 @@
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
-                        <tbody id="tbodyPositionList">
-                        @if($positions)
-                            @foreach($positions as $item)
-                                <tr id="{{$item->id}}" onclick=""
-                                    style="cursor: pointer">
-                                    <td>{{$item->code}}</td>
-                                    <td>{{$item->name}}</td>
-                                    <td>{{$item->description}}</td>
-                                    <td style="width: 100px">
-                                        <div class=" btn-del-edit">
-                                            <div class="btn btn-success btn-circle" onclick="PositionView.show()">
-                                                <i class="glyphicon glyphicon-pencil icon-center"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove icon-center"></i>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
+                        <tbody>
+
                         </tbody>
                     </table>
                 </div>
@@ -186,10 +165,39 @@
                     });
                 },
                 loadData: function () {
-                    PositionView.table = $('#table-data').DataTable({
-                        language: languageOptions
+                    $.post(url + 'position', {_token: _token, fromDate: null, toDate: null}, function (list) {
+                        PositionView.data = list;
+                        PositionView.fillDataToDatatable(list);
                     })
-                }
+                },
+                fillDataToDatatable: function (data) {
+                    PositionView.table = $('#table-data').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'code'},
+                            {data: 'name'},
+                            {data: 'description'},
+                            {
+                                render: function () {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
+                    })
+                },
+
             };
             PositionView.loadData();
         } else {

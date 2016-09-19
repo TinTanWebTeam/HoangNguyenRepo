@@ -17,7 +17,7 @@ class CreateCostsTable extends Migration
             $table->integer('transport_id');
             $table->integer('price_id');
             $table->integer('vehicle_id');
-            $table->decimal('cost');
+            $table->decimal('cost',18,0);
             $table->text('note');
             $table->float('literNumber');
             $table->float('dayNumber');

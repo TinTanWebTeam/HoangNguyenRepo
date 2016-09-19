@@ -32,11 +32,17 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'UserManagement'], function () {
         Route::get('/position','UserManagementController@getViewPosition');
         Route::get('/user','UserManagementController@getViewUser');
+        /*Post view*/
+        Route::Post('/position','UserManagementController@getDataPosition');
+        Route::Post('/user','UserManagementController@getDataUser');
     });
     Route::group(['middleware' => 'CustomerManagement'], function () {
         //get View
         Route::get('/customer', 'CustomerManagementController@getViewCustomer');
         Route::get('/delivery-requirement', 'CustomerManagementController@getViewDeliveryRequirement');
+        /*Post view*/
+        Route::post('/customer','CustomerManagementController@getDataCustomer');
+
         //get Data
         Route::post('/delivery-requirement', 'CustomerManagementController@getDataDeliveryRequirement');
         //get Modal
@@ -59,6 +65,9 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/petroleum-cost', 'CostManagementController@getViewPetroleumCost');
         Route::get('/parking-cost', 'CostManagementController@getViewParkingCost');
         Route::get('/other-cost', 'CostManagementController@getViewOtherCost');
+        /*post view*/
+        Route::post('/fuel-cost','CostManagementController@getDataFuelCost');
+        Route::post('/petroleum-cost','CostManagementController@getDataPetroleumCost');
     });
     //Cu?c phí
     Route::group(['middleware' => 'PostageManagement'], function () {
@@ -74,7 +83,7 @@ Route::group(['middleware' => 'auth'], function(){
     });
 });
 
-Route::Post('/post-position','UserManagementController@postViewPosition');
+
 
 
 

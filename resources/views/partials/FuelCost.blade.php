@@ -74,31 +74,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if($fuelCosts)
-                            @foreach($fuelCosts as $fuel)
-                                <tr>
-                                    <td>{{ $fuel->vehicles_vehicleNumber }}</td>
-                                    <td>{{ $fuel->note }}</td>
-                                    <td>{{ $fuel->created_at }}</td>
-                                    <td>{{ $fuel->literNumber }}</td>
-                                    <td>{{ $fuel->prices_price }}</td>
-                                    <td>{{ $fuel->cost }}</td>
-                                    <td>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle">
-                                                <i class="glyphicon glyphicon-pencil"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
 
                         </tbody>
                     </table>
@@ -215,8 +190,39 @@
                     });
                 },
                 loadData: function () {
+                    $.post(url + 'fuel-cost', {_token: _token, formDate: null, toDate: null}, function (list) {
+                        fuelCostView.data = list;
+                        fuelCostView.fillDataToDatatable(list);
+                    });
+                },
+                fillDataToDatatable: function (data) {
                     fuelCostView.table = $('#table-data').DataTable({
-                        language: languageOptions
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'vehicles_vehicleNumber'},
+                            {data: 'note'},
+                            {data: 'created_at'},
+                            {data: 'literNumber'},
+                            {data: 'prices_price'},
+                            {data: 'cost'},
+                            {
+                                render: function () {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
                     })
                 }
             };
@@ -224,5 +230,5 @@
         } else {
             fuelCostView.loadData();
         }
-    })();
+    });
 </script>
