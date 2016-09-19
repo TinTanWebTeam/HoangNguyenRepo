@@ -252,6 +252,26 @@
                                     return tr;
                                 }
                             }
+                        ],
+                        dom: 'Bfrtip',
+                        buttons: [
+                            {
+                                extend: 'pdfHtml5',
+                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
+                                customize: function ( doc ) {
+                                    doc.content.splice(0,1);
+                                    doc.styles.tableBodyEven.alignment = 'center';
+                                    doc.styles.tableBodyOdd.alignment = 'center';
+                                    doc.content.columnGap = 10;
+                                    doc.pageOrientation = 'landscape';
+                                    for(var i = 0; i < doc.content[1].table.body.length;i++){
+                                        for(var j = 0; j < doc.content[1].table.body[i].length; j++){
+                                            doc.content[1].table.body[i].splice(6,1);
+                                        }
+                                    }
+                                    doc.content[1].table.widths = [ '*', '*', '*', '*' ,'*','*'];
+                                }
+                            }
                         ]
                     })
                 }

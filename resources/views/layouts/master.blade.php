@@ -22,8 +22,10 @@
     <!-- Custom Fonts -->
     <link href=" {{ URL::to('libs/font-awesome/css/font-awesome.min.css') }} " rel="stylesheet" type="text/css">
 
+    <!-- DataTable.net -->
     <link rel="stylesheet" href="{{ URL::to('src/css/custom-bootstrap.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/Buttons-1.2.2/css/buttons.dataTables.min.css') }}">
 
     @yield('styles')
 
@@ -60,10 +62,13 @@
 
 <!-- Datatables.net -->
 <script src="{{ URL::to('libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-
-
 <script src="{{ URL::to('libs/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ URL::to('libs/datatables.net/js/dataTables.tableTools.js') }}"></script>
+
+<script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ URL::to('src/dataTableFull/pdfmake-0.1.18/build/pdfmake.min.js') }}"></script>
+<script src="{{ URL::to('src/dataTableFull/pdfmake-0.1.18/build/vfs_fonts.js') }}"></script>
+<script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/buttons.html5.min.js') }}"></script>
 
 <!-- Hightcharts -->
 <script src="{{ URL::to('libs/highcharts/highcharts.js') }}"></script>
