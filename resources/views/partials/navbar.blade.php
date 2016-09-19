@@ -7,7 +7,9 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="javascript:;">Hoàng Nguyễn</a>
+        <a class="navbar-brand" href="javascript:;">
+            <img src="{{ URL::to('Logo.png') }}" style="display:inline-block"/>&nbsp;&nbsp;&nbsp;<span style="color:red; text-transform: uppercase;font-style: italic;">Hoàng Nguyễn</span>
+        </a>
         <ul class="nav navbar-top-links navbar-right pull-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">

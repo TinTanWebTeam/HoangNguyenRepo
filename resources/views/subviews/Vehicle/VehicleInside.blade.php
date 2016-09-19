@@ -98,12 +98,12 @@
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Code"><b>Mã</b></label>
+                                    <label for="id"><b>Mã</b></label>
                                     <input type="text" class="form-control"
-                                           id="Code"
-                                           name="Code"
+                                           id="id"
+                                           name="id"
                                            placeholder="Mã"
-                                           autofocus>
+                                           autofocus data-id>
                                 </div>
                             </div>
                             <div class="col-md-6 ">
@@ -237,10 +237,14 @@
                             {data: 'size'},
                             {data: 'weight'},
                             {
-                                render: function () {
+                                render: function (data, type, full, meta) {
+                                    console.log(data);
+                                    console.log(type);
+                                    console.log(full);
+                                    console.log(meta);
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<div class="btn btn-success  btn-circle"  onclick="vehicleInsideView.loadEdit(full.id)">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -290,6 +294,14 @@
                             }
                         ]
                     })
+                },
+                loadEdit: function(id) {
+                    $('.menu-toggle').hide();
+                    $('#frmControl').slideDown();
+
+                    var current = _.find(vehicleInsideView.data, function(o){
+                        return o.id = id;
+                    });
                 }
             };
             vehicleInsideView.loadData();
