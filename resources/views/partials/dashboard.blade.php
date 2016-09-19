@@ -22,7 +22,7 @@
                         },
 
                         title: {
-                            text: 'Total fruit consumtion, grouped by gender'
+                            text: 'Biểu đồ thống kê lượt vận chuyển theo tháng'
                         },
 
                         xAxis: {
@@ -33,7 +33,7 @@
                             allowDecimals: false,
                             min: 0,
                             title: {
-                                text: 'Number of fruits'
+                                text: 'Số lượt trên tháng'
                             }
                         },
 
@@ -76,10 +76,7 @@
                             type: 'area'
                         },
                         title: {
-                            text: 'Historic and Estimated Worldwide Population Growth by Region'
-                        },
-                        subtitle: {
-                            text: 'Source: Wikipedia.org'
+                            text: 'Biểu đồ thống kê chi phí theo tháng'
                         },
                         xAxis: {
                             categories: ['1750', '1800', '1850', '1900', '1950', '1999', '2050'],
@@ -90,7 +87,7 @@
                         },
                         yAxis: {
                             title: {
-                                text: 'Billions'
+                                text: 'Triệu đồng'
                             },
                             labels: {
                                 formatter: function () {
@@ -134,12 +131,8 @@
                 loadChart3: function(){
                     $('#chart3').highcharts({
                         title: {
-                            text: 'Monthly Average Temperature',
+                            text: 'Thống kê / So sánh lợi nhuận qua các năm',
                             x: -20 //center
-                        },
-                        subtitle: {
-                            text: 'Source: WorldClimate.com',
-                            x: -20
                         },
                         xAxis: {
                             categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -147,7 +140,7 @@
                         },
                         yAxis: {
                             title: {
-                                text: 'Temperature (°C)'
+                                text: 'Triệu đồng'
                             },
                             plotLines: [{
                                 value: 0,
