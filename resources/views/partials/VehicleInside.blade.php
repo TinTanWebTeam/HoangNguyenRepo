@@ -212,9 +212,9 @@
                     });
                 },
                 loadData: function () {
-                    $.post(url + 'vehicle-inside', {_token: _token, fromDate: null, toDate: null},function (listVehicles){
-                        vehicleInsideView.data = listVehicles;
-                        vehicleInsideView.fillDataToDatatable(listVehicles);
+                    $.post(url + 'vehicle-inside', {_token: _token, fromDate: null, toDate: null},function (list){
+                        vehicleInsideView.data = list;
+                        vehicleInsideView.fillDataToDatatable(list);
                     });
 
                 },
