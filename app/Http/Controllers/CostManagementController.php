@@ -28,12 +28,6 @@ class CostManagementController extends Controller
     
     public function getViewPetroleumCost()
     {
-//        $petroleumCosts = \DB::table('costs')
-//            ->join('prices', 'costs.price_id', '=', 'prices.id')
-//            ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-//            ->select('costs.*', 'prices.price as prices_price', 'vehicles.vehicleNumber as vehicles_vehicleNumber')
-//            ->where('prices.costPrice_id','=','2')
-//            ->get();
         return view('partials.PetroleumCost');
     }
     public function getDataPetroleumCost(){
@@ -52,22 +46,33 @@ class CostManagementController extends Controller
 
     public function getViewParkingCost()
     {
+        return view('partials.ParkingCost');
+    }
+    public function getDataParkingCost(){
         $parkingCosts = \DB::table('costs')
             ->join('prices', 'costs.price_id', '=', 'prices.id')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
             ->select('costs.*', 'prices.price as prices_price', 'vehicles.vehicleNumber as vehicles_vehicleNumber')
             ->where('prices.costPrice_id','=','3')
             ->get();
-        return view('partials.ParkingCost', ['parkingCosts' => $parkingCosts]);
+        return $parkingCosts;
     }
+
+
+
+
+
     public function getViewOtherCost()
     {
+        return view('partials.OtherCost');
+    }
+    public function getDataOtherCost(){
         $otherCosts = \DB::table('costs')
             ->join('prices', 'costs.price_id', '=', 'prices.id')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
             ->select('costs.*', 'prices.price as prices_price', 'vehicles.vehicleNumber as vehicles_vehicleNumber')
             ->where('prices.costPrice_id','=','4')
             ->get();
-        return view('partials.OtherCost', ['otherCosts' => $otherCosts]);
+        return $otherCosts;
     }
 }

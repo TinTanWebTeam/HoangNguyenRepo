@@ -68,6 +68,8 @@ Route::group(['middleware' => 'auth'], function(){
         /*post view*/
         Route::post('/fuel-cost','CostManagementController@getDataFuelCost');
         Route::post('/petroleum-cost','CostManagementController@getDataPetroleumCost');
+        Route::post('/parking-cost', 'CostManagementController@getDataParkingCost');
+        Route::post('/other-cost', 'CostManagementController@getDataParkingCost');
     });
     //Cu?c phí
     Route::group(['middleware' => 'PostageManagement'], function () {
@@ -76,6 +78,8 @@ Route::group(['middleware' => 'auth'], function(){
     });
     Route::group(['middleware' => 'DivisiveDriver'], function () {
         Route::get('/divisive-driver', 'DivisiveDriverController@getViewDivisiveDriver');
+        /*post view*/
+        Route::post('/divisive-driver', 'DivisiveDriverController@getDataDivisiveDriver');
     });
     Route::group(['middleware' => 'Report'], function () {
         Route::get('/revenue-report', 'ReportController@getViewRevenueReport');

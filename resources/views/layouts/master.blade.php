@@ -37,7 +37,7 @@
 <body>
 
 <div id="wrapper">
-    @include('partials.navbar')
+    @include('partials.Navbar')
     <div id="page-wrapper">
         @yield('content')
     </div>

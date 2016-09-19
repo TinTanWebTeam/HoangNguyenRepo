@@ -71,31 +71,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if($userVehicles)
-                            @foreach($userVehicles as $userVehicle)
-                                <tr>
-                                    <td>{{ $userVehicle->vehicles_areaCode }}</td>
-                                    <td>{{ $userVehicle->vehicles_vehicleNumber }}</td>
-                                    <td>{{ $userVehicle->garages_name }}</td>
-                                    <td>{{ $userVehicle->users_fullname }}</td>
-                                    <td>{{ $userVehicle->users_phone }}</td>
-                                    <td>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle">
-                                                <i class="glyphicon glyphicon-pencil"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
-
                         </tbody>
                     </table>
                 </div>
@@ -182,8 +157,38 @@
                     });
                 },
                 loadData: function () {
+                    $.post(url + 'divisive-driver', {_token: _token, formDate: null, toData: null}, function (list) {
+                        divisiveDriverView.data = list;
+                        divisiveDriverView.fillDataToDatatable(list);
+                    })
+                },
+                fillDataToDatatable: function (data) {
                     divisiveDriverView.table = $('#table-data').DataTable({
-                        language: languageOptions
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'vehicles_areaCode'},
+                            {data: 'vehicles_vehicleNumber'},
+                            {data: 'garages_name'},
+                            {data: 'users_fullname'},
+                            {data: 'users_phone'},
+                            {
+                                render: function () {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
                     })
                 }
             };
@@ -191,5 +196,5 @@
         } else {
             divisiveDriverView.loadData();
         }
-    })();
+    });
 </script>

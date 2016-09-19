@@ -10,6 +10,9 @@ class DivisiveDriverController extends Controller
 {
     public function getViewDivisiveDriver()
     {
+        return view('partials.DivisiveDriver');
+    }
+    public function getDataDivisiveDriver(){
         $userVehicles = \DB::table('userVehicles')
             ->join('users', 'users.id', '=', 'userVehicles.user_id')
             ->join('vehicles', 'vehicles.id', '=', 'userVehicles.vehicle_id')
@@ -17,6 +20,6 @@ class DivisiveDriverController extends Controller
             ->select('userVehicles.*', 'users.fullname as users_fullname', 'users.phone as users_phone', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'garages.name as garages_name')
             ->where('users.position_id', '=', '1')
             ->get();
-        return view('partials.DivisiveDriver', ['userVehicles' => $userVehicles]);
+        return $userVehicles;
     }
 }

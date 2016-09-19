@@ -24,6 +24,7 @@
     .menu-toggles {
         cursor: pointer
     }
+
     .icon-center {
         line-height: 130%;
         padding-left: 3%;
@@ -71,29 +72,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if($otherCosts)
-                            @foreach($otherCosts as $other)
-                                <tr>
-                                    <td>{{ $other->vehicles_vehicleNumber }}</td>
-                                    <td>{{ $other->note }}</td>
-                                    <td>{{ $other->prices_price }}</td>
-                                    <td>{{ $other->cost }}</td>
-                                    <td>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-success  btn-circle">
-                                                <i class="glyphicon glyphicon-pencil"></i>
-                                            </div>
-                                        </div>
-                                        <div class="btn-del-edit">
-                                            <div class="btn btn-danger btn-circle">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
 
                         </tbody>
                     </table>
@@ -190,14 +168,44 @@
                     });
                 },
                 loadData: function () {
-                    otherCostView.table = $('#table-data').DataTable({
-                        language: languageOptions
+                    $.post(url + 'other-cost', {_token: _token, formDate: null, toDate: null}, function (list) {
+                        otherCostView.data = list;
+                        otherCostView.fillDataToDatatable(list);
                     })
+                },
+                fillDataToDatatable: function (data) {
+                    otherCostView.table = $('#table-data').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'vehicles_vehicleNumber'},
+                            {data: 'note'},
+                            {data: 'prices_price'},
+                            {data: 'cost'},
+                            {
+                                render: function () {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
+                    })
+
                 }
             };
             otherCostView.loadData();
         } else {
             otherCostView.loadData();
         }
-    })();
+    });
 </script>

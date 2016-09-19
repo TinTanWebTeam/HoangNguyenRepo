@@ -88,6 +88,6 @@ class HomeController extends Controller
 
     public function getDashboard()
     {
-        return view('partials.dashboard');
+        return view('partials.Dashboard');
     }
 }

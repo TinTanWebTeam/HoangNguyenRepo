@@ -8,10 +8,12 @@
         width: 40%;
         height: 100%;
     }
+
     .btn-del-edit {
         float: left;
         padding-right: 5px;
     }
+
     .fixed {
         top: 72px;
         position: fixed;
@@ -22,14 +24,17 @@
     .menu-toggles {
         cursor: pointer
     }
+
     .icon-center {
         line-height: 130%;
         padding-left: 3%;
         font-size: 13px;
     }
+
     ol.breadcrumb {
         border-bottom: 2px solid #e7e7e7
     }
+
     div.col-lg-12 {
         height: 40px;
     }
@@ -69,31 +74,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {{--@if($petroleumCosts)--}}
-                            {{--@foreach($petroleumCosts as $petro)--}}
-                                {{--<tr>--}}
-                                    {{--<td>{{ $petro->vehicles_vehicleNumber }}</td>--}}
-                                    {{--<td>{{ $petro->note }}</td>--}}
-                                    {{--<td>{{ $petro->created_at }}</td>--}}
-                                    {{--<td>{{ $petro->literNumber }}</td>--}}
-                                    {{--<td>{{ $petro->prices_price }}</td>--}}
-                                    {{--<td>{{ $petro->cost }}</td>--}}
-                                    {{--<td>--}}
-                                        {{--<div class="btn-del-edit">--}}
-                                            {{--<div class="btn btn-success  btn-circle">--}}
-                                                {{--<i class="glyphicon glyphicon-pencil"></i>--}}
-                                            {{--</div>--}}
-                                        {{--</div>--}}
-                                        {{--<div class="btn-del-edit">--}}
-                                            {{--<div class="btn btn-danger btn-circle">--}}
-                                                {{--<i class="glyphicon glyphicon-remove"></i>--}}
-                                            {{--</div>--}}
-                                        {{--</div>--}}
-
-                                    {{--</td>--}}
-                                {{--</tr>--}}
-                            {{--@endforeach--}}
-                        {{--@endif--}}
 
                         </tbody>
                     </table>
@@ -209,12 +189,42 @@
                     });
                 },
                 loadData: function () {
-                    $.post(url + 'petroleum-cost',{_token:token, formDate:null, toDate:null}, function(list){
-                        petroleumCostView.data= list;
-                        petroleumCostView.fillDataToDatatable();
+                    $.post(url + 'petroleum-cost', {_token: _token, formDate: null, toDate: null}, function (list) {
+                        petroleumCostView.data = list;
+                        petroleumCostView.fillDataToDatatable(list);
                     })
                 },
-               
+                fillDataToDatatable: function (data) {
+                    petroleumCostView.table = $('#table-data').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'vehicles_vehicleNumber'},
+                            {data: 'note'},
+                            {data: 'created_at'},
+                            {data: 'literNumber'},
+                            {data: 'prices_price'},
+                            {data: 'cost'},
+                            {
+                                render: function () {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+
+                            }
+                        ]
+                    })
+                }
             };
             petroleumCostView.loadData();
         } else {
