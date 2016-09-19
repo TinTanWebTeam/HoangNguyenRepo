@@ -256,6 +256,22 @@
                         dom: 'Bfrtip',
                         buttons: [
                             {
+                                extend: 'copyHtml5',
+                                exportOptions: {
+                                    columns: [ 0, ':visible' ]
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                customize: function (xlsx) {
+                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                    console.log(sheet);
+                                }
+                            },
+                            {
                                 extend: 'pdfHtml5',
                                 message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
                                 customize: function ( doc ) {
