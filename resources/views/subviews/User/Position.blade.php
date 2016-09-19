@@ -71,8 +71,7 @@
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
-                        <tbody>
-
+                        <tbody id="tbodyPackageList">
                         </tbody>
                     </table>
                 </div>
@@ -101,20 +100,20 @@
                         <div class="row ">
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Code"><b>Mã</b></label>
+                                    <label for="code"><b>Mã</b></label>
                                     <input type="text" class="form-control"
-                                           id="Code"
-                                           name="Code"
+                                           id="code"
+                                           name="code"
                                            placeholder="Mã chức vụ"
                                            autofocus>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Position"><b>Chức vụ</b></label>
+                                    <label for="name"><b>Chức vụ</b></label>
                                     <input type="text" class="form-control"
-                                           id="Position"
-                                           name="Position"
+                                           id="name"
+                                           name="name"
                                            placeholder="Chức vụ">
                                 </div>
                             </div>
@@ -122,10 +121,10 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Description"><b>Mô ta</b></label>
+                                    <label for="description"><b>Mô ta</b></label>
                                     <input type="text" class="form-control"
-                                           id="Description"
-                                           name="Description"
+                                           id="description"
+                                           name="description"
                                            placeholder="Mô tả">
                                 </div>
                             </div>
@@ -135,7 +134,7 @@
                         <div class="form-actions noborder">
                             <div class="form-group">
                                 <button type="button" class="btn btn-primary"
-                                        onclick="">
+                                        onclick="PositionView.addAndUpdate()">
                                     Hoàn tất
                                 </button>
                                 <button type="button" class="btn default" onclick="">Huỷ</button>
@@ -155,6 +154,9 @@
         if (typeof (PositionView) === 'undefined') {
             PositionView = {
                 table: null,
+                data: null,
+                data2: null,
+                idChange: null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -167,6 +169,7 @@
                 loadData: function () {
                     $.post(url + 'position', {_token: _token, fromDate: null, toDate: null}, function (list) {
                         PositionView.data = list;
+                        PositionView.data2 = _.clone(list, true);
                         PositionView.fillDataToDatatable(list);
                     })
                 },
@@ -179,10 +182,10 @@
                             {data: 'name'},
                             {data: 'description'},
                             {
-                                render: function () {
+                                render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<div class="btn btn-success  btn-circle" onclick="PositionView.loadEdit(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -197,6 +200,35 @@
                         ]
                     })
                 },
+                loadEdit: function (id) {
+                    var current = _.find(PositionView.data, function (o) {
+                        return o.id == id
+                    });
+                    $('.menu-toggle').hide();
+                    $('#frmControl').slideDown();
+                    for (var propertyName in current) {
+                        $("input[name=" + propertyName + "]").val(current[propertyName]);
+                    }
+                    PositionView.idChange = id;
+                },
+                addAndUpdate: function(){
+                    var current = _.find(PositionView.data, function (o) {
+                        return o.id == PositionView.idChange;
+                    });
+                    var dataSendTo = {
+                        _token:_token,
+                        fromDate:null,
+                        toDate:null
+                    };
+                    for (var propertyName in current) {
+                        dataSendTo[propertyName] = $("input[id=" + propertyName + "]").val();
+                    }
+                    $.post(url + 'create-position',dataSendTo, function(msg){
+//                      console.log(msg);
+                    });
+//                    PositionView.table.clear().rows.add(PositionView.data).draw();
+                }
+
 
             };
             PositionView.loadData();
