@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-    @include('partials.dashboard')
+    @include('partials.Dashboard')
 @endsection
 
 @section('javascripts')
