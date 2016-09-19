@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Position;
 use App\User;
+use DB;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -34,7 +35,17 @@ class UserManagementController extends Controller
         return $position;
     }
 
+    public function postCreatePosition(Request $request){
 
+        DB::table('positions')
+            ->where('id', $request->get('id'))
+            ->update([
+                'name' => $request->get('name'),
+                'code' => $request->get('code'),
+                'description' => $request->get('description')
+            ]);
+
+    }
 
 
 
