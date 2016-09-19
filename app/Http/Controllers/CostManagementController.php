@@ -10,7 +10,7 @@ class CostManagementController extends Controller
 {
     public function getViewFuelCost()
     {
-        return view('partials.FuelCost');
+        return view('subviews.Cost.FuelCost');
     }
     public function getDataFuelCost(){
         $fuelCosts = \DB::table('costs')
@@ -28,7 +28,7 @@ class CostManagementController extends Controller
     
     public function getViewPetroleumCost()
     {
-        return view('partials.PetroleumCost');
+        return view('subviews.Cost.PetroleumCost');
     }
     public function getDataPetroleumCost(){
         $petroleumCosts = \DB::table('costs')
@@ -46,7 +46,7 @@ class CostManagementController extends Controller
 
     public function getViewParkingCost()
     {
-        return view('partials.ParkingCost');
+        return view('subviews.Cost.ParkingCost');
     }
     public function getDataParkingCost(){
         $parkingCosts = \DB::table('costs')
@@ -64,7 +64,7 @@ class CostManagementController extends Controller
 
     public function getViewOtherCost()
     {
-        return view('partials.OtherCost');
+        return view('subviews.Cost.OtherCost');
     }
     public function getDataOtherCost(){
         $otherCosts = \DB::table('costs')

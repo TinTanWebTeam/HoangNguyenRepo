@@ -10,10 +10,10 @@ class ReportController extends Controller
 {
     public function getViewRevenueReport()
     {
-        return view('partials.RevenueReport');
+        return view('subviews.Report.RevenueReport');
     }
     public function getViewHistoryDeliveryReport()
     {
-        return view('partials.HistoryDeliveryReport');
+        return view('subviews.Report.HistoryDeliveryReport');
     }
 }

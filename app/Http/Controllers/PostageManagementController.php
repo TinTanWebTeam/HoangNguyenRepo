@@ -10,10 +10,10 @@ class PostageManagementController extends Controller
 {
     public function getViewCustomerPostage()
     {
-        return view('partials.CustomerPostage');
+        return view('subviews.Postage.CustomerPostage');
     }
     public function getViewMonthPostage()
     {
-        return view('partials.MonthPostage');
+        return view('subviews.Postage.MonthPostage');
     }
 }

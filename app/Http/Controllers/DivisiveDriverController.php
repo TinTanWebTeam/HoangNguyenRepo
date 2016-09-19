@@ -10,7 +10,7 @@ class DivisiveDriverController extends Controller
 {
     public function getViewDivisiveDriver()
     {
-        return view('partials.DivisiveDriver');
+        return view('subviews.Vehicle.DivisiveDriver');
     }
     public function getDataDivisiveDriver(){
         $userVehicles = \DB::table('userVehicles')

@@ -12,7 +12,7 @@ class VehicleManagementController extends Controller
 {
     public function getViewVehicleInside()
     {
-        return view('partials.VehicleInside');
+        return view('subviews.Vehicle.VehicleInside');
     }
 
     public function getDataVehicleInside()
@@ -27,7 +27,7 @@ class VehicleManagementController extends Controller
     public function getViewVehicleOutside()
     {
         $garages = Garage::all();
-        return view('partials.VehicleOutside', ['garages' => $garages]);
+        return view('subviews.Vehicle.VehicleOutside', ['garages' => $garages]);
     }
 
     public function getAllVehicle()

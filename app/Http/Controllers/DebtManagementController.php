@@ -10,10 +10,10 @@ class DebtManagementController extends Controller
 {
     public function getViewDebtCustomer()
     {
-        return view('partials.DebtCustomer');
+        return view('subviews.Debt.DebtCustomer');
     }
     public function getViewDebtVehicleOutside()
     {
-        return view('partials.DebtVehicleOutside');
+        return view('subviews.Debt.DebtVehicleOutside');
     }
 }

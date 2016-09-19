@@ -11,7 +11,7 @@ class CustomerManagementController extends Controller
 {
     public function getViewCustomer()
     {
-        return view('partials.Customer');
+        return view('subviews.Customer.Customer');
     }
     public function getDataCustomer(){
         $customers = Customer::all();
@@ -21,7 +21,7 @@ class CustomerManagementController extends Controller
 
     public function getViewDeliveryRequirement()
     {
-        return view('partials.DeliveryRequirement');
+        return view('subviews.Customer.DeliveryRequirement');
     }
 
     public function getDataDeliveryRequirement()

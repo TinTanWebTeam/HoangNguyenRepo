@@ -83,7 +83,7 @@ class HomeController extends Controller
         $filtered = $collection->only($array_roleid);
         $filtered->all();
 
-        return view('home', ['filtered' => $filtered, 'array_icon' => $array_icon, 'array_url' => $array_url]);
+        return view('Home', ['filtered' => $filtered, 'array_icon' => $array_icon, 'array_url' => $array_url]);
     }
 
     public function getDashboard()
