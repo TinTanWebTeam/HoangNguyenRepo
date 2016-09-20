@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign In</title>
+    <title>Đăng nhập hệ thống</title>
 
     <!-- Custom Bootstrap Core CSS -->
     <link href=" {{ URL::to('libs/bootstrap/dist/css/bootstrap.material.min.css') }} " rel="stylesheet">
@@ -32,7 +32,7 @@
         <div class="panel panel-success">
             <div class="panel-heading">
                 <div class="panel-title">
-                    Sign In
+                    Thông tin đăng nhập
                 </div>
             </div>
             <div class="panel-body" style="padding-top:30px">
@@ -45,7 +45,7 @@
                             <i class="glyphicon glyphicon-user" style="font-size:1.5em">
                             </i>
                         </span>
-                        <input class="form-control" id="login-username" name="username" placeholder="username" type="text" value="">
+                        <input class="form-control" id="login-username" name="username" placeholder="Tên tài khoản" type="text" value="">
                         </input>
                     </div>
                     <div class="input-group" style="margin-bottom: 25px">
@@ -53,14 +53,14 @@
                             <i class="glyphicon glyphicon-lock" style="font-size:1.5em">
                             </i>
                         </span>
-                        <input class="form-control" id="login-password" name="password" placeholder="password" type="password">
+                        <input class="form-control" id="login-password" name="password" placeholder="Mật khẩu" type="password">
                         </input>
                     </div>
                     <div class="form-group" style="margin-top:10px">
                         <!-- Button -->
                         <div class="col-sm-12 controls text-center">
                             <button class="btn btn-success" type="submit">
-                                Sign In
+                                Đăng nhập
                             </button>
                         </div>
                     </div>
