@@ -217,15 +217,6 @@
                         ]
                     })
                 },
-//                loadEdit: function (id) {
-//                    PositionView.current = _.clone(_.find(PositionView.data, function (o) {
-//                        return o.id == id
-//                    }), true);
-//                    $('.menu-toggle').hide();
-//                    $('#frmControl').slideDown();
-//                    PositionView.loadInput();
-//                },
-
                 loadEdit: function (id) {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -273,76 +264,13 @@
                                 } else if (PositionView.action === 'add') {
                                     PositionView.data.push(data['obj']);
                                     PositionView.table.clear().rows.add(PositionView.data).draw();
-
                                 } else {
 
                                 }
-
                             }
                     );
                 },
-
-//                addAndUpdate: function () {
-//                    if(PositionView.current === null || PositionView.current.id === null) {
-//                        PositionView.current = {
-//                            code : $("input[name=code]").val(),
-//                            name : $("input[name=name]").val(),
-//                            description : $("input[name=description]").val()
-//                        };
-//                        $.post(
-//                                url + "create-position",
-//                                {
-//                                    _token: _token,
-//                                    fromDate: null,
-//                                    toDate: null,
-//                                    dataPosition: PositionView.current
-//                                },
-//                                function (data) {
-//
-//                                    if (data['status'] === 'OK') {
-//                                        PositionView.data.push(data['obj']);
-//                                        PositionView.table.clear().rows.add(PositionView.data).draw();
-//                                        PositionView.clearInput();
-//                                    } else {
-//                                        alert('tao moi k thanh cong');
-//                                    }
-//                                }
-//                        );
-//                    }else {
-//                        PositionView.current.id = $("input[name=id]").val();
-//                        PositionView.current.code = $("input[name=code]").val();
-//                        PositionView.current.name = $("input[name=name]").val();
-//                        PositionView.current.description = $("input[name=description]").val();
-//                        $.post(
-//                                url + "update-position",
-//                                {
-//                                    _token: _token,
-//                                    fromDate: null,
-//                                    toDate: null,
-//                                    dataPosition: PositionView.current
-//                                },
-//                                function (data) {
-//                                    if (data['status'] === 'OK') {
-//                                        var test = _.find(PositionView.data, function (o) {
-//                                            return o.id == PositionView.current.id
-//                                        });
-//                                        var index = _.indexOf(PositionView.data, test);
-//                                        PositionView.data.splice(index, 1, PositionView.current);
-//                                        PositionView.table.clear().rows.add(PositionView.data).draw();
-//                                        PositionView.hide();
-//                                        PositionView.current.id = null;
-//                                    } else {
-//                                        alert(' update k thanh cong');
-//                                    }
-//
-//                                }
-//                        );
-//                    }
-//
-//                }
             };
-
-
             PositionView.loadData();
         } else {
             PositionView.loadData();
