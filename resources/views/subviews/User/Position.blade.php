@@ -93,8 +93,8 @@
         <div class="panel-body">
             <form role="form" id="formPosition">
                 <div class="form-body">
-                    <div class="form-group form-md-line-input" style="display:none">
-                        <input type="text" class="form-control" name="Id" id="Id">
+                    <div class="form-group form-md-line-input" style="display:block">
+                        <input type="text" class="form-control" name="id" id="id" value="">
                     </div>
                     <div class="col-md-12 ">
                         <div class="row ">
@@ -156,7 +156,8 @@
                 table: null,
                 data: null,
                 data2: null,
-                idChange: null,
+                current: null,
+                a
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -164,7 +165,20 @@
                 hide: function () {
                     $('#frmControl').slideUp('', function () {
                         $('.menu-toggle').show();
+                        PositionView.clearInput();
                     });
+
+                },
+                clearInput: function() {
+                    if (PositionView.current)
+                        for (var propertyName in PositionView.current) {
+                            $("input[name=" + propertyName + "]").val('');
+                        }
+                },
+                loadInput: function(){
+                    for (var propertyName in PositionView.current) {
+                        $("input[name=" + propertyName + "]").val(PositionView.current[propertyName]);
+                    }
                 },
                 loadData: function () {
                     $.post(url + 'position', {_token: _token, fromDate: null, toDate: null}, function (list) {
@@ -201,39 +215,79 @@
                     })
                 },
                 loadEdit: function (id) {
-                    var current = _.find(PositionView.data, function (o) {
+                    PositionView.current = _.clone(_.find(PositionView.data, function (o) {
                         return o.id == id
-                    });
+                    }), true);
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
-                    for (var propertyName in current) {
-                        $("input[name=" + propertyName + "]").val(current[propertyName]);
-                    }
-                    PositionView.idChange = id;
+                    PositionView.loadInput();
                 },
-                addAndUpdate: function(){
-                    var current = _.find(PositionView.data, function (o) {
-                        return o.id == PositionView.idChange;
-                    });
-                    var dataSendTo = {
-                        _token:_token,
-                        fromDate:null,
-                        toDate:null
-                    };
-                    for (var propertyName in current) {
-                        dataSendTo[propertyName] = $("input[id=" + propertyName + "]").val();
+                addAndUpdate: function () {
+                    if(PositionView.current === null || PositionView.current.id === null) {
+                        PositionView.current = {
+                            code : $("input[name=code]").val(),
+                            name : $("input[name=name]").val(),
+                            description : $("input[name=description]").val()
+                        };
+                        $.post(
+                                url + "create-position",
+                                {
+                                    _token: _token,
+                                    fromDate: null,
+                                    toDate: null,
+                                    dataPosition: PositionView.current
+                                },
+                                function (data) {
+
+                                    if (data['status'] === 'OK') {
+                                        PositionView.data.push(data['obj']);
+                                        PositionView.table.clear().rows.add(PositionView.data).draw();
+                                        PositionView.clearInput();
+                                    } else {
+                                        alert('tao moi k thanh cong');
+                                    }
+                                }
+                        );
+                    }else {
+                        PositionView.current.id = $("input[name=id]").val();
+                        PositionView.current.code = $("input[name=code]").val();
+                        PositionView.current.name = $("input[name=name]").val();
+                        PositionView.current.description = $("input[name=description]").val();
+                        $.post(
+                                url + "update-position",
+                                {
+                                    _token: _token,
+                                    fromDate: null,
+                                    toDate: null,
+                                    dataPosition: PositionView.current
+                                },
+                                function (data) {
+                                    if (data['status'] === 'OK') {
+                                        var test = _.find(PositionView.data, function (o) {
+                                            return o.id == PositionView.current.id
+                                        });
+                                        var index = _.indexOf(PositionView.data, test);
+                                        PositionView.data.splice(index, 1, PositionView.current);
+                                        PositionView.table.clear().rows.add(PositionView.data).draw();
+                                        PositionView.hide();
+                                        PositionView.current.id = null;
+                                    } else {
+                                        alert(' update k thanh cong');
+                                    }
+
+                                }
+                        );
                     }
-                    $.post(url + 'create-position',dataSendTo, function(msg){
-//                      console.log(msg);
-                    });
-//                    PositionView.table.clear().rows.add(PositionView.data).draw();
+
                 }
-
-
             };
+
+
             PositionView.loadData();
         } else {
             PositionView.loadData();
         }
     });
 </script>
+
+

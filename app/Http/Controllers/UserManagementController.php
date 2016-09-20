@@ -35,17 +35,48 @@ class UserManagementController extends Controller
         return $position;
     }
 
+    public function postUpdatePosition(Request $request){
+
+        try{
+            $result = Position::findOrFail($request->get('dataPosition')['id']);
+            $result->name =$request->get('dataPosition')['name'];
+            $result->code =$request->get('dataPosition')['code'];
+            $result->description =$request->get('dataPosition')['description'];
+            if($result->save())
+                return ['status' => 'OK'];
+            else
+                return ['status' => 'NO'];
+        } catch (\Exception $ex){
+            return ['status' => 'NO'];
+        }
+    }
+
     public function postCreatePosition(Request $request){
 
-        DB::table('positions')
-            ->where('id', $request->get('id'))
-            ->update([
-                'name' => $request->get('name'),
-                'code' => $request->get('code'),
-                'description' => $request->get('description')
-            ]);
+        try{
+            $positionNew = new Position();
+            $positionNew->name = $request->get('dataPosition')['name'];
+            $positionNew->code = $request->get('dataPosition')['code'];
+            $positionNew->description = $request->get('dataPosition')['description'];
+            if($positionNew->save()){
+                return [
+                    'status' => 'OK',
+                    'obj' => $positionNew
+                ];
+            }else{
+                return [
+                    'status' => 'NO'
+                ];
+            }
 
+        } catch (\Exception $ex){
+            return [
+                'status' => 'NO'
+            ];
+        }
     }
+
+
 
 
 

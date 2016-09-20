@@ -34,8 +34,12 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/user','UserManagementController@getViewUser');
         /*Post view*/
         Route::Post('/position','UserManagementController@getDataPosition');
+        Route::post('/update-position','UserManagementController@postUpdatePosition');
         Route::post('/create-position','UserManagementController@postCreatePosition');
+        Route::post('/delete-position','UserManagementController@postDeletePosition');
+
         Route::Post('/user','UserManagementController@getDataUser');
+
     });
     Route::group(['middleware' => 'CustomerManagement'], function () {
         //get View
