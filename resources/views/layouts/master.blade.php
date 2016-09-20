@@ -70,6 +70,7 @@
 <script src="{{ URL::to('src/dataTableFull/pdfmake-0.1.18/build/pdfmake.min.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/pdfmake-0.1.18/build/vfs_fonts.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/buttons.html5.min.js') }}"></script>
+<script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/JSZip-2.5.0/jszip.min.js') }}"></script>
 
 <!-- Hightcharts -->

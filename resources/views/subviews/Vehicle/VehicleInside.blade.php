@@ -291,6 +291,9 @@
                                     }
                                     doc.content[1].table.widths = [ '*', '*', '*', '*' ,'*','*'];
                                 }
+                            },
+                            {
+                                extend: 'colvis'
                             }
                         ]
                     })
