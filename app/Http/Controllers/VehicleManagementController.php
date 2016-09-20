@@ -41,7 +41,7 @@ class VehicleManagementController extends Controller
 
     public function postCRUDVehicleInside(Request $request)
     {
-        switch ($request->get('_action')){
+        switch ($request->get('_action')) {
             case 'add':
                 $vehicleNew = new Vehicle();
                 $vehicleNew->vehicleType_id = $request->get('_object')['vehicleType_id'];
@@ -50,9 +50,18 @@ class VehicleManagementController extends Controller
                 $vehicleNew->vehicleNumber = $request->get('_object')['vehicleNumber'];
                 $vehicleNew->size = $request->get('_object')['size'];
                 $vehicleNew->weight = $request->get('_object')['weight'];
-                if($vehicleNew->save())
-                    return 'Ok';
-                return 'Fail';
+                if ($vehicleNew->save()) {
+                    $vehicleRow = \DB::table('vehicles')
+                        ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                        ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+                        ->where('vehicles.id', $vehicleNew->id)
+                        ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')->get();
+                    return [
+                        'status' => 'Ok',
+                        'obj'    => $vehicleRow
+                    ];
+                }
+                return ['status' => 'Fail'];
                 break;
             case 'update':
                 $vehicleUpdate = Vehicle::findOrFail($request->get('_object')['id']);
@@ -62,14 +71,27 @@ class VehicleManagementController extends Controller
                 $vehicleUpdate->vehicleNumber = $request->get('_object')['vehicleNumber'];
                 $vehicleUpdate->size = $request->get('_object')['size'];
                 $vehicleUpdate->weight = $request->get('_object')['weight'];
-                if($vehicleUpdate->save())
-                    return 'Ok';
-                return 'Fail';
+                if ($vehicleUpdate->save()) {
+                    $vehicleRow = \DB::table('vehicles')
+                        ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                        ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+                        ->where('vehicles.id', $vehicleUpdate->id)
+                        ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')->get();
+                    return [
+                        'status' => 'Ok',
+                        'obj'    => $vehicleRow
+                    ];
+                }
+                return ['status' => 'Fail'];
                 break;
             case 'delete':
+                $vehicleDelete = Vehicle::findOrFail($request->get('_object'));
+                if ($vehicleDelete->delete())
+                    return ['status' => 'Ok'];
+                return ['status' => 'Fail'];
                 break;
             default:
-                return 'Fail';
+                return ['status' => 'Fail'];
                 break;
         }
     }

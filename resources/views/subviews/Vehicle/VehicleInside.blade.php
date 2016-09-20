@@ -52,7 +52,7 @@
                         <li class="active">Xe</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="vehicleInsideView.addNewVehicle();">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="vehicleInsideView.addVehicle();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -96,16 +96,10 @@
                 <div class="form-body">
                     <div class="col-md-12 ">
                         <div class="row ">
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="id"><b>Mã</b></label>
-                                    <input type="text" class="form-control"
-                                           id="id"
-                                           placeholder="Mã"
-                                           autofocus data-id>
-                                </div>
-                            </div>
-                            <div class="col-md-6 ">
+                            <div class="col-md-12 ">
+                                <input type="hidden" class="form-control"
+                                       id="id"
+                                       autofocus>
                                 <div class="form-group form-md-line-input">
                                     <label for="garage_id"><b>Mã nhà xe</b></label>
                                     <input type="text" class="form-control"
@@ -187,6 +181,7 @@
                 data: null,
                 current: null,
                 action: null,
+                idDelete: null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -224,12 +219,12 @@
                                 render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle"  onclick="vehicleInsideView.loadEdit('+full.id+')">';
+                                    tr += '<div class="btn btn-success  btn-circle" onclick="vehicleInsideView.editVehicle(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="vehicleInsideView.deleteVehicle(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -242,7 +237,7 @@
                             {
                                 extend: 'copyHtml5',
                                 exportOptions: {
-                                    columns: [ 0, ':visible' ]
+                                    columns: [0, ':visible']
                                 }
                             },
                             {
@@ -252,24 +247,23 @@
                                 },
                                 customize: function (xlsx) {
                                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                    console.log(sheet);
                                 }
                             },
                             {
                                 extend: 'pdfHtml5',
                                 message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
-                                customize: function ( doc ) {
-                                    doc.content.splice(0,1);
+                                customize: function (doc) {
+                                    doc.content.splice(0, 1);
                                     doc.styles.tableBodyEven.alignment = 'center';
                                     doc.styles.tableBodyOdd.alignment = 'center';
                                     doc.content.columnGap = 10;
                                     doc.pageOrientation = 'landscape';
-                                    for(var i = 0; i < doc.content[1].table.body.length;i++){
-                                        for(var j = 0; j < doc.content[1].table.body[i].length; j++){
-                                            doc.content[1].table.body[i].splice(6,1);
+                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                            doc.content[1].table.body[i].splice(6, 1);
                                         }
                                     }
-                                    doc.content[1].table.widths = [ '*', '*', '*', '*' ,'*','*'];
+                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
                                 }
                             },
                             {
@@ -278,49 +272,93 @@
                         ]
                     })
                 },
-                loadEdit: function(id) {
-                    vehicleInsideView.show();
-                    vehicleInsideView.current = _.clone(_.find(vehicleInsideView.data, function(o){
+                editVehicle: function (id) {
+                    vehicleInsideView.current = _.clone(_.find(vehicleInsideView.data, function (o) {
                         return o.id == id;
-                    }),true);
+                    }), true);
                     vehicleInsideView.fillCurrentObjectToForm();
-                },
-                fillCurrentObjectToForm: function(){
-                    for(var propertyName in vehicleInsideView.current){
-                        $("input[id=" + propertyName + "]").val(vehicleInsideView.current[propertyName]);
-                    }
                     vehicleInsideView.action = 'update';
                     vehicleInsideView.show();
                 },
-                fillFormDataToCurrentObject: function () {
-                    for(var propertyName in vehicleInsideView.current){
-                        vehicleInsideView.current[propertyName] = $("input[id=" + propertyName + "]").val();
-                    }
-                },
-                addNewVehicle: function () {
+                addVehicle: function () {
                     vehicleInsideView.action = 'add';
                     vehicleInsideView.show();
                 },
-                save : function () {
-                    vehicleInsideView.fillFormDataToCurrentObject();
-                    $.post(
-                        url + 'vehicle-inside/modify',
-                        {
-                            _token: _token,
-                            _action: vehicleInsideView.action,
-                            _object :  vehicleInsideView.current
-                        }, function (data) {
-                            vehicleInsideView.table.clear().rows.add(vehicleInsideView.data).draw();
-                        }
-                    );
-
-                    vehicleInsideView.clearInput();
+                deleteVehicle: function (id) {
+                    vehicleInsideView.action = 'delete';
+                    vehicleInsideView.idDelete = id;
+                    vehicleInsideView.save();
                 },
-                clearInput: function(){
-                    for(var propertyName in vehicleInsideView.current){
+                fillCurrentObjectToForm: function () {
+                    for (var propertyName in vehicleInsideView.current) {
+                        $("input[id=" + propertyName + "]").val(vehicleInsideView.current[propertyName]);
+                    }
+                },
+                fillFormDataToCurrentObject: function () {
+                    if (vehicleInsideView.action == 'add') {
+                        vehicleInsideView.current = {
+                            vehicleType_id: $("input[id='vehicleType_id']").val(),
+                            garage_id: $("input[id='garage_id']").val(),
+                            vehicleNumber: $("input[id='vehicleNumber']").val(),
+                            areaCode: $("input[id='areaCode']").val(),
+                            size: $("input[id='size']").val(),
+                            weight: $("input[id='weight']").val()
+                        }
+                    } else if (vehicleInsideView.action == 'update') {
+                        for (var propertyName in vehicleInsideView.current) {
+                            vehicleInsideView.current[propertyName] = $("input[id=" + propertyName + "]").val();
+                        }
+                    }
+                },
+                clearInput: function () {
+                    for (var propertyName in vehicleInsideView.current) {
                         $("input[id=" + propertyName + "]").val('');
                     }
                     vehicleInsideView.current = null;
+                },
+                save: function () {
+                    vehicleInsideView.fillFormDataToCurrentObject();
+
+                    var sendToServer = {
+                        _token: _token,
+                        _action: vehicleInsideView.action,
+                        _object: vehicleInsideView.current
+                    };
+                    if (vehicleInsideView.action == 'delete') {
+                        sendToServer._object = vehicleInsideView.idDelete;
+                    }
+                    $.post(
+                            url + 'vehicle-inside/modify',
+                            sendToServer
+                            , function (data) {
+                                if (data['status'] == 'Ok') {
+                                    switch (vehicleInsideView.action) {
+                                        case 'add':
+                                            vehicleInsideView.data.push(data['obj'][0]);
+                                            break;
+                                        case 'update':
+                                            var obj = _.find(vehicleInsideView.data, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var index = _.indexOf(vehicleInsideView.data, obj);
+                                            vehicleInsideView.data.splice(index, 1, data['obj'][0]);
+                                            vehicleInsideView.hide();
+                                            break;
+                                        case 'delete':
+                                            var obj = _.find(vehicleInsideView.data, function (o) {
+                                                return o.id == sendToServer._object;
+                                            });
+                                            var index = _.indexOf(vehicleInsideView.data, obj);
+                                            vehicleInsideView.data.splice(index, 1);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                vehicleInsideView.table.clear().rows.add(vehicleInsideView.data).draw();
+                            }
+                    );
+                    vehicleInsideView.clearInput();
                 }
             };
             vehicleInsideView.loadData();
