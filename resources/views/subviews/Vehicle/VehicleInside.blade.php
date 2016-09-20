@@ -52,7 +52,7 @@
                         <li class="active">Xe</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="vehicleInsideView.show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="vehicleInsideView.addNewVehicle();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <table class="table table-bordered table-hover" id="table-data">
+                    <table class="table table-bordered table-hover table-striped" id="table-data">
                         <thead>
                         <tr class="active">
                             <th>Mã vùng</th>
@@ -101,17 +101,15 @@
                                     <label for="id"><b>Mã</b></label>
                                     <input type="text" class="form-control"
                                            id="id"
-                                           name="id"
                                            placeholder="Mã"
                                            autofocus data-id>
                                 </div>
                             </div>
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="NumberVehicle"><b>Mã nhà xe</b></label>
+                                    <label for="garage_id"><b>Mã nhà xe</b></label>
                                     <input type="text" class="form-control"
-                                           id="NumberVehicle"
-                                           name="NumberVehicle"
+                                           id="garage_id"
                                            placeholder="Số xe">
                                 </div>
                             </div>
@@ -119,19 +117,17 @@
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="NumberVehicle"><b>Mã loại xe</b></label>
+                                    <label for="vehicleType_id"><b>Mã loại xe</b></label>
                                     <input type="text" class="form-control"
-                                           id="NumberVehicle"
-                                           name="NumberVehicle"
+                                           id="vehicleType_id"
                                            placeholder="Số xe">
                                 </div>
                             </div>
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="NumberVehicle"><b>Mã vùng</b></label>
+                                    <label for="areaCode"><b>Mã vùng</b></label>
                                     <input type="text" class="form-control"
-                                           id="NumberVehicle"
-                                           name="NumberVehicle"
+                                           id="areaCode"
                                            placeholder="Số xe">
                                 </div>
                             </div>
@@ -139,19 +135,17 @@
                         <div class="row">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="NumberVehicle"><b>Số xe</b></label>
+                                    <label for="vehicleNumber"><b>Số xe</b></label>
                                     <input type="text" class="form-control"
-                                           id="NumberVehicle"
-                                           name="NumberVehicle"
+                                           id="vehicleNumber"
                                            placeholder="Số xe">
                                 </div>
                             </div>
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Size"><b>Kích thước</b></label>
+                                    <label for="size"><b>Kích thước</b></label>
                                     <input type="text" class="form-control"
-                                           id="Size"
-                                           name="Size"
+                                           id="size"
                                            placeholder="Kích thước">
                                 </div>
                             </div>
@@ -159,21 +153,10 @@
                         <div class="row">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Kg"><b>Trọng tải</b></label>
+                                    <label for="weight"><b>Trọng tải</b></label>
                                     <input type="text" class="form-control"
-                                           id="Kg"
-                                           name="Kg"
+                                           id="weight"
                                            placeholder="Trọng tải">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="Driver"><b>Tài xế</b></label>
-                                    <input type="text" class="form-control"
-                                           id="Driver"
-                                           name="Driver"
-                                           placeholder="Tài xế">
                                 </div>
                             </div>
                         </div>
@@ -183,7 +166,7 @@
                         <div class="form-actions noborder">
                             <div class="form-group">
                                 <button type="button" class="btn btn-primary"
-                                        onclick="">
+                                        onclick="vehicleInsideView.save()">
                                     Hoàn tất
                                 </button>
                                 <button type="button" class="btn default" onclick="">Huỷ</button>
@@ -202,6 +185,8 @@
             vehicleInsideView = {
                 table: null,
                 data: null,
+                current: null,
+                action: null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -238,13 +223,9 @@
                             {data: 'weight'},
                             {
                                 render: function (data, type, full, meta) {
-                                    console.log(data);
-                                    console.log(type);
-                                    console.log(full);
-                                    console.log(meta);
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle"  onclick="vehicleInsideView.loadEdit(full.id)">';
+                                    tr += '<div class="btn btn-success  btn-circle"  onclick="vehicleInsideView.loadEdit('+full.id+')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -301,11 +282,39 @@
                 loadEdit: function(id) {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
-
-                    var current = _.find(vehicleInsideView.data, function(o){
-                        return o.id = id;
-                    });
-                }
+                    vehicleInsideView.current = _.clone(_.find(vehicleInsideView.data, function(o){
+                        return o.id == id;
+                    }),true);
+                    vehicleInsideView.fillCurrentObjectToForm();
+                },
+                fillCurrentObjectToForm: function(){
+                    for(var propertyName in vehicleInsideView.current){
+                        $("input[id=" + propertyName + "]").val(vehicleInsideView.current[propertyName]);
+                    }
+                    vehicleInsideView.action = 'update';
+                    vehicleInsideView.show();
+                },
+                fillFormDataToCurrentObject: function () {
+                    for(var propertyName in vehicleInsideView.current){
+                        vehicleInsideView.current[propertyName] = $("input[id=" + propertyName + "]").val();
+                    }
+                },
+                addNewVehicle: function () {
+                    vehicleInsideView.action = 'add';
+                    vehicleInsideView.show();
+                },
+                save : function () {
+                    $.post(
+                        url + 'vehicle-inside/modify',
+                        {
+                            _token: _token,
+                            _action: vehicleInsideView.action,
+                            _object :  vehicleInsideView.current
+                        },function (data) {
+                            console.log(data);
+                        }
+                    );
+                }    
             };
             vehicleInsideView.loadData();
         } else {
