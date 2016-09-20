@@ -367,46 +367,53 @@
                     });
                 },
                 loadData: function () {
-                    $.post(url + 'delivery-requirement', {_token: _token, fromDate: null, toDate: null}, function(listOrders){
+                    $.post(url + 'delivery-requirement', {
+                        _token: _token,
+                        fromDate: null,
+                        toDate: null
+                    }, function (listOrders) {
                         deliveryRequirementView.data = listOrders;
                         deliveryRequirementView.fillDataToDatatable(listOrders);
                     });
                 },
-                fillDataToDatatable: function(listOrders) {
+                fillDataToDatatable: function (listOrders) {
                     deliveryRequirementView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: listOrders,
-                        columns : [
-                            {data: 'vehicles_vehicleNumber' },
-                            {data: 'products_name' },
-                            {data: 'receivePlace' },
-                            {data: 'deliveryPlace' },
-                            {data: 'customers_fullName' },
-                            {data: 'cashRevenue' },
+                        columns: [
+                            {data: 'vehicles_vehicleNumber'},
+                            {data: 'products_name'},
+                            {data: 'receivePlace'},
+                            {data: 'deliveryPlace'},
+                            {data: 'customers_fullName'},
+                            {
+                                data: 'cashRevenue',
+                                render: $.fn.dataTable.render.number('.', ',', 0)
+                            },
                             {
                                 data: 'cashDelivery',
-                                render: $.fn.dataTable.render.number( '.', ',',0)
+                                render: $.fn.dataTable.render.number('.', ',', 0)
                             },
                             {
                                 data: 'cashReceive',
-                                render: $.fn.dataTable.render.number( '.', ',',0) 
+                                render: $.fn.dataTable.render.number('.', ',', 0)
                             },
                             {
                                 data: 'cashProfit',
-                                render: $.fn.dataTable.render.number( '.', ',',0) 
+                                render: $.fn.dataTable.render.number('.', ',', 0)
                             },
                             {
                                 data: 'receiver',
-                                render: $.fn.dataTable.render.number( '.', ',',0) 
+                                render: $.fn.dataTable.render.number('.', ',', 0)
                             },
                             {
                                 data: 'receiveDate',
-                                render: function(data, type, full, meta){
+                                render: function (data, type, full, meta) {
                                     return moment(data).format('DD/MM/YYYY');
                                 }
                             },
                             {
-                                render: function(){
+                                render: function () {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
                                     tr += '<div class="btn btn-success  btn-circle">';
@@ -424,17 +431,17 @@
                         ]
                     })
                 },
-                searchVehicle: function() {
-                    $.get(url + 'getAllVehicle',function (listVehicle) {
+                searchVehicle: function () {
+                    $.get(url + 'getAllVehicle', function (listVehicle) {
                         var row = "";
                         for (var i = 0; i < listVehicle.length; i++) {
                             var tr = "<tr>";
                             tr += "<td>" + listVehicle[i]['areaCode'] + "</td>";
-                            tr += "<td>"+ listVehicle[i]['vehicleNumber'] + "</td>";
+                            tr += "<td>" + listVehicle[i]['vehicleNumber'] + "</td>";
                             tr += "<td>" + listVehicle[i]['vehicleTypes_name'] + "</td>";
-                            tr += "<td>"+ listVehicle[i]['garages_name'] + "</td>";
+                            tr += "<td>" + listVehicle[i]['garages_name'] + "</td>";
                             tr += "<td>" + listVehicle[i]['size'] + "</td>";
-                            tr += "<td>"+ listVehicle[i]['weight'] + "</td>";
+                            tr += "<td>" + listVehicle[i]['weight'] + "</td>";
                             tr += "<td><button class='btn btn-xs btn-success' onclick=''><span class='glyphicon glyphicon-ok'></span></button></td>";
                             tr += "</tr>";
                             row += tr;
