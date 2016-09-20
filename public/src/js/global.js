@@ -1,6 +1,5 @@
 (function(){
     languageOptions = {
-        "decimal": "",
         "emptyTable": "Không có dữ liệu trên bảng",
         "info": "Hiển thị từ _START_ đến _END_ trong _TOTAL_ hàng",
         "infoEmpty": "Hiển thị từ 0 đến 0 trong 0 hàng",

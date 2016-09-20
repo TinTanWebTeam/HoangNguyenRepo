@@ -383,11 +383,28 @@
                             {data: 'deliveryPlace' },
                             {data: 'customers_fullName' },
                             {data: 'cashRevenue' },
-                            {data: 'cashDelivery' },
-                            {data: 'cashReceive' },
-                            {data: 'cashProfit' },
-                            {data: 'receiver' },
-                            {data: 'receiveDate' },
+                            {
+                                data: 'cashDelivery',
+                                render: $.fn.dataTable.render.number( '.', ',',0)
+                            },
+                            {
+                                data: 'cashReceive',
+                                render: $.fn.dataTable.render.number( '.', ',',0) 
+                            },
+                            {
+                                data: 'cashProfit',
+                                render: $.fn.dataTable.render.number( '.', ',',0) 
+                            },
+                            {
+                                data: 'receiver',
+                                render: $.fn.dataTable.render.number( '.', ',',0) 
+                            },
+                            {
+                                data: 'receiveDate',
+                                render: function(data, type, full, meta){
+                                    return moment(data).format('DD/MM/YYYY');
+                                }
+                            },
                             {
                                 render: function(){
                                     var tr = '';

@@ -59,6 +59,7 @@
 
 <!-- Moment -->
 <script src=" {{ URL::to('libs/moment/min/moment.min.js') }} "></script>
+<script src=" {{ URL::to('libs/moment/locale/vi.js') }} "></script>
 
 <!-- Datatables.net -->
 <script src="{{ URL::to('libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
