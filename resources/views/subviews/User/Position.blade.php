@@ -53,7 +53,7 @@
                         <li class="active">Chức vụ</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="PositionView.show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="PositionView.addNewPosition()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
             <form role="form" id="formPosition">
                 <div class="form-body">
                     <div class="form-group form-md-line-input" style="display:block">
-                        <input type="text" class="form-control" name="id" id="id" value="">
+                        <input type="text" class="form-control" id="id" value="">
                     </div>
                     <div class="col-md-12 ">
                         <div class="row ">
@@ -103,7 +103,6 @@
                                     <label for="code"><b>Mã</b></label>
                                     <input type="text" class="form-control"
                                            id="code"
-                                           name="code"
                                            placeholder="Mã chức vụ"
                                            autofocus>
                                 </div>
@@ -113,7 +112,6 @@
                                     <label for="name"><b>Chức vụ</b></label>
                                     <input type="text" class="form-control"
                                            id="name"
-                                           name="name"
                                            placeholder="Chức vụ">
                                 </div>
                             </div>
@@ -124,7 +122,6 @@
                                     <label for="description"><b>Mô ta</b></label>
                                     <input type="text" class="form-control"
                                            id="description"
-                                           name="description"
                                            placeholder="Mô tả">
                                 </div>
                             </div>
@@ -134,7 +131,7 @@
                         <div class="form-actions noborder">
                             <div class="form-group">
                                 <button type="button" class="btn btn-primary"
-                                        onclick="PositionView.addAndUpdate()">
+                                        onclick="PositionView.save()">
                                     Hoàn tất
                                 </button>
                                 <button type="button" class="btn default" onclick="">Huỷ</button>
@@ -155,9 +152,15 @@
             PositionView = {
                 table: null,
                 data: null,
-                data2: null,
-                current: null,
-                a
+                action: null,
+                current: {
+                    code: null,
+                    name: null,
+                    description: null,
+                    active: null,
+                    created_at: null,
+                    updated_at: null
+                },
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -169,17 +172,17 @@
                     });
 
                 },
-                clearInput: function() {
+                clearInput: function () {
                     if (PositionView.current)
                         for (var propertyName in PositionView.current) {
-                            $("input[name=" + propertyName + "]").val('');
+                            $("input[id=" + propertyName + "]").val('');
                         }
                 },
-                loadInput: function(){
-                    for (var propertyName in PositionView.current) {
-                        $("input[name=" + propertyName + "]").val(PositionView.current[propertyName]);
-                    }
-                },
+//                loadInput: function () {
+//                    for (var propertyName in PositionView.current) {
+//                        $("input[name=" + propertyName + "]").val(PositionView.current[propertyName]);
+//                    }
+//                },
                 loadData: function () {
                     $.post(url + 'position', {_token: _token, fromDate: null, toDate: null}, function (list) {
                         PositionView.data = list;
@@ -214,72 +217,129 @@
                         ]
                     })
                 },
+//                loadEdit: function (id) {
+//                    PositionView.current = _.clone(_.find(PositionView.data, function (o) {
+//                        return o.id == id
+//                    }), true);
+//                    $('.menu-toggle').hide();
+//                    $('#frmControl').slideDown();
+//                    PositionView.loadInput();
+//                },
+
                 loadEdit: function (id) {
-                    PositionView.current = _.clone(_.find(PositionView.data, function (o) {
-                        return o.id == id
-                    }), true);
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
-                    PositionView.loadInput();
+                    PositionView.current = _.clone(_.find(PositionView.data, function (o) {
+                        return o.id == id;
+                    }), true);
+                    PositionView.action = "update";
+                    PositionView.fillCurrentObjectToForm();
                 },
-                addAndUpdate: function () {
-                    if(PositionView.current === null || PositionView.current.id === null) {
-                        PositionView.current = {
-                            code : $("input[name=code]").val(),
-                            name : $("input[name=name]").val(),
-                            description : $("input[name=description]").val()
-                        };
-                        $.post(
-                                url + "create-position",
-                                {
-                                    _token: _token,
-                                    fromDate: null,
-                                    toDate: null,
-                                    dataPosition: PositionView.current
-                                },
-                                function (data) {
-
-                                    if (data['status'] === 'OK') {
-                                        PositionView.data.push(data['obj']);
-                                        PositionView.table.clear().rows.add(PositionView.data).draw();
-                                        PositionView.clearInput();
-                                    } else {
-                                        alert('tao moi k thanh cong');
-                                    }
-                                }
-                        );
-                    }else {
-                        PositionView.current.id = $("input[name=id]").val();
-                        PositionView.current.code = $("input[name=code]").val();
-                        PositionView.current.name = $("input[name=name]").val();
-                        PositionView.current.description = $("input[name=description]").val();
-                        $.post(
-                                url + "update-position",
-                                {
-                                    _token: _token,
-                                    fromDate: null,
-                                    toDate: null,
-                                    dataPosition: PositionView.current
-                                },
-                                function (data) {
-                                    if (data['status'] === 'OK') {
-                                        var test = _.find(PositionView.data, function (o) {
-                                            return o.id == PositionView.current.id
-                                        });
-                                        var index = _.indexOf(PositionView.data, test);
-                                        PositionView.data.splice(index, 1, PositionView.current);
-                                        PositionView.table.clear().rows.add(PositionView.data).draw();
-                                        PositionView.hide();
-                                        PositionView.current.id = null;
-                                    } else {
-                                        alert(' update k thanh cong');
-                                    }
-
-                                }
-                        );
+                fillCurrentObjectToForm: function () {
+                    for (var propertyName in PositionView.current) {
+                        $("input[id=" + propertyName + "]").val(PositionView.current[propertyName]);
                     }
+                    PositionView.show();
+                },
+                fillFormDataToCurrentObject: function () {
+                    for (var propertyName in PositionView.current) {
+                        PositionView.current[propertyName] = $("input[id=" + propertyName + "]").val();
+                    }
+                },
+                addNewPosition: function () {
+                    PositionView.action = 'add';
+                    PositionView.show();
+                },
+                save: function () {
+                    PositionView.fillFormDataToCurrentObject();
+                    $.post(
+                            url + 'position/modify',
+                            {
+                                _token: _token,
+                                _action: PositionView.action,
+                                _object: PositionView.current
+                            }, function (data) {
 
-                }
+                                PositionView.clearInput();
+
+                                if (PositionView.action === 'update') {
+                                    var obj = _.find(PositionView.data, function (o) {
+                                        return o.id == PositionView.current.id;
+                                    });
+                                    var index = _.indexOf(PositionView.data, obj);
+                                    PositionView.data.splice(index, 1, PositionView.current);
+                                    PositionView.table.clear().rows.add(PositionView.data).draw();
+                                    PositionView.hide();
+                                } else if (PositionView.action === 'add') {
+                                    PositionView.data.push(data['obj']);
+                                    PositionView.table.clear().rows.add(PositionView.data).draw();
+
+                                } else {
+
+                                }
+
+                            }
+                    );
+                },
+
+//                addAndUpdate: function () {
+//                    if(PositionView.current === null || PositionView.current.id === null) {
+//                        PositionView.current = {
+//                            code : $("input[name=code]").val(),
+//                            name : $("input[name=name]").val(),
+//                            description : $("input[name=description]").val()
+//                        };
+//                        $.post(
+//                                url + "create-position",
+//                                {
+//                                    _token: _token,
+//                                    fromDate: null,
+//                                    toDate: null,
+//                                    dataPosition: PositionView.current
+//                                },
+//                                function (data) {
+//
+//                                    if (data['status'] === 'OK') {
+//                                        PositionView.data.push(data['obj']);
+//                                        PositionView.table.clear().rows.add(PositionView.data).draw();
+//                                        PositionView.clearInput();
+//                                    } else {
+//                                        alert('tao moi k thanh cong');
+//                                    }
+//                                }
+//                        );
+//                    }else {
+//                        PositionView.current.id = $("input[name=id]").val();
+//                        PositionView.current.code = $("input[name=code]").val();
+//                        PositionView.current.name = $("input[name=name]").val();
+//                        PositionView.current.description = $("input[name=description]").val();
+//                        $.post(
+//                                url + "update-position",
+//                                {
+//                                    _token: _token,
+//                                    fromDate: null,
+//                                    toDate: null,
+//                                    dataPosition: PositionView.current
+//                                },
+//                                function (data) {
+//                                    if (data['status'] === 'OK') {
+//                                        var test = _.find(PositionView.data, function (o) {
+//                                            return o.id == PositionView.current.id
+//                                        });
+//                                        var index = _.indexOf(PositionView.data, test);
+//                                        PositionView.data.splice(index, 1, PositionView.current);
+//                                        PositionView.table.clear().rows.add(PositionView.data).draw();
+//                                        PositionView.hide();
+//                                        PositionView.current.id = null;
+//                                    } else {
+//                                        alert(' update k thanh cong');
+//                                    }
+//
+//                                }
+//                        );
+//                    }
+//
+//                }
             };
 
 

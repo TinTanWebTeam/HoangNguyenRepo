@@ -326,7 +326,6 @@
             vehicleInsideView.loadData();
         } else {
             vehicleInsideView.loadData();
-//            vehicleInsideView.fillDataToDatatable(vehicleInsideView.data);
         }
     });
 </script>
