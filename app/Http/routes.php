@@ -59,6 +59,9 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/vehicle-outside', 'VehicleManagementController@getViewVehicleOutside');
         //get Data
         Route::post('/vehicle-inside', 'VehicleManagementController@getDataVehicleInside');
+
+        //
+        Route::post('/vehicle-inside/modify', 'VehicleManagementController@postCRUDVehicleInside');
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');

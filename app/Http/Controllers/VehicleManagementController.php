@@ -38,4 +38,41 @@ class VehicleManagementController extends Controller
             ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')->get();
         return $vehicles;
     }
+
+    public function postCRUDVehicleInside(Request $request)
+    {
+        switch ($request->get('_action')){
+            case 'add':
+                $vehicleNew = new Vehicle();
+                $vehicleNew->vehicleType_id = $request->get('_object')['vehicleType_id'];
+                $vehicleNew->garage_id = $request->get('_object')['garage_id'];
+                $vehicleNew->areaCode = $request->get('_object')['areaCode'];
+                $vehicleNew->vehicleNumber = $request->get('_object')['vehicleNumber'];
+                $vehicleNew->size = $request->get('_object')['size'];
+                $vehicleNew->weight = $request->get('_object')['weight'];
+                if($vehicleNew->save())
+                    return 'Ok';
+                return 'Fail';
+                break;
+            case 'update':
+                $vehicleUpdate = Vehicle::findOrFail($request->get('_object')['id']);
+                $vehicleUpdate->vehicleType_id = $request->get('_object')['vehicleType_id'];
+                $vehicleUpdate->garage_id = $request->get('_object')['garage_id'];
+                $vehicleUpdate->areaCode = $request->get('_object')['areaCode'];
+                $vehicleUpdate->vehicleNumber = $request->get('_object')['vehicleNumber'];
+                $vehicleUpdate->size = $request->get('_object')['size'];
+                $vehicleUpdate->weight = $request->get('_object')['weight'];
+                if($vehicleUpdate->save())
+                    return 'Ok';
+                return 'Fail';
+                break;
+            case 'delete':
+                break;
+            default:
+                return 'Fail';
+                break;
+        }
+    }
+
+
 }

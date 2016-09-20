@@ -201,7 +201,6 @@
                         vehicleInsideView.data = list;
                         vehicleInsideView.fillDataToDatatable(list);
                     });
-
                 },
                 localSearch: function () {
                     var dataSearch = _.filter(vehicleInsideView.data, function (o) {
@@ -280,8 +279,7 @@
                     })
                 },
                 loadEdit: function(id) {
-                    $('.menu-toggle').hide();
-                    $('#frmControl').slideDown();
+                    vehicleInsideView.show();
                     vehicleInsideView.current = _.clone(_.find(vehicleInsideView.data, function(o){
                         return o.id == id;
                     }),true);
@@ -304,17 +302,26 @@
                     vehicleInsideView.show();
                 },
                 save : function () {
+                    vehicleInsideView.fillFormDataToCurrentObject();
                     $.post(
                         url + 'vehicle-inside/modify',
                         {
                             _token: _token,
                             _action: vehicleInsideView.action,
                             _object :  vehicleInsideView.current
-                        },function (data) {
-                            console.log(data);
+                        }, function (data) {
+                            vehicleInsideView.table.clear().rows.add(vehicleInsideView.data).draw();
                         }
                     );
-                }    
+
+                    vehicleInsideView.clearInput();
+                },
+                clearInput: function(){
+                    for(var propertyName in vehicleInsideView.current){
+                        $("input[id=" + propertyName + "]").val('');
+                    }
+                    vehicleInsideView.current = null;
+                }
             };
             vehicleInsideView.loadData();
         } else {
