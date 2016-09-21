@@ -19,7 +19,6 @@ class ValidateController extends Controller
             'code.required' => 'Trường mã bắt buộc nhập',
             'name.required' => 'Trường tên bắt buộc nhập'
         ];
-
         return Validator::make($data,$rules,$messages);
     }
 }

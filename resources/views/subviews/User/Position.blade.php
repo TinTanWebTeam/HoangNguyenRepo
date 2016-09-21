@@ -290,9 +290,7 @@
                             code: "delete",
                             name: "delete"
                         };
-                        console.log ( sendToServer._object);
                     }
-
                     $.post(
                             url + 'position/modify',
                             sendToServer
