@@ -44,7 +44,7 @@ class UserManagementController extends Controller
     public function postModifyPosition(Request $request){
         $validateResult = ValidateController::ValidatePositionUpdate($request->get('_object'));
         if($validateResult->fails()){
-            return ['status' => 'NO'];
+            return ['status' => 'Fail'];
         }else{
             switch ($request->get('_action')) {
                 case "add":

@@ -195,6 +195,10 @@
         if (typeof (userView) === 'undefined') {
             userView = {
                 table: null,
+                data: null,
+                action: null,
+                idDelete: null,
+                current: null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -210,6 +214,7 @@
                         userView.fillDataToDatatable(list);
                     });
                 },
+
                 fillDataToDatatable: function (data) {
                     userView.table = $('#table-data').DataTable({
                         language: languageOptions,

@@ -68,7 +68,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <ol class="breadcrumb">
-                        <li><a href="javascript:;">Trang ch?</a></li>
+                        <li><a href="javascript:;">Trang chủ</a></li>
                         <li><a href="javascript:;">QL người dùng</a></li>
                         <li class="active">Chức vụ</li>
                     </ol>
@@ -154,7 +154,7 @@
                                         onclick="PositionView.save()">
                                     Hoàn tất
                                 </button>
-                                <button type="button" class="btn default" onclick="PositionView.cancel()" >Hủy</button>
+                                <button type="button" class="btn default" onclick="PositionView.cancel()">Hủy</button>
                             </div>
                         </div>
                     </div>
@@ -187,9 +187,9 @@
 
                 },
                 cancel: function () {
-                    if(PositionView.action == 'add'){
+                    if (PositionView.action == 'add') {
                         PositionView.clearInput();
-                    }else{
+                    } else {
                         PositionView.fillCurrentObjectToForm();
                     }
                 },
@@ -303,16 +303,28 @@
                             , function (data) {
                                 if (data['status'] == 'Ok') {
                                     switch (PositionView.action) {
-                                        case 'add':
-                                            PositionView.data.push(data['obj']);
+                                        case'add' :
+                                            if (data['status'] == 'Ok') {
+                                                $("div#modalConfirm").modal("show");
+                                                $("div#modalContent").empty().append("Thêm mới thành công");
+                                                $("button[name=modalAgree]").hide();
+                                                PositionView.data.push(data['obj']);
+                                            }
                                             break;
+
                                         case 'update':
-                                            var obj = _.find(PositionView.data, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var index = _.indexOf(PositionView.data, obj);
-                                            PositionView.data.splice(index, 1, data['obj']);
-                                            PositionView.hide();
+                                            if (data['status'] == 'Ok') {
+                                                PositionView.hide();
+                                                $("div#modalConfirm").modal("show");
+                                                $("div#modalContent").empty().append("Cập nhật thành công");
+                                                $("button[name=modalAgree]").hide();
+                                                var obj = _.find(PositionView.data, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var index = _.indexOf(PositionView.data, obj);
+                                                PositionView.data.splice(index, 1, data['obj']);
+
+                                            }
                                             break;
                                         case 'delete':
                                             var obj = _.find(PositionView.data, function (o) {
