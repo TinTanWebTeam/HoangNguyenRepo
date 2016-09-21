@@ -35,50 +35,9 @@ class UserManagementController extends Controller
         return $position;
     }
 
-    public function postUpdatePosition(Request $request){
-
-        try{
-            $result = Position::findOrFail($request->get('dataPosition')['id']);
-            $result->name =$request->get('dataPosition')['name'];
-            $result->code =$request->get('dataPosition')['code'];
-            $result->description =$request->get('dataPosition')['description'];
-            if($result->save())
-                return ['status' => 'OK'];
-            else
-                return ['status' => 'NO'];
-        } catch (\Exception $ex){
-            return ['status' => 'NO'];
-        }
-    }
-
-    public function postCreatePosition(Request $request){
-
-        try{
-            $positionNew = new Position();
-            $positionNew->name = $request->get('dataPosition')['name'];
-            $positionNew->code = $request->get('dataPosition')['code'];
-            $positionNew->description = $request->get('dataPosition')['description'];
-            if($positionNew->save()){
-                return [
-                    'status' => 'OK',
-                    'obj' => $positionNew
-                ];
-            }else{
-                return [
-                    'status' => 'NO'
-                ];
-            }
-
-        } catch (\Exception $ex){
-            return [
-                'status' => 'NO'
-            ];
-        }
-    }
     public function postModifyPosition(Request $request){
         $validateResult = ValidateController::ValidatePositionUpdate($request->get('_object'));
         if($validateResult->fails()){
-            var_dump($validateResult->errors());
             return ['status' => 'NO'];
         }else{
             switch ($request->get('_action')) {
@@ -88,32 +47,38 @@ class UserManagementController extends Controller
                         $positionNew->name = $request->get('_object')['name'];
                         $positionNew->code = $request->get('_object')['code'];
                         $positionNew->description = $request->get('_object')['description'];
-                        if($positionNew->save())
-                            return ['status' => 'OK',
-                                'obj' => $positionNew
+                        if ($positionNew->save())
+                            return ['status' => 'Ok',
+                                    'obj'    => $positionNew
                             ];
                         else
-                            return ['status' => 'NOs'];
-                    }catch (\Exception $ex){
-                        return ['status' => 'NO'];
+                            return ['status' => 'Fail'];
+                    } catch (Exception $ex) {
+                        return ['status' => 'Fail'];
                     }
                     break;
                 case "update":
-                    try{
+                    try {
                         $result = Position::findOrFail($request->get('_object')['id']);
-                        $result->name =$request->get('_object')['name'];
-                        $result->code =$request->get('_object')['code'];
-                        $result->description =$request->get('_object')['description'];
-                        if($result->save())
-                            return ['status' => 'OK'];
+                        $result->name = $request->get('_object')['name'];
+                        $result->code = $request->get('_object')['code'];
+                        $result->description = $request->get('_object')['description'];
+                        if ($result->save())
+                            return [
+                                'status' => 'Ok',
+                                'obj'    => $result
+                            ];
                         else
-                            return ['status' => 'NO'];
-                    } catch (\Exception $ex){
-                        return ['status' => 'NO'];
+                            return ['status' => 'Fail'];
+                    } catch (Exception $ex) {
+                        return ['status' => 'Fail'];
                     }
                     break;
                 case "delete":
-                    echo "xxoa";
+                    $positionDelete = Position::findOrFail($request->get('_object')['id']);
+                    if ($positionDelete->delete())
+                        return ['status' => 'Ok'];
+                    return ['status' => 'Fail'];
                     break;
                 default:
                     break;

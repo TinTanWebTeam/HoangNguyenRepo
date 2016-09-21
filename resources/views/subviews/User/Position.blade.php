@@ -15,7 +15,7 @@
     }
 
     .fixed {
-        top: 72px;
+        top: 76px;
         position: fixed;
         right: 20px;
         z-index: 2;
@@ -40,6 +40,26 @@
     }
 
 </style>
+<div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" name="modalClose"
+                        onclick="PositionView.cancelDelete()">Hủy
+                </button>
+                <button type="button" class="btn green" name="modalAgree"
+                        onclick="PositionView.deletePosition()">Ðồng ý
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+{{--End Modal--}}
+
+
 <!-- start View list -->
 <div class="row">
     <div class="col-md-12">
@@ -48,7 +68,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <ol class="breadcrumb">
-                        <li><a href="javascript:;">Trang chủ</a></li>
+                        <li><a href="javascript:;">Trang ch?</a></li>
                         <li><a href="javascript:;">QL người dùng</a></li>
                         <li class="active">Chức vụ</li>
                     </ol>
@@ -68,7 +88,7 @@
                             <th>Mã</th>
                             <th>Chức vụ</th>
                             <th>Mô tả</th>
-                            <th>Sửa/ Xóa</th>
+                            <th>Sửa / Xóa</th>
                         </tr>
                         </thead>
                         <tbody id="tbodyPackageList">
@@ -90,10 +110,10 @@
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="panel-body portlet-body">
             <form role="form" id="formPosition">
                 <div class="form-body">
-                    <div class="form-group form-md-line-input" style="display:block">
+                    <div class="form-group form-md-line-input" style="display:none">
                         <input type="text" class="form-control" id="id" value="">
                     </div>
                     <div class="col-md-12 ">
@@ -119,7 +139,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="description"><b>Mô ta</b></label>
+                                    <label for="description"><b>Mô tả</b></label>
                                     <input type="text" class="form-control"
                                            id="description"
                                            placeholder="Mô tả">
@@ -134,7 +154,7 @@
                                         onclick="PositionView.save()">
                                     Hoàn tất
                                 </button>
-                                <button type="button" class="btn default" onclick="">Huỷ</button>
+                                <button type="button" class="btn default" onclick="">Hủy</button>
                             </div>
                         </div>
                     </div>
@@ -153,14 +173,8 @@
                 table: null,
                 data: null,
                 action: null,
-                current: {
-                    code: null,
-                    name: null,
-                    description: null,
-                    active: null,
-                    created_at: null,
-                    updated_at: null
-                },
+                idDelete: null,
+                current: null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -178,11 +192,6 @@
                             $("input[id=" + propertyName + "]").val('');
                         }
                 },
-//                loadInput: function () {
-//                    for (var propertyName in PositionView.current) {
-//                        $("input[name=" + propertyName + "]").val(PositionView.current[propertyName]);
-//                    }
-//                },
                 loadData: function () {
                     $.post(url + 'position', {_token: _token, fromDate: null, toDate: null}, function (list) {
                         PositionView.data = list;
@@ -202,12 +211,12 @@
                                 render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle" onclick="PositionView.loadEdit(' + full.id + ')">';
+                                    tr += '<div class="btn btn-success  btn-circle" onclick="PositionView.editPosition(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="PositionView.msgDelete(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -217,59 +226,107 @@
                         ]
                     })
                 },
-                loadEdit: function (id) {
-                    $('.menu-toggle').hide();
-                    $('#frmControl').slideDown();
+                editPosition: function (id) {
                     PositionView.current = _.clone(_.find(PositionView.data, function (o) {
                         return o.id == id;
                     }), true);
                     PositionView.action = "update";
                     PositionView.fillCurrentObjectToForm();
+                    PositionView.show();
                 },
+
                 fillCurrentObjectToForm: function () {
                     for (var propertyName in PositionView.current) {
                         $("input[id=" + propertyName + "]").val(PositionView.current[propertyName]);
                     }
                     PositionView.show();
                 },
+
                 fillFormDataToCurrentObject: function () {
-                    for (var propertyName in PositionView.current) {
-                        PositionView.current[propertyName] = $("input[id=" + propertyName + "]").val();
+                    if (PositionView.action == 'add') {
+                        PositionView.current = {
+                            code: $("input[id='code']").val(),
+                            name: $("input[id='name']").val(),
+                            description: $("input[id='description']").val(),
+                        }
+                    } else if (PositionView.action == 'update') {
+                        for (var propertyName in PositionView.current) {
+                            PositionView.current[propertyName] = $("input[id=" + propertyName + "]").val();
+                        }
                     }
                 },
                 addNewPosition: function () {
                     PositionView.action = 'add';
                     PositionView.show();
                 },
+                msgDelete: function (id) {
+                    if (id) {
+                        PositionView.idDelete = id;
+                        $("div#modalConfirm").modal("show");
+                        $("div#modalContent").empty().append("Bạn có muốn xóa ?");
+                        $("button[name=modalAgree]").show();
+                    }
+                },
+                cancelDelete: function () {
+                    PositionView.idDelete = null;
+                    $("#modalConfirm").modal('hide');
+                },
+                deletePosition: function () {
+                    PositionView.action = 'delete';
+                    PositionView.save();
+                    $("#modalConfirm").modal('hide');
+                },
+
                 save: function () {
                     PositionView.fillFormDataToCurrentObject();
+                    var sendToServer = {
+                        _token: _token,
+                        _action: PositionView.action,
+                        _object: PositionView.current
+                    };
+                    if (PositionView.action == 'delete') {
+                        sendToServer._object = {
+                            id: PositionView.idDelete,
+                            code: "delete",
+                            name: "delete"
+                        };
+                        console.log ( sendToServer._object);
+                    }
+
                     $.post(
                             url + 'position/modify',
-                            {
-                                _token: _token,
-                                _action: PositionView.action,
-                                _object: PositionView.current
-                            }, function (data) {
-
-                                PositionView.clearInput();
-
-                                if (PositionView.action === 'update') {
-                                    var obj = _.find(PositionView.data, function (o) {
-                                        return o.id == PositionView.current.id;
-                                    });
-                                    var index = _.indexOf(PositionView.data, obj);
-                                    PositionView.data.splice(index, 1, PositionView.current);
-                                    PositionView.table.clear().rows.add(PositionView.data).draw();
-                                    PositionView.hide();
-                                } else if (PositionView.action === 'add') {
-                                    PositionView.data.push(data['obj']);
-                                    PositionView.table.clear().rows.add(PositionView.data).draw();
-                                } else {
-
+                            sendToServer
+                            , function (data) {
+                                if (data['status'] == 'Ok') {
+                                    switch (PositionView.action) {
+                                        case 'add':
+                                            PositionView.data.push(data['obj']);
+                                            break;
+                                        case 'update':
+                                            var obj = _.find(PositionView.data, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var index = _.indexOf(PositionView.data, obj);
+                                            PositionView.data.splice(index, 1, data['obj']);
+                                            PositionView.hide();
+                                            break;
+                                        case 'delete':
+                                            var obj = _.find(PositionView.data, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var index = _.indexOf(PositionView.data, obj);
+                                            PositionView.data.splice(index, 1);
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 }
+                                PositionView.table.clear().rows.add(PositionView.data).draw();
                             }
                     );
-                },
+                    PositionView.clearInput();
+
+                }
             };
             PositionView.loadData();
         } else {

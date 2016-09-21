@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+
 
 class ValidateController extends Controller
 {
@@ -18,6 +19,7 @@ class ValidateController extends Controller
             'code.required' => 'Trường mã bắt buộc nhập',
             'name.required' => 'Trường tên bắt buộc nhập'
         ];
+
         return Validator::make($data,$rules,$messages);
     }
 }
