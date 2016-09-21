@@ -6,7 +6,7 @@ use App\Position;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\ValidateController;
 use App\Http\Requests;
 use App\Role;
 
@@ -76,44 +76,49 @@ class UserManagementController extends Controller
         }
     }
     public function postModifyPosition(Request $request){
-        switch ($request->get('_action')) {
-            case "add":
-                try {
-                    $positionNew = new Position();
-                    $positionNew->name = $request->get('_object')['name'];
-                    $positionNew->code = $request->get('_object')['code'];
-                    $positionNew->description = $request->get('_object')['description'];
-                    if($positionNew->save())
-                        return ['status' => 'OK',
-                            'obj' => $positionNew
-                        ];
-                    else
-                        return ['status' => 'NOs'];
-                }catch (\Exception $ex){
-                    return ['status' => 'NO'];
-                }
-                break;
-            case "update":
-                try{
-                    $result = Position::findOrFail($request->get('_object')['id']);
-                    $result->name =$request->get('_object')['name'];
-                    $result->code =$request->get('_object')['code'];
-                    $result->description =$request->get('_object')['description'];
-                    if($result->save())
-                        return ['status' => 'OK'];
-                    else
+        $validateResult = ValidateController::ValidatePositionUpdate($request->get('_object'));
+        if($validateResult->fails()){
+            var_dump($validateResult->errors());
+            return ['status' => 'NO'];
+        }else{
+            switch ($request->get('_action')) {
+                case "add":
+                    try {
+                        $positionNew = new Position();
+                        $positionNew->name = $request->get('_object')['name'];
+                        $positionNew->code = $request->get('_object')['code'];
+                        $positionNew->description = $request->get('_object')['description'];
+                        if($positionNew->save())
+                            return ['status' => 'OK',
+                                'obj' => $positionNew
+                            ];
+                        else
+                            return ['status' => 'NOs'];
+                    }catch (\Exception $ex){
                         return ['status' => 'NO'];
-                } catch (\Exception $ex){
-                    return ['status' => 'NO'];
-                }
-                break;
-            case "delete":
-                echo "xxoa";
-                break;
-            default:
-                break;
+                    }
+                    break;
+                case "update":
+                    try{
+                        $result = Position::findOrFail($request->get('_object')['id']);
+                        $result->name =$request->get('_object')['name'];
+                        $result->code =$request->get('_object')['code'];
+                        $result->description =$request->get('_object')['description'];
+                        if($result->save())
+                            return ['status' => 'OK'];
+                        else
+                            return ['status' => 'NO'];
+                    } catch (\Exception $ex){
+                        return ['status' => 'NO'];
+                    }
+                    break;
+                case "delete":
+                    echo "xxoa";
+                    break;
+                default:
+                    break;
+            }
         }
-
     }
 
 
