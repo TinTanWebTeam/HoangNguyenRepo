@@ -6,9 +6,10 @@ use App\Position;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
-use App\Http\Controllers\ValidateController;
+
 use App\Http\Requests;
 use App\Role;
+use Mockery\CountValidator\Exception;
 
 class UserManagementController extends Controller
 {
@@ -18,11 +19,16 @@ class UserManagementController extends Controller
         return view('subviews.User.User', ['roles' => $roles]);
     }
     public function getDataUser(){
-        $users = \DB::table('users')
-            ->join('positions', 'users.position_id', '=', 'positions.id')
-            ->select('users.*', 'positions.name as positions_name')
-            ->get();
-        return $users;
+        try {
+            $users = \DB::table('users')
+                ->join('positions', 'users.position_id', '=', 'positions.id')
+                ->select('users.*', 'positions.name as positions_name')
+                ->get();
+            return $users;
+        }catch (Exception $ex){
+            return $ex;
+        }
+
     }
 
     public  function getViewPosition(){

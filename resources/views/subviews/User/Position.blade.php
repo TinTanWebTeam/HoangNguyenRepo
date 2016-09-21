@@ -154,7 +154,7 @@
                                         onclick="PositionView.save()">
                                     Hoàn tất
                                 </button>
-                                <button type="button" class="btn default" onclick="">Hủy</button>
+                                <button type="button" class="btn default" onclick="PositionView.cancel()" >Hủy</button>
                             </div>
                         </div>
                     </div>
@@ -186,11 +186,26 @@
                     });
 
                 },
+                cancel: function () {
+                    if(PositionView.action == 'add'){
+                        PositionView.clearInput();
+                    }else{
+                        PositionView.fillCurrentObjectToForm();
+                    }
+                },
                 clearInput: function () {
                     if (PositionView.current)
                         for (var propertyName in PositionView.current) {
                             $("input[id=" + propertyName + "]").val('');
                         }
+                },
+                editPosition: function (id) {
+                    PositionView.current = _.clone(_.find(PositionView.data, function (o) {
+                        return o.id == id;
+                    }), true);
+                    PositionView.action = "update";
+                    PositionView.fillCurrentObjectToForm();
+                    PositionView.show();
                 },
                 loadData: function () {
                     $.post(url + 'position', {_token: _token, fromDate: null, toDate: null}, function (list) {
@@ -226,15 +241,6 @@
                         ]
                     })
                 },
-                editPosition: function (id) {
-                    PositionView.current = _.clone(_.find(PositionView.data, function (o) {
-                        return o.id == id;
-                    }), true);
-                    PositionView.action = "update";
-                    PositionView.fillCurrentObjectToForm();
-                    PositionView.show();
-                },
-
                 fillCurrentObjectToForm: function () {
                     for (var propertyName in PositionView.current) {
                         $("input[id=" + propertyName + "]").val(PositionView.current[propertyName]);
