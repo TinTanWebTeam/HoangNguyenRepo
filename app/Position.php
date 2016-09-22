@@ -8,7 +8,6 @@ class Position extends Model
 {
     protected $table = 'positions';
     protected $fillable = [
-        'code',
         'name',
         'description',
         'active'
