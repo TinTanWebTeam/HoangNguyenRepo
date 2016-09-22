@@ -1,38 +1,12 @@
 <style>
-    .btn-del-edit {
-        float: left;
-        padding-right: 5px;
-    }
-
     #frmControl {
         z-index: 3;
         position: fixed;
-        top: 27%;
+        top: 45%;
         display: none;
         right: 0px;
         width: 40%;
         height: 100%;
-    }
-
-    .fixed {
-        top: 72px;
-        position: fixed;
-        right: 20px;
-        z-index: 2;
-    }
-
-    .menu-toggles {
-        cursor: pointer
-    }
-
-    .icon-center {
-        line-height: 130%;
-        padding-left: 3%;
-        font-size: 13px;
-    }
-
-    ol.breadcrumb {
-        border-bottom: 2px solid #e7e7e7
     }
 
     div.col-lg-12 {
@@ -75,7 +49,6 @@
                         </thead>
                         <tbody>
 
-
                         </tbody>
                     </table>
                 </div>
@@ -96,28 +69,46 @@
                 <div class="form-body">
                     <div class="col-md-12 ">
                         <div class="row ">
-                            <div class="col-md-12 ">
+                            <div class="col-md-6 ">
                                 <input type="hidden" class="form-control"
                                        id="id"
                                        autofocus>
                                 <div class="form-group form-md-line-input">
-                                    <label for="garage_id"><b>Mã nhà xe</b></label>
-                                    <input type="hidden" id="garage_id">
-                                    <input type="text" class="form-control"
-                                           id="garages_name"
-                                           placeholder="Số xe" ondblclick="vehicleInsideView.searchGarage()">
+                                    <label for="garage_id"><b>Nhà xe</b></label>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <input type="hidden" id="garage_id">
+                                            <input type="text" class="form-control"
+                                                   id="garages_name"
+                                                   placeholder="Số xe" ondblclick="vehicleInsideView.searchGarage()">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="btn btn-primary btn-sm btn-circle" onclick="vehicleInsideView.addGarage()">
+                                                <i class="glyphicon glyphicon-plus"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input">
+                                    <label for="vehicleType_id"><b>Loại xe</b></label>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <select class="form-control" id="vehicleType_id">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="btn btn-primary btn-sm btn-circle" onclick="vehicleInsideView.addVehicleType()">
+                                                <i class="glyphicon glyphicon-plus"></i>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row ">
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="vehicleType_id"><b>Mã loại xe</b></label>
-                                    <input type="text" class="form-control"
-                                           id="vehicleType_id"
-                                           placeholder="Số xe">
-                                </div>
-                            </div>
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
                                     <label for="areaCode"><b>Mã vùng</b></label>
@@ -126,8 +117,6 @@
                                            placeholder="Số xe">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
                                     <label for="vehicleNumber"><b>Số xe</b></label>
@@ -136,6 +125,8 @@
                                            placeholder="Số xe">
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
                                     <label for="size"><b>Kích thước</b></label>
@@ -144,8 +135,6 @@
                                            placeholder="Kích thước">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
                                     <label for="weight"><b>Trọng tải</b></label>
@@ -155,7 +144,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="col-md-6">
                         <div class="form-actions noborder">
@@ -175,8 +163,7 @@
 </div> <!-- end #frmControl -->
 
 <!-- Modal garages -->
-
-<div id="modal-garage" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div id="modal-garage" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -187,7 +174,7 @@
             </div>
             <div class="modal-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="table-garage">
                         <thead>
                         <tr>
                             <th>Tên nhà xe</th>
@@ -197,7 +184,7 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody id="garage-table-body">
+                        <tbody>
                         </tbody>
                     </table>
                 </div>
@@ -205,13 +192,139 @@
         </div>
     </div>
 </div>
+<!-- end Modal garages -->
 
+<!-- Modal add garage -->
+<div id="modal-addGarage" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Thêm nhà xe</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row ">
+                        <div class="col-md-6 ">
+                            <div class="form-group form-md-line-input">
+                                <label for="NameHouseVehicle"><b>Tên nhà xe</b></label>
+                                <input type="text" class="form-control"
+                                       id="NameHouseVehicle"
+                                       name="NameHouseVehicle"
+                                       placeholder="Tên nhà xe">
+                            </div>
+                        </div>
+                        <div class="col-md-6 ">
+                            <div class="form-group form-md-line-input">
+                                <label for="Name"><b>Người liên hệ</b></label>
+                                <input type="text" class="form-control"
+                                       id="Name"
+                                       name="Name"
+                                       placeholder="Người liên hệ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-6 ">
+                            <div class="form-group form-md-line-input ">
+                                <label for="Telephone"><b>Số điện thoại</b></label>
+                                <input type="text" class="form-control"
+                                       id="Telephone"
+                                       name="Telephone"
+                                       placeholder="090..">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-md-line-input">
+                                <label for="Adress"><b>Địa chỉ</b></label>
+                                <input type="text" class="form-control"
+                                       id="Adress"
+                                       name="Adress"
+                                       placeholder="Địa chỉ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-offset-8 col-md-4">
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal add garages -->
+
+<!-- Modal add vehicleTypes -->
+<div id="modal-addVehicleType" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Thêm loại xe</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row ">
+                        <div class="col-md-12">
+                            <div class="form-group form-md-line-input">
+                                <label for="NameHouseVehicle"><b>Tên loại xe</b></label>
+                                <input type="text" class="form-control"
+                                       id="NameHouseVehicle"
+                                       name="NameHouseVehicle"
+                                       placeholder="Tên nhà xe">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-12">
+                            <div class="form-group form-md-line-input">
+                                <label for="Name"><b>Mô tả</b></label>
+                                <textarea name="" id="" cols="10" rows="3" class="form-control">
+
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-offset-8 col-md-4">
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal add vehicleTypes -->
 
 <script>
     $(function () {
         if (typeof (vehicleInsideView) === 'undefined') {
             vehicleInsideView = {
                 table: null,
+                tableGarage: null,
                 data: null,
                 current: null,
                 action: null,
@@ -226,9 +339,11 @@
                     });
                 },
                 loadData: function () {
-                    $.post(url + 'vehicle-inside', {_token: _token, fromDate: null, toDate: null}, function (list) {
-                        vehicleInsideView.data = list;
-                        vehicleInsideView.fillDataToDatatable(list);
+                    $.get(url + 'vehicle-inside/getData', function (list) {
+                        vehicleInsideView.data = list['vehicles'];
+                        vehicleInsideView.fillDataToDatatable(list['vehicles']);
+
+                        vehicleInsideView.loadSelectBox(list['vehicleTypes']);
                     });
                 },
                 localSearch: function () {
@@ -396,20 +511,44 @@
                 },
                 searchGarage: function () {
                     $.get(url + 'vehicle-inside/getAllGarage', function (listGarage) {
-                        var row = "";
-                        for (var i = 0; i < listGarage.length; i++) {
-                            var tr = "<tr>";
-                            tr += "<td>" + listGarage[i]['name'] + "</td>";
-                            tr += "<td>" + listGarage[i]['contactor'] + "</td>";
-                            tr += "<td>" + listGarage[i]['address'] + "</td>";
-                            tr += "<td>" + listGarage[i]['phone'] + "</td>";
-                            tr += "<td><button class='btn btn-xs btn-success' onclick=''><span class='glyphicon glyphicon-ok'></span></button></td>";
-                            tr += "</tr>";
-                            row += tr;
-                        }
-                        $("#garage-table-body").empty().append(row);
+                        vehicleInsideView.tableGarage = $('#table-garage').DataTable({
+                            language: languageOptions,
+                            data: listGarage,
+                            columns: [
+                                {data: 'name'},
+                                {data: 'contactor'},
+                                {data: 'address'},
+                                {data: 'phone'},
+                                {
+                                    render: function () {
+                                        var tr = "";
+                                        tr += "<div class='radio'>";
+                                        tr += "<label><input type='radio'></label>";
+                                        tr += "</div>";
+                                        return tr;
+                                    }
+                                }
+                            ]
+                        })
                     });
                     $("#modal-garage").modal("show");
+                    vehicleInsideView.tableGarage.destroy();
+                },
+                loadSelectBox: function(lstVehicleType){
+                    var select = document.getElementById("vehicleType_id");
+                    for(var i = 0; i < lstVehicleType.length; i++) {
+                        var opt = lstVehicleType[i]['name'];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = lstVehicleType[i]['id'];
+                        select.appendChild(el);
+                    }
+                },
+                addGarage: function() {
+                    $("#modal-addGarage").modal("show");
+                },
+                addVehicleType: function() {
+                    $("#modal-addVehicleType").modal("show");
                 }
             };
             vehicleInsideView.loadData();

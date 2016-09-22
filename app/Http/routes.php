@@ -55,7 +55,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/vehicle-inside', 'VehicleManagementController@getViewVehicleInside');
         Route::get('/vehicle-outside', 'VehicleManagementController@getViewVehicleOutside');
         //get Data
-        Route::post('/vehicle-inside', 'VehicleManagementController@getDataVehicleInside');
+        Route::get('/vehicle-inside/getData', 'VehicleManagementController@getDataVehicleInside');
 
         //
         Route::post('/vehicle-inside/modify', 'VehicleManagementController@postModifyVehicleInside');

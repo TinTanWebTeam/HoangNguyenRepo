@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Garage;
 use App\Vehicle;
+use App\VehicleType;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -17,11 +18,15 @@ class VehicleManagementController extends Controller
 
     public function getDataVehicleInside()
     {
+        $vehicleTypes = VehicleType::all();
         $vehicles = \DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
             ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')->get();
-        return $vehicles;
+        return [
+            'vehicles' => $vehicles,
+            'vehicleTypes' => $vehicleTypes
+        ];
     }
 
     public function getViewVehicleOutside()

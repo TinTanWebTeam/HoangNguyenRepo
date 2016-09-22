@@ -116,16 +116,6 @@
                     <div class="col-md-12 ">
                         <div class="row ">
                             <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="Code"><b>Mã nhà xe</b></label>
-                                    <input type="text" class="form-control"
-                                           id="Code"
-                                           name="Code"
-                                           placeholder="Mã nhà xe"
-                                           autofocus>
-                                </div>
-                            </div>
-                            <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
                                     <label for="NameHouseVehicle"><b>Tên nhà xe</b></label>
                                     <input type="text" class="form-control"
