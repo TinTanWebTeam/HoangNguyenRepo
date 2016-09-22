@@ -4,7 +4,7 @@
         position: fixed;
         top: 45%;
         display: none;
-        right: 0px;
+        right: 0;
         width: 40%;
         height: 100%;
     }
@@ -74,16 +74,16 @@
                                        id="id"
                                        autofocus>
                                 <div class="form-group form-md-line-input">
-                                    <label for="garage_id"><b>Nhà xe</b></label>
+                                    <label for="garages_name"><b>Nhà xe</b></label>
                                     <div class="row">
                                         <div class="col-md-10">
-                                            <input type="hidden" id="garage_id">
                                             <input type="text" class="form-control"
-                                                   id="garages_name"
+                                                   id="garages_name" data-id=""
                                                    placeholder="Số xe" ondblclick="vehicleInsideView.searchGarage()">
                                         </div>
                                         <div class="col-md-2">
-                                            <div class="btn btn-primary btn-sm btn-circle" onclick="vehicleInsideView.addGarage()">
+                                            <div class="btn btn-primary btn-sm btn-circle"
+                                                 onclick="vehicleInsideView.addGarage()">
                                                 <i class="glyphicon glyphicon-plus"></i>
                                             </div>
                                         </div>
@@ -100,7 +100,8 @@
                                             </select>
                                         </div>
                                         <div class="col-md-2">
-                                            <div class="btn btn-primary btn-sm btn-circle" onclick="vehicleInsideView.addVehicleType()">
+                                            <div class="btn btn-primary btn-sm btn-circle"
+                                                 onclick="vehicleInsideView.addVehicleType()">
                                                 <i class="glyphicon glyphicon-plus"></i>
                                             </div>
                                         </div>
@@ -167,7 +168,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
                 <h4 class="modal-title">Danh sách nhà xe</h4>
@@ -177,6 +178,7 @@
                     <table class="table table-hover" id="table-garage">
                         <thead>
                         <tr>
+                            <th>Mã nhà xe</th>
                             <th>Tên nhà xe</th>
                             <th>Người liên hệ</th>
                             <th>Địa chỉ</th>
@@ -199,7 +201,7 @@
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
                 <h4 class="modal-title">Thêm nhà xe</h4>
@@ -271,7 +273,7 @@
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
                 <h4 class="modal-title">Thêm loại xe</h4>
@@ -350,7 +352,6 @@
                     var dataSearch = _.filter(vehicleInsideView.data, function (o) {
                         return o.vehicleNumber == "15432";
                     });
-                    vehicleInsideView.table.destroy();
                     vehicleInsideView.fillDataToDatatable(dataSearch);
                 },
                 fillDataToDatatable: function (data) {
@@ -511,32 +512,26 @@
                 },
                 searchGarage: function () {
                     $.get(url + 'vehicle-inside/getAllGarage', function (listGarage) {
+                        if (vehicleInsideView.tableGarage != null) {
+                            vehicleInsideView.tableGarage.destroy();
+                        }
                         vehicleInsideView.tableGarage = $('#table-garage').DataTable({
                             language: languageOptions,
                             data: listGarage,
                             columns: [
+                                {data: 'id'},
                                 {data: 'name'},
                                 {data: 'contactor'},
                                 {data: 'address'},
-                                {data: 'phone'},
-                                {
-                                    render: function () {
-                                        var tr = "";
-                                        tr += "<div class='radio'>";
-                                        tr += "<label><input type='radio'></label>";
-                                        tr += "</div>";
-                                        return tr;
-                                    }
-                                }
+                                {data: 'phone'}
                             ]
                         })
                     });
                     $("#modal-garage").modal("show");
-                    vehicleInsideView.tableGarage.destroy();
                 },
-                loadSelectBox: function(lstVehicleType){
+                loadSelectBox: function (lstVehicleType) {
                     var select = document.getElementById("vehicleType_id");
-                    for(var i = 0; i < lstVehicleType.length; i++) {
+                    for (var i = 0; i < lstVehicleType.length; i++) {
                         var opt = lstVehicleType[i]['name'];
                         var el = document.createElement("option");
                         el.textContent = opt;
@@ -544,10 +539,10 @@
                         select.appendChild(el);
                     }
                 },
-                addGarage: function() {
+                addGarage: function () {
                     $("#modal-addGarage").modal("show");
                 },
-                addVehicleType: function() {
+                addVehicleType: function () {
                     $("#modal-addVehicleType").modal("show");
                 }
             };
@@ -555,5 +550,10 @@
         } else {
             vehicleInsideView.loadData();
         }
+
+        $('#table-garage tbody').on( 'click', 'tr', function () {
+            console.log($(this).find('td:first')[0].innerText);
+            $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
+        } );
     });
 </script>
