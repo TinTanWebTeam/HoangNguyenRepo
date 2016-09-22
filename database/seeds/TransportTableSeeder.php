@@ -12,7 +12,6 @@ class TransportTableSeeder extends Seeder
     public function run()
     {
         \App\Transport::create([
-            'code'                  => 'HD0001',
             'product_id'            => '1',
             'customer_id'           => '1',
             'invoice_id'            => '1',
@@ -34,7 +33,6 @@ class TransportTableSeeder extends Seeder
         ]);
 
         \App\Transport::create([
-            'code'                  => 'HD0002',
             'product_id'            => '2',
             'customer_id'           => '2',
             'invoice_id'            => '2',
@@ -55,7 +53,6 @@ class TransportTableSeeder extends Seeder
             'updatedBy'             => '1'
         ]);
         \App\Transport::create([
-            'code'                  => 'HD0003',
             'product_id'            => '3',
             'customer_id'           => '3',
             'invoice_id'            => '3',

@@ -58,7 +58,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/vehicle-inside', 'VehicleManagementController@getDataVehicleInside');
 
         //
-        Route::post('/vehicle-inside/modify', 'VehicleManagementController@postCRUDVehicleInside');
+        Route::post('/vehicle-inside/modify', 'VehicleManagementController@postModifyVehicleInside');
+        Route::get('/vehicle-inside/getAllGarage', 'VehicleManagementController@getAllGarage');
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');

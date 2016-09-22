@@ -14,7 +14,6 @@ class CustomerTableSeeder extends Seeder
     {
         
         Customer::create([
-            'code'     => 'CT0001',
             'fullName' => 'CTY TNHH BIA VÀ NƯỚC GIẢI KHÁT VN',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
@@ -26,7 +25,6 @@ class CustomerTableSeeder extends Seeder
             'customerType_id' => '1'
         ]);
         Customer::create([
-            'code'     => 'CT0002',
             'fullName' => 'CTY CP THỰC PHẨM Á CHÂU',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
@@ -38,7 +36,6 @@ class CustomerTableSeeder extends Seeder
             'customerType_id' => '1'
         ]);
         Customer::create([
-            'code'     => 'CT0003',
             'fullName' => 'CTY TNHH SX TM DV ĐOÀN KẾT',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
@@ -50,7 +47,6 @@ class CustomerTableSeeder extends Seeder
             'customerType_id' => '1'
         ]);
         Customer::create([
-            'code'     => 'CT0004',
             'fullName' => 'CTY TNHH INDO-TRANS KEPPEL LOGISTICS VIỆT NAM',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',
@@ -62,7 +58,6 @@ class CustomerTableSeeder extends Seeder
             'customerType_id' => '1'
         ]);
         Customer::create([
-            'code'     => 'CT0005',
             'fullName' => 'CTY TNHH AUNTEX',
             'address'  => '662 Le Quang Dinh',
             'phone'    => '09000000',

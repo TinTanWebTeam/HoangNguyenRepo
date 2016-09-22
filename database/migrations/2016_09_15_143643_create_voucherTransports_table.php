@@ -16,6 +16,8 @@ class CreateVoucherTransportsTable extends Migration
             $table->increments('id');
             $table->integer('voucher_id');
             $table->integer('transport_id');
+            $table->integer('createdBy');
+            $table->integer('updatedBy');
             $table->timestamps();
         });
     }

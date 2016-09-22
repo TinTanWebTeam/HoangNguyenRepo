@@ -15,6 +15,7 @@ class CreateCostPricesTable extends Migration
         Schema::create('costPrices', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->text('note');
             $table->timestamps();
         });
     }

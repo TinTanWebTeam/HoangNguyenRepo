@@ -12,7 +12,6 @@ class InvoiceTableSeeder extends Seeder
     public function run()
     {
         \App\Invoice::create([
-           'code' => '',
             'VAT' => '5',
             'notVAT' => '1000000',
             'hasVAT' => '1500000',
@@ -24,7 +23,6 @@ class InvoiceTableSeeder extends Seeder
             'note' => ''
         ]);
         \App\Invoice::create([
-            'code' => '',
             'VAT' => '10',
             'notVAT' => '1000000',
             'hasVAT' => '2000000',
@@ -36,7 +34,6 @@ class InvoiceTableSeeder extends Seeder
             'note' => ''
         ]);
         \App\Invoice::create([
-            'code' => '',
             'VAT' => '7',
             'notVAT' => '1000000',
             'hasVAT' => '1700000',

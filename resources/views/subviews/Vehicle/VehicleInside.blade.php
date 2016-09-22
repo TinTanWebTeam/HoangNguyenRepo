@@ -66,8 +66,8 @@
                         <tr class="active">
                             <th>Mã vùng</th>
                             <th>Số xe</th>
-                            <th>Mã loại xe</th>
-                            <th>Mã nhà xe</th>
+                            <th>Loại xe</th>
+                            <th>Nhà xe</th>
                             <th>Kích thước</th>
                             <th>Trọng tải</th>
                             <th>Sửa/ Xóa</th>
@@ -102,9 +102,10 @@
                                        autofocus>
                                 <div class="form-group form-md-line-input">
                                     <label for="garage_id"><b>Mã nhà xe</b></label>
+                                    <input type="hidden" id="garage_id">
                                     <input type="text" class="form-control"
-                                           id="garage_id"
-                                           placeholder="Số xe">
+                                           id="garages_name"
+                                           placeholder="Số xe" ondblclick="vehicleInsideView.searchGarage()">
                                 </div>
                             </div>
                         </div>
@@ -172,6 +173,39 @@
         </div>
     </div>
 </div> <!-- end #frmControl -->
+
+<!-- Modal garages -->
+
+<div id="modal-garage" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Danh sách nhà xe</h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Tên nhà xe</th>
+                            <th>Người liên hệ</th>
+                            <th>Địa chỉ</th>
+                            <th>Điện thoại</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="garage-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
     $(function () {
@@ -359,6 +393,23 @@
                             }
                     );
                     vehicleInsideView.clearInput();
+                },
+                searchGarage: function () {
+                    $.get(url + 'vehicle-inside/getAllGarage', function (listGarage) {
+                        var row = "";
+                        for (var i = 0; i < listGarage.length; i++) {
+                            var tr = "<tr>";
+                            tr += "<td>" + listGarage[i]['name'] + "</td>";
+                            tr += "<td>" + listGarage[i]['contactor'] + "</td>";
+                            tr += "<td>" + listGarage[i]['address'] + "</td>";
+                            tr += "<td>" + listGarage[i]['phone'] + "</td>";
+                            tr += "<td><button class='btn btn-xs btn-success' onclick=''><span class='glyphicon glyphicon-ok'></span></button></td>";
+                            tr += "</tr>";
+                            row += tr;
+                        }
+                        $("#garage-table-body").empty().append(row);
+                    });
+                    $("#modal-garage").modal("show");
                 }
             };
             vehicleInsideView.loadData();

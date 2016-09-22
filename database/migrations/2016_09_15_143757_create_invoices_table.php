@@ -14,7 +14,6 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code');
             $table->float('VAT');
             $table->decimal('notVAT');
             $table->decimal('hasVAT');
@@ -24,6 +23,7 @@ class CreateInvoicesTable extends Migration
             $table->integer('createdBy');
             $table->integer('updatedBy');
             $table->text('note');
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }

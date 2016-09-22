@@ -18,6 +18,8 @@ class CreateGaragesTable extends Migration
             $table->string('contactor');
             $table->string('address');
             $table->string('phone');
+            $table->text('note');
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }

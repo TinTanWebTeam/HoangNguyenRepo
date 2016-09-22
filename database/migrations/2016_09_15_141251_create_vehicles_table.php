@@ -14,12 +14,14 @@ class CreateVehiclesTable extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('vehicleType_id');
-            $table->integer('garage_id');
             $table->string('areaCode');
             $table->string('vehicleNumber');
             $table->float('size');
             $table->float('weight');
+            $table->text('note');
+            $table->boolean('active')->default(1);
+            $table->integer('vehicleType_id');
+            $table->integer('garage_id');
             $table->timestamps();
         });
     }

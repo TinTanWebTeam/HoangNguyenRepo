@@ -14,8 +14,12 @@ class CreatePricesTable extends Migration
     {
         Schema::create('prices', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('costPrice_id');
             $table->decimal('price',18,0);
+            $table->integer('createdBy');
+            $table->integer('updatedBy');
+            $table->integer('note');
+            $table->boolean('active')->default(1);
+            $table->integer('costPrice_id');
             $table->timestamps();
         });
     }

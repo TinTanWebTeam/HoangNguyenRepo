@@ -14,13 +14,16 @@ class CreateCostsTable extends Migration
     {
         Schema::create('costs', function (Blueprint $table) {
             $table->increments('id');
+            $table->decimal('cost',18,0);
+            $table->float('literNumber');
+            $table->float('dayNumber');
+            $table->integer('createdBy');
+            $table->integer('updatedBy');
+            $table->text('note');
+            $table->boolean('active')->default(1);
             $table->integer('transport_id');
             $table->integer('price_id');
             $table->integer('vehicle_id');
-            $table->decimal('cost',18,0);
-            $table->text('note');
-            $table->float('literNumber');
-            $table->float('dayNumber');
             $table->timestamps();
         });
     }

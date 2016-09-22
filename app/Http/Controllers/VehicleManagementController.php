@@ -39,7 +39,7 @@ class VehicleManagementController extends Controller
         return $vehicles;
     }
 
-    public function postCRUDVehicleInside(Request $request)
+    public function postModifyVehicleInside(Request $request)
     {
         switch ($request->get('_action')) {
             case 'add':
@@ -94,6 +94,11 @@ class VehicleManagementController extends Controller
                 return ['status' => 'Fail'];
                 break;
         }
+    }
+
+    public function getAllGarage()
+    {
+        return Garage::all();
     }
 
 
