@@ -85,7 +85,6 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr>
-                            <th>Mã</th>
                             <th>Chức vụ</th>
                             <th>Mô tả</th>
                             <th>Sửa / Xóa</th>
@@ -118,16 +117,7 @@
                     </div>
                     <div class="col-md-12 ">
                         <div class="row ">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="code"><b>Mã</b></label>
-                                    <input type="text" class="form-control"
-                                           id="code"
-                                           placeholder="Mã chức vụ"
-                                           autofocus>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group form-md-line-input ">
                                     <label for="name"><b>Chức vụ</b></label>
                                     <input type="text" class="form-control"
@@ -219,7 +209,6 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'code'},
                             {data: 'name'},
                             {data: 'description'},
                             {
@@ -293,7 +282,6 @@
                     if (PositionView.action == 'delete') {
                         sendToServer._object = {
                             id: PositionView.idDelete,
-                            code: "delete",
                             name: "delete"
                         };
                     }
@@ -304,27 +292,16 @@
                                 if (data['status'] == 'Ok') {
                                     switch (PositionView.action) {
                                         case'add' :
-                                            if (data['status'] == 'Ok') {
-                                                $("div#modalConfirm").modal("show");
-                                                $("div#modalContent").empty().append("Thêm mới thành công");
-                                                $("button[name=modalAgree]").hide();
-                                                PositionView.data.push(data['obj']);
-                                            }
+                                            PositionView.data.push(data['obj']);
                                             break;
 
                                         case 'update':
-                                            if (data['status'] == 'Ok') {
-                                                PositionView.hide();
-                                                $("div#modalConfirm").modal("show");
-                                                $("div#modalContent").empty().append("Cập nhật thành công");
-                                                $("button[name=modalAgree]").hide();
-                                                var obj = _.find(PositionView.data, function (o) {
-                                                    return o.id == sendToServer._object.id;
-                                                });
-                                                var index = _.indexOf(PositionView.data, obj);
-                                                PositionView.data.splice(index, 1, data['obj']);
-
-                                            }
+                                            var obj = _.find(PositionView.data, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var index = _.indexOf(PositionView.data, obj);
+                                            PositionView.data.splice(index, 1, data['obj']);
+                                            PositionView.hide();
                                             break;
                                         case 'delete':
                                             var obj = _.find(PositionView.data, function (o) {

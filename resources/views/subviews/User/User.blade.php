@@ -1,21 +1,21 @@
 <style>
+    #frmControl {
+        z-index: 3;
+        position: fixed;
+        top: 22%;
+        display: none;
+        right: 0;
+        width: 40%;
+        height: 100%;
+    }
+
     .btn-del-edit {
         float: left;
         padding-right: 5px;
     }
 
-    #frmControl {
-        z-index: 3;
-        position: fixed;
-        top: 10%;
-        display: none;
-        right: 0px;
-        width: 40%;
-        height: 100%;
-    }
-
     .fixed {
-        top: 72px;
+        top: 76px;
         position: fixed;
         right: 20px;
         z-index: 2;
@@ -39,6 +39,25 @@
         height: 40px;
     }
 </style>
+<div class="modal fade" id="modalConfirm" tabindex="-1" role="" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" name="modalClose"
+                        onclick="userView.cancelDelete()">Hủy
+                </button>
+                <button type="button" class="btn green" name="modalAgree"
+                        onclick="userView.deleteUser()">Ðồng ý
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+{{--End Modal--}}
+
 
 <div class="row">
     <div class="col-md-12">
@@ -96,20 +115,18 @@
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="FullName"><b>Họ và tên</b></label>
+                                    <label for="fullname"><b>Họ và tên</b></label>
                                     <input type="text" class="form-control"
-                                           id="FullName"
-                                           name="FullName"
+                                           id="fullname"
                                            placeholder="Nhập họ tên"
                                            autofocus>
                                 </div>
                             </div>
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="UserName"><b>Tên đăng nhập</b></label>
+                                    <label for="username"><b>Tên đăng nhập</b></label>
                                     <input type="text" class="form-control"
-                                           id="UserName"
-                                           name="UserName"
+                                           id="username"
                                            placeholder="Tên đăng nhập có ít nhất 6 kí tự">
                                 </div>
                             </div>
@@ -117,19 +134,17 @@
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Password"><b>Mật khẩu</b></label>
+                                    <label for="password"><b>Mật khẩu</b></label>
                                     <input type="password" class="form-control"
-                                           id="Password"
-                                           name="Password"
+                                           id="password"
                                            placeholder="Mật khẩu có ít nhất 6 kí tự">
                                 </div>
                             </div>
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="PasswordConfirm"><b>Nhập lại mật khẩu</b></label>
+                                    <label for="passwordConfirm"><b>Nhập lại mật khẩu</b></label>
                                     <input type="Password" class="form-control"
-                                           id="PasswordConfirm"
-                                           name="PasswordConfirm"
+                                           id="passwordConfirm"
                                            maxlength="20"
                                            minlength="6"
                                            placeholder="Nhập lại mật khẩu">
@@ -139,19 +154,22 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Email"><b>Email</b></label>
+                                    <label for="email"><b>Email</b></label>
                                     <input type="text" class="form-control"
-                                           id="Email"
-                                           name="Email"
+                                           id="email"
                                            placeholder="email@example.com">
-                                    <label id="Email" style="display: none; color: red">Email đã tồn tại</label>
+                                    <label id="email" style="display: none; color: red">Email đã tồn tại</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Position_id"><b>Chức vụ</b></label>
-                                    <select class="form-control" id="Position_id">
-                                        <option value="">----</option>
+                                    <label for="position_id"><b>Chức vụ</b></label>
+                                    <select class="form-control" id="position_id">
+                                        <option value="">--Chọn chức vụ--</option>
+                                        @foreach($positions as $item ){
+                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                        }
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -159,17 +177,33 @@
                         <div class="form-group form-md-line-input">
                             <label><b>Phân Quyền</b></label>
                             <div class="row">
-                                <div class="col-md-6 col-sm-6">
-                                    @for($i=2;$i<count($roles)+2;$i++)
-                                        @if($i == 7)
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    @endif
+                                <div class="col-sm-12">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" value="{{$i}}">{{$roles[$i]}}</label>
+                                        @foreach(array_chunk($roles,3) as $row)
+                                            <div class="row">
+                                            @foreach($row as $item)
+                                                    <div class="col-sm-4">
+                                                        <label>
+                                                            <input type="checkbox" id="role_id" value="{{$item->id}}"
+                                                                   onclick="userView.checkRole(this)">{{$item->description}}
+                                                        </label>
+                                                    </div>
+                                            @endforeach
+                                            </div>
+                                        @endforeach
                                     </div>
-                                    @endfor
                                 </div>
+                                {{--<div class="col-md-6 col-sm-6">--}}
+                                {{--@for($i=2;$i<count($roles)+2;$i++)--}}
+                                {{--@if($i == 7)--}}
+                                {{--</div>--}}
+                                {{--<div class="col-md-6 col-sm-6">--}}
+                                {{--@endif--}}
+                                {{--<div class="checkbox">--}}
+                                {{--<label><input type="checkbox" id="role_id" value="{{$i}}">{{$roles[$i]}}</label>--}}
+                                {{--</div>--}}
+                                {{--@endfor--}}
+                                {{--</div>--}}
                             </div>
                         </div>
                     </div>
@@ -214,7 +248,45 @@
                         userView.fillDataToDatatable(list);
                     });
                 },
-
+                editUser: function (id) {
+                    $.post(url + 'user/modify', {_token: _token, user_id: id, fromDate: null, toDate: null}, function(lstsubroles){
+                        userView.resetRolesInDom();
+                        var roles_array = [];
+                        for (var i = 0; i< lstsubroles.length; i++) {
+                            roles_array.push(lstsubroles[i]['role_id'])
+                        }
+                        userView.fillRolesToDom(roles_array);
+                    });
+                    userView.current = _.clone(_.find(userView.data, function (o) {
+                        return o.id == id;
+                    }), true);
+                    userView.action = "update";
+                    userView.fillCurrentObjectToForm();
+                    userView.show();
+                },
+                fillCurrentObjectToForm: function () {
+                    for (var propertyName in userView.current) {
+                        if (propertyName == 'password') {
+                            $("input[id=" + propertyName + "]").val();
+                        } else {
+                            $("select[id=" + propertyName + "]").val(userView.current[propertyName]);
+                            $("input[id=" + propertyName + "]").val(userView.current[propertyName]);
+                        }
+                    }
+                    userView.show();
+                },
+                msgDelete: function (id) {
+                    if (id) {
+                        userView.idDelete = id;
+                        $("div#modalConfirm").modal("show");
+                        $("div#modalContent").empty().append("Bạn có muốn xóa ?");
+                        $("button[name=modalAgree]").show();
+                    }
+                },
+                cancelDelete: function () {
+                    userView.idDelete = null;
+                    $("#modalConfirm").modal('hide');
+                },
                 fillDataToDatatable: function (data) {
                     userView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -225,15 +297,15 @@
                             {data: 'email'},
                             {data: 'positions_name'},
                             {
-                                render: function () {
+                                render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<div class="btn btn-success  btn-circle" onclick="userView.editUser(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="userView.msgDelete(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -242,6 +314,22 @@
                             }
                         ]
                     })
+                },
+                checkRole: function (element) {
+                   console.log( $(element).attr('value') + ' ' + $(element).prop('checked'));
+                },
+                resetRolesInDom: function(){
+                    $("input[id=role_id]").each(function(){
+                        $(this).prop('checked',false);
+                    });
+                },
+                fillRolesToDom: function(roles_array){
+                    console.log(roles_array);
+                    $("input[id=role_id]").each(function(){
+                         if(roles_array.includes(Number($(this).attr('value')))){
+                             $(this).prop('checked',true);
+                         }
+                    });
                 }
             };
             userView.loadData();

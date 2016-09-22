@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Position;
+use App\SubRole;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
@@ -15,43 +16,60 @@ class UserManagementController extends Controller
 {
     public function getViewUser()
     {
-        $roles = Role::where('active',1)->whereBetween('id',[2,10])->pluck('description','id')->toArray();
-        return view('subviews.User.User', ['roles' => $roles]);
+
+//        $roles = Role::where('active', 1)->whereBetween('id', [2, 10])->pluck('description', 'id')->toArray();
+        $roles = DB::table('roles')
+            ->whereBetween('id', [2, 10])
+            ->select('roles.*')
+            ->get();
+        $positions = Position::where('active', 1)->get();
+        return view('subviews.User.User', ['roles' => $roles, 'positions' => $positions]);
     }
-    public function getDataUser(){
+
+    public function getDataUser()
+    {
         try {
             $users = \DB::table('users')
                 ->join('positions', 'users.position_id', '=', 'positions.id')
                 ->select('users.*', 'positions.name as positions_name')
                 ->get();
             return $users;
-        }catch (Exception $ex){
+        } catch (Exception $ex) {
             return $ex;
         }
+    }
+
+    public function postModifyUser(Request $request)
+    {
+        $subroles = DB::table('subroles')
+            ->where('user_id',$request->get('user_id'))
+            ->get();
+        return $subroles;
 
     }
 
-    public  function getViewPosition(){
+    public function getViewPosition()
+    {
         return view('subviews.User.Position');
     }
 
     public function getDataPosition()
     {
-        $position = Position::where('active',1)->get();
+        $position = Position::where('active', 1)->get();
         return $position;
     }
 
-    public function postModifyPosition(Request $request){
+    public function postModifyPosition(Request $request)
+    {
         $validateResult = ValidateController::ValidatePositionUpdate($request->get('_object'));
-        if($validateResult->fails()){
+        if ($validateResult->fails()) {
             return ['status' => 'Fail'];
-        }else{
+        } else {
             switch ($request->get('_action')) {
                 case "add":
                     try {
                         $positionNew = new Position();
                         $positionNew->name = $request->get('_object')['name'];
-                        $positionNew->code = $request->get('_object')['code'];
                         $positionNew->description = $request->get('_object')['description'];
                         if ($positionNew->save())
                             return ['status' => 'Ok',
@@ -67,7 +85,6 @@ class UserManagementController extends Controller
                     try {
                         $result = Position::findOrFail($request->get('_object')['id']);
                         $result->name = $request->get('_object')['name'];
-                        $result->code = $request->get('_object')['code'];
                         $result->description = $request->get('_object')['description'];
                         if ($result->save())
                             return [
@@ -82,7 +99,8 @@ class UserManagementController extends Controller
                     break;
                 case "delete":
                     $positionDelete = Position::findOrFail($request->get('_object')['id']);
-                    if ($positionDelete->delete())
+                    $positionDelete->description = 0;
+                    if ($positionDelete->save())
                         return ['status' => 'Ok'];
                     return ['status' => 'Fail'];
                     break;
@@ -91,9 +109,6 @@ class UserManagementController extends Controller
             }
         }
     }
-
-
-
 
 
 }
