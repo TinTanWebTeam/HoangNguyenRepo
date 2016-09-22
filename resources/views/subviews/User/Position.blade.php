@@ -1,9 +1,4 @@
 <style>
-    .btn-del-edit {
-        float: left;
-        padding-right: 5px;
-    }
-
     #frmControl {
         z-index: 3;
         position: fixed;
@@ -12,27 +7,6 @@
         right: 0px;
         width: 40%;
         height: 100%;
-    }
-
-    .fixed {
-        top: 76px;
-        position: fixed;
-        right: 20px;
-        z-index: 2;
-    }
-
-    .menu-toggles {
-        cursor: pointer
-    }
-
-    .icon-center {
-        line-height: 130%;
-        padding-left: 3%;
-        font-size: 13px;
-    }
-
-    ol.breadcrumb {
-        border-bottom: 2px solid #e7e7e7
     }
 
     div.col-lg-12 {
@@ -240,7 +214,6 @@
                 fillFormDataToCurrentObject: function () {
                     if (PositionView.action == 'add') {
                         PositionView.current = {
-                            code: $("input[id='code']").val(),
                             name: $("input[id='name']").val(),
                             description: $("input[id='description']").val(),
                         }

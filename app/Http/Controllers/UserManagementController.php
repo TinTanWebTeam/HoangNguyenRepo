@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Position;
 use App\SubRole;
 use App\User;
+use Config;
 use DB;
 use Illuminate\Http\Request;
 
@@ -41,10 +42,67 @@ class UserManagementController extends Controller
 
     public function postModifyUser(Request $request)
     {
+
         $subroles = DB::table('subroles')
             ->where('user_id',$request->get('user_id'))
             ->get();
         return $subroles;
+
+        $validateResult = ValidateController::ValidateCreateUser($request->get('_object'));
+        if ($validateResult->fails()) {
+
+            return ['status' => 'Fail'];
+        } else {
+            switch ($request->get('_action')) {
+                case "add":
+                    try {
+                        $userNew = new User();
+                        $userNew->fullname = $request->get('_object')['fullname'];
+                        $userNew->username = $request->get('_object')['username'];
+                        $userNew->password = encrypt($request->get('_object')['password'], Config::get('app.key'));
+                        $userNew->address = $request->get('_object')['address'];
+                        $userNew->phone = $request->get('_object')['phone'];
+                        $userNew->email = $request->get('_object')['email'];
+                        $userNew->position_id = $request->get('_object')['position_id'];
+                        $userNew->role_id = $request->get(' _object'[ array_roleid]);
+                        if ($userNew->save())
+                            return ['status' => 'Ok',
+                                    'obj'    => $userNew
+                            ];
+                        else
+                            return ['status' => 'Fail'];
+                    } catch (Exception $ex) {
+                        return ['status' => 'Fail'];
+                    }
+                    break;
+                case "update":
+                    try {
+                        $result = Position::findOrFail($request->get('_object')['id']);
+                        $result->name = $request->get('_object')['name'];
+                        $result->description = $request->get('_object')['description'];
+                        if ($result->save())
+                            return [
+                                'status' => 'Ok',
+                                'obj'    => $result
+                            ];
+                        else
+                            return ['status' => 'Fail'];
+                    } catch (Exception $ex) {
+                        return ['status' => 'Fail'];
+                    }
+                    break;
+                case "delete":
+                    $positionDelete = Position::findOrFail($request->get('_object')['id']);
+                    $positionDelete->active = 0;
+                    if ($positionDelete->save())
+                        return ['status' => 'Ok'];
+                    return ['status' => 'Fail'];
+                    break;
+                default:
+                    break;
+            }
+        }
+
 
     }
 
@@ -99,7 +157,7 @@ class UserManagementController extends Controller
                     break;
                 case "delete":
                     $positionDelete = Position::findOrFail($request->get('_object')['id']);
-                    $positionDelete->description = 0;
+                    $positionDelete->active = 0;
                     if ($positionDelete->save())
                         return ['status' => 'Ok'];
                     return ['status' => 'Fail'];

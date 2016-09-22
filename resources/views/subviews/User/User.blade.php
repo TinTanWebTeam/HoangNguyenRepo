@@ -9,35 +9,10 @@
         height: 100%;
     }
 
-    .btn-del-edit {
-        float: left;
-        padding-right: 5px;
-    }
-
-    .fixed {
-        top: 76px;
-        position: fixed;
-        right: 20px;
-        z-index: 2;
-    }
-
-    .menu-toggles {
-        cursor: pointer
-    }
-
-    .icon-center {
-        line-height: 130%;
-        padding-left: 3%;
-        font-size: 13px;
-    }
-
-    ol.breadcrumb {
-        border-bottom: 2px solid #e7e7e7
-    }
-
     div.col-lg-12 {
         height: 40px;
     }
+
 </style>
 <div class="modal fade" id="modalConfirm" tabindex="-1" role="" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
@@ -71,7 +46,7 @@
                         <li class="active">Tài khoản</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="userView.show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="userView.addNewUser()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -181,29 +156,18 @@
                                     <div class="checkbox">
                                         @foreach(array_chunk($roles,3) as $row)
                                             <div class="row">
-                                            @foreach($row as $item)
+                                                @foreach($row as $item)
                                                     <div class="col-sm-4">
                                                         <label>
                                                             <input type="checkbox" id="role_id" value="{{$item->id}}"
                                                                    onclick="userView.checkRole(this)">{{$item->description}}
                                                         </label>
                                                     </div>
-                                            @endforeach
+                                                @endforeach
                                             </div>
                                         @endforeach
                                     </div>
                                 </div>
-                                {{--<div class="col-md-6 col-sm-6">--}}
-                                {{--@for($i=2;$i<count($roles)+2;$i++)--}}
-                                {{--@if($i == 7)--}}
-                                {{--</div>--}}
-                                {{--<div class="col-md-6 col-sm-6">--}}
-                                {{--@endif--}}
-                                {{--<div class="checkbox">--}}
-                                {{--<label><input type="checkbox" id="role_id" value="{{$i}}">{{$roles[$i]}}</label>--}}
-                                {{--</div>--}}
-                                {{--@endfor--}}
-                                {{--</div>--}}
                             </div>
                         </div>
                     </div>
@@ -211,7 +175,7 @@
                         <div class="form-actions noborder">
                             <div class="form-group">
                                 <button type="button" class="btn btn-primary"
-                                        onclick="">
+                                        onclick="userView.save()">
                                     Hoàn tất
                                 </button>
                                 <button type="button" class="btn default" onclick="">Huỷ</button>
@@ -228,6 +192,7 @@
     $(function () {
         if (typeof (userView) === 'undefined') {
             userView = {
+
                 table: null,
                 data: null,
                 action: null,
@@ -249,10 +214,15 @@
                     });
                 },
                 editUser: function (id) {
-                    $.post(url + 'user/modify', {_token: _token, user_id: id, fromDate: null, toDate: null}, function(lstsubroles){
+                    $.post(url + 'user/modify', {
+                        _token: _token,
+                        user_id: id,
+                        fromDate: null,
+                        toDate: null
+                    }, function (lstsubroles) {
                         userView.resetRolesInDom();
                         var roles_array = [];
-                        for (var i = 0; i< lstsubroles.length; i++) {
+                        for (var i = 0; i < lstsubroles.length; i++) {
                             roles_array.push(lstsubroles[i]['role_id'])
                         }
                         userView.fillRolesToDom(roles_array);
@@ -316,25 +286,111 @@
                     })
                 },
                 checkRole: function (element) {
-                   console.log( $(element).attr('value') + ' ' + $(element).prop('checked'));
+                    $(element).attr('value') + ' ' + $(element).prop('checked');
                 },
-                resetRolesInDom: function(){
-                    $("input[id=role_id]").each(function(){
-                        $(this).prop('checked',false);
+                deleteUser: function () {
+                    userView.action = 'delete';
+                    userView.save();
+                    $("#modalConfirm").modal('hide');
+                },
+                fillFormDataToCurrentObject: function () {
+                    var subrole = [];
+                    $("input[id=role_id]").each(function () {
+                        if ($(this).prop('checked')) {
+                            subrole.push($(this).attr('value'));
+                        }
                     });
+
+                    if (userView.action == 'add') {
+                        userView.current = {
+                            fullname: $("input[id='fullname']").val(),
+                            username: $("input[id='username']").val(),
+                            password: $("input[id='password']").val(),
+                            email: $("input[id='email']").val(),
+                            position_id: $("select[id='position_id']").val(),
+                            array_roleid: subrole
+
+                        }
+                    } else if (userView.action == 'update') {
+                        for (var propertyName in userView.current) {
+                            userView.current[propertyName] = $("input[id=" + propertyName + "]").val();
+                        }
+                    }
                 },
-                fillRolesToDom: function(roles_array){
-                    console.log(roles_array);
-                    $("input[id=role_id]").each(function(){
-                         if(roles_array.includes(Number($(this).attr('value')))){
-                             $(this).prop('checked',true);
-                         }
+                addNewUser: function () {
+                    userView.action = 'add';
+                    userView.show();
+                }
+                ,
+                save: function () {
+                    userView.fillFormDataToCurrentObject();
+                    var sendToServer = {
+                        _token: _token,
+                        _action: userView.action,
+                        _object: userView.current
+                    };
+                    if (userView.action == 'delete') {
+                        sendToServer._object = {
+                            id: userView.idDelete,
+                            name: "delete"
+                        };
+                    }
+                    $.post(
+                            url + 'user/modify',
+                            sendToServer
+                            , function (data) {
+                                if (data['status'] == 'Ok') {
+                                    switch (userView.action) {
+                                        case'add' :
+                                            userView.data.push(data['obj']);
+                                            break;
+                                        case 'update':
+                                            var obj = _.find(userView.data, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var index = _.indexOf(userView.data, obj);
+                                            userView.data.splice(index, 1, data['obj']);
+                                            userView.hide();
+                                            break;
+                                        case 'delete':
+                                            var obj = _.find(userView.data, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var index = _.indexOf(userView.data, obj);
+                                            userView.data.splice(index, 1);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                userView.table.clear().rows.add(userView.data).draw();
+                            }
+                    );
+//                    userView.clearInput();
+
+                }
+                ,
+
+
+                resetRolesInDom: function () {
+                    $("input[id=role_id]").each(function () {
+                        $(this).prop('checked', false);
                     });
                 }
-            };
+                ,
+                fillRolesToDom: function (roles_array) {
+                    $("input[id=role_id]").each(function () {
+                        if (roles_array.includes(Number($(this).attr('value')))) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                }
+            }
+            ;
             userView.loadData();
         } else {
             userView.loadData();
         }
-    });
+    })
+    ;
 </script>
