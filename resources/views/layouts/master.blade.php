@@ -76,6 +76,9 @@
 <!-- Hightcharts -->
 <script src="{{ URL::to('libs/highcharts/highcharts.js') }}"></script>
 
+<!-- Validate -->
+<script src="{{ URL::to('libs/jquery-validation/dist/jquery.validate.min.js') }}"></script>
+
 <!-- Global -->
 <script src=" {{ URL::to('src/js/global.js') }} "></script>
 

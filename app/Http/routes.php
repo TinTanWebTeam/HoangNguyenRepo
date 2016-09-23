@@ -36,6 +36,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::Post('/position','UserManagementController@getDataPosition');
         Route::Post('/user','UserManagementController@getDataUser');
         Route::post('/position/modify','UserManagementController@postModifyPosition');
+        Route::post('/user/edit','UserManagementController@postEditUser');
         Route::post('/user/modify','UserManagementController@postModifyUser');
 
     });

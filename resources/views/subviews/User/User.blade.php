@@ -2,7 +2,7 @@
     #frmControl {
         z-index: 3;
         position: fixed;
-        top: 22%;
+        top: 10%;
         display: none;
         right: 0;
         width: 40%;
@@ -86,6 +86,9 @@
         <div class="panel-body">
             <form role="form" id="formUser">
                 <div class="form-body">
+                    <div class="form-group form-md-line-input" style="display:none">
+                        <input type="text" class="form-control" id="id" value="">
+                    </div>
                     <div class="col-md-12 ">
                         <div class="row ">
                             <div class="col-md-6 ">
@@ -93,6 +96,7 @@
                                     <label for="fullname"><b>Họ và tên</b></label>
                                     <input type="text" class="form-control"
                                            id="fullname"
+                                           name="fullname"
                                            placeholder="Nhập họ tên"
                                            autofocus>
                                 </div>
@@ -102,6 +106,7 @@
                                     <label for="username"><b>Tên đăng nhập</b></label>
                                     <input type="text" class="form-control"
                                            id="username"
+                                           name ="username"
                                            placeholder="Tên đăng nhập có ít nhất 6 kí tự">
                                 </div>
                             </div>
@@ -112,14 +117,18 @@
                                     <label for="password"><b>Mật khẩu</b></label>
                                     <input type="password" class="form-control"
                                            id="password"
+                                           name="password"
+                                           maxlength="20"
+                                           minlength="6"
                                            placeholder="Mật khẩu có ít nhất 6 kí tự">
                                 </div>
                             </div>
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="passwordConfirm"><b>Nhập lại mật khẩu</b></label>
+                                    <label for="passwordconfirm"><b>Nhập lại mật khẩu</b></label>
                                     <input type="Password" class="form-control"
-                                           id="passwordConfirm"
+                                           id="passwordconfirm"
+                                           name="passwordconfirm"
                                            maxlength="20"
                                            minlength="6"
                                            placeholder="Nhập lại mật khẩu">
@@ -132,6 +141,7 @@
                                     <label for="email"><b>Email</b></label>
                                     <input type="text" class="form-control"
                                            id="email"
+                                           name="email"
                                            placeholder="email@example.com">
                                     <label id="email" style="display: none; color: red">Email đã tồn tại</label>
                                 </div>
@@ -139,7 +149,7 @@
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
                                     <label for="position_id"><b>Chức vụ</b></label>
-                                    <select class="form-control" id="position_id">
+                                    <select class="form-control" id="position_id" name="position_id">
                                         <option value="">--Chọn chức vụ--</option>
                                         @foreach($positions as $item ){
                                         <option value="{{$item->id}}">{{$item->name}}</option>
@@ -159,7 +169,7 @@
                                                 @foreach($row as $item)
                                                     <div class="col-sm-4">
                                                         <label>
-                                                            <input type="checkbox" id="role_id" value="{{$item->id}}"
+                                                            <input type="checkbox" id="array_roleid" value="{{$item->id}}"
                                                                    onclick="userView.checkRole(this)">{{$item->description}}
                                                         </label>
                                                     </div>
@@ -198,14 +208,17 @@
                 action: null,
                 idDelete: null,
                 current: null,
+                array_roleid:null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
+                    $('label.error').hide();
                 },
                 hide: function () {
                     $('#frmControl').slideUp('', function () {
                         $('.menu-toggle').show();
                     });
+
                 },
                 loadData: function () {
                     $.post(url + 'user', {_token: _token, fromDate: null, toDate: null}, function (list) {
@@ -214,7 +227,7 @@
                     });
                 },
                 editUser: function (id) {
-                    $.post(url + 'user/modify', {
+                    $.post(url + 'user/edit', {
                         _token: _token,
                         user_id: id,
                         fromDate: null,
@@ -288,11 +301,6 @@
                 checkRole: function (element) {
                     $(element).attr('value') + ' ' + $(element).prop('checked');
                 },
-                deleteUser: function () {
-                    userView.action = 'delete';
-                    userView.save();
-                    $("#modalConfirm").modal('hide');
-                },
                 fillFormDataToCurrentObject: function () {
                     var subrole = [];
                     $("input[id=role_id]").each(function () {
@@ -306,22 +314,37 @@
                             fullname: $("input[id='fullname']").val(),
                             username: $("input[id='username']").val(),
                             password: $("input[id='password']").val(),
+                            passwordconfirm: $("input[id='passwordconfirm']").val(),
                             email: $("input[id='email']").val(),
-                            position_id: $("select[id='position_id']").val(),
-                            array_roleid: subrole
+                            position_id: $("select[id='position_id']").val()
+//                            array_roleid: subrole
 
                         }
                     } else if (userView.action == 'update') {
                         for (var propertyName in userView.current) {
                             userView.current[propertyName] = $("input[id=" + propertyName + "]").val();
+                            userView.current[propertyName] = $("select[id=" + propertyName + "]").val();
                         }
                     }
                 },
                 addNewUser: function () {
                     userView.action = 'add';
                     userView.show();
-                }
-                ,
+                    userView.clearInput();
+                    userView.resetRolesInDom();
+                },
+                clearInput: function () {
+                    if (userView.current)
+                        for (var propertyName in userView.current) {
+                            $("input[id=" + propertyName + "]").val('');
+                            $("select[id=" + propertyName + "]").val('');
+                        }
+                },
+                deleteUser: function () {
+                    userView.action = 'delete';
+                    userView.save();
+                    $("#modalConfirm").modal('hide');
+                },
                 save: function () {
                     userView.fillFormDataToCurrentObject();
                     var sendToServer = {
@@ -332,46 +355,93 @@
                     if (userView.action == 'delete') {
                         sendToServer._object = {
                             id: userView.idDelete,
-                            name: "delete"
+                            fullname: "delete",
+                            username: "delete",
+                            password: "delete",
+                            email: "delete",
+                            position_id: "delete"
                         };
                     }
-                    $.post(
-                            url + 'user/modify',
-                            sendToServer
-                            , function (data) {
-                                if (data['status'] == 'Ok') {
-                                    switch (userView.action) {
-                                        case'add' :
-                                            userView.data.push(data['obj']);
-                                            break;
-                                        case 'update':
-                                            var obj = _.find(userView.data, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var index = _.indexOf(userView.data, obj);
-                                            userView.data.splice(index, 1, data['obj']);
-                                            userView.hide();
-                                            break;
-                                        case 'delete':
-                                            var obj = _.find(userView.data, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var index = _.indexOf(userView.data, obj);
-                                            userView.data.splice(index, 1);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
-                                userView.table.clear().rows.add(userView.data).draw();
+                    if (userView.action == 'add') {
+                        $("#formUser").validate({
+                            rules: {
+                                fullname: "required",
+                                username:"required",
+                                email:{
+                                    required: true,
+                                    email: true
+                                },
+                                password: {
+                                    required: true,
+                                    minlength: 6,
+                                    maxlength: 20
+                                },
+                                passwordconfirm: {
+                                    required: true,
+                                    equalTo: "#password",
+                                    minlength: 6,
+                                    maxlength: 20
+                                },
+                            },
+                            messages: {
+                                fullname: " Vui lòng nhập họ tên",
+                                username:"Vui lòng nhập tài khoản",
+                                email: {
+                                    required: "Vui lòng nhập Email",
+                                    email: 'Email không đúng định dạng'
+                                },
+                                password: {
+                                    required: "Vui lòng nhập mật khẩu",
+                                    minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
+                                    maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
+                                },
+                                passwordconfirm: {
+                                    required: "Vui lòng nhập lại mật khẩu",
+                                    equalTo: "Nhập lại mật khẩu không đúng",
+                                    minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
+                                    maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
+                                },
                             }
-                    );
-//                    userView.clearInput();
-
-                }
-                ,
-
-
+                        });
+                    }else{
+                        userView.action = 'update';
+                    }
+                    if ($("#formUser").valid()) {
+                        $.post(
+                                url + 'user/modify',
+                                sendToServer
+                                , function (data) {
+                                    if (data['status'] == 'Ok') {
+                                        switch (userView.action) {
+                                            case'add' :
+                                                userView.data.push(data['obj'][0]);
+                                                break;
+                                            case 'update':
+                                                var obj = _.find(userView.data, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var index = _.indexOf(userView.data, obj);
+                                                userView.data.splice(index, 1, data['obj']);
+                                                userView.hide();
+                                                break;
+                                            case 'delete':
+                                                var obj = _.find(userView.data, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var index = _.indexOf(userView.data, obj);
+                                                userView.data.splice(index, 1);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                    userView.table.clear().rows.add(userView.data).draw();
+                                }
+                        );
+                        userView.clearInput();
+                        userView.resetRolesInDom();
+                    }
+                },
                 resetRolesInDom: function () {
                     $("input[id=role_id]").each(function () {
                         $(this).prop('checked', false);
