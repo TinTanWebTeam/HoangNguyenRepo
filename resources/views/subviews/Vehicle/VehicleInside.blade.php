@@ -1,5 +1,5 @@
 <style>
-    #frmControl {
+    #divControl {
         z-index: 3;
         position: fixed;
         top: 40%;
@@ -12,7 +12,7 @@
         height: 40px;
     }
     @media (max-height: 500px){
-        #frmControl{
+        #divControl{
             top: 53px;
             overflow: auto;
             height: 80vh;
@@ -68,9 +68,9 @@
 </div>
 <!-- end Table -->
 
+<!-- Control -->
 <div class="row">
-    <!-- Control -->
-    <div id="frmControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
+    <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
         <div class="panel panel-primary">
             <div class="panel-heading">Thêm mới xe
                 <div class="menu-toggles pull-right" onclick="vehicleInsideView.hide()">
@@ -79,7 +79,7 @@
             </div>
 
             <div class="panel-body">
-                <form role="form" id="formUser">
+                <form role="form" id="frmControl">
                     <div class="form-body">
                         <div class="col-sm-12">
                             <div class="row ">
@@ -93,6 +93,7 @@
                                             <div class="col-sm-10 col-xs-10">
                                                 <input type="text" class="form-control"
                                                        id="garages_name" data-id=""
+                                                       name="garages_name"
                                                        placeholder="" ondblclick="vehicleInsideView.searchGarage()">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
@@ -110,7 +111,7 @@
                                         <label for="vehicleType_id"><b>Loại xe</b></label>
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
-                                                <select class="form-control" id="vehicleTypes_name">
+                                                <select class="form-control" id="vehicleTypes_name" name="vehicleTypes_name">
                                                 </select>
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
@@ -128,7 +129,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label for="areaCode"><b>Mã vùng</b></label>
                                         <input type="text" class="form-control"
-                                               id="areaCode"
+                                               id="areaCode" name="areaCode"
                                                placeholder="">
                                     </div>
                                 </div>
@@ -136,7 +137,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label for="vehicleNumber"><b>Số xe</b></label>
                                         <input type="number" class="form-control"
-                                               id="vehicleNumber"
+                                               id="vehicleNumber" name="vehicleNumber"
                                                placeholder="">
                                     </div>
                                 </div>
@@ -146,7 +147,7 @@
                                     <div class="form-group form-md-line-input ">
                                         <label for="size"><b>Kích thước</b></label>
                                         <input type="number" class="form-control"
-                                               id="size"
+                                               id="size" name="size"
                                                placeholder="">
                                     </div>
                                 </div>
@@ -154,7 +155,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label for="weight"><b>Trọng tải</b></label>
                                         <input type="number" class="form-control"
-                                               id="weight"
+                                               id="weight" name="weight"
                                                placeholder="">
                                     </div>
                                 </div>
@@ -175,9 +176,9 @@
                 </form>
             </div>
         </div>
-    </div> <!-- end #frmControl -->
-    <!-- end Control -->
+    </div> <!-- end #divControl -->
 </div>
+<!-- end Control -->
 
 
 <!-- Modal garages -->
@@ -350,12 +351,15 @@
                 idDelete: null,
                 show: function () {
                     $('.menu-toggle').hide();
-                    $('#frmControl').slideDown();
+                    $('#divControl').slideDown();
                 },
                 hide: function () {
-                    $('#frmControl').slideUp('', function () {
+                    $('#divControl').slideUp('', function () {
                         $('.menu-toggle').show();
                     });
+
+                    var myForm = document.getElementById("frmControl");
+                    vehicleInsideView.clearValidation(myForm);
                 },
                 loadData: function () {
                     $.get(url + 'vehicle-inside/getData', function (arrayData) {
@@ -503,48 +507,51 @@
                     vehicleInsideView.current = null;
                 },
                 save: function () {
-                    vehicleInsideView.fillFormDataToCurrentObject();
+                    vehicleInsideView.formValidate();
+                    if($("#frmControl").valid()){
+                        vehicleInsideView.fillFormDataToCurrentObject();
 
-                    var sendToServer = {
-                        _token: _token,
-                        _action: vehicleInsideView.action,
-                        _object: vehicleInsideView.current
-                    };
-                    if (vehicleInsideView.action == 'delete') {
-                        sendToServer._object = vehicleInsideView.idDelete;
-                    }
-                    $.post(
-                            url + 'vehicle-inside/modify',
-                            sendToServer
-                            , function (data) {
-                                if (data['status'] == 'Ok') {
-                                    switch (vehicleInsideView.action) {
-                                        case 'add':
-                                            vehicleInsideView.data.push(data['obj'][0]);
-                                            break;
-                                        case 'update':
-                                            var obj = _.find(vehicleInsideView.data, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var index = _.indexOf(vehicleInsideView.data, obj);
-                                            vehicleInsideView.data.splice(index, 1, data['obj'][0]);
-                                            vehicleInsideView.hide();
-                                            break;
-                                        case 'delete':
-                                            var obj = _.find(vehicleInsideView.data, function (o) {
-                                                return o.id == sendToServer._object;
-                                            });
-                                            var index = _.indexOf(vehicleInsideView.data, obj);
-                                            vehicleInsideView.data.splice(index, 1);
-                                            break;
-                                        default:
-                                            break;
+                        var sendToServer = {
+                            _token: _token,
+                            _action: vehicleInsideView.action,
+                            _object: vehicleInsideView.current
+                        };
+                        if (vehicleInsideView.action == 'delete') {
+                            sendToServer._object = vehicleInsideView.idDelete;
+                        }
+                        $.post(
+                                url + 'vehicle-inside/modify',
+                                sendToServer
+                                , function (data) {
+                                    if (data['status'] == 'Ok') {
+                                        switch (vehicleInsideView.action) {
+                                            case 'add':
+                                                vehicleInsideView.data.push(data['obj'][0]);
+                                                break;
+                                            case 'update':
+                                                var obj = _.find(vehicleInsideView.data, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var index = _.indexOf(vehicleInsideView.data, obj);
+                                                vehicleInsideView.data.splice(index, 1, data['obj'][0]);
+                                                vehicleInsideView.hide();
+                                                break;
+                                            case 'delete':
+                                                var obj = _.find(vehicleInsideView.data, function (o) {
+                                                    return o.id == sendToServer._object;
+                                                });
+                                                var index = _.indexOf(vehicleInsideView.data, obj);
+                                                vehicleInsideView.data.splice(index, 1);
+                                                break;
+                                            default:
+                                                break;
+                                        }
                                     }
+                                    vehicleInsideView.table.clear().rows.add(vehicleInsideView.data).draw();
                                 }
-                                vehicleInsideView.table.clear().rows.add(vehicleInsideView.data).draw();
-                            }
-                    );
-                    vehicleInsideView.clearInput();
+                        );
+                        vehicleInsideView.clearInput();
+                    }
                 },
                 searchGarage: function () {
                     $.get(url + 'vehicle-inside/getAllGarage', function (listGarage) {
@@ -580,6 +587,33 @@
                 },
                 addVehicleType: function () {
                     $("#modal-addVehicleType").modal("show");
+                },
+                formValidate: function(){
+                    $("#frmControl").validate({
+                        rules: {
+                            garages_name: "required",
+                            vehicleTypes_name: "required",
+                            areaCode:"required",
+                            vehicleNumber:"required"
+                        },
+                        messages: {
+                            garages_name: "Vui lòng chọn nhà xe",
+                            vehicleTypes_name: "Vui lòng chọn loại xe",
+                            areaCode: "Vui lòng nhập mã vùng",
+                            vehicleNumber: "Vui lòng nhập số xe"
+                        }
+                    });
+                },
+                clearValidation : function(formElement){
+                    //Internal $.validator is exposed through $(form).validate()
+                    var validator = $(formElement).validate();
+                    //Iterate through named elements inside of the form, and mark them as error free
+                    $('[name]',formElement).each(function(){
+                        validator.successList.push(this);//mark as error free
+                        validator.showErrors();//remove error messages if present
+                    });
+                    validator.resetForm();//remove error class on name elements and clear history
+                    validator.reset();//remove all error and success data
                 }
             };
             vehicleInsideView.loadData();
