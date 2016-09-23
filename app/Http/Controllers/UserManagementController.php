@@ -49,6 +49,8 @@ class UserManagementController extends Controller
 
     public function postModifyUser(Request $request)
     {
+        $user = $request->get('_object');
+        $array_roleid = $request->get('_object2');
 
 //        $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
 //        if ($validateUser->fails()) {
@@ -108,23 +110,32 @@ class UserManagementController extends Controller
             case "add":
                 try {
                     $userNew = new User();
-                    $userNew->fullname = $request->get('_object')['fullname'];
-                    $userNew->username = $request->get('_object')['username'];
-                    $userNew->password = encrypt($request->get('_object')['password'], Config::get('app.key'));
-                    $userNew->email = $request->get('_object')['email'];
-                    $userNew->position_id = $request->get('_object')['position_id'];
-                    if ($userNew->save()) {
-                        $userRow = DB::table('users')
-                            ->join('positions', 'users.position_id', '=', 'positions.id')
-                            ->where('users.id', $userNew->id)
-                            ->select('users.*', 'positions.name as positions_name')
-                            ->get();
-                        return ['status' => 'Ok',
-                                'obj'    => $userRow
-                        ];
-                    } else
+                    $userNew->fullname = $user['fullname'];
+                    $userNew->username = $user['username'];
+                    $userNew->password = encrypt($user['password'], Config::get('app.key'));
+                    $userNew->email = $user['email'];
+                    $userNew->position_id = $user['position_id'];
+                    if (!$userNew->save()) {
                         return ['status' => 'Fail'];
 
+                    }
+                    //insert subrole
+                    for($i =0; $i< count($array_roleid); $i++ ) {
+                        $subRoleNew = new SubRole();
+                        $subRoleNew->user_id = $userNew->id;
+                        $subRoleNew->role_id = $array_roleid[$i];
+                        if(!$subRoleNew->save()){
+                            return ['status' => 'Fail'];
+                        };
+                    }
+                    $userRow = DB::table('users')
+                        ->join('positions', 'users.position_id', '=', 'positions.id')
+                        ->where('users.id', $userNew->id)
+                        ->select('users.*', 'positions.name as positions_name')
+                        ->get();
+                    return ['status' => 'Ok',
+                            'obj'    => $userRow
+                    ];
                 } catch (Exception $ex) {
                     return ['status' => 'Fail'];
                 }
@@ -143,7 +154,7 @@ class UserManagementController extends Controller
                             ->where('users.id', $userUpdate->id)
                             ->select('users.*', 'positions.name as positions_name')
                             ->get();
-                       
+
                         return [
                             'status' => 'Ok',
                             'obj'    => $userUpdateRow

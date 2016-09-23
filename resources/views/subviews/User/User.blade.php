@@ -87,7 +87,7 @@
             <form role="form" id="formUser">
                 <div class="form-body">
                     <div class="form-group form-md-line-input">
-                        <input type="show" class="form-control" id="id" value="">
+                        <input type="hidden" class="form-control" id="id" value="">
                     </div>
                     <div class="col-md-12 ">
                         <div class="row ">
@@ -214,13 +214,22 @@
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
                     $('label.error').hide();
-
                 },
                 hide: function () {
                     $('#frmControl').slideUp('', function () {
                         $('.menu-toggle').show();
                     });
-
+                    var myForm = document.getElementById("formUser");
+                    userView.clearValidation(myForm);
+                },
+                clearValidation : function(formElement){
+                    var validator = $(formElement).validate();
+                     $('[name]',formElement).each(function(){
+                        validator.successList.push(this);//mark as error free
+                        validator.showErrors();//remove error messages if present
+                    });
+                    validator.resetForm();//remove error class on name elements and clear history
+                    validator.reset();//remove all error and success data
                 },
                 loadData: function () {
                     $.post(url + 'user', {_token: _token, fromDate: null, toDate: null}, function (list) {
@@ -306,11 +315,12 @@
                 },
                 fillFormDataToCurrentObject: function () {
                     var subrole = [];
-                    $("input[id=role_id]").each(function () {
+                    $("input[id=array_roleid]").each(function () {
                         if ($(this).prop('checked')) {
                             subrole.push($(this).attr('value'));
                         }
                     });
+                    userView.array_roleid = subrole;
 
                     if (userView.action == 'add') {
                         userView.current = {
@@ -318,9 +328,9 @@
                             username: $("input[id='username']").val(),
                             password: $("input[id='password']").val(),
                             email: $("input[id='email']").val(),
-                            position_id: $("select[id='position_id']").val(),
-                            array_roleid: subrole
+                            position_id: $("select[id='position_id']").val()
                         }
+                        console.log(subrole);
                     } else if (userView.action == 'update') {
                         for (var propertyName in userView.current) {
                             if (propertyName != 'position_id')
@@ -336,70 +346,72 @@
                     userView.resetRolesInDom();
                 },
                 clearInput: function () {
-                    if (userView.current)
+                    if (userView.current){
                         for (var propertyName in userView.current) {
                             if (propertyName != 'position_id')
                                 $("input[id=" + propertyName + "]").val('');
                         }
+                    }
                     $("select[id='position_id' ]").val('');
                     $("input[id='passwordConfirm']").val('');
-
+                    //clear input checkbox
                 },
                 deleteUser: function () {
                     userView.action = 'delete';
                     userView.save();
                     $("#modalConfirm").modal('hide');
                 },
-                validate: function () {
-                    $("#formUser").validate({
-                        rules: {
-                            fullname: "required",
-                            username: "required",
-                            email: {
-                                required: true,
-                                email: true
-                            },
-                            password: {
-                                required: true,
-                                minlength: 6,
-                                maxlength: 20
-                            },
-                            passwordconfirm: {
-                                required: true,
-                                equalTo: "#password",
-                                minlength: 6,
-                                maxlength: 20
-                            }
-                        },
-                        messages: {
-                            fullname: " Vui lòng nhập họ tên",
-                            username: "Vui lòng nhập tài khoản",
-                            email: {
-                                required: "Vui lòng nhập Email",
-                                email: 'Email không đúng định dạng'
-                            },
-                            password: {
-                                required: "Vui lòng nhập mật khẩu",
-                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
-                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
-                            },
-                            passwordconfirm: {
-                                required: "Vui lòng nhập lại mật khẩu",
-                                equalTo: "Nhập lại mật khẩu không đúng",
-                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
-                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
-                            }
-                        }
-                    });
-
-                },
+//                validate: function () {
+//                    $("#formUser").validate({
+//                        rules: {
+//                            fullname: "required",
+//                            username: "required",
+//                            email: {
+//                                required: true,
+//                                email: true
+//                            },
+//                            password: {
+//                                required: true,
+//                                minlength: 6,
+//                                maxlength: 20
+//                            },
+//                            passwordconfirm: {
+//                                required: true,
+//                                equalTo: "#password",
+//                                minlength: 6,
+//                                maxlength: 20
+//                            }
+//                        },
+//                        messages: {
+//                            fullname: " Vui lòng nhập họ tên",
+//                            username: "Vui lòng nhập tài khoản",
+//                            email: {
+//                                required: "Vui lòng nhập Email",
+//                                email: 'Email không đúng định dạng'
+//                            },
+//                            password: {
+//                                required: "Vui lòng nhập mật khẩu",
+//                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
+//                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
+//                            },
+//                            passwordconfirm: {
+//                                required: "Vui lòng nhập lại mật khẩu",
+//                                equalTo: "Nhập lại mật khẩu không đúng",
+//                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
+//                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
+//                            }
+//                        }
+//                    });
+//
+//                },
                 save: function () {
-                    userView.validate();
+//                    userView.validate();
                     userView.fillFormDataToCurrentObject();
                     var sendToServer = {
                         _token: _token,
                         _action: userView.action,
-                        _object: userView.current
+                        _object: userView.current,
+                        _object2: userView.array_roleid,
                     };
                     if (userView.action == 'delete') {
                         sendToServer._object = {
@@ -411,6 +423,7 @@
                         };
                     }
                     if ($("#formUser").valid()) {
+                        console.log(sendToServer);
                         $.post(
                                 url + 'user/modify',
                                 sendToServer
@@ -438,11 +451,15 @@
                                             default:
                                                 break;
                                         }
+                                        userView.table.clear().rows.add(userView.data).draw();
+                                        userView.clearInput();
+                                    } else {
+
                                     }
-                                    userView.table.clear().rows.add(userView.data).draw();
+
                                 }
                         );
-                        userView.clearInput();
+
                         userView.resetRolesInDom();
                     } else {
                         $("form#formUser").find("label[class=error]").css("color", "red");
