@@ -362,47 +362,8 @@
                             position_id: "delete"
                         };
                     }
-                    if (userView.action == 'add') {
-                        $("#formUser").validate({
-                            rules: {
-                                fullname: "required",
-                                username:"required",
-                                email:{
-                                    required: true,
-                                    email: true
-                                },
-                                password: {
-                                    required: true,
-                                    minlength: 6,
-                                    maxlength: 20
-                                },
-                                passwordconfirm: {
-                                    required: true,
-                                    equalTo: "#password",
-                                    minlength: 6,
-                                    maxlength: 20
-                                },
-                            },
-                            messages: {
-                                fullname: " Vui lòng nhập họ tên",
-                                username:"Vui lòng nhập tài khoản",
-                                email: {
-                                    required: "Vui lòng nhập Email",
-                                    email: 'Email không đúng định dạng'
-                                },
-                                password: {
-                                    required: "Vui lòng nhập mật khẩu",
-                                    minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
-                                    maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
-                                },
-                                passwordconfirm: {
-                                    required: "Vui lòng nhập lại mật khẩu",
-                                    equalTo: "Nhập lại mật khẩu không đúng",
-                                    minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
-                                    maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
-                                },
-                            }
-                        });
+                    else if (userView.action == 'add') {
+                        userView.formValidate();
                     }else{
                         userView.action = 'update';
                     }
@@ -412,6 +373,7 @@
                                 sendToServer
                                 , function (data) {
                                     if (data['status'] == 'Ok') {
+                                        console.log(userView.action);
                                         switch (userView.action) {
                                             case'add' :
                                                 userView.data.push(data['obj'][0]);
@@ -428,8 +390,12 @@
                                                 var obj = _.find(userView.data, function (o) {
                                                     return o.id == sendToServer._object.id;
                                                 });
+                                                    console.log(obj);
                                                 var index = _.indexOf(userView.data, obj);
+                                                    console.log(index);
+                                                console.log(userView.data);
                                                 userView.data.splice(index, 1);
+                                                    console.log(userView.data);
                                                 break;
                                             default:
                                                 break;
@@ -446,12 +412,51 @@
                     $("input[id=role_id]").each(function () {
                         $(this).prop('checked', false);
                     });
-                }
-                ,
+                },
                 fillRolesToDom: function (roles_array) {
                     $("input[id=role_id]").each(function () {
                         if (roles_array.includes(Number($(this).attr('value')))) {
                             $(this).prop('checked', true);
+                        }
+                    });
+                },
+                formValidate: function(){
+                    $("#formUser").validate({
+                        rules: {
+                            fullname: "required",
+                            username:"required",
+                            email:{
+                                required: true,
+                                email: true
+                            },
+                            password: {
+                                required: true,
+                                minlength: 6,
+                                maxlength: 20
+                            },
+                            passwordconfirm: {
+                                equalTo: "#password",
+                                minlength: 6,
+                                maxlength: 20
+                            }
+                        },
+                        messages: {
+                            fullname: " Vui lòng nhập họ tên",
+                            username:"Vui lòng nhập tài khoản",
+                            email: {
+                                required: "Vui lòng nhập Email",
+                                email: 'Email không đúng định dạng'
+                            },
+                            password: {
+                                required: "Vui lòng nhập mật khẩu",
+                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
+                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
+                            },
+                            passwordconfirm: {
+                                equalTo: "Nhập lại mật khẩu không đúng",
+                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
+                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
+                            }
                         }
                     });
                 }
@@ -461,6 +466,9 @@
         } else {
             userView.loadData();
         }
-    })
-    ;
+        $("#passwordconfirm").on('keypress',function(){
+            console.log("fadsfds");
+            userView.formValidate();
+        })
+    });
 </script>

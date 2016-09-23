@@ -22,7 +22,9 @@ class VehicleManagementController extends Controller
         $vehicles = \DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')->get();
+            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')
+            ->orderBy('vehicles.id', 'desc')
+            ->get();
         return [
             'vehicles' => $vehicles,
             'vehicleTypes' => $vehicleTypes
