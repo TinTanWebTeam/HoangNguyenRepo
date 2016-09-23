@@ -113,19 +113,18 @@ class UserManagementController extends Controller
                     $userNew->password = encrypt($request->get('_object')['password'], Config::get('app.key'));
                     $userNew->email = $request->get('_object')['email'];
                     $userNew->position_id = $request->get('_object')['position_id'];
-                    
-                    if ($userNew->save()){
+                    if ($userNew->save()) {
                         $userRow = DB::table('users')
                             ->join('positions', 'users.position_id', '=', 'positions.id')
                             ->where('users.id', $userNew->id)
                             ->select('users.*', 'positions.name as positions_name')
                             ->get();
                         return ['status' => 'Ok',
-                                'obj'    =>   $userRow
-                        ];}
-                    else
+                                'obj'    => $userRow
+                        ];
+                    } else
                         return ['status' => 'Fail'];
-                    
+
                 } catch (Exception $ex) {
                     return ['status' => 'Fail'];
                 }
@@ -138,13 +137,18 @@ class UserManagementController extends Controller
                     $userUpdate->password = encrypt($request->get('_object')['password'], Config::get('app.key'));
                     $userUpdate->email = $request->get('_object')['email'];
                     $userUpdate->position_id = $request->get('_object')['position_id'];
-//                    $userUpdate->update($request->all());
-                    if ($userUpdate->update($request->all('_object')))
+                    if ($userUpdate->save()) {
+                        $userUpdateRow = DB::table('users')
+                            ->join('positions', 'users.position_id', '=', 'positions.id')
+                            ->where('users.id', $userUpdate->id)
+                            ->select('users.*', 'positions.name as positions_name')
+                            ->get();
+                       
                         return [
                             'status' => 'Ok',
-                            'obj'    => $userUpdate
+                            'obj'    => $userUpdateRow
                         ];
-                    else
+                    } else
                         return ['status' => 'Fail'];
                 } catch (Exception $ex) {
                     return ['status' => 'Fail'];
