@@ -360,6 +360,8 @@
 
                     var myForm = document.getElementById("frmControl");
                     vehicleInsideView.clearValidation(myForm);
+
+                    vehicleInsideView.clearInput();
                 },
                 loadData: function () {
                     $.get(url + 'vehicle-inside/getData', function (arrayData) {
