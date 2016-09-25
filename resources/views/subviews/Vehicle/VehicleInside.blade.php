@@ -12,6 +12,10 @@
         height: 40px;
     }
 
+    .marginRight{
+        margin-right: 5px;
+    }
+
     @media (max-height: 500px) {
         #divControl {
             top: 53px;
@@ -85,9 +89,6 @@
                         <div class="col-sm-12">
                             <div class="row ">
                                 <div class="col-sm-6 col-xs-6">
-                                    <input type="hidden" class="form-control"
-                                           id="id"
-                                           autofocus>
                                     <div class="form-group form-md-line-input">
                                         <label for="garages_name"><b>Nhà xe</b></label>
                                         <div class="row">
@@ -99,7 +100,7 @@
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle"
-                                                     onclick="vehicleInsideView.addGarage()">
+                                                     onclick="vehicleInsideView.displayModal('show', '#modal-addGarage')">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
                                             </div>
@@ -117,7 +118,7 @@
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle"
-                                                     onclick="vehicleInsideView.addVehicleType()">
+                                                     onclick="vehicleInsideView.displayModal('show', '#modal-addVehicleType')">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
                                             </div>
@@ -165,11 +166,11 @@
                         <div class="col-sm-12">
                             <div class="form-actions noborder">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-primary"
+                                    <button type="button" class="btn btn-primary marginRight"
                                             onclick="vehicleInsideView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                                    <button type="button" class="btn default" onclick="vehicleInsideView.clearInput()">Huỷ</button>
                                 </div>
                             </div>
                         </div>
@@ -232,19 +233,19 @@
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="NameHouseVehicle"><b>Tên nhà xe</b></label>
+                                    <label for="Garage_name"><b>Tên nhà xe</b></label>
                                     <input type="text" class="form-control"
-                                           id="NameHouseVehicle"
-                                           name="NameHouseVehicle"
+                                           id="Garage_name"
+                                           name="Garage_name"
                                            placeholder="Tên nhà xe">
                                 </div>
                             </div>
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Name"><b>Người liên hệ</b></label>
+                                    <label for="contactor"><b>Người liên hệ</b></label>
                                     <input type="text" class="form-control"
-                                           id="Name"
-                                           name="Name"
+                                           id="contactor"
+                                           name="contactor"
                                            placeholder="Người liên hệ">
                                 </div>
                             </div>
@@ -252,19 +253,19 @@
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="Telephone"><b>Số điện thoại</b></label>
+                                    <label for="phone"><b>Số điện thoại</b></label>
                                     <input type="text" class="form-control"
-                                           id="Telephone"
-                                           name="Telephone"
+                                           id="phone"
+                                           name="phone"
                                            placeholder="090..">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
-                                    <label for="Adress"><b>Địa chỉ</b></label>
+                                    <label for="address"><b>Địa chỉ</b></label>
                                     <input type="text" class="form-control"
-                                           id="Adress"
-                                           name="Adress"
+                                           id="address"
+                                           name="address"
                                            placeholder="Địa chỉ">
                                 </div>
                             </div>
@@ -273,11 +274,11 @@
                             <div class="col-md-offset-8 col-md-4">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-primary"
-                                                onclick="">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="vehicleInsideView.saveGarage()">
                                             Hoàn tất
                                         </button>
-                                        <button type="button" class="btn default" onclick="">Huỷ</button>
+                                        <button type="button" class="btn default" onclick="vehicleInsideView.displayModal('hide','#modal-addGarage')">Huỷ</button>
                                     </div>
                                 </div>
                             </div>
@@ -306,10 +307,10 @@
                         <div class="row ">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
-                                    <label for="NameHouseVehicle"><b>Tên loại xe</b></label>
+                                    <label for="VehicleType_name"><b>Tên loại xe</b></label>
                                     <input type="text" class="form-control"
-                                           id="NameHouseVehicle"
-                                           name="NameHouseVehicle"
+                                           id="VehicleType_name"
+                                           name="VehicleType_name"
                                            placeholder="Tên nhà xe">
                                 </div>
                             </div>
@@ -320,7 +321,6 @@
                                     <label for="description"><b>Mô tả</b></label>
                                     <textarea name="description" id="description" cols="10" rows="3"
                                               class="form-control">
-
                                 </textarea>
                                 </div>
                             </div>
@@ -329,11 +329,11 @@
                             <div class="col-md-offset-8 col-md-4">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-primary"
-                                                onclick="">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="vehicleInsideView.saveVehicleType()">
                                             Hoàn tất
                                         </button>
-                                        <button type="button" class="btn default" onclick="">Huỷ</button>
+                                        <button type="button" class="btn default" onclick="vehicleInsideView.displayModal('hide','#modal-addVehicleType')">Huỷ</button>
                                     </div>
                                 </div>
                             </div>
@@ -348,7 +348,7 @@
 
 <!-- Modal confirm delete Vehicle -->
 <div class="row">
-    <div id="modal-confirm" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+    <div id="modal-confirmDelete" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -360,11 +360,11 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
-                            <button type="button" class="btn dark btn-outline" name="modalClose"
-                                    onclick="vehicleInsideView.cancelDelete()">Hủy
-                            </button>
-                            <button type="button" class="btn green" name="modalAgree"
+                            <button type="button" class="btn green marginRight" name="modalAgree"
                                     onclick="vehicleInsideView.save()">Ðồng ý
+                            </button>
+                            <button type="button" class="btn dark btn-outline" name="modalClose"
+                                    onclick="vehicleInsideView.displayModal('hide','#modal-confirmDelete')">Hủy
                             </button>
                         </div>
                     </div>
@@ -382,6 +382,7 @@
             vehicleInsideView = {
                 table: null,
                 tableGarage: null,
+                tableVehicleType: null,
                 data: null,
                 current: null,
                 action: null,
@@ -401,10 +402,11 @@
                     vehicleInsideView.clearInput();
                 },
                 loadData: function () {
-                    $.get(url + 'vehicle-inside/getData', function (arrayData) {
+                    $.get(url + 'vehicle-inside/vehicles', function (arrayData) {
                         vehicleInsideView.data = arrayData['vehicles'];
                         vehicleInsideView.fillDataToDatatable(arrayData['vehicles']);
 
+                        vehicleInsideView.tableVehicleType = arrayData['vehicleTypes'];
                         vehicleInsideView.loadSelectBox(arrayData['vehicleTypes']);
                     });
 
@@ -523,12 +525,14 @@
                 deleteVehicle: function (id) {
                     vehicleInsideView.action = 'delete';
                     vehicleInsideView.idDelete = id;
-                    $("#modal-confirm").modal("show");
+                    vehicleInsideView.displayModal("show", "#modal-confirmDelete");
                 },
-                cancelDelete: function () {
-                    vehicleInsideView.action = null;
-                    vehicleInsideView.idDelete = null;
-                    $("#modal-confirm").modal("hide");
+                displayModal: function(type, idModal){
+                    $(idModal).modal(type);
+                    if(vehicleInsideView.action == 'delete' && type == 'hide'){
+                        vehicleInsideView.action = null;
+                        vehicleInsideView.idDelete = null;
+                    }
                 },
                 fillCurrentObjectToForm: function () {
                     $("input[id='areaCode']").val(vehicleInsideView.current["areaCode"]);
@@ -625,7 +629,7 @@
                                         var indexOfVehicleOld = _.indexOf(vehicleInsideView.data, vehicleOld);
                                         vehicleInsideView.data.splice(indexOfVehicleOld, 1);
                                         vehicleInsideView.showNotification("success", "Xóa thành công!");
-                                        $("#modal-confirm").modal("hide");
+                                        vehicleInsideView.displayModal("hide", "#modal-confirmDelete")
                                         break;
                                     default:
                                         break;
@@ -633,15 +637,15 @@
                                 vehicleInsideView.table.clear().rows.add(vehicleInsideView.data).draw();
                                 vehicleInsideView.clearInput();
                             } else {
-
+                                vehicleInsideView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới lại trình duyệt và thử lại.");
+                            vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     }
                 },
                 searchGarage: function () {
-                    $.get(url + 'vehicle-inside/getAllGarage', function (listGarage) {
+                    $.get(url + 'vehicle-inside/garages', function (listGarage) {
                         if (vehicleInsideView.tableGarage != null) {
                             vehicleInsideView.tableGarage.destroy();
                         }
@@ -657,9 +661,15 @@
                             ]
                         })
                     });
-                    $("#modal-garage").modal('show');
+                    vehicleInsideView.displayModal("show", "#modal-garage")
                 },
                 loadSelectBox: function (lstVehicleType) {
+                    //reset selectbox
+                    $('#vehicleTypes_name')
+                            .find('option')
+                            .remove()
+                            .end();
+                    //fill option to selectbox
                     var select = document.getElementById("vehicleTypes_name");
                     for (var i = 0; i < lstVehicleType.length; i++) {
                         var opt = lstVehicleType[i]['name'];
@@ -668,12 +678,6 @@
                         el.value = lstVehicleType[i]['id'];
                         select.appendChild(el);
                     }
-                },
-                addGarage: function () {
-                    $("#modal-addGarage").modal("show");
-                },
-                addVehicleType: function () {
-                    $("#modal-addVehicleType").modal("show");
                 },
                 formValidate: function () {
                     $("#frmControl").validate({
@@ -701,6 +705,67 @@
                     });
                     validator.resetForm();//remove error class on name elements and clear history
                     validator.reset();//remove all error and success data
+                },
+                saveGarage: function(){
+                    var garage = {
+                        name: $("input[id='Garage_name']").val(),
+                        contactor: $("input[id='contactor']").val(),
+                        phone: $("input[id='phone']").val(),
+                        address: $("input[id='address']").val()
+                    };
+
+                    var sendToServer = {
+                        _token: _token,
+                        _action: 'add',
+                        _garage: garage
+                    };
+                    $.ajax({
+                        url: url + 'vehicle-outside/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            vehicleInsideView.showNotification("success", "Thêm thành công!");
+                            vehicleInsideView.displayModal("hide", "#modal-addGarage");
+                            $("input[id='garages_name']").val(data["garage"]["name"]);
+                            $("#garages_name").attr('data-id', data["garage"]["id"]);
+                        } else {
+                            vehicleInsideView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                saveVehicleType: function(){
+                    var vehicleType = {
+                        name: $("input[id='VehicleType_name']").val(),
+                        description: $("textarea[id='description']").val()
+                    };
+                    var sendToServer = {
+                        _token: _token,
+                        _action: 'add',
+                        _vehicleType: vehicleType
+                    };
+                    $.ajax({
+                        url: url + 'vehicle-type/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        if (jqXHR.status == 201) {
+                            vehicleInsideView.showNotification("success", "Thêm thành công!");
+                            vehicleInsideView.displayModal("hide", "#modal-addVehicleType");
+                            vehicleInsideView.tableVehicleType.push(data['vehicleType']);
+                            vehicleInsideView.loadSelectBox(vehicleInsideView.tableVehicleType);
+                            $("select[id='vehicleTypes_name']").val(data['vehicleType']['id']);
+                        } else {
+                            vehicleInsideView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
                 }
             };
             vehicleInsideView.loadData();
@@ -708,10 +773,10 @@
             vehicleInsideView.loadData();
         }
 
-        $("#table-garage tbody").on('click', 'tr', function () {
+        $("#table-garage").find("tbody").on('click', 'tr', function () {
             $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
             $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
-            $("#modal-garage").modal('hide');
+            vehicleInsideView.displayModal("hide", "#modal-garage");
         });
     });
 </script>

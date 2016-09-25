@@ -35,15 +35,6 @@ class VehicleManagementController extends Controller
         ];
     }
 
-    public function getAllVehicle()
-    {
-        $vehicles = \DB::table('vehicles')
-            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')->get();
-        return $vehicles;
-    }
-
     public function postModifyVehicle(Request $request)
     {
         $action = $request->input('_action');
@@ -138,9 +129,134 @@ class VehicleManagementController extends Controller
         return view('subviews.Vehicle.VehicleOutside', ['garages' => $garages]);
     }
 
-    public function getAllGarage()
+    public function getDataGarage()
     {
         return Garage::all();
+    }
+
+    public function postModifyGarage(Request $request)
+    {
+        $action = $request->input('_action');
+        if($action != 'delete'){
+            $validator = ValidateController::ValidateGarage($request->input('_garage'));
+            if ($validator->fails()) {
+                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $name      = $request->input('_garage')['name'];
+            $contactor = $request->input('_garage')['contactor'];
+            $phone     = $request->input('_garage')['phone'];
+            $address   = $request->input('_garage')['address'];
+        }
+
+        switch ($action) {
+            case 'add':
+                $garageNew = new Garage();
+                $garageNew->name      = $name     ;
+                $garageNew->contactor = $contactor;
+                $garageNew->phone     = $phone    ;
+                $garageNew->address   = $address  ;
+                if ($garageNew->save()) {
+                    $response = [
+                        'msg' => 'Created garage',
+                        'garage' => $garageNew
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case 'update':
+                $garageUpdate = Garage::findOrFail($request->input('_garage')['id']);
+                $garageUpdate->name      = $name     ;
+                $garageUpdate->contactor = $contactor;
+                $garageUpdate->phone     = $phone    ;
+                $garageUpdate->address   = $address  ;
+                if ($garageUpdate->update()) {
+                    $response = [
+                        'msg' => 'Updated garage',
+                        'garage' => $garageUpdate
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+            case 'delete':
+                $garageDelete = Garage::findOrFail($request->input('_id'));
+                $garageDelete->active = 0;
+
+                if ($garageDelete->update()){
+                    $response = [
+                        'msg' => 'Deleted garage'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
+    }
+
+    /*
+     * VehicleType
+     * */
+    public function postModifyVehicleType(Request $request)
+    {
+        $action = $request->input('_action');
+        if($action != 'delete'){
+            $validator = ValidateController::ValidateVehicleType($request->input('_vehicleType'));
+            if ($validator->fails()) {
+                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $name      = $request->input('_vehicleType')['name'];
+            $description = $request->input('_vehicleType')['description'];
+        }
+
+        switch ($action) {
+            case 'add':
+                $vehicleTypeNew = new VehicleType();
+                $vehicleTypeNew->name      = $name     ;
+                $vehicleTypeNew->description = $description;
+                if ($vehicleTypeNew->save()) {
+                    $response = [
+                        'msg' => 'Created vehicleType',
+                        'vehicleType' => $vehicleTypeNew
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case 'update':
+                $vehicleTypeUpdate = VehicleType::findOrFail($request->input('_vehicleType')['id']);
+                $vehicleTypeUpdate->name      = $name     ;
+                $vehicleTypeUpdate->contactor = $description;
+                if ($vehicleTypeUpdate->update()) {
+                    $response = [
+                        'msg' => 'Updated vehicleType',
+                        'vehicleType' => $vehicleTypeUpdate
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+            case 'delete':
+                $vehicleTypeDelete = VehicleType::findOrFail($request->input('_id'));
+                $vehicleTypeDelete->active = 0;
+
+                if ($vehicleTypeDelete->update()){
+                    $response = [
+                        'msg' => 'Deleted vehicleType'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
     }
 
 
