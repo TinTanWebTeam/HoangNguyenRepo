@@ -27,6 +27,9 @@
     <link rel="stylesheet" href="{{ URL::to('libs/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/Buttons-1.2.2/css/buttons.dataTables.min.css') }}">
 
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{{ URL::to('libs/toastr/toastr.min.css') }}">
+
     @yield('styles')
 
     <!-- jQuery -->
@@ -78,6 +81,9 @@
 
 <!-- Validate -->
 <script src="{{ URL::to('libs/jquery-validation/dist/jquery.validate.min.js') }}"></script>
+
+<!-- Toastr -->
+<script src="{{ URL::to('libs/toastr/toastr.min.js') }}"></script>
 
 <!-- Global -->
 <script src=" {{ URL::to('src/js/global.js') }} "></script>
