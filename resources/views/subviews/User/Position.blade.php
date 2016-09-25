@@ -86,8 +86,8 @@
         <div class="panel-body portlet-body">
             <form role="form" id="formPosition">
                 <div class="form-body">
-                    <div class="form-group form-md-line-input" style="display:none">
-                        <input type="text" class="form-control" id="id" value="">
+                    <div class="form-group form-md-line-input">
+                        <input type="hidden" class="form-control" id="id" value="">
                     </div>
                     <div class="col-md-12 ">
                         <div class="row ">
@@ -96,6 +96,7 @@
                                     <label for="name"><b>Chức vụ</b></label>
                                     <input type="text" class="form-control"
                                            id="name"
+                                           name="name"
                                            placeholder="Chức vụ">
                                 </div>
                             </div>
@@ -148,7 +149,17 @@
                         $('.menu-toggle').show();
                         PositionView.clearInput();
                     });
-
+                    var myForm = document.getElementById("formPosition");
+                    PositionView.clearValidation(myForm);
+                },
+                clearValidation: function (formElement) {
+                    var validator = $(formElement).validate();
+                    $('[name]', formElement).each(function () {
+                        validator.successList.push(this);//mark as error free
+                        validator.showErrors();//remove error messages if present
+                    });
+                    validator.resetForm();//remove error class on name elements and clear history
+                    validator.reset();//remove all error and success data
                 },
                 cancel: function () {
                     if (PositionView.action == 'add') {
@@ -178,6 +189,17 @@
                         PositionView.fillDataToDatatable(list);
                     })
                 },
+                validate: function () {
+                    $("#formPosition").validate({
+                        rules: {
+                            name: 'required'
+                        },
+                        messages: {
+                            name: "Vui lòng nhập chức vụ"
+                        }
+                    });
+                },
+
                 fillDataToDatatable: function (data) {
                     PositionView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -210,7 +232,6 @@
                     }
                     PositionView.show();
                 },
-
                 fillFormDataToCurrentObject: function () {
                     if (PositionView.action == 'add') {
                         PositionView.current = {
@@ -246,6 +267,7 @@
                 },
 
                 save: function () {
+                    PositionView.validate();
                     PositionView.fillFormDataToCurrentObject();
                     var sendToServer = {
                         _token: _token,
@@ -258,44 +280,48 @@
                             name: "delete"
                         };
                     }
-                    $.post(
-                            url + 'position/modify',
-                            sendToServer
-                            , function (data) {
-                                if (data['status'] == 'Ok') {
-                                    switch (PositionView.action) {
-                                        case'add' :
-                                            PositionView.data.push(data['obj']);
-                                            break;
+                    if ($("#formPosition").valid()) {
+                        $.post(
+                                url + 'position/modify',
+                                sendToServer
+                                , function (data) {
+                                    if (data['status'] == 'Ok') {
+                                        switch (PositionView.action) {
+                                            case'add' :
+                                                PositionView.data.push(data['obj']);
+                                                break;
 
-                                        case 'update':
-                                            var obj = _.find(PositionView.data, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var index = _.indexOf(PositionView.data, obj);
-                                            PositionView.data.splice(index, 1, data['obj']);
-                                            PositionView.hide();
-                                            break;
-                                        case 'delete':
-                                            var obj = _.find(PositionView.data, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var index = _.indexOf(PositionView.data, obj);
-                                            PositionView.data.splice(index, 1);
-                                            break;
-                                        default:
-                                            break;
+                                            case 'update':
+                                                var obj = _.find(PositionView.data, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var index = _.indexOf(PositionView.data, obj);
+                                                PositionView.data.splice(index, 1, data['obj']);
+                                                PositionView.hide();
+                                                break;
+                                            case 'delete':
+                                                var obj = _.find(PositionView.data, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var index = _.indexOf(PositionView.data, obj);
+                                                PositionView.data.splice(index, 1);
+                                                break;
+                                            default:
+                                                break;
+                                        }
                                     }
-                                }
-                                PositionView.table.clear().rows.add(PositionView.data).draw();
-                            }
-                    );
-                    PositionView.clearInput();
-
+                                    PositionView.table.clear().rows.add(PositionView.data).draw();
+                                });
+                        PositionView.clearInput();
+                    } else {
+                        $("form#formPosition").find("label[class=error]").css("color", "red");
+                    }
                 }
-            };
+            }
+            ;
             PositionView.loadData();
-        } else {
+        }
+        else {
             PositionView.loadData();
         }
     });

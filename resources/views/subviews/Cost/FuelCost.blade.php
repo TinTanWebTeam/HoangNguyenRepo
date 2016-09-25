@@ -1,38 +1,12 @@
 <style>
-    .btn-del-edit {
-        float: left;
-        padding-right: 5px;
-    }
-
     #frmControl {
         z-index: 3;
         position: fixed;
-        top: 40%;
+        top: 30%;
         display: none;
         right: 0px;
         width: 40%;
         height: 100%;
-    }
-
-    .fixed {
-        top: 72px;
-        position: fixed;
-        right: 20px;
-        z-index: 2;
-    }
-
-    .menu-toggles {
-        cursor: pointer
-    }
-
-    .icon-center {
-        line-height: 130%;
-        padding-left: 3%;
-        font-size: 13px;
-    }
-
-    ol.breadcrumb {
-        border-bottom: 2px solid #e7e7e7
     }
 
     div.col-lg-12 {
@@ -40,6 +14,24 @@
     }
 </style>
 
+<div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" name="modalClose"
+                        onclick="fuelCostView.cancelDelete()">Hủy
+                </button>
+                <button type="button" class="btn green" name="modalAgree"
+                        onclick="fuelCostView.deleteFuelCost()">Ðồng ý
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+{{--End Modal--}}
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -52,7 +44,7 @@
                         <li class="active">Nhiên liệu</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="fuelCostView.show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="fuelCostView.addNewFuelCost()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -64,9 +56,10 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
+                            <th>Mã vùng</th>
                             <th>Số xe</th>
-                            <th>Ghi chú</th>
                             <th>Thời gian đổ</th>
+                            <th>Ghi chú</th>
                             <th>Số lít</th>
                             <th>Đơn giá</th>
                             <th>Tổng chi phí</th>
@@ -89,45 +82,39 @@
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
-
         <div class="panel-body">
             <form role="form" id="formUser">
                 <div class="form-body">
                     <div class="col-md-12 ">
                         <div class="row ">
-                            <div class="col-md-4 ">
+                            <div class="col-md-4">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="NumberVehicle"><b>Mã xe</b></label>
-                                    <input type="text" class="form-control"
-                                           id="NumberVehicle"
-                                           name="NumberVehicle"
-                                           placeholder="Số xe"
-                                           autofocus>
-                                </div>
-                            </div>
-                            <div class="col-md-4 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="Transport"><b>Loại phí</b></label>
-                                    <select name="" id="" class="form-control">
-                                        <option value="">Nhiên liệu</option>
-                                        <option value="">Thay nhớt</option>
-                                        <option value="">Đậu bãi</option>
-                                        <option value="" selected>Khác</option>
+                                    <label for="areaCode"><b>Số xe</b></label>
+                                    <select name="areaCode" id="areaCode" class="form-control"
+                                            onchange="fuelCostView.select()">
+                                        <option value="">-- Mã vùng --</option>
+                                        @foreach($vehicles as $item)
+                                            {
+                                            <option value="{{$item->id}}">{{$item->areaCode}}</option>
+                                            }
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="Price"><b>Đơn giá</b></label>
-                                    <input type="text" class="form-control"
-                                           id="Price"
-                                           name="Price"
-                                           placeholder="00.00">
+                            <div class="col-md-4">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="vehicleNumber"><b>Số xe</b></label>
+                                    <select name="vehicleNumber" id="vehicleNumber" class="form-control">
+                                        <option value="">-- Chọn xe --</option>
+                                        @foreach($vehicles as $item)
+                                            {
+                                            <option value="{{$item->vehicleNumber}}">{{$item->vehicleNumber}}</option>
+                                            }
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-4">
                                 <div class="form-group form-md-line-input ">
                                     <label for="TotalPrice"><b>Thời gian đổ dầu</b></label>
                                     <input type="date" class="form-control"
@@ -147,13 +134,48 @@
                                            placeholder="Số lít">
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input">
+                                    <label for="Price"><b>Đơn giá</b></label>
+                                    <input type="text" class="form-control"
+                                           id="Price"
+                                           name="Price"
+                                           placeholder="00.00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="Transport"><b>Loại phí</b></label>
+                                    <select name="costprice_id" id="costprice_id" class="form-control">
+                                        <option value="">-- Chọn loại --</option>
+                                        @foreach($costPrices as $item)
+                                            {
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                            }
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group form-md-line-input ">
                                     <label for="TotalPrice"><b>Tổng chi phí</b></label>
                                     <input type="text" class="form-control"
                                            id="TotalPrice"
                                            name="TotalPrice"
                                            placeholder="Tổng chi phí">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="note"><b>Ghi chú</b></label>
+                                    <input type="text" class="form-control"
+                                           id="note"
+                                           name="note"
+                                           placeholder="Ghi chú">
                                 </div>
                             </div>
                         </div>
@@ -180,6 +202,10 @@
         if (typeof (fuelCostView) === 'undefined') {
             fuelCostView = {
                 table: null,
+                data: null,
+                action: null,
+                idDelete: null,
+                current: null,
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
@@ -195,27 +221,79 @@
                         fuelCostView.fillDataToDatatable(list);
                     });
                 },
+                cancel: function () {
+                    if (fuelCostView.action == 'add') {
+                        fuelCostView.clearInput();
+                    } else {
+                        fuelCostView.fillCurrentObjectToForm();
+                    }
+                },
+                clearInput: function () {
+                    if (fuelCostView.current)
+                        for (var propertyName in fuelCostView.current) {
+                            $("input[id=" + propertyName + "]").val('');
+                        }
+                },
+                editFuelCost: function (id) {
+                    fuelCostView.current = _.clone(_.find(fuelCostView.data, function (o) {
+                        return o.id == id;
+                    }), true);
+                    fuelCostView.action = "update";
+                    fuelCostView.fillCurrentObjectToForm();
+                    fuelCostView.show();
+                },
+
+                msgDelete: function (id) {
+                    if (id) {
+                        fuelCostView.idDelete = id;
+                        $("div#modalConfirm").modal("show");
+                        $("div#modalContent").empty().append("Bạn có muốn xóa ?");
+                        $("button[name=modalAgree]").show();
+                    }
+                },
+                fillCurrentObjectToForm: function () {
+                    for (var propertyName in fuelCostView.current) {
+                        $("input[id=" + propertyName + "]").val(fuelCostView.current[propertyName]);
+                    }
+                    fuelCostView.show();
+                },
+                addNewFuelCost: function () {
+                    fuelCostView.action = 'add';
+                    fuelCostView.show();
+                },
+                select: function () {
+                    var $selectAreaCode = $("select[id=areaCode]").val();
+                    $.post(url + 'fuel-cost-test', {
+                        _token: _token,
+                        AreaCode: $selectAreaCode
+                    }, function (data) {
+                        if (data != "0") {
+                            $("select[id=vehicleNumber]").val(data[0]["vehicleNumber"]);
+                        }
+                    });
+                },
                 fillDataToDatatable: function (data) {
                     fuelCostView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
+                            {data: 'vehicles_code'},
                             {data: 'vehicles_vehicleNumber'},
-                            {data: 'note'},
                             {data: 'created_at'},
+                            {data: 'note'},
                             {data: 'literNumber'},
                             {data: 'prices_price'},
                             {data: 'cost'},
                             {
-                                render: function () {
+                                render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle">';
+                                    tr += '<div class="btn btn-success  btn-circle" onclick="fuelCostView.editfuelcost(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-danger btn-circle">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="fuelCostView.msgDelete(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -231,4 +309,6 @@
             fuelCostView.loadData();
         }
     });
+
+
 </script>

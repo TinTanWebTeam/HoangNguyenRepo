@@ -82,10 +82,11 @@ class AuthController extends Controller
     public function postLogin(Request $request)
     {
         try {
-            $user = User::where('username', $request->get('username'))->first();
+
+            $user = User::where('username',$request->get('username'))->first();
             if($user){
                 $password = decrypt($user->password,Config::get('app.key'));
-                if ($password == $request->get('password')) {
+                if ($password == $request->get('password') && $user->active == 1) {
                     Auth::login($user);
                     return redirect('/');
                 }else{

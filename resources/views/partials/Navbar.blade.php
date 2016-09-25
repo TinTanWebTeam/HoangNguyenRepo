@@ -1,3 +1,34 @@
+{{--<div id="page-wrapper">--}}
+    {{--<div class="col-lg-4">--}}
+        {{--<div class="panel panel-primary">--}}
+            {{--<div class="panel-heading">--}}
+                {{--Đổi mật khẩu--}}
+            {{--</div>--}}
+            {{--<div class="panel-body">--}}
+                {{--<div class="col-md-12">--}}
+                    {{--<div class="row">--}}
+                        {{--<div class="col-md-4">--}}
+                            {{--<div class="form-group form-md-line-input ">--}}
+                                {{--<label for="passwordconfirm"><b>Nhập lại mật khẩu</b></label>--}}
+                                {{--<input type="Password" class="form-control"--}}
+                                       {{--id="passwordconfirm"--}}
+                                       {{--name="passwordconfirm"--}}
+                                       {{--maxlength="20"--}}
+                                       {{--minlength="6"--}}
+                                       {{--placeholder="Nhập lại mật khẩu">--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+
+{{--</div>--}}
+
+{{--End Modal--}}
+
+
 <!-- Navigation -->
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
@@ -8,17 +39,21 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="javascript:;">
-            <img src="{{ URL::to('Logo.png') }}" style="display:inline-block"/>&nbsp;&nbsp;&nbsp;<span style="color:red; text-transform: uppercase;font-style: italic;">Hoàng Nguyễn</span>
+            <img src="{{ URL::to('Logo.png') }}" style="display:inline-block"/>&nbsp;&nbsp;&nbsp;<span
+                    style="color:red; text-transform: uppercase;font-style: italic;">Hoàng Nguyễn</span>
         </a>
         <ul class="nav navbar-top-links navbar-right pull-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i>&nbsp;&nbsp;{{ Auth::user()->username }}&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-caret-down"></i>
+                    <i class="fa fa-user fa-fw"></i>&nbsp;&nbsp;{{ Auth::user()->username }}&nbsp;&nbsp;&nbsp;&nbsp;<i
+                            class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
                     <li><a href="#"><i class="fa fa-user fa-fw"></i>Thông tin tài khoản</a>
                     </li>
                     <li class="divider"></li>
+                    {{--<li><a href="#" onclick="resetPassword.reset()"><i class=" fa fa-refresh fa-fw"></i>Đổi mật khẩu</a>--}}
+                    {{--</li>--}}
                     <li><a href="{{ route('logout') }}"><i class="fa fa-sign-out fa-fw"></i>Đăng xuất</a>
                     </li>
                 </ul>
@@ -37,7 +72,8 @@
                     @if(count($value) == 0)
                         @if($key != 'Admin')
                             <li>
-                                <a href="javascript:;" role-name="{{$key}}" data-url="{{ $array_url[$key] }}" onclick="getContentByUrl(this)">
+                                <a href="javascript:;" role-name="{{$key}}" data-url="{{ $array_url[$key] }}"
+                                   onclick="getContentByUrl(this)">
                                     <i class="fa {{ $array_icon[$key] }}"></i> {{ \App\Role::where('name', $key)->pluck('description')[0] }}
                                 </a>
                             </li>
@@ -52,7 +88,9 @@
                             <ul class="nav nav-second-level">
                                 @foreach($value as $key2 => $value2)
                                     <li>
-                                        <a href="javascript:;" role-name="{{ $value2 }}" data-url="{{ $array_url[$value2] }}" onclick="getContentByUrl(this)"> {{ \App\Role::where('name', $value2)->pluck('description')[0] }}</a>
+                                        <a href="javascript:;" role-name="{{ $value2 }}"
+                                           data-url="{{ $array_url[$value2] }}"
+                                           onclick="getContentByUrl(this)"> {{ \App\Role::where('name', $value2)->pluck('description')[0] }}</a>
                                     </li>
                                 @endforeach
                             </ul>
@@ -66,3 +104,16 @@
     </div>
     <!-- /.navbar-static-side -->
 </nav>
+{{--<script>--}}
+    {{--$(function () {--}}
+        {{--if (typeof (resetPassword) === 'undefined') {--}}
+            {{--resetPassword = {--}}
+                {{--reset: function () {--}}
+                    {{--$("div#modalConfirm").modal("show");--}}
+{{--//                    $("div#modalContent").empty().append("Bạn có muốn xóa ?");--}}
+                    {{--$("button[name=modalAgree]").show();--}}
+                {{--}--}}
+            {{--}--}}
+        {{--}--}}
+    {{--});--}}
+{{--</script>--}}

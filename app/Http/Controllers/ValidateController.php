@@ -28,14 +28,12 @@ class ValidateController extends Controller
             'username'    => 'required',
             'password'    => 'required',
             'email'       => 'required',
-            'position_id' => 'required'
         ];
         $messages = [
             'fullname.required'    => 'Trường fullname bắt buộc nhập',
             'username.required'    => 'Trường username bắt buộc nhập',
             'password .required'   => 'Trường password bắt buộc nhập',
             'email.required'       => 'Trường email bắt buộc nhập',
-            'position_id.required' => 'Trường chức vụ bắt buộc nhập',
         ];
 
         return Validator::make($data, $rules, $messages);

@@ -5,7 +5,7 @@
         top: 10%;
         display: none;
         right: 0;
-        width: 40%;
+        width: 50%;
         height: 100%;
     }
 
@@ -61,6 +61,8 @@
                             <th>Tài khoản</th>
                             <th>Họ và tên</th>
                             <th>Email</th>
+                            <th>Địa chỉ</th>
+                            <th>Số điện thoại</th>
                             <th>Chức vụ</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
@@ -76,7 +78,7 @@
 </div>
 
 
-<div id="frmControl" class="col-md-offset-4 col-md-8">
+<div id="frmControl" type="show" class="col-md-offset-4 col-md-8">
     <div class="panel panel-primary">
         <div class="panel-heading">Đăng ký người dùng
             <div class="menu-toggles pull-right" onclick="userView.hide()">
@@ -89,9 +91,9 @@
                     <div class="form-group form-md-line-input">
                         <input type="hidden" class="form-control" id="id" value="">
                     </div>
-                    <div class="col-md-12 ">
-                        <div class="row ">
-                            <div class="col-md-6 ">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
                                 <div class="form-group form-md-line-input ">
                                     <label for="fullname"><b>Họ và tên</b></label>
                                     <input type="text" class="form-control"
@@ -101,52 +103,81 @@
                                            autofocus>
                                 </div>
                             </div>
-                            <div class="col-md-6 ">
+                            <div class="col-md-4 ">
                                 <div class="form-group form-md-line-input">
                                     <label for="username"><b>Tên đăng nhập</b></label>
                                     <input type="text" class="form-control"
                                            id="username"
                                            name="username"
-                                           placeholder="Tên đăng nhập có ít nhất 6 kí tự">
+                                           placeholder="Tên đăng nhập">
+                                    <label id="username" style="display: none; color: red">Tài khoản đã tồn tại</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="email"><b>Email</b></label>
+                                    <input type="text" class="form-control"
+                                           id="email"
+                                           name="email"
+
+                                           placeholder="email@example.com">
+                                    <label id="email" style="display: none; color: red">Email đã tồn tại</label>
                                 </div>
                             </div>
                         </div>
                         <div class="row ">
-                            <div class="col-md-6 ">
+                            <div class="col-md-4">
                                 <div class="form-group form-md-line-input">
                                     <label for="password"><b>Mật khẩu</b></label>
                                     <input type="password" class="form-control"
                                            id="password"
                                            name="password"
                                            maxlength="20"
-                                           minlength="6"
-                                           placeholder="Mật khẩu có ít nhất 6 kí tự">
+                                           minlength="3"
+                                           placeholder="password">
                                 </div>
                             </div>
-                            <div class="col-md-6 ">
+                            <div class="col-md-4">
                                 <div class="form-group form-md-line-input ">
-                                    <label for="passwordConfirm"><b>Nhập lại mật khẩu</b></label>
+                                    <label for="passwordconfirm"><b>Nhập lại mật khẩu</b></label>
                                     <input type="Password" class="form-control"
-                                           id="passwordConfirm"
-                                           name="passwordConfirm"
+                                           id="passwordconfirm"
+                                           name="passwordconfirm"
                                            maxlength="20"
-                                           minlength="6"
+                                           minlength="3"
                                            placeholder="Nhập lại mật khẩu">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="phone"><b>Số điện thoại</b></label>
+                                    <input type="text" class="form-control"
+                                           id="phone"
+                                           name="phone"
+                                           placeholder="090">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group form-md-line-input">
-                                    <label for="email"><b>Email</b></label>
+                                    <label for="address"><b>Địa chỉ</b></label>
                                     <input type="text" class="form-control"
-                                           id="email"
-                                           name="email"
-                                           placeholder="email@example.com">
-                                    <label id="email" style="display: none; color: red">Email đã tồn tại</label>
+                                           id="address"
+                                           name="address"
+                                           placeholder="Địa chỉ">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="note"><b>Ghi chú</b></label>
+                                    <input type="text" class="form-control"
+                                           id="note"
+                                           name="note"
+                                           placeholder="ghi chú">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group form-md-line-input">
                                     <label for="position_id"><b>Chức vụ</b></label>
                                     <select class="form-control" id="position_id" name="position_id">
@@ -158,6 +189,8 @@
                                     </select>
                                 </div>
                             </div>
+
+
                         </div>
                         <div class="form-group form-md-line-input">
                             <label><b>Phân Quyền</b></label>
@@ -213,24 +246,26 @@
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
-                    $('label.error').hide();
                 },
                 hide: function () {
                     $('#frmControl').slideUp('', function () {
                         $('.menu-toggle').show();
                     });
+                    userView.resetRolesInDom();
                     var myForm = document.getElementById("formUser");
                     userView.clearValidation(myForm);
                 },
-                clearValidation : function(formElement){
+                clearValidation: function (formElement) {
                     var validator = $(formElement).validate();
-                     $('[name]',formElement).each(function(){
+                    $('[name]', formElement).each(function () {
                         validator.successList.push(this);//mark as error free
                         validator.showErrors();//remove error messages if present
                     });
                     validator.resetForm();//remove error class on name elements and clear history
                     validator.reset();//remove all error and success data
                 },
+
+
                 loadData: function () {
                     $.post(url + 'user', {_token: _token, fromDate: null, toDate: null}, function (list) {
                         userView.data = list;
@@ -276,6 +311,7 @@
                         $("div#modalConfirm").modal("show");
                         $("div#modalContent").empty().append("Bạn có muốn xóa ?");
                         $("button[name=modalAgree]").show();
+
                     }
                 },
                 cancelDelete: function () {
@@ -290,6 +326,8 @@
                             {data: 'username'},
                             {data: 'fullname'},
                             {data: 'email'},
+                            {data: 'address'},
+                            {data: 'phone'},
                             {data: 'positions_name'},
                             {
                                 render: function (data, type, full, meta) {
@@ -321,16 +359,18 @@
                         }
                     });
                     userView.array_roleid = subrole;
-
                     if (userView.action == 'add') {
                         userView.current = {
                             fullname: $("input[id='fullname']").val(),
                             username: $("input[id='username']").val(),
                             password: $("input[id='password']").val(),
                             email: $("input[id='email']").val(),
+                            address: $("input[id='address']").val(),
+                            phone: $("input[id='phone']").val(),
+                            note: $("input[id='note']").val(),
                             position_id: $("select[id='position_id']").val()
                         }
-                        console.log(subrole);
+
                     } else if (userView.action == 'update') {
                         for (var propertyName in userView.current) {
                             if (propertyName != 'position_id')
@@ -346,66 +386,117 @@
                     userView.resetRolesInDom();
                 },
                 clearInput: function () {
-                    if (userView.current){
+                    if (userView.current) {
                         for (var propertyName in userView.current) {
                             if (propertyName != 'position_id')
                                 $("input[id=" + propertyName + "]").val('');
                         }
                     }
                     $("select[id='position_id' ]").val('');
-                    $("input[id='passwordConfirm']").val('');
+                    $("input[id='passwordconfirm']").val('');
                     //clear input checkbox
+                    userView.resetRolesInDom();
                 },
                 deleteUser: function () {
                     userView.action = 'delete';
                     userView.save();
                     $("#modalConfirm").modal('hide');
                 },
-//                validate: function () {
-//                    $("#formUser").validate({
-//                        rules: {
-//                            fullname: "required",
-//                            username: "required",
-//                            email: {
-//                                required: true,
-//                                email: true
-//                            },
-//                            password: {
-//                                required: true,
-//                                minlength: 6,
-//                                maxlength: 20
-//                            },
-//                            passwordconfirm: {
-//                                required: true,
-//                                equalTo: "#password",
-//                                minlength: 6,
-//                                maxlength: 20
-//                            }
-//                        },
-//                        messages: {
-//                            fullname: " Vui lòng nhập họ tên",
-//                            username: "Vui lòng nhập tài khoản",
-//                            email: {
-//                                required: "Vui lòng nhập Email",
-//                                email: 'Email không đúng định dạng'
-//                            },
-//                            password: {
-//                                required: "Vui lòng nhập mật khẩu",
-//                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
-//                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
-//                            },
-//                            passwordconfirm: {
-//                                required: "Vui lòng nhập lại mật khẩu",
-//                                equalTo: "Nhập lại mật khẩu không đúng",
-//                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
-//                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
-//                            }
-//                        }
-//                    });
-//
-//                },
+                validateEdit: function () {
+                    $("#formUser").validate({
+                        rules: {
+                            fullname: {
+                                required: true,
+                                minlength: 3
+
+                            },
+                            username: {
+                                required: true,
+                                minlength: 3
+
+                            },
+                            email: {
+                                required: true,
+                                email: true
+                            }
+                        },
+                        messages: {
+                            fullname: {
+                                required: "Vui lòng nhập họ tên",
+                                minlength: "Họ tên từ 3 kí tự đến 20 kí tự",
+                            },
+                            username: {
+                                required: "Vui lòng nhập tên đăng nhập",
+                                minlength: "Tên đăng nhập từ 3 kí tự đến 20 kí tự",
+                            },
+                            email: {
+                                required: "Vui lòng nhập Email",
+                                email: 'Email không đúng định dạng'
+                            }
+
+                        }
+
+                    });
+                },
+                validate: function () {
+                    $("#formUser").validate({
+                        rules: {
+                            fullname: {
+                                required: true,
+                                minlength: 3
+                            },
+                            username: {
+                                required: true,
+                                minlength: 3
+
+                            },
+                            email: {
+                                required: true,
+                                email: true
+                            },
+                            password: {
+                                required: true,
+                                minlength: 3,
+                                maxlength: 20
+                            },
+                            passwordconfirm: {
+                                required: true,
+                                equalTo: "#password",
+                                minlength: 3,
+                                maxlength: 20
+                            }
+                        },
+                        messages: {
+                            fullname: {
+                                required: "Vui lòng nhập họ tên",
+                                minlength: "Họ tên từ 3 kí tự đến 20 kí tự",
+                            },
+                            username: {
+                                required: "Vui lòng nhập tên đăng nhập",
+                                minlength: "Tên đăng nhập từ 3 kí tự đến 20 kí tự",
+                            },
+                            email: {
+                                required: "Vui lòng nhập Email",
+                                email: 'Email không đúng định dạng'
+                            },
+                            password: {
+                                required: "Vui lòng nhập mật khẩu",
+                                minlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự",
+                                maxlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự"
+                            },
+                            passwordconfirm: {
+                                required: "Vui lòng nhập lại mật khẩu",
+                                equalTo: "Nhập lại mật khẩu không đúng",
+                                minlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự",
+                                maxlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự"
+                            }
+                        }
+                    });
+
+                },
+
                 save: function () {
-//                    userView.validate();
+                    userView.validate();
                     userView.fillFormDataToCurrentObject();
                     var sendToServer = {
                         _token: _token,
@@ -423,7 +514,6 @@
                         };
                     }
                     if ($("#formUser").valid()) {
-                        console.log(sendToServer);
                         $.post(
                                 url + 'user/modify',
                                 sendToServer
@@ -453,25 +543,23 @@
                                         }
                                         userView.table.clear().rows.add(userView.data).draw();
                                         userView.clearInput();
-                                    } else {
-
                                     }
 
                                 }
                         );
-
                         userView.resetRolesInDom();
+
                     } else {
                         $("form#formUser").find("label[class=error]").css("color", "red");
                     }
                 },
                 resetRolesInDom: function () {
-                    $("input[id=role_id]").each(function () {
+                    $("input[id=array_roleid]").each(function () {
                         $(this).prop('checked', false);
                     });
                 },
                 fillRolesToDom: function (roles_array) {
-                    $("input[id=role_id]").each(function () {
+                    $("input[id=array_roleid]").each(function () {
                         if (roles_array.includes(Number($(this).attr('value')))) {
                             $(this).prop('checked', true);
                         }

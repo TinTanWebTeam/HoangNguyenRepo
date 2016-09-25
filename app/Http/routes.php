@@ -69,6 +69,8 @@ Route::group(['middleware' => 'auth'], function(){
     });
     //Chi phí
     Route::group(['middleware' => 'CostManagement'], function () {
+
+        
         Route::get('/fuel-cost', 'CostManagementController@getViewFuelCost');
         Route::get('/petroleum-cost', 'CostManagementController@getViewPetroleumCost');
         Route::get('/parking-cost', 'CostManagementController@getViewParkingCost');
@@ -78,6 +80,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/petroleum-cost','CostManagementController@getDataPetroleumCost');
         Route::post('/parking-cost', 'CostManagementController@getDataParkingCost');
         Route::post('/other-cost', 'CostManagementController@getDataParkingCost');
+        /* test select*/
+        Route::post('/fuel-cost-test', 'CostManagementController@getViewFuelCostTest');
     });
     //Cu?c phí
     Route::group(['middleware' => 'PostageManagement'], function () {
