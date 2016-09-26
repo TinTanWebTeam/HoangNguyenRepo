@@ -261,17 +261,7 @@
                     fuelCostView.action = 'add';
                     fuelCostView.show();
                 },
-                select: function () {
-                    var $selectAreaCode = $("select[id=areaCode]").val();
-                    $.post(url + 'fuel-cost-test', {
-                        _token: _token,
-                        AreaCode: $selectAreaCode
-                    }, function (data) {
-                        if (data != "0") {
-                            $("select[id=vehicleNumber]").val(data[0]["vehicleNumber"]);
-                        }
-                    });
-                },
+
                 fillDataToDatatable: function (data) {
                     fuelCostView.table = $('#table-data').DataTable({
                         language: languageOptions,

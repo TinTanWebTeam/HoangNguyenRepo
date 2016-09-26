@@ -76,18 +76,7 @@ class CostManagementController extends Controller
                 break;
         }
     }
-    public function getViewFuelCostTest(Request $request){
-        try {
-            $vehicles = DB::table('vehicles')
-                ->where('id','=',$request->get('AreaCode'))
-                ->select('vehicles.vehicleNumber')
-                ->get();
-           return $vehicles;
-        } catch (Exception $ex) {
-            return $ex;
-        }
-    }
-
+   
 
 
 
