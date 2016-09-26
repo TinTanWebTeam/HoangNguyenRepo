@@ -33,8 +33,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/position','UserManagementController@getViewPosition');
         Route::get('/user','UserManagementController@getViewUser');
         /*Post view*/
-        Route::Post('/position','UserManagementController@getDataPosition');
-        Route::Post('/user','UserManagementController@getDataUser');
+        Route::post('/position','UserManagementController@getDataPosition');
+        Route::post('/user','UserManagementController@getDataUser');
         Route::post('/position/modify','UserManagementController@postModifyPosition');
         Route::post('/user/edit','UserManagementController@postEditUser');
         Route::post('/user/modify','UserManagementController@postModifyUser');
@@ -54,14 +54,16 @@ Route::group(['middleware' => 'auth'], function(){
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         //get View
-        Route::get('/vehicle-inside', 'VehicleManagementController@getViewVehicleInside');
-        Route::get('/vehicle-outside', 'VehicleManagementController@getViewVehicleOutside');
+        Route::get('/vehicle-inside', 'VehicleManagementController@getViewVehicle');
+        Route::get('/vehicle-outside', 'VehicleManagementController@getViewGarage');
         //get Data
-        Route::get('/vehicle-inside/getData', 'VehicleManagementController@getDataVehicleInside');
-
-        //
-        Route::post('/vehicle-inside/modify', 'VehicleManagementController@postModifyVehicleInside');
-        Route::get('/vehicle-inside/getAllGarage', 'VehicleManagementController@getAllGarage');
+        Route::get('/vehicle-inside/vehicles', 'VehicleManagementController@getDataVehicle');
+        //get Modal
+        Route::get('/vehicle-inside/garages', 'VehicleManagementController@getDataGarage');
+        //post Modify
+        Route::post('/vehicle-inside/modify', 'VehicleManagementController@postModifyVehicle');
+        Route::post('/vehicle-outside/modify', 'VehicleManagementController@postModifyGarage');
+        Route::post('/vehicle-type/modify', 'VehicleManagementController@postModifyVehicleType');
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');

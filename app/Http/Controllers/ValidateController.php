@@ -38,4 +38,52 @@ class ValidateController extends Controller
 
         return Validator::make($data, $rules, $messages);
     }
+
+    public static function ValidateVehicle(array $data)
+    {
+        $rules = [
+            'vehicleType_id' => 'required',
+            'garage_id'      => 'required',
+            'areaCode'       => 'required',
+            'vehicleNumber'  => 'required',
+        ];
+        $messages = [
+            'vehicleType_id.required' => 'Trường loại xe bắt buộc nhập',
+            'garage_id.required'      => 'Trường nhà xe bắt buộc nhập',
+            'areaCode .required'      => 'Trường mã vùng bắt buộc nhập',
+            'vehicleNumber.required'  => 'Trường số xe bắt buộc nhập'
+        ];
+
+        return Validator::make($data, $rules, $messages);
+    }
+
+    public static function ValidateGarage(array $data)
+    {
+        $rules = [
+            'name'      => 'required',
+            'contactor' => 'required',
+            'phone'     => 'required',
+            'address'   => 'required',
+        ];
+        $messages = [
+            'name.required'      => 'Trường tên nhà xe bắt buộc nhập',
+            'contactor.required' => 'Trường người liên hệ bắt buộc nhập',
+            'phone .required'    => 'Trường điện thoại vùng bắt buộc nhập',
+            'address.required'   => 'Trường địa chỉ bắt buộc nhập'
+        ];
+
+        return Validator::make($data, $rules, $messages);
+    }
+
+    public static function ValidateVehicleType(array $data)
+    {
+        $rules = [
+            'name'      => 'required'
+        ];
+        $messages = [
+            'name.required'      => 'Trường tên loại xe bắt buộc nhập'
+        ];
+
+        return Validator::make($data, $rules, $messages);
+    }
 }
