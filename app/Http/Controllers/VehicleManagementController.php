@@ -29,14 +29,23 @@ class VehicleManagementController extends Controller
             ->where('vehicles.active', 1)
             ->orderBy('vehicles.id', 'desc')
             ->get();
-        return [
+        $response = [
+            'msg' => 'Get data vehicle success',
             'vehicles' => $vehicles,
             'vehicleTypes' => $vehicleTypes
         ];
+        return response()->json($response, 200);
     }
 
     public function postModifyVehicle(Request $request)
     {
+        $vehicleType_id = null;
+        $garage_id = null;
+        $areaCode = null;
+        $vehicleNumber = null;
+        $size = null;
+        $weight = null;
+
         $action = $request->input('_action');
         if($action != 'delete'){
             $validator = ValidateController::ValidateVehicle($request->input('_vehicle'));
@@ -125,13 +134,17 @@ class VehicleManagementController extends Controller
 
     public function getViewGarage()
     {
-        $garages = Garage::all();
-        return view('subviews.Vehicle.VehicleOutside', ['garages' => $garages]);
+        return view('subviews.Vehicle.VehicleOutside');
     }
 
     public function getDataGarage()
     {
-        return Garage::all();
+        $garages = Garage::all();
+        $response = [
+            'msg'     => 'List of all Garage',
+            'garages' => $garages
+        ];
+        return response()->json($response, 200);
     }
 
     public function postModifyGarage(Request $request)
