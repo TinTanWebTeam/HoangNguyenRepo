@@ -252,18 +252,19 @@
                         $('.menu-toggle').show();
                     });
                     userView.resetRolesInDom();
-                    var myForm = document.getElementById("formUser");
-                    userView.clearValidation(myForm);
+                    $('label[class=error]').hide();
+//                    var myForm = document.getElementById("formUser");
+//                    userView.clearValidation(myForm);
                 },
-                clearValidation: function (formElement) {
-                    var validator = $(formElement).validate();
-                    $('[name]', formElement).each(function () {
-                        validator.successList.push(this);//mark as error free
-                        validator.showErrors();//remove error messages if present
-                    });
-                    validator.resetForm();//remove error class on name elements and clear history
-                    validator.reset();//remove all error and success data
-                },
+//                clearValidation: function (formElement) {
+//                    var validator = $(formElement).validate();
+//                    $('[name]', formElement).each(function () {
+//                        validator.successList.push(this);//mark as error free
+//                        validator.showErrors();//remove error messages if present
+//                    });
+//                    validator.resetForm();//remove error class on name elements and clear history
+//                    validator.reset();//remove all error and success data
+//                },
 
 
                 loadData: function () {
