@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Role;
 use Mockery\CountValidator\Exception;
+use Symfony\Component\Finder\Comparator\NumberComparator;
 
 class UserManagementController extends Controller
 {
@@ -44,7 +45,16 @@ class UserManagementController extends Controller
         $subroles = DB::table('subroles')
             ->where('user_id', $request->get('user_id'))
             ->get();
-        return $subroles;
+
+        $password = DB::table('users')
+            ->where('id', $request->get('user_id'))
+            ->select('users.password')
+            ->first();
+        $pass2 = decrypt($password->password, Config::get('app.key'));
+        return [
+            'subroles' => $subroles,
+            'password' => $pass2
+        ];
     }
 
     public function postModifyUser(Request $request)
@@ -105,6 +115,21 @@ class UserManagementController extends Controller
                         if (!$userUpdate->save()) {
                             return ['status' => 'Fail'];
                         }
+                        /* delete subrole*/
+                        $deleteList = SubRole::where('user_id', $request->get('_object')['id'])->pluck('role_id');
+                        for ($i = 0; $i < count($deleteList); $i++) {
+                            $subroleDelete = SubRole::where([
+                                    ['role_id','=', $deleteList[$i]],
+                                    ['user_id','=', $request->get('_object')['id']]
+                            ]
+                            )->get();
+                            for ($j=0 ; $j <count($subroleDelete);$j++){
+                                $test = SubRole::findOrFail($subroleDelete[$j]['id']);
+//
+                                $test->delete();
+                            }
+
+                        }
                         //insert subrole
                         for ($i = 0; $i < count($array_roleid); $i++) {
                             $subRoleUpdate = new SubRole();
@@ -114,6 +139,7 @@ class UserManagementController extends Controller
                                 return ['status' => 'Fail'];
                             };
                         }
+
                         $roleRowUpdate = DB::table('users')
                             ->join('positions', 'users.position_id', '=', 'positions.id')
                             ->where('users.id', $userUpdate->id)
@@ -130,7 +156,6 @@ class UserManagementController extends Controller
                     $userDelete = User::findOrFail($request->get('_object')['id']);
                     $userDelete->active = 0;
                     if ($userDelete->save())
-
                         return ['status' => 'Ok'];
                     return ['status' => 'Fail'];
                     break;

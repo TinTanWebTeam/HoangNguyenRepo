@@ -253,20 +253,7 @@
                     });
                     userView.resetRolesInDom();
                     $('label[class=error]').hide();
-//                    var myForm = document.getElementById("formUser");
-//                    userView.clearValidation(myForm);
                 },
-//                clearValidation: function (formElement) {
-//                    var validator = $(formElement).validate();
-//                    $('[name]', formElement).each(function () {
-//                        validator.successList.push(this);//mark as error free
-//                        validator.showErrors();//remove error messages if present
-//                    });
-//                    validator.resetForm();//remove error class on name elements and clear history
-//                    validator.reset();//remove all error and success data
-//                },
-
-
                 loadData: function () {
                     $.post(url + 'user', {_token: _token, fromDate: null, toDate: null}, function (list) {
                         userView.data = list;
@@ -274,6 +261,7 @@
                     });
                 },
                 editUser: function (id) {
+                    var pwd = null;
                     $.post(url + 'user/edit', {
                         _token: _token,
                         user_id: id,
@@ -282,14 +270,17 @@
                     }, function (lstsubroles) {
                         userView.resetRolesInDom();
                         var roles_array = [];
-                        for (var i = 0; i < lstsubroles.length; i++) {
-                            roles_array.push(lstsubroles[i]['role_id'])
+                        for (var i = 0; i < lstsubroles['subroles'].length; i++) {
+                            roles_array.push(lstsubroles['subroles'][i]['role_id'])
                         }
+                        pwd = lstsubroles['password'][0];
                         userView.fillRolesToDom(roles_array);
                     });
                     userView.current = _.clone(_.find(userView.data, function (o) {
                         return o.id == id;
                     }), true);
+                    userView.current.password = pwd;
+                    $("input[id=passwordconfirm]").val(pwd);
                     userView.action = "update";
                     userView.fillCurrentObjectToForm();
                     userView.show();
@@ -297,13 +288,13 @@
                 },
                 fillCurrentObjectToForm: function () {
                     for (var propertyName in userView.current) {
-                        if (propertyName == 'password') {
-                            $("input[id=" + propertyName + "]").val();
-                        } else {
-                            $("select[id=" + propertyName + "]").val(userView.current[propertyName]);
-                            $("input[id=" + propertyName + "]").val(userView.current[propertyName]);
-                        }
+                        $("select[id=" + propertyName + "]").val(userView.current[propertyName]);
+                        $("input[id=" + propertyName + "]").val(userView.current[propertyName]);
+                        $("input[id=password]").val(userView.current[propertyName]);
+                        $("input[id=passwordconfirm]").val(userView.current[propertyName]);
+
                     }
+
                     userView.show();
                 },
                 msgDelete: function (id) {
@@ -403,42 +394,7 @@
                     userView.save();
                     $("#modalConfirm").modal('hide');
                 },
-                validateEdit: function () {
-                    $("#formUser").validate({
-                        rules: {
-                            fullname: {
-                                required: true,
-                                minlength: 3
 
-                            },
-                            username: {
-                                required: true,
-                                minlength: 3
-
-                            },
-                            email: {
-                                required: true,
-                                email: true
-                            }
-                        },
-                        messages: {
-                            fullname: {
-                                required: "Vui lòng nhập họ tên",
-                                minlength: "Họ tên từ 3 kí tự đến 20 kí tự",
-                            },
-                            username: {
-                                required: "Vui lòng nhập tên đăng nhập",
-                                minlength: "Tên đăng nhập từ 3 kí tự đến 20 kí tự",
-                            },
-                            email: {
-                                required: "Vui lòng nhập Email",
-                                email: 'Email không đúng định dạng'
-                            }
-
-                        }
-
-                    });
-                },
                 validate: function () {
                     $("#formUser").validate({
                         rules: {
