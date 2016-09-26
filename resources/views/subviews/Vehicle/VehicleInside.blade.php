@@ -23,6 +23,12 @@
             height: 80vh;
         }
     }
+
+    #boxShadow {
+        -webkit-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
+    }
 </style>
 
 <!-- Table -->
@@ -76,7 +82,7 @@
 <!-- Control -->
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" id="boxShadow">
             <div class="panel-heading">Thêm mới xe
                 <div class="menu-toggles pull-right" onclick="vehicleInsideView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
@@ -261,15 +267,14 @@
                     <h4 class="modal-title">Thêm nhà xe</h4>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="frmGarage">
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
                                     <label for="Garage_name"><b>Tên nhà xe</b></label>
                                     <input type="text" class="form-control"
                                            id="Garage_name"
-                                           name="Garage_name"
-                                           placeholder="Tên nhà xe">
+                                           name="Garage_name">
                                 </div>
                             </div>
                             <div class="col-md-6 ">
@@ -277,8 +282,7 @@
                                     <label for="contactor"><b>Người liên hệ</b></label>
                                     <input type="text" class="form-control"
                                            id="contactor"
-                                           name="contactor"
-                                           placeholder="Người liên hệ">
+                                           name="contactor">
                                 </div>
                             </div>
                         </div>
@@ -286,10 +290,9 @@
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
                                     <label for="phone"><b>Số điện thoại</b></label>
-                                    <input type="text" class="form-control"
+                                    <input type="number" class="form-control"
                                            id="phone"
-                                           name="phone"
-                                           placeholder="090..">
+                                           name="phone">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -297,8 +300,7 @@
                                     <label for="address"><b>Địa chỉ</b></label>
                                     <input type="text" class="form-control"
                                            id="address"
-                                           name="address"
-                                           placeholder="Địa chỉ">
+                                           name="address">
                                 </div>
                             </div>
                         </div>
@@ -335,15 +337,14 @@
                     <h4 class="modal-title">Thêm loại xe</h4>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="frmVehicleType">
                         <div class="row ">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="VehicleType_name"><b>Tên loại xe</b></label>
                                     <input type="text" class="form-control"
                                            id="VehicleType_name"
-                                           name="VehicleType_name"
-                                           placeholder="Tên nhà xe">
+                                           name="VehicleType_name">
                                 </div>
                             </div>
                         </div>
@@ -390,15 +391,15 @@
                 action: null,
                 idDelete: null,
                 showControl: function () {
-                    $('.menu-toggle').hide();
-                    $('#divControl').slideDown();
+                    $('.menu-toggle').fadeOut();
+                    $('#divControl').fadeIn(300);
                 },
                 hideControl: function () {
-                    $('#divControl').slideUp('', function () {
-                        $('.menu-toggle').show();
+                    $('#divControl').fadeOut(300, function(){
+                        $('.menu-toggle').fadeIn();
                     });
 
-                    $("label[class=error]").remove();
+                    vehicleInsideView.clearValidation("#frmControl");
                     vehicleInsideView.clearInput();
                 },
                 displayModal: function(type, idModal){
@@ -407,6 +408,9 @@
                         vehicleInsideView.action = null;
                         vehicleInsideView.idDelete = null;
                     }
+
+                    vehicleInsideView.clearValidation("#frmGarage");
+                    vehicleInsideView.clearValidation("#frmVehicleType");
                 },
                 showNotification: function (type ,msg) {
                     switch (type){
@@ -429,10 +433,17 @@
                     $("input[id='vehicleNumber']").val('');
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
-//                    $("select[id='vehicleTypes_name']").val('');
                     $("input[id='garages_name']").val('');
                     $("#garages_name").attr('data-id', '');
                     vehicleInsideView.current = null;
+
+                    $("input[id='VehicleType_name']").val('');
+                    $("textarea[id='description']").val('');
+
+                    $("input[id='Garage_name']").val('');
+                    $("input[id='contactor']").val('');
+                    $("input[id='phone']").val('');
+                    $("input[id='address']").val('');
                 },
 
                 loadData: function () {
@@ -664,8 +675,35 @@
                     });
                 },
                 clearValidation: function (idForm) {
-                    var validator = $(idForm).validate();
-                    validator.resetForm();
+                    $(idForm).find("label[class=error]").remove();
+//                    var validator = $(idForm).validate();
+//                    validator.resetForm();
+                },
+                validateGarage: function(){
+                    $("#frmGarage").validate({
+                        rules: {
+                            Garage_name: "required",
+                            contactor: "required",
+                            phone: "required",
+                            address: "required"
+                        },
+                        messages: {
+                            Garage_name: "Vui lòng nhập tên nhà xe",
+                            contactor: "Vui lòng nhập tên người liên hệ",
+                            phone: "Vui lòng nhập số điện thoại người liên hệ",
+                            address: "Vui lòng nhập điện chỉ nhà xe"
+                        }
+                    });
+                },
+                validateVehicleType: function(){
+                    $("#frmVehicleType").validate({
+                        rules: {
+                            VehicleType_name: "required"
+                        },
+                        messages: {
+                            VehicleType_name: "Vui lòng nhập tên loại xe"
+                        }
+                    });
                 },
 
                 save: function () {
@@ -734,65 +772,79 @@
                     }
                 },
                 saveGarage: function(){
-                    var garage = {
-                        name: $("input[id='Garage_name']").val(),
-                        contactor: $("input[id='contactor']").val(),
-                        phone: $("input[id='phone']").val(),
-                        address: $("input[id='address']").val()
-                    };
+                    vehicleInsideView.validateGarage();
+                    if($("#frmGarage").valid()){
+                        var garage = {
+                            name: $("input[id='Garage_name']").val(),
+                            contactor: $("input[id='contactor']").val(),
+                            phone: $("input[id='phone']").val(),
+                            address: $("input[id='address']").val()
+                        };
 
-                    var sendToServer = {
-                        _token: _token,
-                        _action: 'add',
-                        _garage: garage
-                    };
-                    $.ajax({
-                        url: url + 'vehicle-outside/modify',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 201) {
-                            vehicleInsideView.showNotification("success", "Thêm thành công!");
-                            vehicleInsideView.displayModal("hide", "#modal-addGarage");
-                            $("input[id='garages_name']").val(data["garage"]["name"]);
-                            $("#garages_name").attr('data-id', data["garage"]["id"]);
-                        } else {
-                            vehicleInsideView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'add',
+                            _garage: garage
+                        };
+                        $.ajax({
+                            url: url + 'vehicle-outside/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                vehicleInsideView.showNotification("success", "Thêm thành công!");
+                                vehicleInsideView.displayModal("hide", "#modal-addGarage");
+                                vehicleInsideView.clearInput();
+                                //
+                                $("input[id='garages_name']").val(data["garage"]["name"]);
+                                $("#garages_name").attr('data-id', data["garage"]["id"]);
+                            } else {
+                                vehicleInsideView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        $("form#frmControl").find("label[class=error]").css("color", "red");
+                    }
                 },
                 saveVehicleType: function(){
-                    var vehicleType = {
-                        name: $("input[id='VehicleType_name']").val(),
-                        description: $("textarea[id='description']").val()
-                    };
-                    var sendToServer = {
-                        _token: _token,
-                        _action: 'add',
-                        _vehicleType: vehicleType
-                    };
-                    $.ajax({
-                        url: url + 'vehicle-type/modify',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-                        console.log(data);
-                        if (jqXHR.status == 201) {
-                            vehicleInsideView.showNotification("success", "Thêm thành công!");
-                            vehicleInsideView.displayModal("hide", "#modal-addVehicleType");
-                            vehicleInsideView.tableVehicleType.push(data['vehicleType']);
-                            vehicleInsideView.loadSelectBox(vehicleInsideView.tableVehicleType);
-                            $("select[id='vehicleTypes_name']").val(data['vehicleType']['id']);
-                        } else {
-                            vehicleInsideView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
+                    vehicleInsideView.validateVehicleType();
+                    if($("#frmVehicleType").valid()){
+                        var vehicleType = {
+                            name: $("input[id='VehicleType_name']").val(),
+                            description: $("textarea[id='description']").val()
+                        };
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'add',
+                            _vehicleType: vehicleType
+                        };
+                        $.ajax({
+                            url: url + 'vehicle-type/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            if (jqXHR.status == 201) {
+                                vehicleInsideView.showNotification("success", "Thêm thành công!");
+                                vehicleInsideView.displayModal("hide", "#modal-addVehicleType");
+                                vehicleInsideView.clearInput();
+                                //
+                                vehicleInsideView.tableVehicleType.push(data['vehicleType']);
+                                vehicleInsideView.loadSelectBox(vehicleInsideView.tableVehicleType);
+                                $("select[id='vehicleTypes_name']").val(data['vehicleType']['id']);
+                            } else {
+                                vehicleInsideView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        $("form#frmControl").find("label[class=error]").css("color", "red");
+                    }
                 }
             };
             vehicleInsideView.loadData();

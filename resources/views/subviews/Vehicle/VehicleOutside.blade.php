@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 40%;
+        top: 50%;
         display: none;
         right: 0;
         height: 60vh;
@@ -22,6 +22,12 @@
             overflow: auto;
             height: 80vh;
         }
+    }
+
+    #boxShadow {
+        -webkit-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
     }
 </style>
 
@@ -74,7 +80,7 @@
 <!-- Control -->
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" id="boxShadow">
             <div class="panel-heading">Thêm mới nhà xe
                 <div class="menu-toggles pull-right" onclick="garageView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
@@ -117,7 +123,7 @@
                                         <label for="address"><b>Địa chỉ</b></label>
                                         <textarea type="text" class="form-control"
                                                id="address"
-                                               name="address"></textarea>
+                                               name="address" rows="1"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -184,12 +190,12 @@
                 action: null,
                 idDelete: null,
                 showControl: function () {
-                    $('.menu-toggle').hide();
-                    $('#divControl').slideDown();
+                    $('.menu-toggle').fadeOut();
+                    $('#divControl').fadeIn(300);
                 },
                 hideControl: function () {
-                    $('#divControl').slideUp('', function () {
-                        $('.menu-toggle').show();
+                    $('#divControl').fadeOut(300, function(){
+                        $('.menu-toggle').fadeIn();
                     });
 
                     $("label[class=error]").remove();
@@ -337,7 +343,7 @@
                     $("input[id='name']").val(garageView.current["name"]);
                     $("input[id='contactor']").val(garageView.current["contactor"]);
                     $("input[id='phone']").val(garageView.current["phone"]);
-                    $("input[id='address']").val(garageView.current["address"]);
+                    $("textarea[id='address']").val(garageView.current["address"]);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (garageView.action == 'add') {
@@ -387,7 +393,7 @@
                             name: "Vui lòng nhập tên nhà xe",
                             contactor: "Vui lòng nhập tên người liên hệ",
                             phone: "Vui lòng nhập điện thoại người liên hệ",
-                            address: "Vui lòng nhập địa chỉ người liên hệ"
+                            address: "Vui lòng nhập địa chỉ nhà xe"
                         }
                     });
                 },
@@ -422,10 +428,11 @@
                             dataType: "json",
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
+                            console.log(data);
                             if (jqXHR.status == 201) {
                                 switch (garageView.action) {
                                     case 'add':
-                                        garageView.tableGarage.push(data['garage'][0]);
+                                        garageView.tableGarage.push(data['garage']);
                                         garageView.showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
@@ -433,7 +440,7 @@
                                             return o.id == sendToServer._garage.id;
                                         });
                                         var indexOfGarageOld = _.indexOf(garageView.tableGarage, garageOld);
-                                        garageView.tableGarage.splice(indexOfGarageOld, 1, data['garage'][0]);
+                                        garageView.tableGarage.splice(indexOfGarageOld, 1, data['garage']);
                                         garageView.showNotification("success", "Cập nhật thành công!");
                                         garageView.hideControl();
                                         break;
