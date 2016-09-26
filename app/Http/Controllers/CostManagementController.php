@@ -14,20 +14,27 @@ class CostManagementController extends Controller
 {
     public function getViewFuelCost()
     {
-        $costPrice = DB::table('costPrices')->get();
-        $vehicles = DB::table('vehicles')->get();
-        return view('subviews.Cost.FuelCost', ['costPrices' => $costPrice, 'vehicles' => $vehicles]);
+        return view('subviews.Cost.FuelCost');
     }
 
     public function getDataFuelCost()
     {
-        $fuelCosts = \DB::table('costs')
-            ->join('prices', 'costs.price_id', '=', 'prices.id')
-            ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-            ->select('costs.*', 'prices.price as prices_price', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'vehicles.areaCode as vehicles_code')
-            ->where('prices.costPrice_id', '=', '1')
+        $tableCostPrice = CostPrice::all();
+        $tableVehicles = \DB::table('vehicles')
+            ->join('costs', 'costs.vehicle_id', '=', 'vehicles.id')
+            ->join('costprices','costs.price_id','=','costprices.id')
+
+            ->select('costprices.name','costs.*','costs.cost as prices_price','vehicles.areaCode as vehicles_code','vehicles.vehicleNumber as vehicles_vehicleNumber')
+            ->where('vehicles.active',1)
+            ->orderBy('vehicles.id')
             ->get();
-        return $fuelCosts;
+        $response = [
+            'msg' => 'Get data vehicle success',
+            'tableCostPrice' => $tableCostPrice,
+            'tableVehicles' => $tableVehicles
+        ];
+        return response()->json($response, 200);
+
 
     }
 

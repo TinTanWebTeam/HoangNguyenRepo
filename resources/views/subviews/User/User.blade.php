@@ -259,6 +259,23 @@
                         userView.data = list;
                         userView.fillDataToDatatable(list);
                     });
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
                 },
                 editUser: function (id) {
                     var pwd = null;
@@ -451,7 +468,22 @@
                     });
 
                 },
-
+                showNotification: function (type ,msg) {
+                    switch (type){
+                        case "info":
+                            toastr.info(msg);
+                            break;
+                        case "success":
+                            toastr.success(msg);
+                            break;
+                        case "warning":
+                            toastr.warning(msg);
+                            break;
+                        case "error":
+                            toastr.error(msg);
+                            break;
+                    }
+                },
                 save: function () {
                     userView.validate();
                     userView.fillFormDataToCurrentObject();
@@ -479,6 +511,7 @@
                                         switch (userView.action) {
                                             case'add' :
                                                 userView.data.push(data['obj'][0]);
+                                                userView.showNotification("success", "Thêm thành công!");
                                                 break;
                                             case 'update':
                                                 var obj = _.find(userView.data, function (o) {
@@ -487,6 +520,7 @@
                                                 var index = _.indexOf(userView.data, obj);
                                                 userView.data.splice(index, 1, data['obj'][0]);
                                                 userView.hide();
+                                                userView.showNotification("success", "Cập nhật thành công!");
                                                 break;
                                             case 'delete':
                                                 var obj = _.find(userView.data, function (o) {
@@ -494,6 +528,7 @@
                                                 });
                                                 var index = _.indexOf(userView.data, obj);
                                                 userView.data.splice(index, 1);
+                                                userView.showNotification("success", "Xóa thành công!");
                                                 break;
                                             default:
                                                 break;

@@ -4,7 +4,7 @@
         position: fixed;
         top: 50%;
         display: none;
-        right: 0px;
+        right: 0;
         width: 40%;
         height: 100%;
     }
@@ -14,7 +14,7 @@
     }
 
 </style>
-<div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+<div class="modal fade" id="modalConfirm" tabindex="-1"  aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body" id="modalContent"></div>
@@ -187,7 +187,24 @@
                         PositionView.data = list;
                         PositionView.data2 = _.clone(list, true);
                         PositionView.fillDataToDatatable(list);
-                    })
+                    });
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
                 },
                 validate: function () {
                     $("#formPosition").validate({
@@ -265,6 +282,29 @@
                     PositionView.save();
                     $("#modalConfirm").modal('hide');
                 },
+                displayModal: function(type, idModal){
+                    $(idModal).modal(type);
+                    if(PositionView.action == 'delete' && type == 'hide'){
+                        PositionView.action = null;
+                        PositionView.idDelete = null;
+                    }
+                },
+                showNotification: function (type ,msg) {
+                    switch (type){
+                        case "info":
+                            toastr.info(msg);
+                            break;
+                        case "success":
+                            toastr.success(msg);
+                            break;
+                        case "warning":
+                            toastr.warning(msg);
+                            break;
+                        case "error":
+                            toastr.error(msg);
+                            break;
+                    }
+                },
 
                 save: function () {
                     PositionView.validate();
@@ -289,6 +329,7 @@
                                         switch (PositionView.action) {
                                             case'add' :
                                                 PositionView.data.push(data['obj']);
+                                                PositionView.showNotification("success", "Thêm thành công!");
                                                 break;
 
                                             case 'update':
@@ -298,6 +339,7 @@
                                                 var index = _.indexOf(PositionView.data, obj);
                                                 PositionView.data.splice(index, 1, data['obj']);
                                                 PositionView.hide();
+                                                PositionView.showNotification("success", "Cập nhật thành công!");
                                                 break;
                                             case 'delete':
                                                 var obj = _.find(PositionView.data, function (o) {
@@ -305,6 +347,7 @@
                                                 });
                                                 var index = _.indexOf(PositionView.data, obj);
                                                 PositionView.data.splice(index, 1);
+                                                PositionView.showNotification("success", "Xóa thành công!");
                                                 break;
                                             default:
                                                 break;

@@ -124,9 +124,10 @@ class UserManagementController extends Controller
                             ]
                             )->get();
                             for ($j=0 ; $j <count($subroleDelete);$j++){
-                                $test = SubRole::findOrFail($subroleDelete[$j]['id']);
-//
-                                $test->delete();
+                                $deleteSubrole = SubRole::findOrFail($subroleDelete[$j]['id']);
+                                if (!$deleteSubrole->delete()) {
+                                    return ['status' => 'Fail'];
+                                };
                             }
 
                         }
