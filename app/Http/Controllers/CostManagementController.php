@@ -20,27 +20,29 @@ class CostManagementController extends Controller
     public function getDataFuelCost()
     {
         $tableCostPrice = CostPrice::all();
-        $tableVehicles = \DB::table('vehicles')
-            ->join('costs', 'costs.vehicle_id', '=', 'vehicles.id')
+        $tableCost = \DB::table('costs')
+            ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
             ->join('costprices','costs.price_id','=','costprices.id')
-
             ->select('costprices.name','costprices.name as costprice_name ','costs.*','costs.note as noteCost','costs.cost as prices_price','vehicles.areaCode as vehicles_code','vehicles.vehicleNumber as vehicles_vehicleNumber','vehicles.note as vehicleNote')
-            ->where('vehicles.active',1)
-            ->orderBy('vehicles.id')
+            ->where('costs.active',1)
+            ->orderBy('costs.id')
             ->get();
         $response = [
             'msg' => 'Get data vehicle success',
             'tableCostPrice' => $tableCostPrice,
-            'tableVehicles' => $tableVehicles
+            'tableCost' => $tableCost
         ];
         return response()->json($response, 200);
 
 
     }
 
+
     public function postModifyFuelCost(Request $request)
     {
-        switch ($request->get('_action')) {
+        $action =$request->get('_action');
+        $id =$request->get('_id');
+        switch ($action) {
             case "add":
                 try {
                     $fuelcosts = new Cost();
@@ -58,7 +60,7 @@ class CostManagementController extends Controller
                 break;
             case "update":
                 try {
-                    $result = Position::findOrFail($request->get('_object')['id']);
+                    $result = Position::findOrFail();
                     $result->name = $request->get('_object')['name'];
                     $result->description = $request->get('_object')['description'];
                     if ($result->save())
@@ -73,13 +75,18 @@ class CostManagementController extends Controller
                 }
                 break;
             case "delete":
-                $positionDelete = Position::findOrFail($request->get('_object')['id']);
-                $positionDelete->active = 0;
-                if ($positionDelete->save())
-                    return ['status' => 'Ok'];
-                return ['status' => 'Fail'];
+                $costDelete = Cost::findOrFail($id);
+                $costDelete->active = 0;
+                if ($costDelete->update()){
+                    $response = [
+                        'msg' => 'Deleted cost'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;
         }
     }

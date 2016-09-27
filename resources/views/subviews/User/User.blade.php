@@ -222,7 +222,7 @@
                                         onclick="userView.save()">
                                     Hoàn tất
                                 </button>
-                                <button type="button" class="btn default" onclick="">Huỷ</button>
+                                <button type="button" class="btn default" onclick="userView.cancel()">Huỷ</button>
                             </div>
                         </div>
                     </div>
@@ -253,6 +253,13 @@
                     });
                     userView.resetRolesInDom();
                     $('label[class=error]').hide();
+                },
+                cancel: function () {
+                    if (userView.action == 'add') {
+                        userView.clearInput();
+                    } else {
+                        userView.fillCurrentObjectToForm();
+                    }
                 },
                 loadData: function () {
                     $.post(url + 'user', {_token: _token, fromDate: null, toDate: null}, function (list) {

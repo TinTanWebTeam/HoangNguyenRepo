@@ -27,6 +27,9 @@
     <link rel="stylesheet" href="{{ URL::to('libs/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/Buttons-1.2.2/css/buttons.dataTables.min.css') }}">
 
+
+
+    <link rel="stylesheet" href="{{URL::to('libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css')}}">
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ URL::to('libs/toastr/toastr.min.css') }}">
 
@@ -87,7 +90,9 @@
 
 <!-- Global -->
 <script src=" {{ URL::to('src/js/global.js') }} "></script>
+<!-- datetimepicker -->
 
+<script type="text/javascript" src="{{URL::to('libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')}}"></script>
 @yield('javascripts')
 
 </body>

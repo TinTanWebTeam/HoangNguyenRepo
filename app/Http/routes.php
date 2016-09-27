@@ -81,6 +81,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/other-cost', 'CostManagementController@getDataParkingCost');
         /*Get Data View */
         Route::get('/fuel-cost/fuelcost', 'CostManagementController@getDataFuelCost');
+        /*Post Data server */
+        Route::post('/fuel-cost/modify', 'CostManagementController@postModifyFuelCost');
 
 
 

@@ -16,7 +16,8 @@ class CreateCostsTable extends Migration
             $table->increments('id');
             $table->decimal('cost',18,0);
             $table->float('literNumber');
-            $table->float('dayNumber');
+            $table->dateTime('dayNumber');
+            $table->dateTime('daytime');
             $table->integer('createdBy');
             $table->integer('updatedBy');
             $table->text('note');
