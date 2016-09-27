@@ -24,7 +24,7 @@ class CostManagementController extends Controller
             ->join('costs', 'costs.vehicle_id', '=', 'vehicles.id')
             ->join('costprices','costs.price_id','=','costprices.id')
 
-            ->select('costprices.name','costs.*','costs.cost as prices_price','vehicles.areaCode as vehicles_code','vehicles.vehicleNumber as vehicles_vehicleNumber')
+            ->select('costprices.name','costprices.name as costprice_name ','costs.*','costs.note as noteCost','costs.cost as prices_price','vehicles.areaCode as vehicles_code','vehicles.vehicleNumber as vehicles_vehicleNumber','vehicles.note as vehicleNote')
             ->where('vehicles.active',1)
             ->orderBy('vehicles.id')
             ->get();

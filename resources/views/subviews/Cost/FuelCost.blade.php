@@ -130,7 +130,7 @@
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
                                     <label for="costprice"><b>Loại phí</b></label>
-                                    <select class="form-control" id="costprice_id" data-id=""
+                                    <select class="form-control" id="costprice_id"
                                             name="costprice_id">
                                     </select>
                                 </div>
@@ -147,12 +147,12 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="note"><b>Ghi chú</b></label>
+                                <div class="form-group form-md-line-input">
+                                    <label for="noted"><b>Ghi chú</b></label>
                                     <input type="text" class="form-control"
-                                           id="note"
-                                           name="note"
-                                           placeholder="Ghi chú">
+                                           id="noted"
+                                           name="noted"
+                                           placeholder="ghi chú">
                                 </div>
                             </div>
                         </div>
@@ -224,6 +224,7 @@
                 show: function () {
                     $('.menu-toggle').hide();
                     $('#frmControl').slideDown();
+                    fuelCostView.clearInput();
                 },
                 hide: function () {
                     $('#frmControl').slideUp('', function () {
@@ -313,12 +314,6 @@
                         fuelCostView.fillCurrentObjectToForm();
                     }
                 },
-                clearInput: function () {
-                    if (fuelCostView.current)
-                        for (var propertyName in fuelCostView.current) {
-                            $("input[id=" + propertyName + "]").val('');
-                        }
-                },
 
                 msgDelete: function (id) {
                     if (id) {
@@ -330,14 +325,16 @@
                 },
 
                 fillCurrentObjectToForm: function () {
-                    var string = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
-                    $("input[id='vehicle']").val(string);
+                    var vehicle = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
+                    var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
+                    $("input[id='vehicle']").val(vehicle);
                     $("input[id='date']").val(fuelCostView.current["created_at"]);
                     $("input[id='liter']").val(fuelCostView.current["literNumber"]);
                     $("input[id='price']").val(fuelCostView.current["prices_price"]);
-                    $("input[id='totalprice']").val(fuelCostView.current["cost"]);
-                    $("input[id='note']").val(fuelCostView.current["note"]);
-                    $("select[id='costprice_id']").val(fuelCostView.current["name"]);
+                    $("input[id='totalprice']").val(totalPrice);
+                    $("input[id='noted']").val(fuelCostView.current["noteCost"]);
+
+                    $("select[id='costprice_id']").val(fuelCostView.current["price_id"]);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (fuelCostView.action == 'add') {
@@ -347,27 +344,40 @@
                             totalprice: $("input[id='totalprice']").val(),
                             liter: $("input[id='liter']").val(),
                             price: $("input[id='price']").val(),
-                            costprice_id: $('#costprice_id').attr('data-id'),
+                            note: $("input[id='noted']").val(),
+                            costprice_id: $('#costprice_id').val()
+
                         };
                     } else if (fuelCostView.action == 'update') {
-                        fuelCostView.current.costprice_id = $('#costprice_id').attr('data-id');
+                        fuelCostView.current.costprice_id = $('#costprice_id').val();
                         fuelCostView.current.price = $("input[id='price']").val();
                         fuelCostView.current.liter = $("input[id='liter']").val();
                         fuelCostView.current.totalprice = $("input[id='totalprice']").val();
                         fuelCostView.current.date = $("input[id='date']").val();
+                        fuelCostView.current.noted = $("input[id='noted']").val();
                         fuelCostView.current.vehicle = $("input[id='vehicle']").val();
                     }
                 },
+                clearInput: function () {
+                    console.log(fuelCostView.current);
+                    if (fuelCostView.current)
+                        for (var propertyName in fuelCostView.current) {
+                            $("input[id=" + propertyName + "]").val('');
+                        }
+                },
                 addNewFuelCost: function () {
+
+                    fuelCostView.current = null;
+                    fuelCostView.clearInput();
                     fuelCostView.action = 'add';
                     fuelCostView.show();
                 },
                 editFuelCost: function (id) {
+                    console.log(fuelCostView.current);
                     fuelCostView.current = null;
                     fuelCostView.current = _.clone(_.find(fuelCostView.tableVehicles, function (o) {
                         return o.id == id;
                     }), true);
-                    console.log(fuelCostView.current);
                     fuelCostView.fillCurrentObjectToForm();
                     fuelCostView.action = 'update';
                     fuelCostView.show();
@@ -379,13 +389,13 @@
                         data: data,
                         columns: [
                             {data: 'vehicles_code'},
-                            {data: 'vehicles_vehicleNumber'},
+                            {data:'vehicles_vehicleNumber'},
                             {data: 'created_at'},
-                            {data: 'name'},
+                            {data: 'costprice_name'},
                             {data: 'literNumber'},
                             {data: 'prices_price'},
                             {data: 'cost'},
-                            {data: 'note'},
+                            {data: 'noteCost'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
