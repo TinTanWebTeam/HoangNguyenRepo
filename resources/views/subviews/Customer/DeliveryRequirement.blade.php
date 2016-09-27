@@ -1,48 +1,8 @@
-<style>
-    .btn-del-edit {
-        float: left;
-        padding-right: 5px;
-    }
-
-    #frmControl {
-        z-index: 3;
-        position: fixed;
-        top: 10%;
-        display: none;
-        right: 0px;
-        width: 60%;
-        height: 100%;
-    }
-
-    .fixed {
-        top: 72px;
-        position: fixed;
-        right: 20px;
-        z-index: 2;
-    }
-
-    .menu-toggles {
-        cursor: pointer
-    }
-
-    .icon-center {
-        line-height: 130%;
-        padding-left: 3%;
-        font-size: 13px;
-    }
-
-    ol.breadcrumb {
-        border-bottom: 2px solid #e7e7e7
-    }
-
-    div.col-lg-12 {
-        height: 40px;
-    }
-</style>
+<!-- Begin Table Transport -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
-            <!-- .panel-heading -->
+            <!-- Begin Breadcrumb -->
             <div class="row">
                 <div class="col-lg-12">
                     <ol class="breadcrumb">
@@ -51,17 +11,16 @@
                         <li class="active">Đơn hàng</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="deliveryRequirementView.show()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="deliveryRequirementView.showFrmControl()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- .panel-body -->
+            <!-- End Breadcrumb -->
             <div class="panel-body">
                 <div class="dataTable_wrapper table-responsive">
-                    <table class="table table-bordered table-hover" id="table-data">
-
+                    <table class="table table-bordered table-hover" id="table_transport">
                         <thead>
                         <tr class="active">
                             <th>Số xe</th>
@@ -84,18 +43,19 @@
                     </table>
                 </div>
             </div>
-        </div> <!-- end table-reposive -->
-    </div> <!-- end .col-md-12-->
-</div> <!-- end .row -->
+        </div>
+    </div>
+</div>
+<!-- End Table Transport -->
 
-<div id="frmControl" class="col-md-offset-4 col-md-8">
-    <div class="panel panel-primary">
+<!-- Begin frmControl -->
+<div id="frmControl" class="col-md-offset-4 col-md-8" style="z-index: 3;position: fixed;top: 10%;display: none;right: 0;width: 60%;height: 100%;">
+    <div class="panel panel-primary box-shadow">
         <div class="panel-heading">Thêm mới yêu cầu giao hàng
-            <div class="menu-toggles pull-right" onclick="deliveryRequirementView.hide()">
+            <div class="menu-toggles pull-right" onclick="deliveryRequirementView.hideFrmControl()">
                 <i class="glyphicon glyphicon-remove"></i>
             </div>
         </div>
-
         <div class="panel-body">
             <form role="form" id="formUser">
                 <div class="form-body">
@@ -104,160 +64,109 @@
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Mã xe</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           value=""
-                                           ondblclick="deliveryRequirementView.searchVehicle()">
+                                    <input type="text" class="form-control" id="" name="" value="" ondblclick="deliveryRequirementView.searchVehicle()">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Mã khách hàng</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="text" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input ">
                                     <label for=""><b>Mã hàng</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="text" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Số lượng</b></label>
-                                    <input type="" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="0">
+                                    <input type="text" class="form-control" id="" name="" placeholder="0">
                                 </div>
                             </div>
                         </div>
                         <div class="row ">
-
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Trọng tải</b></label>
-                                    <input type="number" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="0">
+                                    <input type="number" class="form-control" id="" name="" placeholder="0">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input ">
                                     <label for=""><b>Doanh thu</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="0">
+                                    <input type="text" class="form-control" id="" name="" placeholder="0">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Giao xe</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="0">
+                                    <input type="text" class="form-control" id="" name="" placeholder="0">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Nhận</b></label>
-                                    <input type="number" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="0">
+                                    <input type="number" class="form-control" id="" name="" placeholder="0">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Người nhận</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="text" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
+                            <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Ngày nhận</b></label>
-                                    <input type="date" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="date" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Nơi nhận</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="text" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
+                            <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Nơi giao</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="text" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 ">
+                            <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Số chứng từ</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="text" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input ">
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
                                     <label for=""><b>Số hàng trên chứng từ</b></label>
-                                    <input type="number" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="number" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for=""><b>Ghi chú</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="text" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input ">
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
                                     <label for=""><b>Trạng thái</b></label>
-                                    <input type="text" class="form-control"
-                                           id=""
-                                           name=""
-                                           placeholder="">
+                                    <input type="text" class="form-control" id="" name="" placeholder="">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group form-md-line-input ">
+                                <div class="form-group form-md-line-input">
                                     <label for=""><b>Số chứng từ nhận</b></label>
                                     <div class="row">
                                         <div class="col-md-10">
@@ -275,7 +184,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="form-group form-md-line-input ">
+                                <div class="form-group form-md-line-input">
                                     <label for=""><b>Chi phí</b></label>
                                     <select name="" id="" class="form-control">
                                         <option value="">Nhiên liệu</option>
@@ -286,13 +195,13 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="form-group form-md-line-input ">
+                                <div class="form-group form-md-line-input">
                                     <label for=""><b>Số tiền</b></label>
                                     <input type="number" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="form-group form-md-line-input ">
+                                <div class="form-group form-md-line-input">
                                     <label for=""><b>Ghi chú</b></label>
                                     <input type="text" class="form-control">
                                 </div>
@@ -300,12 +209,9 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-actions noborder">
+                        <div class="form-actions">
                             <div class="form-group">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="">
-                                    Hoàn tất
-                                </button>
+                                <button type="button" class="btn btn-primary" onclick="">Hoàn tất</button>
                                 <button type="button" class="btn default" onclick="">Huỷ</button>
                             </div>
                         </div>
@@ -314,9 +220,10 @@
             </form>
         </div>
     </div>
-</div> <!-- end #frmControl -->
+</div>
+<!-- End frmControl -->
 
-<!-- Modal vehicles -->
+<!-- Begin Modal vehicles -->
 <div class="modal fade" id="modal-vehicle">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -330,7 +237,7 @@
             </div>
             <div class="modal-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="table_vehicle">
                         <thead>
                         <tr>
                             <th>Mã vùng</th>
@@ -342,7 +249,7 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody id="vehicle-talbe-body">
+                        <tbody>
                         </tbody>
                     </table>
                 </div>
@@ -350,110 +257,113 @@
         </div>
     </div>
 </div>
+<!-- End Modal vehicles -->
 
 <script>
     $(function () {
-        if (typeof (deliveryRequirementView) === 'undefined') {
+        if (typeof (deliveryRequirementView) === "undefined") {
             deliveryRequirementView = {
-                table: null,
-                data: null,
-                show: function () {
-                    $('.menu-toggle').hide();
-                    $('#frmControl').slideDown();
+                transportObject: {
+
                 },
-                hide: function () {
-                    $('#frmControl').slideUp('', function () {
-                        $('.menu-toggle').show();
+                tableTransport: null,
+                tableTransportData: null,
+                tableVehicle: null,
+                tableVehicleData: null,
+                showFrmControl: function () {
+                    $(".menu-toggle").hide();
+                    $("#frmControl").fadeIn(300);
+                },
+                hideFrmControl: function () {
+                    $("#frmControl").fadeOut(300, function () {
+                        $(".menu-toggle").show();
                     });
                 },
-                loadData: function () {
-                    $.post(url + 'delivery-requirement', {
+                rendView: function () {
+                    // get data and rend view
+                    $.post(url + "delivery-requirement", {
                         _token: _token,
                         fromDate: null,
                         toDate: null
                     }, function (listOrders) {
                         deliveryRequirementView.data = listOrders;
-                        deliveryRequirementView.fillDataToDatatable(listOrders);
+                        deliveryRequirementView.fillDataToDataTable(listOrders);
                     });
                 },
-                fillDataToDatatable: function (listOrders) {
-                    deliveryRequirementView.table = $('#table-data').DataTable({
-                        language: languageOptions,
-                        data: listOrders,
-                        columns: [
-                            {data: 'vehicles_vehicleNumber'},
-                            {data: 'products_name'},
-                            {data: 'receivePlace'},
-                            {data: 'deliveryPlace'},
-                            {data: 'customers_fullName'},
-                            {
-                                data: 'cashRevenue',
-                                render: $.fn.dataTable.render.number('.', ',', 0)
-                            },
-                            {
-                                data: 'cashDelivery',
-                                render: $.fn.dataTable.render.number('.', ',', 0)
-                            },
-                            {
-                                data: 'cashReceive',
-                                render: $.fn.dataTable.render.number('.', ',', 0)
-                            },
-                            {
-                                data: 'cashProfit',
-                                render: $.fn.dataTable.render.number('.', ',', 0)
-                            },
-                            {
-                                data: 'receiver',
-                                render: $.fn.dataTable.render.number('.', ',', 0)
-                            },
-                            {
-                                data: 'receiveDate',
-                                render: function (data, type, full, meta) {
-                                    return moment(data).format('DD/MM/YYYY');
+                fillDataToTableTransport: function (data) {
+                    if(deliveryRequirementView.tableTransport){
+                        deliveryRequirementView.tableTransport.clear().rows.add(data).draw();
+                    }else{
+                        deliveryRequirementView.tableTransport = $("#table_transport").DataTable({
+                            language: languageOptions,
+                            data: data,
+                            columns: [
+                                {data: "vehicles_vehicleNumber"},
+                                {data: "products_name"},
+                                {data: "receivePlace"},
+                                {data: "deliveryPlace"},
+                                {data: "customers_fullName"},
+                                {
+                                    data: "cashRevenue",
+                                    render: $.fn.dataTable.render.number(".", ",", 0)
+                                },
+                                {
+                                    data: "cashDelivery",
+                                    render: $.fn.dataTable.render.number(".", ",", 0)
+                                },
+                                {
+                                    data: "cashReceive",
+                                    render: $.fn.dataTable.render.number(".", ",", 0)
+                                },
+                                {
+                                    data: "cashProfit",
+                                    render: $.fn.dataTable.render.number('.', ',', 0)
+                                },
+                                {
+                                    data: "receiver",
+                                    render: $.fn.dataTable.render.number(".", ",", 0)
+                                },
+                                {
+                                    data: "receiveDate",
+                                    render: function (data, type, full, meta) {
+                                        return moment(data).format("DD/MM/YYYY");
+                                    }
+                                },
+                                {
+                                    render: function () {
+                                        var tr = '';
+                                        tr += '<div class="btn-del-edit">';
+                                        tr += '<div class="btn btn-success  btn-circle">';
+                                        tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                        tr += '</div>';
+                                        tr += '</div>';
+                                        tr += '<div class="btn-del-edit">';
+                                        tr += '<div class="btn btn-danger btn-circle">';
+                                        tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                        tr += '</div>';
+                                        tr += '</div>';
+                                        return tr;
+                                    }
                                 }
-                            },
-                            {
-                                render: function () {
-                                    var tr = '';
-                                    tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle">';
-                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-danger btn-circle">';
-                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
-                                    return tr;
-                                }
-                            }
-                        ]
-                    })
+                            ]
+                        })
+                    }
                 },
-                searchVehicle: function () {
-                    $.get(url + 'getAllVehicle', function (listVehicle) {
-                        var row = "";
-                        for (var i = 0; i < listVehicle.length; i++) {
-                            var tr = "<tr>";
-                            tr += "<td>" + listVehicle[i]['areaCode'] + "</td>";
-                            tr += "<td>" + listVehicle[i]['vehicleNumber'] + "</td>";
-                            tr += "<td>" + listVehicle[i]['vehicleTypes_name'] + "</td>";
-                            tr += "<td>" + listVehicle[i]['garages_name'] + "</td>";
-                            tr += "<td>" + listVehicle[i]['size'] + "</td>";
-                            tr += "<td>" + listVehicle[i]['weight'] + "</td>";
-                            tr += "<td><button class='btn btn-xs btn-success' onclick=''><span class='glyphicon glyphicon-ok'></span></button></td>";
-                            tr += "</tr>";
-                            row += tr;
-                        }
-                        $("#vehicle-talbe-body").empty().append(row);
-                    });
-                    $("#modal-vehicle").modal("show");
+                fillDataToTableVehicle: function (data) {
+                    if(deliveryRequirementView.tableVehicle){
+                        deliveryRequirementView.tableTransport.clear().rows.add(data).draw();
+                    }else{
+                        deliveryRequirementView.tableTransport = $("#table_vehicle").DataTable({
+                            language: languageOptions,
+                            data: data,
+                            columns: [
+
+                            ]
+                        });
+                    }
                 }
             };
-            deliveryRequirementView.loadData();
         } else {
-            deliveryRequirementView.loadData();
         }
     });
 </script>

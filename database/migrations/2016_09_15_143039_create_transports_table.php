@@ -14,11 +14,11 @@ class CreateTransportsTable extends Migration
     {
         Schema::create('transports', function (Blueprint $table) {
             $table->increments('id');
-            $table->float('weight');
-            $table->decimal('cashRevenue',18,0);
-            $table->decimal('cashDelivery',18,0);
-            $table->decimal('cashReceive',18,0);
-            $table->decimal('cashProfit',18,0);
+            $table->float('weight')->nullable();
+            $table->decimal('cashRevenue',18,0)->nullable();
+            $table->decimal('cashDelivery',18,0)->nullable();
+            $table->decimal('cashReceive',18,0)->nullable();
+            $table->decimal('cashProfit',18,0)->nullable();
             $table->string('voucherNumber');
             $table->string('voucherQuantumProduct');
             $table->string('receiver');
