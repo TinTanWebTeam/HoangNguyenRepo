@@ -56,7 +56,6 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
-                            <th>Mã vùng</th>
                             <th>Số xe</th>
                             <th>Thời gian đổ</th>
                             <th>Loại phí</th>
@@ -102,7 +101,8 @@
                                     <label for="date"><b>Thời gian đổ dầu</b></label>
                                     <input type="date" class="form-control"
                                            id="date"
-                                           name="date">
+                                           name="date"
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -384,12 +384,17 @@
 
                 },
                 fillDataToDatatable: function (data) {
+                    for( var i = 0 ; i<data.length ; i++  ){
+
+                        data[i].fullnumber = data[i]['vehicles_code'] + '-' +  data[i]['vehicles_vehicleNumber'];
+
+                    }
                     fuelCostView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
+
                         columns: [
-                            {data: 'vehicles_code'},
-                            {data:'vehicles_vehicleNumber'},
+                            {data:'fullnumber'},
                             {data: 'created_at'},
                             {data: 'costprice_name'},
                             {data: 'literNumber'},
