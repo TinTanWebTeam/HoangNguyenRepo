@@ -5,12 +5,8 @@
         top: 50%;
         display: none;
         right: 0;
-<<<<<<< Updated upstream
         height: 60vh;
-=======
         width: 40%;
-        height: 100%;
->>>>>>> Stashed changes
     }
 
     div.col-lg-12 {
