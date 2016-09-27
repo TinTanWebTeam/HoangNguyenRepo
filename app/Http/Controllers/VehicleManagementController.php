@@ -7,7 +7,6 @@ use App\Vehicle;
 use App\VehicleType;
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
 
 class VehicleManagementController extends Controller
 {
