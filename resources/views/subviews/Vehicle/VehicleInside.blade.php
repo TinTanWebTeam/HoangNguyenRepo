@@ -754,7 +754,7 @@
                                         var indexOfVehicleOld = _.indexOf(vehicleInsideView.tableVehicle, vehicleOld);
                                         vehicleInsideView.tableVehicle.splice(indexOfVehicleOld, 1);
                                         vehicleInsideView.showNotification("success", "Xóa thành công!");
-                                        vehicleInsideView.displayModal("hide", "#modal-confirmDelete")
+                                        vehicleInsideView.displayModal("hide", "#modal-confirmDelete");
                                         break;
                                     default:
                                         break;

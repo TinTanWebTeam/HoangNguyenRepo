@@ -18,6 +18,7 @@ class CreateUserVehiclesTable extends Migration
             $table->integer('vehicle_id');
             $table->integer('createdBy');
             $table->integer('updatedBy');
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }

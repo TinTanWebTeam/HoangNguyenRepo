@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\UserVehicle;
 use Illuminate\Http\Request;
+use Auth;
 
 use App\Http\Requests;
 
@@ -16,11 +16,15 @@ class DivisiveDriverController extends Controller
     }
     public function getDataDivisiveDriver(){
         $vehicleUser = \DB::table('userVehicles')
+            ->select('userVehicles.*', 'users.fullname as users_fullname', 'users.phone as users_phone', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'garages.name as garages_name')
             ->join('users', 'users.id', '=', 'userVehicles.user_id')
             ->join('vehicles', 'vehicles.id', '=', 'userVehicles.vehicle_id')
             ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
-            ->select('userVehicles.*', 'users.fullname as users_fullname', 'users.phone as users_phone', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'garages.name as garages_name')
-            ->where('users.position_id', '=', '1')
+            ->join('positions', 'positions.id', '=', 'users.position_id')
+            ->where([
+                ['positions.name', 'like', '%Tài xế%'],
+                ['userVehicles.active', '=', '1']
+            ])
             ->get();
 
         $response = [
@@ -33,8 +37,14 @@ class DivisiveDriverController extends Controller
 
     public function postModifyDivisiveDriver(Request $request)
     {
+        if (!Auth::check()){
+            return response()->json(['msg' => 'Not authorize'], 404);
+        }
+
         $user_id = null;
         $vehicle_id = null;
+        $createdBy = null;
+        $updatedBy = null;
 
         $action = $request->input('_action');
         if($action != 'delete'){
@@ -52,6 +62,8 @@ class DivisiveDriverController extends Controller
                 $vehicleUserNew = new UserVehicle();
                 $vehicleUserNew->user_id = $user_id;
                 $vehicleUserNew->vehicle_id = $vehicle_id;
+                $vehicleUserNew->createdBy = Auth::user()->id;
+                $vehicleUserNew->updatedBy = Auth::user()->id;
                 if ($vehicleUserNew->save()) {
                     $vehicleUser = \DB::table('userVehicles')
                         ->select('userVehicles.*', 'users.fullname as users_fullname', 'users.phone as users_phone', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'garages.name as garages_name')
@@ -72,6 +84,7 @@ class DivisiveDriverController extends Controller
                 $vehicleUserUpdate = UserVehicle::findOrFail($request->input('_vehicleUser')['id']);
                 $vehicleUserUpdate->user_id = $user_id;
                 $vehicleUserUpdate->vehicle_id = $vehicle_id;
+                $vehicleUserUpdate->updatedBy = Auth::user()->id;
                 if ($vehicleUserUpdate->update()) {
                     $vehicleUser = \DB::table('userVehicles')
                         ->join('users', 'users.id', '=', 'userVehicles.user_id')
@@ -91,8 +104,8 @@ class DivisiveDriverController extends Controller
                 break;
             case 'delete':
                 $vehicleUserDelete = UserVehicle::findOrFail($request->input('_id'));
-
-                if ($vehicleUserDelete->delete()){
+                $vehicleUserDelete->active = 0;
+                if ($vehicleUserDelete->update()){
                     $response = [
                         'msg' => 'Deleted vehicle'
                     ];

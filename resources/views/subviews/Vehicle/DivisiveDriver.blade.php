@@ -155,7 +155,7 @@
 </div>
 <!-- end Control -->
 
-<!-- Modal confirm delete Vehicle -->
+<!-- Modal confirm delete VehicleUser -->
 <div class="row">
     <div id="modal-confirmDelete" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-md" role="document">
@@ -185,7 +185,7 @@
         </div>
     </div>
 </div>
-<!-- end Modal confirm delete Vehicle -->
+<!-- end Modal confirm delete VehicleUser -->
 
 <!-- Modal list vehicles -->
 <div class="row">

@@ -243,7 +243,7 @@ class VehicleManagementController extends Controller
             case 'update':
                 $vehicleTypeUpdate = VehicleType::findOrFail($request->input('_vehicleType')['id']);
                 $vehicleTypeUpdate->name      = $name     ;
-                $vehicleTypeUpdate->contactor = $description;
+                $vehicleTypeUpdate->description = $description;
                 if ($vehicleTypeUpdate->update()) {
                     $response = [
                         'msg' => 'Updated vehicleType',
