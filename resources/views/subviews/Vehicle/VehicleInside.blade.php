@@ -507,7 +507,7 @@
                 },
                 loadListGarage: function () {
                     $.ajax({
-                        url: url + 'vehicle-inside/garages',
+                        url: url + 'vehicle-outside/garages',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {

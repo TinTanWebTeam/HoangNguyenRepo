@@ -86,4 +86,46 @@ class ValidateController extends Controller
 
         return Validator::make($data, $rules, $messages);
     }
+
+    public static function ValidateVehicleUser(array $data)
+    {
+        $rules = [
+            'vehicle_id' => 'required',
+            'user_id'    => 'required'
+        ];
+        $messages = [
+            'vehicle_id.required' => 'Trường xe bắt buộc nhập',
+            'user_id.required'    => 'Trường tài xế bắt buộc nhập'
+        ];
+
+        return Validator::make($data, $rules, $messages);
+    }
+
+    public static function ValidateCustomer(array $data)
+    {
+        $rules = [
+            'customerType_id' => 'required',
+            'fullName'        => 'required',
+            'taxCode'         => "required"
+        ];
+        $messages = [
+            'customerType_id.required' => 'Trường loại khách hàng bắt buộc nhập',
+            'fullName.required'    => 'Trường tên khách hàng bắt buộc nhập',
+            'taxCode.required'    => 'Trường mã số thuế bắt buộc nhập'
+        ];
+
+        return Validator::make($data, $rules, $messages);
+    }
+
+    public static function ValidateCustomerType(array $data)
+    {
+        $rules = [
+            'name'      => 'required'
+        ];
+        $messages = [
+            'name.required'      => 'Trường tên loại xe bắt buộc nhập'
+        ];
+
+        return Validator::make($data, $rules, $messages);
+    }
 }
