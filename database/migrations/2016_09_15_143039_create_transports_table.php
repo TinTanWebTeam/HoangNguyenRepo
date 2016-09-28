@@ -14,25 +14,26 @@ class CreateTransportsTable extends Migration
     {
         Schema::create('transports', function (Blueprint $table) {
             $table->increments('id');
-            $table->float('weight')->nullable();
-            $table->decimal('cashRevenue',18,0)->nullable();
-            $table->decimal('cashDelivery',18,0)->nullable();
-            $table->decimal('cashReceive',18,0)->nullable();
-            $table->decimal('cashProfit',18,0)->nullable();
+            $table->float('weight')->unsigned();
+            $table->float('quantumProduct')->unsigned();
+            $table->decimal('cashRevenue',18,0)->default(0);
+            $table->decimal('cashDelivery',18,0)->default(0);
+            $table->decimal('cashReceive',18,0)->default(0);
+            $table->decimal('cashProfit',18,0)->default(0);
             $table->string('voucherNumber');
             $table->string('voucherQuantumProduct');
             $table->string('receiver');
             $table->dateTime('receiveDate');
             $table->string('receivePlace');
             $table->string('deliveryPlace');
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
+            $table->integer('createdBy')->unsigned();;
+            $table->integer('updatedBy')->unsigned();;
             $table->text('note');
             $table->string('status');
             $table->boolean('active')->default(1);
-            $table->integer('product_id');
-            $table->integer('customer_id');
-            $table->integer('invoice_id');
+            $table->integer('product_id')->unsigned();
+            $table->integer('customer_id')->unsigned();
+            $table->integer('invoice_id')->unsigned();
             $table->timestamps();
         });
     }

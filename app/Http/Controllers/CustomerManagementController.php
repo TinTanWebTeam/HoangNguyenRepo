@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Customer;
 use App\CustomerType;
+use App\Voucher;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
 class CustomerManagementController extends Controller
 {
+    /*
+     * Customer
+     * */
     public function getViewCustomer()
     {
         return view('subviews.Customer.Customer');
     }
+
     public function getDataCustomer(){
         $customers = \DB::table('customers')
             ->select('customers.*', 'customerTypes.name as customerTypes_name')
@@ -201,6 +206,32 @@ class CustomerManagementController extends Controller
     }
 
     /*
+     * Product
+     * */
+    public function getDataProduct(){
+        $products = \DB::table('products')
+            ->select('products.*', 'productTypes.name as productTypes_name')
+            ->join('productTypes', 'productTypes.id', '=', 'products.productType_id')
+            ->get();
+        $response = [
+            'msg'          => 'Get list all Product',
+            'products'     => $products,
+        ];
+        return response()->json($response, 200);
+    }
+    /*
+     * Voucher
+     * */
+    public function getDataVoucher(){
+        $vouchers = Voucher::all();
+        $response = [
+            'msg'          => 'Get list all Voucher',
+            'vouchers'     => $vouchers,
+        ];
+        return response()->json($response, 200);
+    }
+
+    /*
      * Transport
      * */
     public function getViewDeliveryRequirement()
@@ -215,12 +246,12 @@ class CustomerManagementController extends Controller
             ->join('products', 'products.id', '=', 'transports.product_id')
             ->join('customers', 'customers.id', '=', 'transports.customer_id')
             ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-            ->select('transports.*', 'products.name as products_name', 'customers.fullName as customers_fullName', 'vehicles.vehicleNumber as vehicles_vehicleNumber')
+            ->select('transports.*', 'products.name as products_name', 'customers.fullName as customers_fullName', 'vehicles.areaCode as vehicles_areaCode','vehicles.vehicleNumber as vehicles_vehicleNumber')
             ->get();
 
         $response = [
             'msg' => 'Get list all Transport',
-            'transport' => $transports
+            'transports' => $transports
         ];
 
         return response()->json($response, 200);

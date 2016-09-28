@@ -1,8 +1,36 @@
+<style>
+    #divControl {
+        z-index: 3;
+        position: fixed;
+        top: 15%;
+        display: none;
+        right: 0;
+        width: 60%;
+        height: 100%;
+    }
+
+    div.col-lg-12 {
+        height: 40px;
+    }
+
+    .marginRight{
+        margin-right: 5px;
+    }
+
+    @media (max-height: 500px) {
+        #divControl {
+            top: 53px;
+            overflow: auto;
+            height: 80vh;
+        }
+    }
+</style>
+
 <!-- Begin Table Transport -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
-            <!-- Begin Breadcrumb -->
+            <!-- .panel-heading -->
             <div class="row">
                 <div class="col-lg-12">
                     <ol class="breadcrumb">
@@ -11,359 +39,953 @@
                         <li class="active">Đơn hàng</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="deliveryRequirementView.showFrmControl()">
+                        <div class="btn btn-primary btn-circle btn-md" onclick="transportView.addTransport();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End Breadcrumb -->
+            <!-- .panel-body -->
             <div class="panel-body">
-                <div class="dataTable_wrapper table-responsive">
-                    <table class="table table-bordered table-hover" id="table_transport">
-                        <thead>
-                        <tr class="active">
-                            <th>Số xe</th>
-                            <th>Tên hàng</th>
-                            <th>Nơi nhận</th>
-                            <th>Nơi giao</th>
-                            <th>Khách hàng</th>
-                            <th>Doanh thu</th>
-                            <th>Giao xe</th>
-                            <th>Nhận</th>
-                            <th>Lợi nhuận</th>
-                            <th>Người nhận</th>
-                            <th>Ngày nhận</th>
-                            <th>Sửa/ Xóa</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                <div class="dataTable_wrapper">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped" id="table-data">
+                            <thead>
+                            <tr class="active">
+                                <th>Mã</th>
+                                <th>Số xe</th>
+                                <th>Tên hàng</th>
+                                <th>Nơi nhận</th>
+                                <th>Nơi giao</th>
+                                <th>Khách hàng</th>
+                                <th>Doanh thu</th>
+                                <th>Giao xe</th>
+                                <th>Nhận</th>
+                                <th>Lợi nhuận</th>
+                                <th>Người nhận</th>
+                                <th>Ngày nhận</th>
+                                <th>Sửa/ Xóa</th>
+                            </tr>
+                            </thead>
+                            <tbody>
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> <!-- end table-reposive -->
+    </div> <!-- end .col-md-12-->
 </div>
 <!-- End Table Transport -->
 
-<!-- Begin frmControl -->
-<div id="frmControl" class="col-md-offset-4 col-md-8" style="z-index: 3;position: fixed;top: 10%;display: none;right: 0;width: 60%;height: 100%;">
-    <div class="panel panel-primary box-shadow">
-        <div class="panel-heading">Thêm mới yêu cầu giao hàng
-            <div class="menu-toggles pull-right" onclick="deliveryRequirementView.hideFrmControl()">
-                <i class="glyphicon glyphicon-remove"></i>
+<!-- Begin divControl -->
+<div class="row">
+    <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">Thêm mới yêu cầu giao hàng
+                <div class="menu-toggles pull-right" onclick="transportView.hideControl()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
             </div>
-        </div>
-        <div class="panel-body">
-            <form role="form" id="formUser">
-                <div class="form-body">
-                    <div class="col-md-12 ">
-                        <div class="row ">
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Mã xe</b></label>
-                                    <input type="text" class="form-control" id="" name="" value="" ondblclick="deliveryRequirementView.searchVehicle()">
+            <div class="panel-body">
+                <form role="form" id="formUser">
+                    <div class="form-body">
+                        <div class="col-md-12 ">
+                            <div class="row ">
+                                <div class="col-md-3 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="vehicle_id"><b>Xe</b></label>
+                                        <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" readonly placeholder="Nhấp đôi để chọn xe"
+                                               ondblclick="transportView.loadListVehicle()">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="customer_id"><b>Khách hàng</b></label>
+                                        <input type="text" class="form-control" id="customer_id" name="customer_id" readonly placeholder="Nhấp đôi để chọn khách hàng"
+                                               ondblclick="transportView.loadListCustomer()">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="product_id"><b>Hàng</b></label>
+                                        <input type="text" class="form-control" id="product_id" name="product_id" readonly placeholder="Nhấp đôi để chọn hàng"
+                                               ondblclick="transportView.loadListProduct()">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="quantumProduct"><b>Số lượng hàng</b></label>
+                                        <input type="number" min="1" class="form-control" id="quantumProduct" name="quantumProduct">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Mã khách hàng</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="">
+                            <div class="row ">
+                                <div class="col-md-3 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="weight"><b>Trọng tải</b></label>
+                                        <input type="number" class="form-control" id="weight" name="weight">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="cashRevenue"><b>Doanh thu</b></label>
+                                        <input type="number" class="form-control" id="cashRevenue" name="cashRevenue">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="cashDelivery"><b>Giao xe</b></label>
+                                        <input type="number" class="form-control" id="cashDelivery" name="cashDelivery">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="cashReceive"><b>Nhận</b></label>
+                                        <input type="number" class="form-control" id="cashReceive" name="cashReceive">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for=""><b>Mã hàng</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="receiver"><b>Người nhận</b></label>
+                                        <input type="text" class="form-control" id="receiver" name="receiver">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="receiveDate"><b>Ngày nhận</b></label>
+                                        <input type="date" class="form-control" id="receiveDate" name="receiveDate">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="receivePlace"><b>Nơi nhận</b></label>
+                                        <input type="text" class="form-control" id="receivePlace" name="receivePlace">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="deliveryPlace"><b>Nơi giao</b></label>
+                                        <input type="text" class="form-control" id="deliveryPlace" name="deliveryPlace">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Số lượng</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="0">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="voucherNumber"><b>Số chứng từ</b></label>
+                                        <input type="text" class="form-control" id="voucherNumber" name="voucherNumber">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="voucherQuantumProduct"><b>Số hàng trên chứng từ</b></label>
+                                        <input type="number" class="form-control" id="voucherQuantumProduct" name="voucherQuantumProduct">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="note"><b>Ghi chú</b></label>
+                                        <input type="text" class="form-control" id="note" name="note">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="status"><b>Trạng thái</b></label>
+                                        <input type="text" class="form-control" id="status" name="status">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Trọng tải</b></label>
-                                    <input type="number" class="form-control" id="" name="" placeholder="0">
-                                </div>
-                            </div>
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for=""><b>Doanh thu</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="0">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Giao xe</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="0">
-                                </div>
-                            </div>
-                            <div class="col-md-3 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Nhận</b></label>
-                                    <input type="number" class="form-control" id="" name="" placeholder="0">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Người nhận</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Ngày nhận</b></label>
-                                    <input type="date" class="form-control" id="" name="" placeholder="">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Nơi nhận</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Nơi giao</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Số chứng từ</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Số hàng trên chứng từ</b></label>
-                                    <input type="number" class="form-control" id="" name="" placeholder="">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Ghi chú</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Trạng thái</b></label>
-                                    <input type="text" class="form-control" id="" name="" placeholder="">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Số chứng từ nhận</b></label>
-                                    <div class="row">
-                                        <div class="col-md-10">
-                                            <select name="" id="" class="form-control">
-                                                <option value="">0</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="btn btn-primary btn-sm btn-circle">
-                                                <i class="glyphicon glyphicon-plus"></i>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
+                                        <div class="row">
+                                            <div class="col-sm-10 col-xs-10">
+                                                <input type="text" class="form-control"
+                                                       id="voucher_transport" data-id="" readonly
+                                                       name="voucher_transport"
+                                                       placeholder="Nhấp đôi để chọn chứng từ"
+                                                       ondblclick="transportView.loadListVoucher()">
+                                            </div>
+                                            <div class="col-sm-2 col-xs-2">
+                                                <div class="btn btn-primary btn-sm btn-circle">
+                                                    <i class="glyphicon glyphicon-plus"></i>
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
-
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="price_id"><b>Chi phí</b></label>
+                                        <select name="price_id" id="price_id" class="form-control" disabled>
+                                            <option value="" selected>Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="cost"><b>Số tiền</b></label>
+                                        <input type="number" class="form-control" id="cost" name="cost">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="costs_note"><b>Ghi chú</b></label>
+                                        <input type="text" class="form-control" id="costs_note" name="costs_note">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Chi phí</b></label>
-                                    <select name="" id="" class="form-control">
-                                        <option value="">Nhiên liệu</option>
-                                        <option value="">Thay nhớt</option>
-                                        <option value="">Đậu bãi</option>
-                                        <option value="" selected>Khác</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Số tiền</b></label>
-                                    <input type="number" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group form-md-line-input">
-                                    <label for=""><b>Ghi chú</b></label>
-                                    <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-actions">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary" onclick="">Hoàn tất</button>
+                                    <button type="button" class="btn default" onclick="">Huỷ</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-actions">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary" onclick="">Hoàn tất</button>
-                                <button type="button" class="btn default" onclick="">Huỷ</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-<!-- End frmControl -->
+<!-- End divControl -->
 
-<!-- Begin Modal vehicles -->
-<div class="modal fade" id="modal-vehicle">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
-                    x
-                </button>
-                <h4 class="modal-title">
-                    Danh sách xe
-                </h4>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="table_vehicle">
-                        <thead>
-                        <tr>
-                            <th>Mã vùng</th>
-                            <th>Số xe</th>
-                            <th>Loại xe</th>
-                            <th>Nhà xe</th>
-                            <th>Kích thước</th>
-                            <th>Trọng tải</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+<!-- Modal confirm delete Transport -->
+<div class="row">
+    <div id="modal-confirmDelete" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Có chắc muốn xóa đơn hàng này?</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
+                            <button type="button" class="btn btn-primary marginRight"
+                                    onclick="transportView.save()">
+                                Đồng ý
+                            </button>
+                            <button type="button" class="btn default"
+                                    onclick="transportView.displayModal('hide','#modal-confirmDelete')">
+                                Huỷ
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- End Modal vehicles -->
+<!-- end Modal confirm delete Transport -->
+
+<!-- Modal list vehicles -->
+<div class="row">
+    <div id="modal-vehicle" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Danh sách xe</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="table-vehicle">
+                            <thead>
+                            <tr>
+                                <th>Mã xe</th>
+                                <th>Số xe</th>
+                                <th>Loại xe</th>
+                                <th>Nhà xe</th>
+                                <th>Kích thước</th>
+                                <th>Trọng tải</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal list vehicles -->
+
+<!-- Modal list customers -->
+<div class="row">
+    <div id="modal-customer" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Danh sách khách hàng</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="table-customer">
+                            <thead>
+                            <tr>
+                                <th>Mã khách hàng</th>
+                                <th>Loại khách hàng</th>
+                                <th>Tên khách hàng</th>
+                                <th>Mã số thuế</th>
+                                <th>Địa chỉ</th>
+                                <th>Điện thoại</th>
+                                <th>Email</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal list customers -->
+
+<!-- Modal list products -->
+<div class="row">
+    <div id="modal-product" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Danh sách nhà xe</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="table-product">
+                            <thead>
+                            <tr>
+                                <th>Mã hàng</th>
+                                <th>Loại hàng</th>
+                                <th>Tên hàng</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal list products -->
+
+<!-- Modal list vouchers -->
+<div class="row">
+    <div id="modal-voucher" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Danh sách nhà xe</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="table-voucher">
+                            <thead>
+                            <tr>
+                                <th>Mã chứng từ</th>
+                                <th>Tên chứng từ</th>
+                                <th>Mô tả</th>
+                                <th>Chọn</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal list vouchers -->
 
 <script>
     $(function () {
-        if (typeof (deliveryRequirementView) === "undefined") {
-            deliveryRequirementView = {
-                transportObject: {
-
-                },
+        if (typeof transportView === 'undefined') {
+            transportView = {
+                table: null,
                 tableTransport: null,
-                tableTransportData: null,
                 tableVehicle: null,
-                tableVehicleData: null,
-                showFrmControl: function () {
-                    $(".menu-toggle").hide();
-                    $("#frmControl").fadeIn(300);
+                tableCustomer: null,
+                tableProduct: null,
+                tableVoucher: null,
+                current: null,
+                action: null,
+                idDelete: null,
+                showControl: function () {
+                    $('.menu-toggle').fadeOut();
+                    $('#divControl').fadeIn(300);
                 },
-                hideFrmControl: function () {
-                    $("#frmControl").fadeOut(300, function () {
-                        $(".menu-toggle").show();
+                hideControl: function () {
+                    $('#divControl').fadeOut(300, function(){
+                        $('.menu-toggle').fadeIn();
                     });
+
+                    transportView.clearValidation("#frmControl");
+                    transportView.clearInput();
                 },
-                rendView: function () {
-                    // get data and rend view
-                    $.post(url + "delivery-requirement", {
-                        _token: _token,
-                        fromDate: null,
-                        toDate: null
-                    }, function (listOrders) {
-                        deliveryRequirementView.data = listOrders;
-                        deliveryRequirementView.fillDataToDataTable(listOrders);
-                    });
+                displayModal: function(type, idModal){
+                    $(idModal).modal(type);
+                    if(transportView.action == 'delete' && type == 'hide'){
+                        transportView.action = null;
+                        transportView.idDelete = null;
+                    }
+                    //Clear Validate
                 },
-                fillDataToTableTransport: function (data) {
-                    if(deliveryRequirementView.tableTransport){
-                        deliveryRequirementView.tableTransport.clear().rows.add(data).draw();
-                    }else{
-                        deliveryRequirementView.tableTransport = $("#table_transport").DataTable({
-                            language: languageOptions,
-                            data: data,
-                            columns: [
-                                {data: "vehicles_vehicleNumber"},
-                                {data: "products_name"},
-                                {data: "receivePlace"},
-                                {data: "deliveryPlace"},
-                                {data: "customers_fullName"},
-                                {
-                                    data: "cashRevenue",
-                                    render: $.fn.dataTable.render.number(".", ",", 0)
-                                },
-                                {
-                                    data: "cashDelivery",
-                                    render: $.fn.dataTable.render.number(".", ",", 0)
-                                },
-                                {
-                                    data: "cashReceive",
-                                    render: $.fn.dataTable.render.number(".", ",", 0)
-                                },
-                                {
-                                    data: "cashProfit",
-                                    render: $.fn.dataTable.render.number('.', ',', 0)
-                                },
-                                {
-                                    data: "receiver",
-                                    render: $.fn.dataTable.render.number(".", ",", 0)
-                                },
-                                {
-                                    data: "receiveDate",
-                                    render: function (data, type, full, meta) {
-                                        return moment(data).format("DD/MM/YYYY");
-                                    }
-                                },
-                                {
-                                    render: function () {
-                                        var tr = '';
-                                        tr += '<div class="btn-del-edit">';
-                                        tr += '<div class="btn btn-success  btn-circle">';
-                                        tr += '<i class="glyphicon glyphicon-pencil"></i>';
-                                        tr += '</div>';
-                                        tr += '</div>';
-                                        tr += '<div class="btn-del-edit">';
-                                        tr += '<div class="btn btn-danger btn-circle">';
-                                        tr += '<i class="glyphicon glyphicon-remove"></i>';
-                                        tr += '</div>';
-                                        tr += '</div>';
-                                        return tr;
-                                    }
-                                }
-                            ]
-                        })
+                showNotification: function (type ,msg) {
+                    switch (type){
+                        case "info":
+                            toastr.info(msg);
+                            break;
+                        case "success":
+                            toastr.success(msg);
+                            break;
+                        case "warning":
+                            toastr.warning(msg);
+                            break;
+                        case "error":
+                            toastr.error(msg);
+                            break;
                     }
                 },
-                fillDataToTableVehicle: function (data) {
-                    if(deliveryRequirementView.tableVehicle){
-                        deliveryRequirementView.tableTransport.clear().rows.add(data).draw();
-                    }else{
-                        deliveryRequirementView.tableTransport = $("#table_vehicle").DataTable({
-                            language: languageOptions,
-                            data: data,
-                            columns: [
+                clearInput: function () {
+                    $("input[id='vehicle_id']").val('');
+                    $("input[id='vehicle_id']").attr("data-vehicleId", "");
 
-                            ]
+                    $("input[id='customer_id']").val('');
+                    $("input[id='customer_id']").attr("data-customerId", "");
+
+                    $("input[id='product_id']").val('');
+                    $("input[id='product_id']").attr("data-productId", "");
+
+                    $("input[id='quantumProduct']").val('');
+                    $("input[id='weight']").val('');
+                    $("input[id='cashRevenue']").val('');
+                    $("input[id='cashDelivery']").val('');
+                    $("input[id='cashReceive']").val('');
+                    $("input[id='receiver']").val('');
+                    $("input[id='receiveDate']").val('');
+                    $("input[id='receivePlace']").val('');
+                    $("input[id='deliveryPlace']").val('');
+                    $("input[id='voucherNumber']").val('');
+                    $("input[id='voucherQuantumProduct']").val('');
+                    $("input[id='note']").val('');
+                    $("input[id='status']").val('');
+
+                    $("input[id='voucher_transport']").val('');
+                    $("input[id='voucher_transport']").attr("voucher_transport", "");
+
+                    $("input[id='cost']").val('');
+                    $("input[id='costs_note']").val('');
+                },
+
+                loadData: function () {
+                    $.ajax({
+                        url: url + 'delivery-requirement/transports',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if(jqXHR.status == 200){
+                            transportView.tableTransport = data['transports'];
+                            transportView.fillDataToDatatable(data['transports']);
+                        } else {
+                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+                },
+                loadListVehicle: function () {
+                    $.ajax({
+                        url: url + 'vehicle-inside/vehicles',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+
+                        for(var i =0;i< data['vehicles'].length; i++){
+                            data['vehicles'][i].fullNumber = data['vehicles'][i]['areaCode'] + "-" + data['vehicles']   [i]['vehicleNumber'];
+                        }
+
+                        if(jqXHR.status == 200){
+                            if (transportView.tableVehicle != null) {
+                                transportView.tableVehicle.destroy();
+                            }
+                            transportView.tableVehicle = $('#table-vehicle').DataTable({
+                                language: languageOptions,
+                                data: data['vehicles'],
+                                columns: [
+                                    {data: 'id'},
+                                    {data: 'fullNumber'},
+                                    {data: 'vehicleTypes_name'},
+                                    {data: 'garages_name'},
+                                    {data: 'size'},
+                                    {data: 'weight'}
+                                ]
+                            })
+                        } else {
+                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                    transportView.displayModal("show", "#modal-vehicle")
+                },
+                loadListCustomer: function () {
+                    $.ajax({
+                        url: url + 'customer/customers',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if(jqXHR.status == 200){
+                            if (transportView.tableCustomer != null) {
+                                transportView.tableCustomer.destroy();
+                            }
+                            transportView.tableCustomer = $('#table-customer').DataTable({
+                                language: languageOptions,
+                                data: data['customers'],
+                                columns: [
+                                    {data: 'id'},
+                                    {data: 'customerTypes_name'},
+                                    {data: 'fullName'},
+                                    {data: 'taxCode'},
+                                    {data: 'address'},
+                                    {data: 'phone'},
+                                    {data: 'email'}
+                                ]
+                            })
+                        } else {
+                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                    transportView.displayModal("show", "#modal-customer")
+                },
+                loadListProduct: function () {
+                    $.ajax({
+                        url: url + 'product/products',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if(jqXHR.status == 200){
+                            if (transportView.tableProduct != null) {
+                                transportView.tableProduct.destroy();
+                            }
+                            transportView.tableProduct = $('#table-product').DataTable({
+                                language: languageOptions,
+                                data: data['products'],
+                                columns: [
+                                    {data: 'id'},
+                                    {data: 'productTypes_name'},
+                                    {data: 'name'},
+                                    {data: 'description'}
+                                ]
+                            })
+                        } else {
+                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                    transportView.displayModal("show", "#modal-product")
+                },
+                loadListVoucher: function () {
+                    $.ajax({
+                        url: url + 'voucher/vouchers',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if(jqXHR.status == 200){
+                            if (transportView.tableVoucher != null) {
+                                transportView.tableVoucher.destroy();
+                            }
+                            transportView.tableVoucher = $('#table-voucher').DataTable({
+                                language: languageOptions,
+                                data: data['vouchers'],
+                                columns: [
+                                    {data: 'id'},
+                                    {data: 'name'},
+                                    {data: 'description'},
+                                    {
+                                        render: function (data, type, full, meta) {
+                                            var tr = "";
+                                            tr += "<button class='btn btn-success' onclick='transportView.fillAdjusterFromModalToInput(this)'>";
+                                            tr += "<span class='glyphicon glyphicon-check'></span>";
+                                            tr += "</button>";
+                                            return tr;
+                                        }
+                                    }
+                                ]
+                            })
+                        } else {
+                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                    transportView.displayModal("show", "#modal-voucher")
+                },
+
+                fillDataToDatatable: function (data) {
+                    for(var i=0;i< data.length;i++){
+                        data[i].fullNumber = data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                    }
+                    transportView.table = $('#table-data').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'id'},
+                            {data: 'fullNumber'},
+                            {data: 'products_name'},
+                            {data: 'receivePlace'},
+                            {data: 'deliveryPlace'},
+                            {data: 'customers_fullName'},
+                            {
+                                data: 'cashRevenue',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {
+                                data: 'cashDelivery',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {
+                                data: 'cashReceive',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {
+                                data: 'cashProfit',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {data: 'receiver'},
+                            {
+                                data: 'receiveDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-success  btn-circle" onclick="transportView.editTransport(' + full.id + ')">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="transportView.deleteTransport(' + full.id + ')">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }, width: "10%"
+                            }
+                        ],
+                        order: [[0, "desc"]],
+                        dom: 'Bfrtip',
+                        buttons: [
+                            {
+                                extend: 'copyHtml5',
+                                text: 'Sao chép',
+                                exportOptions: {
+                                    columns: [0, ':visible']
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Xuất Excel',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                customize: function (xlsx) {
+                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                }
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'Xuất PDF',
+                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
+                                customize: function (doc) {
+                                    doc.content.splice(0, 1);
+                                    doc.styles.tableBodyEven.alignment = 'center';
+                                    doc.styles.tableBodyOdd.alignment = 'center';
+                                    doc.content.columnGap = 10;
+                                    doc.pageOrientation = 'landscape';
+                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                            doc.content[1].table.body[i].splice(6, 1);
+                                        }
+                                    }
+                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
+                                }
+                            },
+                            {
+                                extend: 'colvis',
+                                text: 'Ẩn cột'
+                            }
+                        ]
+                    })
+                },
+                fillCurrentObjectToForm: function () {
+                    $("input[id='areaCode']").val(transportView.current["areaCode"]);
+                    $("input[id='vehicleNumber']").val(transportView.current["vehicleNumber"]);
+                    $("input[id='size']").val(transportView.current["size"]);
+                    $("input[id='weight']").val(transportView.current["weight"]);
+                    $("select[id='vehicleTypes_name']").val(transportView.current["vehicleType_id"]);
+                    $("input[id='garages_name']").val(transportView.current["garages_name"]);
+                    $("#garages_name").attr('data-id', transportView.current["garage_id"]);
+                },
+                fillFormDataToCurrentObject: function () {
+                    if (transportView.action == 'add') {
+                        transportView.current = {
+                            vehicle_id: $("input[id=vehicle_id]").attr("data-vehicleId"),
+                            customer_id: $("input[id=customer_id]").attr("data-customerId"),
+                            product_id: $("input[id=product_id]").attr("data-productId"),
+                            quantumProduct: $("input[id='quantumProduct']").val(),
+                            weight: $("input[id='weight']").val(),
+                            cashRevenue: $("input[id='cashRevenue']").val(),
+                            cashDelivery: $("input[id='cashDelivery']").val(),
+                            cashReceive: $("input[id='cashReceive']").val(),
+                            receiver: $("input[id='receiver']").val(),
+                            receiveDate: $("input[id='receiveDate']").val(),
+                            receivePlace: $("input[id='receivePlace']").val(),
+                            deliveryPlace: $("input[id='deliveryPlace']").val(),
+                            voucherNumber: $("input[id='voucherNumber']").val(),
+                            voucherQuantumProduct: $("input[id='voucherQuantumProduct']").val(),
+                            note: $("input[id='note']").val(),
+                            status: $("input[id='status']").val(),
+                            cost: $("input[id='cost']").val(),
+                            costs_note: $("input[id='costs_note']").val(),
+                            voucher_transport: []
+                        };
+                    } else if (transportView.action == 'update') {
+                        transportView.current.vehicle_id = $("input[id=vehicle_id]").attr("data-vehicleId"),
+                        transportView.current.customer_id = $("input[id=customer_id]").attr("data-customerId"),
+                        transportView.current.product_id = $("input[id=product_id]").attr("data-productId"),
+                        transportView.current.quantumProduct = $("input[id='quantumProduct']").val(),
+                        transportView.current.weight = $("input[id='weight']").val(),
+                        transportView.current.cashRevenue = $("input[id='cashRevenue']").val(),
+                        transportView.current.cashDelivery = $("input[id='cashDelivery']").val(),
+                        transportView.current.cashReceive = $("input[id='cashReceive']").val(),
+                        transportView.current.receiver = $("input[id='receiver']").val(),
+                        transportView.current.receiveDate = $("input[id='receiveDate']").val(),
+                        transportView.current.receivePlace = $("input[id='receivePlace']").val(),
+                        transportView.current.deliveryPlace = $("input[id='deliveryPlace']").val(),
+                        transportView.current.voucherNumber = $("input[id='voucherNumber']").val(),
+                        transportView.current.voucherQuantumProduct = $("input[id='voucherQuantumProduct']").val(),
+                        transportView.current.note = $("input[id='note']").val(),
+                        transportView.current.status = $("input[id='status']").val(),
+                        transportView.current.cost = $("input[id='cost']").val(),
+                        transportView.current.costs_note = $("input[id='costs_note']").val(),
+                        transportView.current.voucher_transport = []
+                    }
+                },
+
+                editTransport: function (id) {
+                    transportView.current = null;
+                    transportView.current = _.clone(_.find(transportView.tableTransport, function (o) {
+                        return o.id == id;
+                    }), true);
+                    transportView.fillCurrentObjectToForm();
+                    transportView.action = 'update';
+                    transportView.showControl();
+                },
+                addTransport: function () {
+                    transportView.current = null;
+                    transportView.action = 'add';
+                    transportView.showControl();
+                },
+                deleteTransport: function (id) {
+                    transportView.action = 'delete';
+                    transportView.idDelete = id;
+                    transportView.displayModal("show", "#modal-confirmDelete");
+                },
+
+                formValidate: function () {
+                    $("#frmControl").validate({
+                        rules: {
+                            vehicle_id:     "required",
+                            customer_id:    "required",
+                            product_id:     "required",
+                            quantumProduct: "required",
+                            weight:         "required",
+                            cashRevenue:    "required",
+                            cashDelivery:   "required",
+                            cashReceive:    "required",
+                            receiver:       "required",
+                            receiveDate:    "required",
+                            receivePlace:   "required",
+                            deliveryPlace:  "required",
+                            voucherNumber:  "required",
+                            voucherQuantumProduct: "required",
+                        },
+                        messages: {
+                            vehicle_id:     "Vui lòng chọn xe",
+                            customer_id:    "Vui lòng chọn khách hàng",
+                            product_id:     "Vui lòng chọn hàng",
+                            quantumProduct: "Vui lòng nhập số lượng hàng",
+                            weight:         "Vui lòng nhập trọng lượng",
+                            cashRevenue:    "Vui lòng nhập doanh thu",
+                            cashDelivery:   "Vui lòng nhập tiền giao",
+                            cashReceive:    "Vui lòng nhập tiền nhận",
+                            receiver:       "Vui lòng nhập người nhận",
+                            receiveDate:    "Vui lòng nhập ngày nhận",
+                            receivePlace:   "Vui lòng nhập nơi nhận",
+                            deliveryPlace:  "Vui lòng nhập nơi giao",
+                            voucherNumber:  "Vui lòng nhập số chứng từ",
+                            voucherQuantumProduct: "Vui lòng nhập số lượng hàng trên chứng từ"
+                        }
+                    });
+                },
+                clearValidation: function (idForm) {
+                    $(idForm).find("label[class=error]").remove();
+//                    var validator = $(idForm).validate();
+//                    validator.resetForm();
+                },
+
+                save: function () {
+                    transportView.formValidate();
+                    if ($("#frmControl").valid()) {
+                        if (transportView.action != 'delete') {
+                            if($("#vehicle_id").attr('data-vehicleId') == ''){
+                                transportView.showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
+                                return ;
+                            }
+                            if($("#customer_id").attr('data-customerId') == ''){
+                                transportView.showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
+                                return ;
+                            }
+                            if($("#product_id").attr('data-productId') == ''){
+                                transportView.showNotification('warning', 'Vui lòng chọn một hàng có trong danh sách.');
+                                return ;
+                            }
+                        }
+
+                        transportView.fillFormDataToCurrentObject();
+
+                        var sendToServer = {
+                            _token: _token,
+                            _action: transportView.action,
+                            _transport: transportView.current
+                        };
+                        if (transportView.action == 'delete') {
+                            sendToServer._id = transportView.idDelete;
+                        }
+                        $.ajax({
+                            url: url + 'delivery-requirement/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                switch (transportView.action) {
+                                    case 'add':
+                                        transportView.tableTransport.push(data['transport'][0]);
+                                        transportView.showNotification("success", "Thêm thành công!");
+                                        break;
+                                    case 'update':
+                                        var Old = _.find(transportView.tableTransport, function (o) {
+                                            return o.id == sendToServer._transport.id;
+                                        });
+                                        var indexOfOld = _.indexOf(transportView.tableTransport, Old);
+                                        transportView.tableTransport.splice(indexOfOld, 1, data['transport'][0]);
+                                        transportView.showNotification("success", "Cập nhật thành công!");
+                                        transportView.hideControl();
+                                        break;
+                                    case 'delete':
+                                        var Old = _.find(transportView.tableTransport, function (o) {
+                                            return o.id == sendToServer._id;
+                                        });
+                                        var indexOfOld = _.indexOf(transportView.tableTransport, Old);
+                                        transportView.tableTransport.splice(indexOfOld, 1);
+                                        transportView.showNotification("success", "Xóa thành công!");
+                                        transportView.displayModal("hide", "#modal-confirmDelete");
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                transportView.table.clear().rows.add(transportView.tableTransport).draw();
+                                transportView.clearInput();
+                            } else {
+                                transportView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
+                    } else {
+                        $("form#frmControl").find("label[class=error]").css("color", "red");
                     }
                 }
             };
+            transportView.loadData();
         } else {
+            transportView.loadData();
         }
+
+        $("#table-vehicle").find("tbody").on('click', 'tr', function () {
+            $('#vehicle_id').attr('data-vehicleId', $(this).find('td:first')[0].innerText);
+            $('#vehicle_id').val($(this).find('td:eq(1)')[0].innerText);
+            transportView.displayModal("hide", "#modal-vehicle");
+        });
+        $("#table-customer").find("tbody").on('click', 'tr', function () {
+            $('#customer_id').attr('data-customerId', $(this).find('td:first')[0].innerText);
+            $('#customer_id').val($(this).find('td:eq(1)')[0].innerText);
+            transportView.displayModal("hide", "#modal-customer");
+        });
+        $("#table-product").find("tbody").on('click', 'tr', function () {
+            $('#product_id').attr('data-productId', $(this).find('td:first')[0].innerText);
+            $('#product_id').val($(this).find('td:eq(1)')[0].innerText);
+            transportView.displayModal("hide", "#modal-product");
+        });
+//        $("#table-voucher").find("tbody").on('click', 'tr', function () {
+//            $('#voucher_id').attr('data-productId', $(this).find('td:first')[0].innerText);
+//            $('#voucher_id').val($(this).find('td:eq(1)')[0].innerText);
+//            transportView.displayModal("hide", "#modal-voucher");
+//        });
     });
 </script>
