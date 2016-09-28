@@ -318,6 +318,7 @@
                 clearInput: function () {
                     $("input[id='fullName']").val('');
                     $("input[id='address']").val('');
+                    $("input[id='taxCode']").val('');
                     $("input[id='phone']").val('');
                     $("input[id='email']").val('');
                     $("textarea[id='note']").val('');

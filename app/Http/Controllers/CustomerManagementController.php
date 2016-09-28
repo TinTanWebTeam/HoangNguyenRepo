@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\CustomerType;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
