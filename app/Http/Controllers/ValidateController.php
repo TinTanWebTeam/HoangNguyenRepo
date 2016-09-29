@@ -132,10 +132,14 @@ class ValidateController extends Controller
     public static function ValidateVoucherTransport(array $data)
     {
         $rules = [
-
+            vehicle_id  => "required",
+            customer_id => "required",
+            product_id  => "required",
         ];
         $messages = [
-
+            vehicle_id  => "required",
+            customer_id => "required",
+            product_id  => "required",
         ];
 
         return Validator::make($data, $rules, $messages);

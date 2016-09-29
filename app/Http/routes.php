@@ -43,16 +43,16 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'CustomerManagement'], function () {
         //get View
         Route::get('/customer', 'CustomerManagementController@getViewCustomer');
-        Route::get('/delivery-requirement', 'CustomerManagementController@getViewDeliveryRequirement');
+        Route::get('/delivery-requirement', 'CustomerManagementController@getViewTransport');
         //get Data
         Route::get('/customer/customers','CustomerManagementController@getDataCustomer');
         Route::get('/product/products','CustomerManagementController@getDataProduct');
         Route::get('/voucher/vouchers','CustomerManagementController@getDataVoucher');
-        Route::get('/delivery-requirement/transports', 'CustomerManagementController@getDataDeliveryRequirement');
+        Route::get('/transport/transports', 'CustomerManagementController@getDataTransport');
         //post Modify
         Route::post('/customer/modify','CustomerManagementController@postModifyCustomer');
         Route::post('/customer-type/modify','CustomerManagementController@postModifyCustomerType');
-        Route::post('/delivery-requirement/modify','CustomerManagementController@postModifyTransport');
+        Route::post('/transport/modify','CustomerManagementController@postModifyTransport');
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         //get View
