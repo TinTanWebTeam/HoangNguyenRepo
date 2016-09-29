@@ -17,9 +17,9 @@ class CreateInvoicesTable extends Migration
             $table->float('VAT');
             $table->decimal('notVAT');
             $table->decimal('hasVAT');
-            $table->dateTime('exportDay');
-            $table->dateTime('invoiceDay');
-            $table->dateTime('payDay');
+            $table->dateTime('exportDate');
+            $table->dateTime('invoiceDate');
+            $table->dateTime('payDate');
             $table->integer('createdBy');
             $table->integer('updatedBy');
             $table->text('note');

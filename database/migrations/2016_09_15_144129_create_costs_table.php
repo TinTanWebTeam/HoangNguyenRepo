@@ -17,7 +17,7 @@ class CreateCostsTable extends Migration
             $table->decimal('cost',18,0);
             $table->float('literNumber')->nullable();
             $table->dateTime('dayNumber')->nullable();
-            $table->dateTime('daytime')->nullable();
+            $table->dateTime('dateRefuel')->nullable();
             $table->integer('createdBy');
             $table->integer('updatedBy');
             $table->text('note');

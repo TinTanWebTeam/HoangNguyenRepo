@@ -20,7 +20,7 @@ class CostTableSeeder extends Seeder
             'transport_id' => '1',
             'price_id' => '1',
             'vehicle_id' => '1',
-            'daytime' => '2016-09-29 16:09:48'
+            'dateRefuel' => '2016-09-29 16:09:48'
         ]);
     }
 }
