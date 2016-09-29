@@ -128,4 +128,17 @@ class ValidateController extends Controller
 
         return Validator::make($data, $rules, $messages);
     }
+
+    public static function ValidateVoucherTransport(array $data)
+    {
+        $rules = [
+
+        ];
+        $messages = [
+
+        ];
+
+        return Validator::make($data, $rules, $messages);
+    }
+
 }

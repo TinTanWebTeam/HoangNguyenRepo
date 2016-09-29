@@ -33,7 +33,7 @@ class CreateTransportsTable extends Migration
             $table->boolean('active')->default(1);
             $table->integer('product_id')->unsigned();
             $table->integer('customer_id')->unsigned();
-            $table->integer('invoice_id')->unsigned();
+            $table->integer('invoice_id')->nullable;
             $table->timestamps();
         });
     }

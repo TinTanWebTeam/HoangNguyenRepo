@@ -52,7 +52,7 @@ Route::group(['middleware' => 'auth'], function(){
         //post Modify
         Route::post('/customer/modify','CustomerManagementController@postModifyCustomer');
         Route::post('/customer-type/modify','CustomerManagementController@postModifyCustomerType');
-        Route::post('/delivery-requirement/modify','CustomerManagementController@postModifyDeliveryRequirement');
+        Route::post('/delivery-requirement/modify','CustomerManagementController@postModifyTransport');
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         //get View

@@ -22,9 +22,9 @@ class CreateCostsTable extends Migration
             $table->integer('updatedBy');
             $table->text('note');
             $table->boolean('active')->default(1);
-            $table->integer('transport_id');
-            $table->integer('price_id');
-            $table->integer('vehicle_id');
+            $table->integer('transport_id')->unsigned();
+            $table->integer('price_id')->unsigned();
+            $table->integer('vehicle_id')->nullable();
             $table->timestamps();
         });
     }
