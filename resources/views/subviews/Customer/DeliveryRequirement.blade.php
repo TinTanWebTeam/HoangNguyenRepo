@@ -437,6 +437,8 @@
                 tableCustomer: null,
                 tableProduct: null,
                 tableVoucher: null,
+                tableVoucherTransport: null,
+                arrayVoucher: [],
                 current: null,
                 action: null,
                 idDelete: null,
@@ -458,6 +460,7 @@
                         transportView.action = null;
                         transportView.idDelete = null;
                     }
+
                     //Clear Validate
                 },
                 showNotification: function (type ,msg) {
@@ -478,13 +481,13 @@
                 },
                 clearInput: function () {
                     $("input[id='vehicle_id']").val('');
-                    $("input[id='vehicle_id']").attr("data-vehicleId", "");
+                    $("#vehicle_id").attr("data-vehicleId", "");
 
                     $("input[id='customer_id']").val('');
-                    $("input[id='customer_id']").attr("data-customerId", "");
+                    $("#customer_id").attr("data-customerId", "");
 
                     $("input[id='product_id']").val('');
-                    $("input[id='product_id']").attr("data-productId", "");
+                    $("#product_id").attr("data-productId", "");
 
                     $("input[id='quantumProduct']").val('');
                     $("input[id='weight']").val('');
@@ -516,6 +519,8 @@
                         if(jqXHR.status == 200){
                             transportView.tableTransport = data['transports'];
                             transportView.fillDataToDatatable(data['transports']);
+
+                            transportView.tableVoucherTransport = data['voucherTransports'];
                         } else {
                             transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -654,10 +659,10 @@
                                     {data: 'description'},
                                     {
                                         render: function (data, type, full, meta) {
-                                            var tr = "";
-                                            tr += "<button class='btn btn-success' onclick='transportView.fillAdjusterFromModalToInput(this)'>";
-                                            tr += "<span class='glyphicon glyphicon-check'></span>";
-                                            tr += "</button>";
+                                            var tr = '';
+                                            tr += '<div class="btn btn-xs btn-primary" data-voucherId="'+ full.id +'" onclick="transportView.checkVoucher(this)">';
+                                            tr += '<i class="fa fa-times" aria-hidden="true"></i>';
+                                            tr += '</div>';
                                             return tr;
                                         }
                                     }
@@ -669,7 +674,36 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-                    transportView.displayModal("show", "#modal-voucher")
+                    transportView.displayModal("show", "#modal-voucher");
+                },
+                checkVoucher: function(element){
+                    var voucherId = $(element).attr("data-voucherId");
+
+                    if($(element).find("i").hasClass("fa-times")){
+                        //check
+                        $(element).removeClass("btn-primary").addClass("btn-success");
+                        $(element).find("i").removeClass("fa-times").addClass("fa-check");
+
+                        transportView.arrayVoucher.push(voucherId);
+                    } else {
+                        //uncheck
+                        $(element).removeClass("btn-success").addClass("btn-primary");
+                        $(element).find("i").removeClass("fa-check").addClass("fa-times");
+
+                        var index = _.indexOf(transportView.arrayVoucher, voucherId);
+                        transportView.arrayVoucher.splice(index, 1);
+                    }
+                },
+                fillVoucher: function (){
+                    for(var i = 0; i< transportView.arrayVoucher.length; i++){
+                        $("[data-voucherId]").each(function() {
+                            var voucherId = $(this).attr("data-voucherId");
+                            if(transportView.arrayVoucher[i] == voucherId){
+                                $(this).removeClass("btn-primary").addClass("btn-success");
+                                $(this).find("i").removeClass("fa-times").addClass("fa-check");
+                            }
+                        });
+                    }
                 },
 
                 fillDataToDatatable: function (data) {
@@ -772,20 +806,35 @@
                     })
                 },
                 fillCurrentObjectToForm: function () {
-                    $("input[id='areaCode']").val(transportView.current["areaCode"]);
-                    $("input[id='vehicleNumber']").val(transportView.current["vehicleNumber"]);
-                    $("input[id='size']").val(transportView.current["size"]);
+                    $("input[id='vehicle_id']").val(transportView.current["vehicle_id"]);
+                    $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicle_id"]);
+                    $("input[id='customer_id']").val(transportView.current["customer_id"]);
+                    $("#customer_id").attr('data-customerId', transportView.current["customer_id"]);
+                    $("input[id='product_id']").val(transportView.current["product_id"]);
+                    $("#product_id").attr('data-productId', transportView.current["product_id"]);
+
+                    $("input[id='quantumProduct']").val(transportView.current["quantumProduct"]);
                     $("input[id='weight']").val(transportView.current["weight"]);
-                    $("select[id='vehicleTypes_name']").val(transportView.current["vehicleType_id"]);
-                    $("input[id='garages_name']").val(transportView.current["garages_name"]);
-                    $("#garages_name").attr('data-id', transportView.current["garage_id"]);
+                    $("input[id='cashRevenue']").val(transportView.current["cashRevenue"]);
+                    $("input[id='cashDelivery']").val(transportView.current["cashDelivery"]);
+                    $("select[id='cashReceive']").val(transportView.current["cashReceive"]);
+                    $("input[id='receiver']").val(transportView.current["receiver"]);
+                    $("input[id='receiveDate']").val(transportView.current["receiveDate"]);
+                    $("input[id='receivePlace']").val(transportView.current["receivePlace"]);
+                    $("input[id='deliveryPlace']").val(transportView.current["deliveryPlace"]);
+                    $("input[id='voucherNumber']").val(transportView.current["voucherNumber"]);
+                    $("input[id='voucherQuantumProduct']").val(transportView.current["voucherQuantumProduct"]);
+                    $("input[id='note']").val(transportView.current["note"]);
+                    $("input[id='status']").val(transportView.current["status"]);
+                    $("input[id='cost']").val(transportView.current["cost"]);
+                    $("input[id='costs_note']").val(transportView.current["costs_note"]);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (transportView.action == 'add') {
                         transportView.current = {
-                            vehicle_id: $("input[id=vehicle_id]").attr("data-vehicleId"),
-                            customer_id: $("input[id=customer_id]").attr("data-customerId"),
-                            product_id: $("input[id=product_id]").attr("data-productId"),
+                            vehicle_id: $("#vehicle_id").attr("data-vehicleId"),
+                            customer_id: $("#customer_id").attr("data-customerId"),
+                            product_id: $("#product_id").attr("data-productId"),
                             quantumProduct: $("input[id='quantumProduct']").val(),
                             weight: $("input[id='weight']").val(),
                             cashRevenue: $("input[id='cashRevenue']").val(),
@@ -801,12 +850,12 @@
                             status: $("input[id='status']").val(),
                             cost: $("input[id='cost']").val(),
                             costs_note: $("input[id='costs_note']").val(),
-                            voucher_transport: []
+                            voucher_transport: transportView.arrayVoucher
                         };
                     } else if (transportView.action == 'update') {
-                        transportView.current.vehicle_id = $("input[id=vehicle_id]").attr("data-vehicleId"),
-                        transportView.current.customer_id = $("input[id=customer_id]").attr("data-customerId"),
-                        transportView.current.product_id = $("input[id=product_id]").attr("data-productId"),
+                        transportView.current.vehicle_id = $("#vehicle_id").attr("data-vehicleId"),
+                        transportView.current.customer_id = $("#customer_id").attr("data-customerId"),
+                        transportView.current.product_id = $("#product_id").attr("data-productId"),
                         transportView.current.quantumProduct = $("input[id='quantumProduct']").val(),
                         transportView.current.weight = $("input[id='weight']").val(),
                         transportView.current.cashRevenue = $("input[id='cashRevenue']").val(),
@@ -822,7 +871,7 @@
                         transportView.current.status = $("input[id='status']").val(),
                         transportView.current.cost = $("input[id='cost']").val(),
                         transportView.current.costs_note = $("input[id='costs_note']").val(),
-                        transportView.current.voucher_transport = []
+                        transportView.current.voucher_transport = transportView.arrayVoucher
                     }
                 },
 
@@ -831,6 +880,13 @@
                     transportView.current = _.clone(_.find(transportView.tableTransport, function (o) {
                         return o.id == id;
                     }), true);
+
+                    var arrayVoucherTransport = _.clone(_.filter(transportView.tableVoucherTransport, function(o){
+                        return o.transport_id == id;
+                    }), true);
+
+                    transportView.arrayVoucher = _.map(arrayVoucherTransport, 'voucher_id');
+
                     transportView.fillCurrentObjectToForm();
                     transportView.action = 'update';
                     transportView.showControl();
@@ -969,23 +1025,18 @@
 
         $("#table-vehicle").find("tbody").on('click', 'tr', function () {
             $('#vehicle_id').attr('data-vehicleId', $(this).find('td:first')[0].innerText);
-            $('#vehicle_id').val($(this).find('td:eq(1)')[0].innerText);
+            $('input[id=vehicle_id]').val($(this).find('td:eq(1)')[0].innerText);
             transportView.displayModal("hide", "#modal-vehicle");
         });
         $("#table-customer").find("tbody").on('click', 'tr', function () {
             $('#customer_id').attr('data-customerId', $(this).find('td:first')[0].innerText);
-            $('#customer_id').val($(this).find('td:eq(1)')[0].innerText);
+            $('input[id=customer_id]').val($(this).find('td:eq(1)')[0].innerText);
             transportView.displayModal("hide", "#modal-customer");
         });
         $("#table-product").find("tbody").on('click', 'tr', function () {
             $('#product_id').attr('data-productId', $(this).find('td:first')[0].innerText);
-            $('#product_id').val($(this).find('td:eq(1)')[0].innerText);
+            $('input[id=product_id]').val($(this).find('td:eq(1)')[0].innerText);
             transportView.displayModal("hide", "#modal-product");
         });
-//        $("#table-voucher").find("tbody").on('click', 'tr', function () {
-//            $('#voucher_id').attr('data-productId', $(this).find('td:first')[0].innerText);
-//            $('#voucher_id').val($(this).find('td:eq(1)')[0].innerText);
-//            transportView.displayModal("hide", "#modal-voucher");
-//        });
     });
 </script>

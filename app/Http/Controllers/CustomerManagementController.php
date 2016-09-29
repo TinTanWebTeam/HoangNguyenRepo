@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Customer;
 use App\CustomerType;
 use App\Voucher;
+use App\VoucherTransport;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -249,9 +250,12 @@ class CustomerManagementController extends Controller
             ->select('transports.*', 'products.name as products_name', 'customers.fullName as customers_fullName', 'vehicles.areaCode as vehicles_areaCode','vehicles.vehicleNumber as vehicles_vehicleNumber')
             ->get();
 
+        $voucherTransports = VoucherTransport::all();
+
         $response = [
             'msg' => 'Get list all Transport',
-            'transports' => $transports
+            'transports' => $transports,
+            'voucherTransports' => $voucherTransports
         ];
 
         return response()->json($response, 200);
