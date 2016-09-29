@@ -15,9 +15,9 @@ class CreateCostsTable extends Migration
         Schema::create('costs', function (Blueprint $table) {
             $table->increments('id');
             $table->decimal('cost',18,0);
-            $table->float('literNumber');
-            $table->dateTime('dayNumber');
-            $table->dateTime('daytime');
+            $table->float('literNumber')->nullable();
+            $table->dateTime('dayNumber')->nullable();
+            $table->dateTime('daytime')->nullable();
             $table->integer('createdBy');
             $table->integer('updatedBy');
             $table->text('note');

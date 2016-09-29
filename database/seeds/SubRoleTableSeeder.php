@@ -92,10 +92,5 @@ class SubRoleTableSeeder extends Seeder
             'created_by' => 1,
             'updated_by' => 1
         ]);
-
-        //ntbich
-        //nvhai
-        //nvnam
-        //nvvu
     }
 }

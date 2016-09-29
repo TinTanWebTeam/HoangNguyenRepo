@@ -11,38 +11,6 @@ class InvoiceTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Invoice::create([
-            'VAT' => '5',
-            'notVAT' => '1000000',
-            'hasVAT' => '1500000',
-            'exportDay' => '15072016',
-            'invoiceDay' => '15072016',
-            'payDay' => '20072016',
-            'createdBy' => '1',
-            'updatedBy' => '1',
-            'note' => ''
-        ]);
-        \App\Invoice::create([
-            'VAT' => '10',
-            'notVAT' => '1000000',
-            'hasVAT' => '2000000',
-            'exportDay' => '15072016',
-            'invoiceDay' => '15072016',
-            'payDay' => '20072016',
-            'createdBy' => '1',
-            'updatedBy' => '1',
-            'note' => ''
-        ]);
-        \App\Invoice::create([
-            'VAT' => '7',
-            'notVAT' => '1000000',
-            'hasVAT' => '1700000',
-            'exportDay' => '15072016',
-            'invoiceDay' => '15072016',
-            'payDay' => '20072016',
-            'createdBy' => '1',
-            'updatedBy' => '1',
-            'note' => ''
-        ]);
+
     }
 }
