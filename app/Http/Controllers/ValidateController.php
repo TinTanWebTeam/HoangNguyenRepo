@@ -144,5 +144,18 @@ class ValidateController extends Controller
 
         return Validator::make($data, $rules, $messages);
     }
+    public static function ValidateCost(array $data)
+    {
+        $rules = [
+            'vehicle_id' => 'required',
+            'liter'   => 'required'
+        ];
+        $messages = [
+            'vehicle_id.required' => 'Trường xe bắt buộc nhập',
+            'liter.required'   => 'Trường lít bắt buộc nhập'
+        ];
+        return Validator::make($data, $rules, $messages);
+    }
+
 
 }
