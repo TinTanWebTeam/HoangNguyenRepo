@@ -25,9 +25,9 @@ class CostManagementController extends Controller
     {
         $tableCostPrice = CostPrice::all();
         $tableVehicle = DB::table('vehicles')
-            ->join('vehicletypes', 'vehicles.vehicleType_id', '=', 'vehicletypes.id')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->where('vehicles.active', 1)
-            ->select('vehicles.*', 'vehicletypes.name as vehicletype')
+            ->select('vehicles.*', 'vehicleTypes.name as vehicleType')
             ->get();
         $tablePrice = DB::table('prices')
             ->select('price')
@@ -36,13 +36,13 @@ class CostManagementController extends Controller
             ->first();
         $tableCost = \DB::table('costs')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-            ->join('costprices', 'costs.price_id', '=', 'costprices.id')
+            ->join('costPrices', 'costs.price_id', '=', 'costPrices.id')
             ->join('prices', 'prices.id', '=', 'costs.price_id')
             ->where('costs.active', 1)
             ->select(
                 'prices.price as prices_price',
-                'costprices.name',
-                'costprices.name as costprice_name ',
+                'costPrices.name',
+                'costPrices.name as costPrice_name ',
                 'costs.*',
                 'costs.note as noteCost',
                 'costs.cost as totalCost',
@@ -95,22 +95,23 @@ class CostManagementController extends Controller
                 $fuelCostsNew = new Cost();
                 $fuelCostsNew->cost = $totalCost;
                 $fuelCostsNew->literNumber = $literNumber;
-                $fuelCostsNew->daytime = $datetime;
+                $fuelCostsNew->dateRefuel = $datetime;
                 $fuelCostsNew->createdBy = Auth::user()->id;
+                $fuelCostsNew->updatedBy = Auth::user()->id;
                 $fuelCostsNew->note = $note;
                 $fuelCostsNew->vehicle_id = $vehicle;
                 $fuelCostsNew->price_id = 1;
                 if ($fuelCostsNew->save()) {
                     $costs = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-                        ->join('costprices', 'costs.price_id', '=', 'costprices.id')
-                        ->join('prices', 'costprices.id', '=', 'prices.costPrice_id')
+                        ->join('costPrices', 'costs.price_id', '=', 'costPrices.id')
+                        ->join('prices', 'costPrices.id', '=', 'prices.costPrice_id')
                         ->where('costs.active', 1)
                         ->where('costs.id', $fuelCostsNew->id)
                         ->select(
                             'prices.price as prices_price ',
-                            'costprices.name',
-                            'costprices.name as costprice_name ',
+                            'costPrices.name',
+                            'costPrices.name as costPrice_name ',
                             'costs.*', 'costs.note as noteCost',
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
@@ -139,14 +140,14 @@ class CostManagementController extends Controller
                 if ($fuelCostsUpdate->update()) {
                     $tableCost = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-                        ->join('costprices', 'costs.price_id', '=', 'costprices.id')
-                        ->join('prices', 'costprices.id', '=', 'prices.costPrice_id')
+                        ->join('costPrices', 'costs.price_id', '=', 'costPrices.id')
+                        ->join('prices', 'costPrices.id', '=', 'prices.costPrice_id')
                         ->where('costs.active', 1)
                         ->where('costs.id', $request->get('_object')['id'])
                         ->select(
                             'prices.price as prices_price ',
-                            'costprices.name',
-                            'costprices.name as costprice_name ',
+                            'costPrices.name',
+                            'costPrices.name as costPrice_name ',
                             'costs.*', 'costs.note as noteCost',
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
