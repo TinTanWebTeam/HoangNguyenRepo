@@ -148,7 +148,7 @@
                                             <div class="col-sm-10 col-xs-10">
                                                 <input type="text" class="form-control"
                                                        id="price" readonly
-                                                       name="price"
+                                                       name="price" data-id=""
                                                 >
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
@@ -260,7 +260,7 @@
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
-                                    <input type="number" class="form-control"
+                                    <input type="number"  class="form-control"
                                            id="costPrice"
                                            name="costPrice">
                                 </div>
@@ -310,7 +310,6 @@
                 action: null,
                 tablePrice: null,
                 tableCost: null,
-                tableCostPrice: null,
                 tableVehicle: null,
                 idDelete: null,
                 current: null,
@@ -365,8 +364,7 @@
                             fuelCostView.tablePrice = data['tablePrice'];
                             fuelCostView.inputPrice(data['tablePrice']);
 
-//                            fuelCostView.tableCostPrice = data['tableCostPrice'];
-//                            fuelCostView.loadSelectBoxPrice(data['tableCostPrice']);
+//
 
 
                         } else {
@@ -627,6 +625,7 @@
                                 fuelCostView.tableVehicle.destroy();
                             }
                             fuelCostView.tableVehicle = $('#table-vehicles').DataTable({
+
                                 language: languageOptions,
                                 data: data['tableVehicle'],
                                 columns: [
@@ -635,8 +634,7 @@
                                     {data: 'vehicleNumber'},
                                     {data: 'size'},
                                     {data: 'weight'},
-                                    {data: 'vehicletype'}
-
+                                    {data: 'vehicleType'}
                                 ]
                             })
                         } else {
@@ -652,7 +650,6 @@
 
                 savePriceType: function () {
                     fuelCostView.ValidateCostPrice();
-
                         var priceType = {
                             price: $("input[id='costPrice']").val(),
                             note: $("textarea[id='description']").val()

@@ -32,13 +32,14 @@ class CostManagementController extends Controller
         $tablePrice = DB::table('prices')
             ->select('price')
             ->orderBy('prices.id', 'desc')
-            ->where('costPrice_id', 1)
+            ->where('costPrice_id', 2)
             ->first();
         $tableCost = \DB::table('costs')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
             ->join('costPrices', 'costs.price_id', '=', 'costPrices.id')
             ->join('prices', 'prices.id', '=', 'costs.price_id')
             ->where('costs.active', 1)
+            ->where('costPrices.id', 2)
             ->select(
                 'prices.price as prices_price',
                 'costPrices.name',
@@ -100,7 +101,7 @@ class CostManagementController extends Controller
                 $fuelCostsNew->updatedBy = Auth::user()->id;
                 $fuelCostsNew->note = $note;
                 $fuelCostsNew->vehicle_id = $vehicle;
-                $fuelCostsNew->price_id = 1;
+//                $fuelCostsNew->price_id = 1;
                 if ($fuelCostsNew->save()) {
                     $costs = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
@@ -134,7 +135,7 @@ class CostManagementController extends Controller
                 $fuelCostsUpdate->daytime = $datetime;
                 $fuelCostsUpdate->note = $note;
                 $fuelCostsUpdate->vehicle_id = $vehicle;
-                $fuelCostsUpdate->price_id = 1;
+//                $fuelCostsUpdate->price_id = 1;
                 $fuelCostsUpdate->updatedBy = Auth::user()->id;
 
                 if ($fuelCostsUpdate->update()) {
@@ -192,7 +193,7 @@ class CostManagementController extends Controller
             case "addFuelCost":
                 $pricesNew = new Price();
                 $pricesNew->price = $price;
-                $pricesNew->costPrice_id = 1;
+                $pricesNew->costPrice_id = 2;
                 $pricesNew->createdBy = Auth::user()->id;
                 if ($pricesNew->save()) {
                     $response = [
