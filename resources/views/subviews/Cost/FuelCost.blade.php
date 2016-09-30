@@ -593,9 +593,8 @@
                                         fuelCostView.hide();
                                         break;
                                     case 'delete':
-
                                         var costOld = _.find(fuelCostView.tableCost, function (o) {
-                                            return o.id == sendToServer._id;
+                                            return o.id == sendToServer._object.id;
                                         });
                                         var indexOfcostOld = _.indexOf(fuelCostView.tableCost, costOld);
                                         fuelCostView.tableCost.splice(indexOfcostOld, 1);
