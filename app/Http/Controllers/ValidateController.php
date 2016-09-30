@@ -148,11 +148,11 @@ class ValidateController extends Controller
     {
         $rules = [
             'vehicle_id' => 'required',
-            'liter'   => 'required'
+            'literNumber'   => 'required'
         ];
         $messages = [
             'vehicle_id.required' => 'Trường xe bắt buộc nhập',
-            'liter.required'   => 'Trường lít bắt buộc nhập'
+            'literNumber.required'   => 'Trường lít bắt buộc nhập'
         ];
         return Validator::make($data, $rules, $messages);
     }

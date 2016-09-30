@@ -21,36 +21,44 @@ class CostManagementController extends Controller
         return view('subviews.Cost.FuelCost');
     }
 
-    public function getDataFuelCost()
+    public function getDataVehicle()
     {
-        $tableCostPrice = CostPrice::all();
         $tableVehicle = DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->where('vehicles.active', 1)
             ->select('vehicles.*', 'vehicleTypes.name as vehicleType')
             ->get();
+        $response = [
+            'tableVehicle' => $tableVehicle
+        ];
+        return response()->json($response, 200);
+
+
+    }
+
+    public function getDataFuelCost()
+    {
+        $tableCostPrice = CostPrice::all();
+
         $tablePrice = DB::table('prices')
-            ->select('price')
-            ->orderBy('prices.id', 'desc')
+            ->select('prices.id', 'prices.price')
+            ->orderBy('prices.created_at', 'desc')
             ->where('costPrice_id', 2)
             ->first();
         $tableCost = \DB::table('costs')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-            ->join('costPrices', 'costs.price_id', '=', 'costPrices.id')
             ->join('prices', 'prices.id', '=', 'costs.price_id')
+            ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
             ->where('costs.active', 1)
-            ->where('costPrices.id', 2)
+            ->where('prices.costPrice_id', 2)
             ->select(
                 'prices.price as prices_price',
-                'costPrices.name',
-                'costPrices.name as costPrice_name ',
                 'costs.*',
                 'costs.note as noteCost',
                 'costs.cost as totalCost',
                 'vehicles.areaCode as vehicles_code',
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'vehicles.note as vehicleNote')
-            ->orderBy('costs.id', 'desc')
             ->get();
 
         $response = [
@@ -58,10 +66,9 @@ class CostManagementController extends Controller
             'tableCost'      => $tableCost,
             'tablePrice'     => $tablePrice,
             'tableCostPrice' => $tableCostPrice,
-            'tableVehicle'   => $tableVehicle
+
         ];
         return response()->json($response, 200);
-
 
     }
 
@@ -79,15 +86,18 @@ class CostManagementController extends Controller
         if ($action != 'delete') {
             $validator = ValidateController::ValidateCost($request->input('_object'));
             if ($validator->fails()) {
-                return response()->json(['msg' => 'Input data fail'], 404);
+                return $validator->errors();
+//                return response()->json(['msg' => 'Input data fail'], 404);
             }
 
             $prices_price = $request->get('_object')['prices_price'];
+            $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
             $totalCost = $literNumber * $prices_price;
             $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
-            $note = $request->get('_object')['note'];
+            $noted = $request->get('_object')['noted'];
+           
         }
 
 
@@ -99,29 +109,29 @@ class CostManagementController extends Controller
                 $fuelCostsNew->dateRefuel = $datetime;
                 $fuelCostsNew->createdBy = Auth::user()->id;
                 $fuelCostsNew->updatedBy = Auth::user()->id;
-                $fuelCostsNew->note = $note;
+                $fuelCostsNew->note = $noted;
+                $fuelCostsNew->price_id = $prices_id;
                 $fuelCostsNew->vehicle_id = $vehicle;
-//                $fuelCostsNew->price_id = 1;
+
                 if ($fuelCostsNew->save()) {
                     $costs = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-                        ->join('costPrices', 'costs.price_id', '=', 'costPrices.id')
-                        ->join('prices', 'costPrices.id', '=', 'prices.costPrice_id')
+                        ->join('prices', 'prices.id', '=', 'costs.price_id')
+                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
                         ->where('costs.active', 1)
                         ->where('costs.id', $fuelCostsNew->id)
+                        ->where('prices.costPrice_id', 2)
                         ->select(
-                            'prices.price as prices_price ',
-                            'costPrices.name',
-                            'costPrices.name as costPrice_name ',
-                            'costs.*', 'costs.note as noteCost',
+                            'prices.price as prices_price',
+                            'costs.*',
+                            'costs.note as noteCost ',
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                            'vehicles.note as vehicleNote')
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber')
                         ->get();
 
                     $response = [
-                        'msg'   => 'Created vehicle',
+                        'msg'       => 'Created vehicle',
                         'tableCost' => $costs
                     ];
                     return response()->json($response, 201);
@@ -129,27 +139,29 @@ class CostManagementController extends Controller
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case "update":
+                
                 $fuelCostsUpdate = Cost::findOrFail($request->get('_object')['id']);
                 $fuelCostsUpdate->literNumber = $literNumber;
                 $fuelCostsUpdate->cost = $totalCost;
-                $fuelCostsUpdate->daytime = $datetime;
-                $fuelCostsUpdate->note = $note;
+                $fuelCostsUpdate->dateRefuel = $datetime;
+                $fuelCostsUpdate->note = $noted;
                 $fuelCostsUpdate->vehicle_id = $vehicle;
-//                $fuelCostsUpdate->price_id = 1;
+                $fuelCostsUpdate->price_id = $prices_id;
                 $fuelCostsUpdate->updatedBy = Auth::user()->id;
 
                 if ($fuelCostsUpdate->update()) {
+
                     $tableCost = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-                        ->join('costPrices', 'costs.price_id', '=', 'costPrices.id')
-                        ->join('prices', 'costPrices.id', '=', 'prices.costPrice_id')
+                        ->join('prices', 'prices.id', '=', 'costs.price_id')
+                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
                         ->where('costs.active', 1)
                         ->where('costs.id', $request->get('_object')['id'])
+                        ->where('prices.costPrice_id', 2)
                         ->select(
-                            'prices.price as prices_price ',
-                            'costPrices.name',
-                            'costPrices.name as costPrice_name ',
-                            'costs.*', 'costs.note as noteCost',
+                            'prices.price as prices_price',
+                            'costs.*',
+                            'costs.note as noteCost',
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
                             'vehicles.vehicleNumber as vehicles_vehicleNumber',
@@ -204,6 +216,8 @@ class CostManagementController extends Controller
                 }
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
+
+
             case "update":
                 $fuelCostsUpdate = Cost::findOrFail($request->get('_object')['id']);
                 $fuelCostsUpdate->literNumber = $liter;

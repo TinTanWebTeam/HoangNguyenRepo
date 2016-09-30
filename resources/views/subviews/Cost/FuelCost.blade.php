@@ -64,9 +64,9 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
+                            <th>Stt</th>
                             <th>Số xe</th>
                             <th>Thời gian đổ</th>
-                            <th>Loại phí</th>
                             <th>Số lít</th>
                             <th>Đơn giá</th>
                             <th>Tổng chi phí</th>
@@ -120,7 +120,8 @@
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker'>
                                             <label for="datetime"><b>Thời gian đổ nhiên liệu</b></label>
-                                            <input type='text' id="datetime" name="datetime" class="form-control"/>
+                                            <input type='text' id="datetime" name="datetime"
+                                                   value="{{date('d-m-Y H-i')}}" class="form-control"/>
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
@@ -138,6 +139,7 @@
                                         <input type="number" class="form-control"
                                                id="literNumber"
                                                name="literNumber"
+                                               onkeyup="fuelCostView.totalPrice()"
                                                placeholder="Số lít">
                                     </div>
                                 </div>
@@ -148,7 +150,7 @@
                                             <div class="col-sm-10 col-xs-10">
                                                 <input type="text" class="form-control"
                                                        id="price" readonly
-                                                       name="price" data-id=""
+                                                       name="price" data-priceId=""
                                                 >
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
@@ -260,7 +262,7 @@
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
-                                    <input type="number"  class="form-control"
+                                    <input type="number" class="form-control"
                                            id="costPrice"
                                            name="costPrice">
                                 </div>
@@ -309,6 +311,7 @@
                 data: null,
                 action: null,
                 tablePrice: null,
+                tableNewPrice: null,
                 tableCost: null,
                 tableVehicle: null,
                 idDelete: null,
@@ -316,6 +319,13 @@
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
+
+                },
+                totalPrice: function () {
+                    var lit = $("input[id=literNumber]").val();
+                    var price = $("input[id=price]").val();
+                    var totalPrice = lit * price;
+                    $("input[id=totalprice]").val(totalPrice);
 
                 },
                 hide: function () {
@@ -356,16 +366,12 @@
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
-
                         if (jqXHR.status == 200) {
                             fuelCostView.tableCost = data['tableCost'];
                             fuelCostView.fillDataToDatatable(data['tableCost']);
-
                             fuelCostView.tablePrice = data['tablePrice'];
                             fuelCostView.inputPrice(data['tablePrice']);
-
-//
-
+                            fuelCostView.tableVehicle = data['tableVehicle'];
 
                         } else {
                             fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -392,7 +398,10 @@
                         "hideMethod": "fadeOut"
                     };
                 },
-
+                inputPrice: function () {
+                    $("input[id='price']").val(fuelCostView.tablePrice.price);
+                    $("#price").attr('data-priceId', fuelCostView.tablePrice.id);
+                },
                 cancel: function () {
                     if (fuelCostView.action == 'add') {
                         fuelCostView.clearInput();
@@ -419,15 +428,22 @@
                     $("#modalConfirm").modal('hide');
                 },
                 fillCurrentObjectToForm: function () {
+                    var day = fuelCostView.current["dateRefuel"].substr(8, 2);
+                    var month = fuelCostView.current["dateRefuel"].substr(5, 2);
+                    var year = fuelCostView.current["dateRefuel"].substr(0, 4);
+                    var hourMinus = fuelCostView.current["dateRefuel"].substr(11, 5);
+                    $("input[id='datetime']").val(day + "/" + month + "/" + year + " " + hourMinus);
                     var vehicle = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
                     var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
-                    $("input[id='datetime']").val(fuelCostView.current["dateRefuel"]);
                     $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
-                    $("input[id='price']").val(fuelCostView.current["prices_price"]);
                     $("input[id='totalprice']").val(totalPrice);
-                    $("input[id='noted']").val(fuelCostView.current["costprice_name"]);
+                    $("input[id='noted']").val(fuelCostView.current["note"]);
+                    $("input[id='price']").val(fuelCostView.current["prices_price"]);
+                    $("#price").attr('data-priceId', fuelCostView.current["price_id"]);
+
+
 
                 },
                 fillFormDataToCurrentObject: function () {
@@ -435,13 +451,15 @@
                         fuelCostView.current = {
                             vehicle_id: $("#vehicle_id").attr('data-id'),
                             datetime: $("input[id='datetime']").val(),
-                            totalprice: $("input[id='totalprice']").val(),
+                            totalPrice: $("input[id='totalprice']").val(),
                             literNumber: $("input[id='literNumber']").val(),
                             prices_price: $("input[id='price']").val(),
-                            note: $("input[id='noted']").val()
+                            prices_id: $("#price").attr('data-priceId'),
+                            noted: $("input[id='noted']").val()
                         };
                     } else if (fuelCostView.action == 'update') {
                         fuelCostView.current.prices_price = $("input[id='price']").val();
+                        fuelCostView.current.prices_id = $("#price").attr('data-priceId');
                         fuelCostView.current.literNumber = $("input[id='literNumber']").val();
                         fuelCostView.current.totalCost = $("input[id='totalprice']").val();
                         fuelCostView.current.datetime = $("input[id='datetime']").val();
@@ -454,18 +472,16 @@
 
                 },
                 clearInput: function () {
+                    if (fuelCostView.action = 'add') {
+                        $("input[id='literNumber']").val('');
+                        $("input[id='totalprice']").val('');
+                        $("input[id='noted']").val('');
+                        $("input[id='costPrice']").val('');
+                    }
                     $("input[id='vehicle_id']").val('');
-                    $("input[id='literNumber']").val('');
-                    $("input[id='totalprice']").val('');
-                    $("input[id='noted']").val('');
-                    $("input[id='datetime']").val('');
-                    $("input[id='price']").val('');
-                    $("input[id='costPrice']").val('');
-//                    fuelCostView.current = null;
+
                 },
-                inputPrice: function () {
-                    $("input[id='price']").val(fuelCostView.tablePrice['price']);
-                },
+
                 addNewFuelCost: function () {
                     fuelCostView.current = null;
                     fuelCostView.action = 'add';
@@ -490,6 +506,7 @@
                         language: languageOptions,
                         data: data,
                         columns: [
+                            {data: 'id'},
                             {data: 'fullNumber'},
                             {
                                 data: 'dateRefuel',
@@ -497,7 +514,7 @@
                                     return moment(data).format("DD/MM/YYYY HH:mm:ss");
                                 }
                             },
-                            {data: 'costPrice_name'},
+
                             {data: 'literNumber'},
                             {data: 'prices_price'},
                             {data: 'totalCost'},
@@ -518,7 +535,8 @@
                                     return tr;
                                 }
                             }
-                        ]
+                        ],
+                        order: [[0, "desc"]],
                     })
                 },
                 ValidateCost: function () {
@@ -529,7 +547,8 @@
                         },
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
-                            literNumber: "Vui lòng nhập số lít"
+                            literNumber: "Vui lòng nhập số lít",
+
                         }
                     });
                 },
@@ -572,15 +591,17 @@
                             dataType: "json",
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
-
                             if (jqXHR.status == 201) {
+
                                 switch (fuelCostView.action) {
                                     case 'add':
                                         data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
                                         fuelCostView.tableCost.push(data['tableCost'][0]);
                                         fuelCostView.showNotification("success", "Thêm thành công!");
+                                        $("#price").attr('data-priceId', fuelCostView.current["prices_id"]);
                                         break;
                                     case 'update':
+
                                         data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
                                         var CostOld = _.find(fuelCostView.tableCost, function (o) {
                                             return o.id == sendToServer._object.id;
@@ -614,9 +635,10 @@
                         $("form#fromFuelCost").find("label[class=error]").css("color", "red");
                     }
                 },
+
                 loadListVehicles: function () {
                     $.ajax({
-                        url: url + 'fuel-cost/fuelCost',
+                        url: url + 'fuel-cost/getVehicle',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
@@ -625,7 +647,6 @@
                                 fuelCostView.tableVehicle.destroy();
                             }
                             fuelCostView.tableVehicle = $('#table-vehicles').DataTable({
-
                                 language: languageOptions,
                                 data: data['tableVehicle'],
                                 columns: [
@@ -643,22 +664,21 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
                     fuelCostView.displayModal("show", "#modal-searchVehicle")
                 },
 
 
                 savePriceType: function () {
                     fuelCostView.ValidateCostPrice();
-                        var priceType = {
-                            price: $("input[id='costPrice']").val(),
-                            note: $("textarea[id='description']").val()
-                        };
-                        var sendToServer = {
-                            _token: _token,
-                            _action: 'addFuelCost',
-                            _PriceType: priceType
-                        };
+                    var priceType = {
+                        price: $("input[id='costPrice']").val(),
+                        note: $("textarea[id='description']").val()
+                    };
+                    var sendToServer = {
+                        _token: _token,
+                        _action: 'addFuelCost',
+                        _PriceType: priceType
+                    };
                     if ($("#fromCostPrice").valid()) {
                         $.ajax({
                             url: url + 'fuel-price-type/modify',
@@ -669,8 +689,12 @@
                             if (jqXHR.status == 201) {
                                 fuelCostView.showNotification("success", "Thêm thành công!");
                                 fuelCostView.displayModal("hide", "#modal-addCostPrice");
-                                fuelCostView.clearInput();
-                                $("input[id='price']").val(data["prices"]["price"]);
+                                if (fuelCostView.action == 'add') {
+                                    fuelCostView.clearInput();
+                                }
+                                fuelCostView.tablePrice = data['prices'];
+                                $("input[id='literNumber']").val('');
+                                fuelCostView.inputPrice();
 
                             } else {
                                 fuelCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
