@@ -1,8 +1,8 @@
 <style>
-    #frmControl {
+    #divControl {
         z-index: 3;
         position: fixed;
-        top: 50%;
+        top: 45%;
         display: none;
         right: 0;
         width: 40%;
@@ -13,8 +13,21 @@
         height: 40px;
     }
 
+    @media (max-height: 500px) {
+        #divControl {
+            top: 53px;
+            overflow: auto;
+            height: 80vh;
+        }
+    }
+
+    #boxShadow {
+        -webkit-box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
+        box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
+    }
 </style>
-<div class="modal fade" id="modalConfirm" tabindex="-1"  aria-hidden="true" style="display: none;">
+<div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body" id="modalContent"></div>
@@ -75,60 +88,63 @@
 <!-- end View list -->
 
 
-<!-- Start #frmControl -->
-<div id="frmControl" class="col-md-offset-4 col-md-8">
-    <div class="panel panel-primary">
-        <div class="panel-heading">Thêm mới chức vụ
-            <div class="menu-toggles pull-right" onclick="PositionView.hide()">
-                <i class="glyphicon glyphicon-remove"></i>
-            </div>
-        </div>
-        <div class="panel-body portlet-body">
-            <form role="form" id="formPosition">
-                <div class="form-body">
-                    <div class="form-group form-md-line-input">
-                        <input type="hidden" class="form-control" id="id" value="">
-                    </div>
-                    <div class="col-md-12 ">
-                        <div class="row ">
-                            <div class="col-md-12">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="name"><b>Chức vụ</b></label>
-                                    <input type="text" class="form-control"
-                                           id="name"
-                                           name="name"
-                                           placeholder="Chức vụ">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="description"><b>Mô tả</b></label>
-                                    <input type="text" class="form-control"
-                                           id="description"
-                                           placeholder="Mô tả">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-actions noborder">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="PositionView.save()">
-                                    Hoàn tất
-                                </button>
-                                <button type="button" class="btn default" onclick="PositionView.cancel()">Hủy</button>
-                            </div>
-                        </div>
-                    </div>
+<!-- Start #divControl -->
+<div class="row">
+    <div id="divControl" class="col-md-offset-4 col-md-8">
+        <div class="panel panel-primary" id="boxShadow">
+            <div class="panel-heading">Thêm mới chức vụ
+                <div class="menu-toggles pull-right" onclick="PositionView.hide()">
+                    <i class="glyphicon glyphicon-remove"></i>
                 </div>
-            </form>
+            </div>
+            <div class="panel-body portlet-body">
+                <form role="form" id="formPosition">
+                    <div class="form-body">
+                        <div class="form-group form-md-line-input">
+                            <input type="hidden" class="form-control" id="id" value="">
+                        </div>
+                        <div class="col-md-12 ">
+                            <div class="row ">
+                                <div class="col-md-12">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="name"><b>Chức vụ</b></label>
+                                        <input type="text" class="form-control"
+                                               id="name"
+                                               name="name"
+                                               placeholder="Chức vụ">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="description"><b>Mô tả</b></label>
+                                        <input type="text" class="form-control"
+                                               id="description"
+                                               placeholder="Mô tả">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="PositionView.save()">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="PositionView.cancel()">Hủy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-<!-- end #frmControl -->
+<!-- end #divControl -->
 
 
 <script>
@@ -141,13 +157,12 @@
                 idDelete: null,
                 current: null,
                 show: function () {
-                    $('.menu-toggle').hide();
-                    $('#frmControl').slideDown();
+                    $('.menu-toggle').fadeOut();
+                    $('#divControl').fadeIn(300);
                 },
                 hide: function () {
-                    $('#frmControl').slideUp('', function () {
-                        $('.menu-toggle').show();
-                        PositionView.clearInput();
+                    $('#divControl').fadeOut(300, function () {
+                        $('.menu-toggle').fadeIn();
                     });
                     var myForm = document.getElementById("formPosition");
                     PositionView.clearValidation(myForm);
@@ -282,15 +297,15 @@
                     PositionView.save();
                     $("#modalConfirm").modal('hide');
                 },
-                displayModal: function(type, idModal){
+                displayModal: function (type, idModal) {
                     $(idModal).modal(type);
-                    if(PositionView.action == 'delete' && type == 'hide'){
+                    if (PositionView.action == 'delete' && type == 'hide') {
                         PositionView.action = null;
                         PositionView.idDelete = null;
                     }
                 },
-                showNotification: function (type ,msg) {
-                    switch (type){
+                showNotification: function (type, msg) {
+                    switch (type) {
                         case "info":
                             toastr.info(msg);
                             break;

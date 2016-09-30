@@ -17,7 +17,7 @@ class CreatePricesTable extends Migration
             $table->decimal('price',18,0);
             $table->integer('createdBy');
             $table->integer('updatedBy');
-            $table->integer('note');
+            $table->string('note');
             $table->boolean('active')->default(1);
             $table->integer('costPrice_id');
             $table->timestamps();

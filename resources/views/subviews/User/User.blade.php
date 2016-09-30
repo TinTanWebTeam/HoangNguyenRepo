@@ -1,5 +1,5 @@
 <style>
-    #frmControl {
+    #divControl {
         z-index: 3;
         position: fixed;
         top: 10%;
@@ -12,7 +12,13 @@
     div.col-lg-12 {
         height: 40px;
     }
-
+    @media (max-height: 500px) {
+        #divControl {
+            top: 53px;
+            overflow: auto;
+            height: 80vh;
+        }
+    }
 </style>
 <div class="modal fade" id="modalConfirm" tabindex="-1" role="" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
@@ -78,159 +84,163 @@
 </div>
 
 
-<div id="frmControl" type="show" class="col-md-offset-4 col-md-8">
-    <div class="panel panel-primary">
-        <div class="panel-heading">Đăng ký người dùng
-            <div class="menu-toggles pull-right" onclick="userView.hide()">
-                <i class="glyphicon glyphicon-remove"></i>
+<div class="row">
+    <div id="divControl" class="col-md-offset-4 col-md-8">
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">Đăng ký người dùng
+                <div class="menu-toggles pull-right" onclick="userView.hide()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
             </div>
-        </div>
-        <div class="panel-body">
-            <form role="form" id="formUser">
-                <div class="form-body">
-                    <div class="form-group form-md-line-input">
-                        <input type="hidden" class="form-control" id="id" value="">
-                    </div>
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="fullname"><b>Họ và tên</b></label>
-                                    <input type="text" class="form-control"
-                                           id="fullname"
-                                           name="fullname"
-                                           placeholder="Nhập họ tên"
-                                           autofocus>
-                                </div>
-                            </div>
-                            <div class="col-md-4 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="username"><b>Tên đăng nhập</b></label>
-                                    <input type="text" class="form-control"
-                                           id="username"
-                                           name="username"
-                                           placeholder="Tên đăng nhập">
-                                    <label id="username" style="display: none; color: red">Tài khoản đã tồn tại</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input">
-                                    <label for="email"><b>Email</b></label>
-                                    <input type="text" class="form-control"
-                                           id="email"
-                                           name="email"
-
-                                           placeholder="email@example.com">
-                                    <label id="email" style="display: none; color: red">Email đã tồn tại</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input">
-                                    <label for="password"><b>Mật khẩu</b></label>
-                                    <input type="password" class="form-control"
-                                           id="password"
-                                           name="password"
-                                           maxlength="20"
-                                           minlength="3"
-                                           placeholder="password">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="passwordconfirm"><b>Nhập lại mật khẩu</b></label>
-                                    <input type="Password" class="form-control"
-                                           id="passwordconfirm"
-                                           name="passwordconfirm"
-                                           maxlength="20"
-                                           minlength="3"
-                                           placeholder="Nhập lại mật khẩu">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input">
-                                    <label for="phone"><b>Số điện thoại</b></label>
-                                    <input type="text" class="form-control"
-                                           id="phone"
-                                           name="phone"
-                                           placeholder="090">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input">
-                                    <label for="address"><b>Địa chỉ</b></label>
-                                    <input type="text" class="form-control"
-                                           id="address"
-                                           name="address"
-                                           placeholder="Địa chỉ">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input">
-                                    <label for="note"><b>Ghi chú</b></label>
-                                    <input type="text" class="form-control"
-                                           id="note"
-                                           name="note"
-                                           placeholder="ghi chú">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group form-md-line-input">
-                                    <label for="position_id"><b>Chức vụ</b></label>
-                                    <select class="form-control" id="position_id" name="position_id">
-                                        <option value="">--Chọn chức vụ--</option>
-                                        @foreach($positions as $item ){
-                                        <option value="{{$item->id}}">{{$item->name}}</option>
-                                        }
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-
-                        </div>
+            <div class="panel-body">
+                <form role="form" id="formUser">
+                    <div class="form-body">
                         <div class="form-group form-md-line-input">
-                            <label><b>Phân Quyền</b></label>
+                            <input type="hidden" class="form-control" id="id" value="">
+                        </div>
+                        <div class="col-md-12">
                             <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="checkbox">
-                                        @foreach(array_chunk($roles,3) as $row)
-                                            <div class="row">
-                                                @foreach($row as $item)
-                                                    <div class="col-sm-4">
-                                                        <label>
-                                                            <input type="checkbox" id="array_roleid"
-                                                                   value="{{$item->id}}"
-                                                                   onclick="userView.checkRole(this)">{{$item->description}}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @endforeach
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="fullname"><b>Họ và tên</b></label>
+                                        <input type="text" class="form-control"
+                                               id="fullname"
+                                               name="fullname"
+                                               placeholder="Nhập họ tên"
+                                               autofocus>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="username"><b>Tên đăng nhập</b></label>
+                                        <input type="text" class="form-control"
+                                               id="username"
+                                               name="username"
+                                               placeholder="Tên đăng nhập">
+                                        <label id="username" style="display: none; color: red">Tài khoản đã tồn
+                                            tại</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="email"><b>Email</b></label>
+                                        <input type="text" class="form-control"
+                                               id="email"
+                                               name="email"
+
+                                               placeholder="email@example.com">
+                                        <label id="email" style="display: none; color: red">Email đã tồn tại</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="password"><b>Mật khẩu</b></label>
+                                        <input type="password" class="form-control"
+                                               id="password"
+                                               name="password"
+                                               maxlength="20"
+                                               minlength="3"
+                                               placeholder="password">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="passwordconfirm"><b>Nhập lại mật khẩu</b></label>
+                                        <input type="Password" class="form-control"
+                                               id="passwordconfirm"
+                                               name="passwordconfirm"
+                                               maxlength="20"
+                                               minlength="3"
+                                               placeholder="Nhập lại mật khẩu">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="phone"><b>Số điện thoại</b></label>
+                                        <input type="text" class="form-control"
+                                               id="phone"
+                                               name="phone"
+                                               placeholder="090">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="address"><b>Địa chỉ</b></label>
+                                        <input type="text" class="form-control"
+                                               id="address"
+                                               name="address"
+                                               placeholder="Địa chỉ">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="note"><b>Ghi chú</b></label>
+                                        <input type="text" class="form-control"
+                                               id="note"
+                                               name="note"
+                                               placeholder="ghi chú">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="position_id"><b>Chức vụ</b></label>
+                                        <select class="form-control" id="position_id" name="position_id">
+                                            <option value="">--Chọn chức vụ--</option>
+                                            @foreach($positions as $item ){
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                            }
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label><b>Phân Quyền</b></label>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="checkbox">
+                                            @foreach(array_chunk($roles,3) as $row)
+                                                <div class="row">
+                                                    @foreach($row as $item)
+                                                        <div class="col-sm-4">
+                                                            <label>
+                                                                <input type="checkbox" id="array_roleid"
+                                                                       value="{{$item->id}}"
+                                                                       onclick="userView.checkRole(this)">{{$item->description}}
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-actions noborder">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="userView.save()">
-                                    Hoàn tất
-                                </button>
-                                <button type="button" class="btn default" onclick="userView.cancel()">Huỷ</button>
+                        <div class="col-md-6">
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="userView.save()">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="userView.cancel()">Huỷ</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div> <!-- end #frmControl -->
+</div>
+<!-- end #frmControl -->
 
 <script>
     $(function () {
@@ -244,12 +254,12 @@
                 current: null,
                 array_roleid: null,
                 show: function () {
-                    $('.menu-toggle').hide();
-                    $('#frmControl').slideDown();
+                    $('.menu-toggle').fadeOut();
+                    $('#divControl').fadeIn(300);
                 },
                 hide: function () {
-                    $('#frmControl').slideUp('', function () {
-                        $('.menu-toggle').show();
+                    $('#divControl').fadeOut(300, function () {
+                        $('.menu-toggle').fadeIn();
                     });
                     userView.resetRolesInDom();
                     $('label[class=error]').hide();
@@ -475,8 +485,8 @@
                     });
 
                 },
-                showNotification: function (type ,msg) {
-                    switch (type){
+                showNotification: function (type, msg) {
+                    switch (type) {
                         case "info":
                             toastr.info(msg);
                             break;

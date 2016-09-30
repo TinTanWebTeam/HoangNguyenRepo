@@ -1,5 +1,5 @@
 <style>
-    #frmControl {
+    #divControl {
         z-index: 3;
         position: fixed;
         top: 30%;
@@ -7,6 +7,14 @@
         right: 0px;
         width: 40%;
         height: 100%;
+    }
+
+    @media (max-height: 500px) {
+        #divControl {
+            top: 53px;
+            overflow: auto;
+            height: 80vh;
+        }
     }
 
     div.col-lg-12 {
@@ -77,117 +85,131 @@
 </div> <!-- end .row -->
 
 
-<div id="frmControl" class="col-md-offset-4 col-md-8">
-    <div class="panel panel-primary">
-        <div class="panel-heading">Thêm mới chi phí nhiên liệu
-            <div class="menu-toggles pull-right" onclick="fuelCostView.hide()">
-                <i class="glyphicon glyphicon-remove"></i>
+<div class="row">
+    <div id="divControl" class="col-md-offset-4 col-md-8">
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">Thêm mới chi phí nhiên liệu
+                <div class="menu-toggles pull-right" onclick="fuelCostView.hide()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
             </div>
-        </div>
-        <div class="panel-body portlet-body">
-            <form role="form" id="fromFuelCost">
-                <div class="form-body">
-                    <div class="col-md-12 ">
-                        <div class="row ">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="vehicle"><b>Chọn xe</b></label>
-                                    <input type="text" class="form-control"
-                                           id="vehicle" data-id="" readonly
-                                           name="vehicle" readonly
-                                           placeholder="">
+            <div class="panel-body portlet-body">
+                <form role="form" id="fromFuelCost">
+                    <div class="form-body">
+                        <div class="col-md-12 ">
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="vehicle_id"><b>Chọn xe</b></label>
+                                        <div class="row">
+                                            <div class="col-sm-10 col-xs-10">
+                                                <input type="text" data-id="" class="form-control"
+                                                       id="vehicle_id" readonly
+                                                       name="vehicle_id">
+                                            </div>
+                                            <div class="col-sm-2 col-xs-2">
+                                                <div class="btn btn-primary btn-sm btn-circle"
+                                                     onclick="fuelCostView.loadListVehicles()">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class='col-md-6'>
-                                <div class="form-group">
-                                    <div class='input-group date' id='datetimepicker'>
-                                        <label for="datetime"><b>Thời gian đổ nhiên liệu</b></label>
-                                        <input type='text' id="datetime" name="datetime" class="form-control"/>
+                                <div class='col-md-6'>
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker'>
+                                            <label for="datetime"><b>Thời gian đổ nhiên liệu</b></label>
+                                            <input type='text' id="datetime" name="datetime" class="form-control"/>
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-12 ">
-                        <div class="row">
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="liter"><b>Số lít</b></label>
-                                    <input type="text" class="form-control"
-                                           id="liter"
-                                           name="liter"
-                                           placeholder="Số lít">
+                        <div class="col-md-12 ">
+                            <div class="row">
+                                <div class="col-md-6 ">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="literNumber"><b>Số lít</b></label>
+                                        <input type="number" class="form-control"
+                                               id="literNumber"
+                                               name="literNumber"
+                                               placeholder="Số lít">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-6 col-xs-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="price"><b>Đơn giá</b></label>
-                                    <div class="row">
-                                        <div class="col-sm-10 col-xs-10">
-                                            <input type="number" class="form-control"
-                                                   id="price" readonly
-                                                   name="price"
-                                                   placeholder="00.00">
-                                        </div>
-                                        <div class="col-sm-2 col-xs-2">
-                                            <div class="btn btn-primary btn-sm btn-circle">
-                                                {{--onclick="vehicleInsideView.displayModal('show', '#modal-addVehicleType')">--}}
-                                                <i class="glyphicon glyphicon-plus"></i>
+                                <div class="col-sm-6 col-xs-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="price"><b>Đơn giá</b></label>
+                                        <div class="row">
+                                            <div class="col-sm-10 col-xs-10">
+                                                <input type="text" class="form-control"
+                                                       id="price" readonly
+                                                       name="price"
+                                                >
+                                            </div>
+                                            <div class="col-sm-2 col-xs-2">
+                                                <div class="btn btn-primary btn-sm btn-circle"
+                                                     onclick="fuelCostView.displayModal('show', '#modal-addCostPrice')">
+                                                    <i class="glyphicon glyphicon-plus"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-12 ">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="totalprice"><b>Tổng chi phí</b></label>
-                                    <input type="text" class="form-control"
-                                           id="totalprice" readonly
-                                           name="totalprice"
-                                           placeholder="Tổng chi phí">
+                        <div class="col-md-12 ">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="totalprice"><b>Tổng chi phí</b></label>
+                                        <input type="text" class="form-control"
+                                               id="totalprice" readonly
+                                               name="totalprice"
+                                               placeholder="Tổng chi phí">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="noted"><b>Ghi chú</b></label>
+                                        <input type="text" class="form-control"
+                                               id="noted"
+                                               name="noted"
+                                               placeholder="ghi chú">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="noted"><b>Ghi chú</b></label>
-                                    <input type="text" class="form-control"
-                                           id="noted"
-                                           name="noted"
-                                           placeholder="ghi chú">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="fuelCostView.save()">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="fuelCostView.cancel()">Huỷ
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-actions noborder">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="">
-                                    Hoàn tất
-                                </button>
-                                <button type="button" class="btn default" onclick="fuelCostView.cancel()">Huỷ</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-</div> <!-- end #frmControl -->
 
 
-<!-- Modal list garages -->
+<!-- end #frmControl -->
+
+
+<!-- Modal list searchVehicle -->
 <div class="row">
-    <div id="modal-garage" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+    <div id="modal-searchVehicle" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -198,14 +220,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="table-garage">
+                        <table class="table table-hover" id="table-vehicles">
                             <thead>
                             <tr>
-                                <th>Mã nhà xe</th>
-                                <th>Tên nhà xe</th>
-                                <th>Người liên hệ</th>
-                                <th>Địa chỉ</th>
-                                <th>Điện thoại</th>
+                                <th>Stt</th>
+                                <th>Mã vùng</th>
+                                <th>Số xe</th>
+                                <th>Trọng tải</th>
+                                <th>Kích thước</th>
+                                <th>Loại xe</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -220,6 +243,63 @@
 </div>
 <!-- end Modal list garages -->
 
+<!-- Modal add CostPrice -->
+<div class="row">
+    <div id="modal-addCostPrice" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Thêm giá nhiên liệu</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="fromCostPrice">
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="costPrice"><b>Giá tiền</b></label>
+                                    <input type="number" class="form-control"
+                                           id="costPrice"
+                                           name="costPrice">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="description"><b>Mô tả</b></label>
+                                    <textarea name="description" id="description" cols="10" rows="3"
+                                              class="form-control">
+                                </textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-offset-8 col-md-4">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="fuelCostView.savePriceType()">
+                                            Hoàn tất
+                                        </button>
+                                        <button type="button" class="btn default"
+                                                onclick="fuelCostView.displayModal('hide','#modal-addCostPrice')">Huỷ
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal add CostPrice -->
+
+
 <script>
     $(function () {
         $('#datetimepicker').datetimepicker();
@@ -228,18 +308,23 @@
                 table: null,
                 data: null,
                 action: null,
-                tableCostPrice: null,
+                tablePrice: null,
                 tableCost: null,
+                tableCostPrice: null,
+                tableVehicle: null,
                 idDelete: null,
                 current: null,
                 show: function () {
-                    $('.menu-toggle').hide();
-                    $('#frmControl').slideDown();
+                    $('.menu-toggle').fadeOut();
+                    $('#divControl').fadeIn(300);
+
                 },
                 hide: function () {
-                    $('#frmControl').slideUp('', function () {
-                        $('.menu-toggle').show();
+                    $('#divControl').fadeOut(300, function () {
+                        $('.menu-toggle').fadeIn();
                     });
+                    fuelCostView.clearInput();
+                    fuelCostView.clearValidation();
                 },
 
                 displayModal: function (type, idModal) {
@@ -248,6 +333,7 @@
                         fuelCostView.action = null;
                         fuelCostView.idDelete = null;
                     }
+
                 },
                 showNotification: function (type, msg) {
                     switch (type) {
@@ -271,11 +357,18 @@
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
+
                         if (jqXHR.status == 200) {
                             fuelCostView.tableCost = data['tableCost'];
                             fuelCostView.fillDataToDatatable(data['tableCost']);
-                            fuelCostView.tableCostPrice = data['tableCostPrice'];
-//                            fuelCostView.loadSelectBox(data['tableCostPrice']);
+
+                            fuelCostView.tablePrice = data['tablePrice'];
+                            fuelCostView.inputPrice(data['tablePrice']);
+
+//                            fuelCostView.tableCostPrice = data['tableCostPrice'];
+//                            fuelCostView.loadSelectBoxPrice(data['tableCostPrice']);
+
+
                         } else {
                             fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -330,9 +423,10 @@
                 fillCurrentObjectToForm: function () {
                     var vehicle = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
                     var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
-                    $("input[id='vehicle']").val(vehicle);
+                    $("input[id='vehicle_id']").val(vehicle);
+                    $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
                     $("input[id='datetime']").val(fuelCostView.current["daytime"]);
-                    $("input[id='liter']").val(fuelCostView.current["literNumber"]);
+                    $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
                     $("input[id='price']").val(fuelCostView.current["prices_price"]);
                     $("input[id='totalprice']").val(totalPrice);
                     $("input[id='noted']").val(fuelCostView.current["costprice_name"]);
@@ -341,38 +435,43 @@
                 fillFormDataToCurrentObject: function () {
                     if (fuelCostView.action == 'add') {
                         fuelCostView.current = {
-                            vehicle: $("input[id='vehicle']").val(),
+                            vehicle_id: $("#vehicle_id").attr('data-id'),
                             datetime: $("input[id='datetime']").val(),
                             totalprice: $("input[id='totalprice']").val(),
-                            liter: $("input[id='liter']").val(),
-                            price: $("input[id='price']").val(),
-                            note: $("input[id='noted']").val(),
-
+                            literNumber: $("input[id='literNumber']").val(),
+                            prices_price: $("input[id='price']").val(),
+                            note: $("input[id='noted']").val()
                         };
                     } else if (fuelCostView.action == 'update') {
-                        fuelCostView.current.price = $("input[id='price']").val();
-                        fuelCostView.current.liter = $("input[id='liter']").val();
-                        fuelCostView.current.totalprice = $("input[id='totalprice']").val();
+                        fuelCostView.current.prices_price = $("input[id='price']").val();
+                        fuelCostView.current.literNumber = $("input[id='literNumber']").val();
+                        fuelCostView.current.totalCost = $("input[id='totalprice']").val();
                         fuelCostView.current.datetime = $("input[id='datetime']").val();
                         fuelCostView.current.noted = $("input[id='noted']").val();
-                        fuelCostView.current.vehicle = $("input[id='vehicle']").val();
+                        fuelCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
                     }
                 },
+                clearValidation: function () {
+                    $('label[class=error]').hide();
+
+                },
                 clearInput: function () {
-                    $("input[id='vehicle']").val('');
-                    $("input[id='liter']").val('');
-                    $("input[id='price']").val('');
+                    $("input[id='vehicle_id']").val('');
+                    $("input[id='literNumber']").val('');
                     $("input[id='totalprice']").val('');
                     $("input[id='noted']").val('');
                     $("input[id='datetime']").val('');
-
-                    fuelCostView.current = null;
+                    $("input[id='price']").val('');
+                    $("input[id='costPrice']").val('');
+//                    fuelCostView.current = null;
+                },
+                inputPrice: function () {
+                    $("input[id='price']").val(fuelCostView.tablePrice['price']);
                 },
                 addNewFuelCost: function () {
-
                     fuelCostView.current = null;
-                    fuelCostView.clearInput();
                     fuelCostView.action = 'add';
+                    fuelCostView.inputPrice();
                     fuelCostView.show();
                 },
                 editFuelCost: function (id) {
@@ -387,22 +486,24 @@
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
-
                         data[i].fullnumber = data[i]['vehicles_code'] + '-' + data[i]['vehicles_vehicleNumber'];
-
                     }
                     fuelCostView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
-
                         columns: [
                             {data: 'fullnumber'},
-                            {data: 'daytime'},
+                            {
+                                data: 'daytime',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                                }
+                            },
                             {data: 'costprice_name'},
                             {data: 'literNumber'},
                             {data: 'prices_price'},
-                            {data: 'cost'},
-                            {data: 'costprice_name'},
+                            {data: 'totalCost'},
+                            {data: 'noteCost'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -422,72 +523,169 @@
                         ]
                     })
                 },
-                formValidate: function () {
+                ValidateCost: function () {
                     $("#fromFuelCost").validate({
-                        rules: {},
-                        messages: {}
+                        rules: {
+                            vehicle_id: "required",
+                            literNumber: "required"
+                        },
+                        messages: {
+                            vehicle_id: "Vui lòng chọn xe",
+                            literNumber: "Vui lòng nhập số lít"
+                        }
                     });
                 },
+                ValidateCostPrice: function () {
+                    $("#fromCostPrice").validate({
+                        rules: {
+                            costPrice: "required",
+                        },
+                        messages: {
+                            costPrice: "Vui lòng nhập số tiền",
+                        }
+                    });
 
-
+                },
                 save: function () {
-//                    fuelCostView.formValidate();
-//                    if ($("#frmControl").valid()) {
+                    fuelCostView.ValidateCost();
                     fuelCostView.fillFormDataToCurrentObject();
-                    var sendToServer = {
-                        _token: _token,
-                        _action: fuelCostView.action,
-                        _object: fuelCostView.current
-                    };
-
-                    if (fuelCostView.action == 'delete') {
-                        sendToServer._id = fuelCostView.idDelete;
-                    }
-                    $.ajax({
-                        url: url + 'fuel-cost/modify',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 201) {
-                            switch (fuelCostView.action) {
-                                case 'add':
-                                    fuelCostView.tableVehicle.push(data['tableCost'][0]);
-                                    fuelCostView.showNotification("success", "Thêm thành công!");
-                                    break;
-                                case 'update':
-                                    var vehicleOld = _.find(fuelCostView.tableCost, function (o) {
-                                        return o.id == sendToServer._object.id;
-                                    });
-                                    var indexOfVehicleOld = _.indexOf(fuelCostView.tableCost, vehicleOld);
-                                    fuelCostView.tableCost.splice(indexOfVehicleOld, 1, data['tableCost'][0]);
-                                    fuelCostView.showNotification("success", "Cập nhật thành công!");
-                                    fuelCostView.hideControl();
-                                    break;
-                                case 'delete':
-                                    var costOld = _.find(fuelCostView.tableCost, function (o) {
-                                        return o.id == sendToServer._id;
-                                    });
-                                    var indexOfVehicleOld = _.indexOf(fuelCostView.tableCost, costOld);
-                                    fuelCostView.tableCost.splice(indexOfVehicleOld, 1);
-                                    fuelCostView.showNotification("success", "Xóa thành công!");
-                                    fuelCostView.displayModal("hide", "#modal-confirmDelete")
-                                    break;
-                                default:
-                                    break;
+                    if ($("#fromFuelCost").valid()) {
+                        var sendToServer = {
+                            _token: _token,
+                            _action: fuelCostView.action,
+                            _object: fuelCostView.current
+                        };
+                        if (fuelCostView.action != 'delete') {
+                            if ($("#vehicle_id").attr('data-id') == '') {
+                                fuelCostView.showNotification('warning', 'Vui lòng chọn xe có trong danh sách.');
+                                return;
                             }
-                            fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
-                            fuelCostView.clearInput();
                         } else {
-                            fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            sendToServer._object = {
+                                id: fuelCostView.idDelete,
+                                vehicle_id: "delete",
+                                literNumber: "0"
+                            };
+                        }
+
+                        $.ajax({
+                            url: url + 'fuel-cost/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+
+                            if (jqXHR.status == 201) {
+                                switch (fuelCostView.action) {
+                                    case 'add':
+                                        data['tableCost'][0].fullnumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
+                                        fuelCostView.tableCost.push(data['tableCost'][0]);
+                                        fuelCostView.showNotification("success", "Thêm thành công!");
+                                        break;
+                                    case 'update':
+                                        data['tableCost'][0].fullnumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
+                                        var CostOld = _.find(fuelCostView.tableCost, function (o) {
+                                            return o.id == sendToServer._object.id;
+                                        });
+                                        var indexOfVehicleOld = _.indexOf(fuelCostView.tableCost, CostOld);
+                                        fuelCostView.tableCost.splice(indexOfVehicleOld, 1, data['tableCost'][0]);
+                                        fuelCostView.showNotification("success", "Cập nhật thành công!");
+                                        fuelCostView.hide();
+                                        break;
+                                    case 'delete':
+
+                                        var costOld = _.find(fuelCostView.tableCost, function (o) {
+                                            return o.id == sendToServer._id;
+                                        });
+                                        var indexOfcostOld = _.indexOf(fuelCostView.tableCost, costOld);
+                                        fuelCostView.tableCost.splice(indexOfcostOld, 1);
+                                        fuelCostView.showNotification("success", "Xóa thành công!");
+                                        fuelCostView.displayModal("hide", "#modal-confirmDelete")
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
+                                fuelCostView.clearInput();
+                            } else {
+                                fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        $("form#fromFuelCost").find("label[class=error]").css("color", "red");
+                    }
+                },
+                loadListVehicles: function () {
+                    $.ajax({
+                        url: url + 'fuel-cost/fuelcost',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            if (fuelCostView.tableVehicle != null) {
+                                fuelCostView.tableVehicle.destroy();
+                            }
+                            fuelCostView.tableVehicle = $('#table-vehicles').DataTable({
+                                language: languageOptions,
+                                data: data['tableVehicle'],
+                                columns: [
+                                    {data: 'id'},
+                                    {data: 'areaCode'},
+                                    {data: 'vehicleNumber'},
+                                    {data: 'size'},
+                                    {data: 'weight'},
+                                    {data: 'vehicletype'}
+
+                                ]
+                            })
+                        } else {
+                            fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-//                    } else {
-//                        $("form#frmControl").find("label[class=error]").css("color", "red");
-//                    }
+
+                    fuelCostView.displayModal("show", "#modal-searchVehicle")
                 },
+
+
+                savePriceType: function () {
+                    fuelCostView.ValidateCostPrice();
+
+                        var priceType = {
+                            price: $("input[id='costPrice']").val(),
+                            note: $("textarea[id='description']").val()
+                        };
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'add1',
+                            _PriceType: priceType
+                        };
+                    if ($("#fromCostPrice").valid()) {
+                        $.ajax({
+                            url: url + 'fuel-price-type/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                fuelCostView.showNotification("success", "Thêm thành công!");
+                                fuelCostView.displayModal("hide", "#modal-addCostPrice");
+                                fuelCostView.clearInput();
+                                $("input[id='price']").val(data["prices"]["price"]);
+
+                            } else {
+                                fuelCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        $("form#fromCostPrice").find("label[class=error]").css("color", "red");
+                    }
+                }
 
 
             };
@@ -495,6 +693,12 @@
         } else {
             fuelCostView.loadData();
         }
+        $("#table-vehicles").find("tbody").on('click', 'tr', function () {
+            var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
+            $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
+            $('#vehicle_id').val(vehicle);
+            fuelCostView.displayModal("hide", "#modal-searchVehicle");
+        });
 
     });
 
