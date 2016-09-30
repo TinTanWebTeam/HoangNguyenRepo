@@ -425,7 +425,7 @@
                     var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
-                    $("input[id='datetime']").val(fuelCostView.current["daytime"]);
+                    $("input[id='datetime']").val(fuelCostView.current["dateRefuel"]);
                     $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
                     $("input[id='price']").val(fuelCostView.current["prices_price"]);
                     $("input[id='totalprice']").val(totalPrice);
@@ -494,7 +494,7 @@
                         columns: [
                             {data: 'fullnumber'},
                             {
-                                data: 'daytime',
+                                data: 'dateRefuel',
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("DD/MM/YYYY HH:mm:ss");
                                 }
