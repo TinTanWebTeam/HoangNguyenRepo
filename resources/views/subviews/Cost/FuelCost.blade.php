@@ -222,7 +222,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="table-vehicles">
+                        <table style="width: 100%" class="table table-hover" id="table-vehicles">
                             <thead>
                             <tr>
                                 <th>Stt</th>
