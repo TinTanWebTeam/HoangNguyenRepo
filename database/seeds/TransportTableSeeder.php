@@ -29,8 +29,7 @@ class TransportTableSeeder extends Seeder
             'createdBy'             => '1',
             'updatedBy'             => '1',
             'note'                  => '',
-            'status'                => 'Chưa phân tài',
-            'status'                => '1'
+            'status_id'             => '1',
         ]);
     }
 }

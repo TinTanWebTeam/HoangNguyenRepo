@@ -29,11 +29,11 @@ class CreateTransportsTable extends Migration
             $table->integer('createdBy')->unsigned();;
             $table->integer('updatedBy')->unsigned();;
             $table->text('note');
-            $table->string('status');
             $table->boolean('active')->default(1);
             $table->integer('product_id')->unsigned();
             $table->integer('customer_id')->unsigned();
             $table->integer('invoice_id')->nullable;
+            $table->integer('status_id')->unsigned();
             $table->timestamps();
         });
     }

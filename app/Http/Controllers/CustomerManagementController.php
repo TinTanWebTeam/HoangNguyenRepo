@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Cost;
 use App\Customer;
 use App\CustomerType;
+use App\Status;
 use App\Transport;
 use App\Voucher;
 use App\VoucherTransport;
@@ -239,6 +240,71 @@ class CustomerManagementController extends Controller
         return response()->json($response, 200);
     }
 
+    public function postModifyVoucher(Request $request)
+    {
+        if (!\Auth::check()) {
+            return response()->json(['msg' => 'Not Authorize'], 404);
+        }
+
+        $name = null;
+        $description = null;
+
+        $action = $request->input('_action');
+        if ($action != 'delete') {
+            $validator = ValidateController::ValidateCustomerType($request->input('_voucher'));
+            if ($validator->fails()) {
+                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $name = $request->input('_voucher')['name'];
+            $description = $request->input('_voucher')['description'];
+        }
+
+        switch ($action) {
+            case 'add':
+                $voucherNew = new Voucher();
+                $voucherNew->name = $name;
+                $voucherNew->description = $description;
+                if ($voucherNew->save()) {
+                    $response = [
+                        'msg'     => 'Created voucher',
+                        'voucher' => $voucherNew
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case 'update':
+                $voucherUpdate = Voucher::findOrFail($request->input('_voucher')['id']);
+                $voucherUpdate->name = $name;
+                $voucherUpdate->description = $description;
+                if ($voucherUpdate->update()) {
+                    $response = [
+                        'msg'     => 'Updated voucher',
+                        'voucher' => $voucherUpdate
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+            case 'delete':
+                $voucherDelete = Voucher::findOrFail($request->input('_id'));
+                $voucherDelete->active = 0;
+
+                if ($voucherDelete->update()) {
+                    $response = [
+                        'msg' => 'Deleted Voucher'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
+    }
+
     /*
      * Transport
      * */
@@ -259,12 +325,14 @@ class CustomerManagementController extends Controller
 
         $voucherTransports = VoucherTransport::all();
         $vouchers = Voucher::all();
+        $statuses = Status::where('tableName', 'transports')->get();
 
         $response = [
             'msg'               => 'Get list all Transport',
             'transports'        => $transports,
             'voucherTransports' => $voucherTransports,
-            'vouchers'          => $vouchers
+            'vouchers'          => $vouchers,
+            'statuses'          => $statuses
         ];
 
         return response()->json($response, 200);
@@ -285,7 +353,7 @@ class CustomerManagementController extends Controller
         $receivePlace = null;
         $deliveryPlace = null;
         $note = null;
-        $status = null;
+        $status_id = null;
         $vehicle_id = null;
         $product_id = null;
         $customer_id = null;
@@ -320,7 +388,7 @@ class CustomerManagementController extends Controller
             $receivePlace = $request->input('_transport')['receivePlace'];
             $deliveryPlace = $request->input('_transport')['deliveryPlace'];
             $note = $request->input('_transport')['note'];
-            $status = $request->input('_transport')['status'];
+            $status_id = $request->input('_transport')['status_id'];
             $vehicle_id = $request->input('_transport')['vehicles_id'];
             $product_id = $request->input('_transport')['products_id'];
             $customer_id = $request->input('_transport')['customers_id'];
@@ -350,7 +418,7 @@ class CustomerManagementController extends Controller
                 $transportNew->createdBy = \Auth::user()->id;
                 $transportNew->updatedBy = \Auth::user()->id;
                 $transportNew->note = $note;
-                $transportNew->status = $status;
+                $transportNew->status_id = $status_id;
                 $transportNew->product_id = $product_id;
                 $transportNew->customer_id = $customer_id;
 
@@ -422,7 +490,7 @@ class CustomerManagementController extends Controller
 
                 $transportUpdate->updatedBy = \Auth::user()->id;
                 $transportUpdate->note = $note;
-                $transportUpdate->status = $status;
+                $transportUpdate->status_id = $status_id;
                 $transportUpdate->product_id = $product_id;
                 $transportUpdate->customer_id = $customer_id;
                 $transportUpdate->invoice_id = $invoice_id;

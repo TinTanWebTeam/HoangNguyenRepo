@@ -806,7 +806,7 @@
                             vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#frmControl").find("label[class=error]").css("color", "red");
+                        $("form#frmGarage").find("label[class=error]").css("color", "red");
                     }
                 },
                 saveVehicleType: function(){
@@ -843,7 +843,7 @@
                             vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#frmControl").find("label[class=error]").css("color", "red");
+                        $("form#frmVehicleType").find("label[class=error]").css("color", "red");
                     }
                 }
             };

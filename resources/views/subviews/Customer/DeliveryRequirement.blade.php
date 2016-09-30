@@ -213,7 +213,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="status"><b>Trạng thái</b></label>
-                                        <input type="text" class="form-control" id="status" name="status">
+                                        <select id="status" name="status" class="form-control"></select>
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +230,7 @@
                                                        ondblclick="transportView.loadListVoucher()">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle">
+                                                <div class="btn btn-primary btn-sm btn-circle" onclick="transportView.displayModal('show', '#modal-addVoucher')">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
                                             </div>
@@ -448,6 +448,60 @@
 </div>
 <!-- end Modal list vouchers -->
 
+<!-- Modal add vehicleTypes -->
+<div class="row">
+    <div id="modal-addVoucher" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Thêm chứng từ</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="frmVoucher">
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="Voucher_name"><b>Tên chứng từ</b></label>
+                                    <input type="text" class="form-control"
+                                           id="Voucher_name"
+                                           name="Voucher_name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="description"><b>Mô tả</b></label>
+                                    <textarea name="description" id="description" cols="10" rows="3"
+                                              class="form-control">
+                                </textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-offset-8 col-md-4">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="transportView.saveVoucher()">
+                                            Hoàn tất
+                                        </button>
+                                        <button type="button" class="btn default" onclick="transportView.displayModal('hide','#modal-addVoucher')">Huỷ</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal add vehicleTypes -->
+
 <script>
     $(function () {
         if (typeof transportView === 'undefined') {
@@ -457,9 +511,12 @@
                 tableCustomer: null,
                 tableProduct: null,
                 tableVoucher: null,
+
                 dataTransport: null,
                 dataVoucher: null,
                 dataVoucherTransport: null,
+                dataStatus: null,
+
                 arrayVoucher: [],
                 current: null,
                 action: null,
@@ -523,7 +580,6 @@
                     $("input[id='voucherNumber']").val('');
                     $("input[id='voucherQuantumProduct']").val('');
                     $("input[id='note']").val('');
-                    $("input[id='status']").val('');
 
                     $("input[id='voucher_transport']").val('');
                     $("input[id='voucher_transport']").attr("voucher_transport", "");
@@ -542,10 +598,12 @@
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
                             transportView.dataTransport = data['transports'];
-                            transportView.fillDataToDatatable(data['transports']);
+                            transportView.fillDataToDatatable(transportView.dataTransport);
 
                             transportView.dataVoucherTransport = data['voucherTransports'];
                             transportView.dataVoucher = data['vouchers'];
+                            transportView.dataStatus = data['statuses'];
+                            transportView.loadSelectBox(transportView.dataStatus);
                         } else {
                             transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -726,6 +784,22 @@
                         transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
+                loadSelectBox: function (lstStatus) {
+                    //reset selectbox
+                    $('#status')
+                            .find('option')
+                            .remove()
+                            .end();
+                    //fill option to selectbox
+                    var select = document.getElementById("status");
+                    for (var i = 0; i < lstStatus.length; i++) {
+                        var opt = lstStatus[i]['status'];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = lstStatus[i]['id'];
+                        select.appendChild(el);
+                    }
+                },
 
                 checkVoucher: function (element) {
                     var voucherId = $(element).attr("data-voucherId");
@@ -881,15 +955,18 @@
                     $("input[id='cashReceive']").val(transportView.current["cashReceive"]);
                     $("input[id='receiver']").val(transportView.current["receiver"]);
 
-                    var strReceiveDate = transportView.current["receiveDate"].substr(0, 10);
-                    $("input[id='receiveDate']").val(strReceiveDate);
+                    var day = transportView.current["receiveDate"].substr(8,2);
+                    var month = transportView.current["receiveDate"].substr(5,2);
+                    var year = transportView.current["receiveDate"].substr(0,4);
+                    var hourMinus = transportView.current["receiveDate"].substr(11,5);
+                    $("input[id='receiveDate']").val(day + "/" + month + "/" + year + " " + hourMinus);
 
                     $("input[id='receivePlace']").val(transportView.current["receivePlace"]);
                     $("input[id='deliveryPlace']").val(transportView.current["deliveryPlace"]);
                     $("input[id='voucherNumber']").val(transportView.current["voucherNumber"]);
                     $("input[id='voucherQuantumProduct']").val(transportView.current["voucherQuantumProduct"]);
                     $("input[id='note']").val(transportView.current["note"]);
-                    $("input[id='status']").val(transportView.current["status"]);
+                    $("select[id='status']").val(transportView.current["status_id"]);
                     $("input[id='cost']").val(transportView.current["cost"]);
                     $("input[id='costs_note']").val(transportView.current["costs_note"]);
 
@@ -921,7 +998,7 @@
                             voucherNumber: $("input[id='voucherNumber']").val(),
                             voucherQuantumProduct: $("input[id='voucherQuantumProduct']").val(),
                             note: $("input[id='note']").val(),
-                            status: $("input[id='status']").val(),
+                            status_id: $("select[id='status']").val(),
                             cost: $("input[id='cost']").val(),
                             costs_note: $("input[id='costs_note']").val(),
                             voucher_transport: transportView.arrayVoucher
@@ -942,7 +1019,7 @@
                         transportView.current.voucherNumber = $("input[id='voucherNumber']").val();
                         transportView.current.voucherQuantumProduct = $("input[id='voucherQuantumProduct']").val();
                         transportView.current.note = $("input[id='note']").val();
-                        transportView.current.status = $("input[id='status']").val();
+                        transportView.current.status_id = $("select[id='status']").val();
                         transportView.current.cost = $("input[id='cost']").val();
                         transportView.current.costs_note = $("input[id='costs_note']").val();
                         transportView.current.voucher_transport = transportView.arrayVoucher;
@@ -1018,6 +1095,16 @@
 //                    var validator = $(idForm).validate();
 //                    validator.resetForm();
                 },
+                validateVoucher: function(){
+                    $("#frmVoucher").validate({
+                        rules: {
+                            Voucher_name: "required"
+                        },
+                        messages: {
+                            Voucher_name: "Vui lòng nhập tên chứng từ"
+                        }
+                    });
+                },
 
                 save: function () {
                     transportView.formValidate();
@@ -1061,9 +1148,10 @@
                                 switch (transportView.action) {
                                     case 'add':
                                         data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
-
                                         transportView.dataTransport.push(data['transport'][0]);
-                                        transportView.dataVoucherTransport.push(data['voucherTransport'][0]);
+
+                                        transportView.dataVoucherTransport = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
+
                                         transportView.showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
@@ -1075,15 +1163,10 @@
                                         data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
                                         transportView.dataTransport.splice(indexOfOld, 1, data['transport'][0]);
 
-                                        console.log(transportView.dataVoucherTransport);
                                         _.remove(transportView.dataVoucherTransport, function (currentObject) {
                                             return currentObject.transport_id === sendToServer._transport.id;
                                         });
-                                        console.log(transportView.dataVoucherTransport);
-                                        var array3 = transportView.dataVoucherTransport.concat(data['voucherTransport']);
-                                        console.log(array3);
-//                                        var array4 = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
-//                                        console.log(array4);
+                                        transportView.dataVoucherTransport = transportView.dataVoucherTransport.concat(data['voucherTransport']);
 
                                         transportView.showNotification("success", "Cập nhật thành công!");
                                         transportView.hideControl();
@@ -1110,6 +1193,40 @@
                         });
                     } else {
                         $("form#frmControl").find("label[class=error]").css("color", "red");
+                    }
+                },
+                saveVoucher: function(){
+                    transportView.validateVoucher();
+                    if($("#frmVoucher").valid()){
+                        var voucher = {
+                            name: $("input[id='Voucher_name']").val(),
+                            description: $("textarea[id='description']").val()
+                        };
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'add',
+                            _voucher: voucher
+                        };
+                        $.ajax({
+                            url: url + 'voucher/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                transportView.showNotification("success", "Thêm thành công!");
+                                transportView.displayModal("hide", "#modal-addVoucher");
+                                transportView.clearInput();
+                                //
+                                transportView.dataVoucher.push(data['voucher']);
+                            } else {
+                                transportView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        $("form#frmVoucher").find("label[class=error]").css("color", "red");
                     }
                 }
             };
