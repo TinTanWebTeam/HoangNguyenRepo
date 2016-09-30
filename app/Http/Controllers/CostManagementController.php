@@ -85,7 +85,7 @@ class CostManagementController extends Controller
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
             $totalCost = $literNumber * $prices_price;
-//            $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
+            $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
             $note = $request->get('_object')['note'];
         }
 
@@ -95,7 +95,7 @@ class CostManagementController extends Controller
                 $fuelCostsNew = new Cost();
                 $fuelCostsNew->cost = $totalCost;
                 $fuelCostsNew->literNumber = $literNumber;
-//                $fuelCostsNew->daytime = $datetime;
+                $fuelCostsNew->daytime = $datetime;
                 $fuelCostsNew->createdBy = Auth::user()->id;
                 $fuelCostsNew->note = $note;
                 $fuelCostsNew->vehicle_id = $vehicle;
@@ -130,12 +130,12 @@ class CostManagementController extends Controller
                 $fuelCostsUpdate = Cost::findOrFail($request->get('_object')['id']);
                 $fuelCostsUpdate->literNumber = $literNumber;
                 $fuelCostsUpdate->cost = $totalCost;
-//                $fuelCostsUpdate->daytime = $datetime;
+                $fuelCostsUpdate->daytime = $datetime;
                 $fuelCostsUpdate->note = $note;
                 $fuelCostsUpdate->vehicle_id = $vehicle;
                 $fuelCostsUpdate->price_id = 1;
                 $fuelCostsUpdate->updatedBy = Auth::user()->id;
-//
+
                 if ($fuelCostsUpdate->update()) {
                     $tableCost = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
