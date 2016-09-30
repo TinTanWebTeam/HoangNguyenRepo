@@ -486,7 +486,7 @@
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        data[i].fullnumber = data[i]['vehicles_code'] + '-' + data[i]['vehicles_vehicleNumber'];
+                        data[i].fullNumber = data[i]['vehicles_code'] + '-' + data[i]['vehicles_vehicleNumber'];
                     }
                     fuelCostView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -578,12 +578,12 @@
                             if (jqXHR.status == 201) {
                                 switch (fuelCostView.action) {
                                     case 'add':
-                                        data['tableCost'][0].fullnumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
+                                        data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
                                         fuelCostView.tableCost.push(data['tableCost'][0]);
                                         fuelCostView.showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
-                                        data['tableCost'][0].fullnumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
+                                        data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
                                         var CostOld = _.find(fuelCostView.tableCost, function (o) {
                                             return o.id == sendToServer._object.id;
                                         });
