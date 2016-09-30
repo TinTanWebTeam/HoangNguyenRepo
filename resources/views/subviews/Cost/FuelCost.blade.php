@@ -492,14 +492,14 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'fullnumber'},
+                            {data: 'fullNumber'},
                             {
                                 data: 'dateRefuel',
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("DD/MM/YYYY HH:mm:ss");
                                 }
                             },
-                            {data: 'costprice_name'},
+                            {data: 'costPrice_name'},
                             {data: 'literNumber'},
                             {data: 'prices_price'},
                             {data: 'totalCost'},
