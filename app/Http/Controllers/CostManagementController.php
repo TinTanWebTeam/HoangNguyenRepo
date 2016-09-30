@@ -189,7 +189,7 @@ class CostManagementController extends Controller
         $note = $request->get('_PriceType')['note'];
 
         switch ($action) {
-            case "add1":
+            case "addFuelCost":
                 $pricesNew = new Price();
                 $pricesNew->price = $price;
                 $pricesNew->costPrice_id = 1;

@@ -618,7 +618,7 @@
                 },
                 loadListVehicles: function () {
                     $.ajax({
-                        url: url + 'fuel-cost/fuelcost',
+                        url: url + 'fuel-cost/fuelCost',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
@@ -659,7 +659,7 @@
                         };
                         var sendToServer = {
                             _token: _token,
-                            _action: 'add1',
+                            _action: 'addFuelCost',
                             _PriceType: priceType
                         };
                     if ($("#fromCostPrice").valid()) {
