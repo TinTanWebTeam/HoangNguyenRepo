@@ -9,6 +9,7 @@ use App\Transport;
 use App\Voucher;
 use App\VoucherTransport;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 use App\Http\Requests;
 
@@ -272,6 +273,7 @@ class CustomerManagementController extends Controller
     public function postModifyTransport(Request $request)
     {
         $weight = null;
+        $quantumProduct = null;
         $cashRevenue = null;
         $cashDelivery = null;
         $cashReceive = null;
@@ -302,6 +304,7 @@ class CustomerManagementController extends Controller
 //            }
 
             $weight = $request->input('_transport')['weight'];
+            $quantumProduct = $request->input('_transport')['quantumProduct'];
             $cashRevenue = $request->input('_transport')['cashRevenue'];
             $cashDelivery = $request->input('_transport')['cashDelivery'];
             $cashReceive = $request->input('_transport')['cashReceive'];
@@ -310,7 +313,10 @@ class CustomerManagementController extends Controller
             $voucherNumber = $request->input('_transport')['voucherNumber'];
             $voucherQuantumProduct = $request->input('_transport')['voucherQuantumProduct'];
             $receiver = $request->input('_transport')['receiver'];
+
             $receiveDate = $request->input('_transport')['receiveDate'];
+            $receiveDate = Carbon::createFromFormat('d/m/Y H:i', $receiveDate)->toDateTimeString();
+
             $receivePlace = $request->input('_transport')['receivePlace'];
             $deliveryPlace = $request->input('_transport')['deliveryPlace'];
             $note = $request->input('_transport')['note'];
@@ -330,6 +336,7 @@ class CustomerManagementController extends Controller
             case 'add':
                 $transportNew = new Transport();
                 $transportNew->weight = $weight;
+                $transportNew->quantumProduct = $quantumProduct;
                 $transportNew->cashRevenue = $cashRevenue;
                 $transportNew->cashDelivery = $cashDelivery;
                 $transportNew->cashReceive = $cashReceive;
@@ -399,6 +406,7 @@ class CustomerManagementController extends Controller
             case 'update':
                 $transportUpdate = Transport::findOrFail($request->input('_transport')['id']);
                 $transportUpdate->weight = $weight;
+                $transportUpdate->quantumProduct = $quantumProduct;
                 $transportUpdate->cashRevenue = $cashRevenue;
                 $transportUpdate->cashDelivery = $cashDelivery;
                 $transportUpdate->cashReceive = $cashReceive;

@@ -15,7 +15,7 @@ class VehicleTableSeeder extends Seeder
            'vehicleType_id' => '1',
             'garage_id' => '1',
             'areaCode' => '54N',
-            'vehicleNumber' => '1234',
+            'vehicleNumber' => '1111',
             'size' => '8',
             'weight' => '5'
         ]);
@@ -24,7 +24,7 @@ class VehicleTableSeeder extends Seeder
             'vehicleType_id' => '1',
             'garage_id' => '1',
             'areaCode' => '54N',
-            'vehicleNumber' => '1234',
+            'vehicleNumber' => '2222',
             'size' => '8',
             'weight' => '5'
         ]);
@@ -33,7 +33,7 @@ class VehicleTableSeeder extends Seeder
             'vehicleType_id' => '1',
             'garage_id' => '1',
             'areaCode' => '52N',
-            'vehicleNumber' => '15432',
+            'vehicleNumber' => '3333',
             'size' => '5',
             'weight' => '3'
         ]);
@@ -42,7 +42,7 @@ class VehicleTableSeeder extends Seeder
             'vehicleType_id' => '2',
             'garage_id' => '2',
             'areaCode' => '58N',
-            'vehicleNumber' => '7543',
+            'vehicleNumber' => '4444',
             'size' => '2',
             'weight' => '9'
         ]);
@@ -51,7 +51,7 @@ class VehicleTableSeeder extends Seeder
             'vehicleType_id' => '2',
             'garage_id' => '2',
             'areaCode' => '60N',
-            'vehicleNumber' => '3214',
+            'vehicleNumber' => '5555',
             'size' => '12',
             'weight' => '5'
         ]);
@@ -60,7 +60,7 @@ class VehicleTableSeeder extends Seeder
             'vehicleType_id' => '3',
             'garage_id' => '3',
             'areaCode' => '62N',
-            'vehicleNumber' => '5555',
+            'vehicleNumber' => '6666',
             'size' => '12',
             'weight' => '5'
         ]);

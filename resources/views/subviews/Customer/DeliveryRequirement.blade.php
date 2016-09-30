@@ -163,10 +163,19 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
-                                        <label for="receiveDate"><b>Ngày nhận</b></label>
-                                        <input type="date" id="receiveDate" name="receiveDate" class="form-control"
-                                               value="">
+                                        <div class='input-group date' id='datetimepicker1'>
+                                            <label for="receiveDate"><b>Ngày nhận</b></label>
+                                            <input id="receiveDate" name="receiveDate" type='text' class="form-control" value="<?php echo date('d-m-Y H-i'); ?>">
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
                                     </div>
+                                    {{--<div class="form-group form-md-line-input">--}}
+                                    {{--<label for="receiveDate"><b>Ngày nhận</b></label>--}}
+                                    {{--<input type="date" id="receiveDate" name="receiveDate" class="form-control"--}}
+                                    {{--value="">--}}
+                                    {{--</div>--}}
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
@@ -562,14 +571,6 @@
                         "hideMethod": "fadeOut"
                     };
 
-                    //Set default datenow
-                    Date.prototype.toDateInputValue = (function () {
-                        var local = new Date(this);
-                        local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-                        return local.toJSON().slice(0, 10);
-                    });
-                    $('#receiveDate').val(new Date().toDateInputValue());
-
                     //Event click for table modal
                     $("#table-vehicle").find("tbody").on('click', 'tr', function () {
                         $('#vehicle_id').attr('data-vehicleId', $(this).find('td:first')[0].innerText);
@@ -586,6 +587,9 @@
                         $('input[id=product_id]').val($(this).find('td:eq(2)')[0].innerText);
                         transportView.displayModal("hide", "#modal-product");
                     });
+
+                    //Event DateTimePicker
+                    $('#datetimepicker1').datetimepicker();
                 },
                 loadListVehicle: function () {
                     $.ajax({
@@ -891,9 +895,9 @@
 
                     var strVoucherName = "";
                     for (var i = 0; i < transportView.arrayVoucher.length; i++) {
-                        var objVoucher = _.clone(_.find(transportView.dataVoucher, function(o){
+                        var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
                             return o.id == transportView.arrayVoucher[i];
-                        }) ,true);
+                        }), true);
                         strVoucherName += objVoucher.name + ", ";
                     }
                     $("input[id='voucher_transport']").val(strVoucherName);
@@ -1071,11 +1075,15 @@
                                         data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
                                         transportView.dataTransport.splice(indexOfOld, 1, data['transport'][0]);
 
-                                        Old = _.find(transportView.dataVoucherTransport, function (o) {
-                                            return o.transport_id == sendToServer._transport.id;
+                                        console.log(transportView.dataVoucherTransport);
+                                        _.remove(transportView.dataVoucherTransport, function (currentObject) {
+                                            return currentObject.transport_id === sendToServer._transport.id;
                                         });
-                                        console.log(Old);
-//                                        indexOfOld = _.indexOf(transportView.dataTransport, Old);
+                                        console.log(transportView.dataVoucherTransport);
+                                        var array3 = transportView.dataVoucherTransport.concat(data['voucherTransport']);
+                                        console.log(array3);
+//                                        var array4 = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
+//                                        console.log(array4);
 
                                         transportView.showNotification("success", "Cập nhật thành công!");
                                         transportView.hideControl();

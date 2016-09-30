@@ -30,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(VoucherTableSeeder::class);
         $this->call(VoucherTransportTableSeeder::class);
         $this->call(CostTableSeeder::class);
+        $this->call(StatusTableSeeder::class);
     }
 }
