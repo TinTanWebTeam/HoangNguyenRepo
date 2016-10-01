@@ -240,6 +240,7 @@ class CostManagementController extends Controller
                     $response = [
                         'msg'    => 'Created price',
                         'prices' => $pricesNew
+
                     ];
                     return response()->json($response, 201);
                 }
