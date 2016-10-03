@@ -56,11 +56,28 @@ ol.breadcrumb {
 }
 
 .box-shadow {
-    -webkit-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
-    box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0 0 88px 5px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0 0 88px 5px rgba(0,0,0,0.75);
+    box-shadow: 0 0 88px 5px rgba(0,0,0,0.75);
 }
 
+.cursor-copy {
+    cursor:copy;
+}
+
+.marginRight {
+    margin-right: 5px;
+}
+
+tr:hover {
+    cursor: pointer;
+    background: #FDF6E3;
+    opacity: 1;
+    -webkit-transform: scale(1.01);
+    -moz-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    transform: scale(1.01);
+}
 
 
 

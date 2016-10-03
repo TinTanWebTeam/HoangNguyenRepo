@@ -13,10 +13,6 @@
         height: 40px;
     }
 
-    .marginRight {
-        margin-right: 5px;
-    }
-
     @media (max-height: 500px) {
         #divControl {
             top: 53px;
@@ -96,7 +92,7 @@
                                 <div class="col-md-3 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="vehicle_id"><b>Xe</b></label>
-                                        <input type="text" class="form-control" id="vehicle_id" name="vehicle_id"
+                                        <input type="text" class="form-control cursor-copy" id="vehicle_id" name="vehicle_id"
                                                readonly placeholder="Nhấp đôi để chọn xe"
                                                data-vehicleId=""
                                                ondblclick="transportView.loadListVehicle()">
@@ -105,7 +101,7 @@
                                 <div class="col-md-3 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="customer_id"><b>Khách hàng</b></label>
-                                        <input type="text" class="form-control" id="customer_id" name="customer_id"
+                                        <input type="text" class="form-control cursor-copy" id="customer_id" name="customer_id"
                                                readonly placeholder="Nhấp đôi để chọn khách hàng"
                                                data-customerId=""
                                                ondblclick="transportView.loadListCustomer()">
@@ -114,7 +110,7 @@
                                 <div class="col-md-3 ">
                                     <div class="form-group form-md-line-input ">
                                         <label for="product_id"><b>Hàng</b></label>
-                                        <input type="text" class="form-control" id="product_id" name="product_id"
+                                        <input type="text" class="form-control cursor-copy" id="product_id" name="product_id"
                                                readonly placeholder="Nhấp đôi để chọn hàng"
                                                data-productId=""
                                                ondblclick="transportView.loadListProduct()">
@@ -171,11 +167,6 @@
                                             </span>
                                         </div>
                                     </div>
-                                    {{--<div class="form-group form-md-line-input">--}}
-                                    {{--<label for="receiveDate"><b>Ngày nhận</b></label>--}}
-                                    {{--<input type="date" id="receiveDate" name="receiveDate" class="form-control"--}}
-                                    {{--value="">--}}
-                                    {{--</div>--}}
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
@@ -223,7 +214,7 @@
                                         <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
-                                                <input type="text" class="form-control"
+                                                <input type="text" class="form-control cursor-copy"
                                                        id="voucher_transport" data-id="" readonly
                                                        name="voucher_transport"
                                                        placeholder="Nhấp đôi để chọn chứng từ"
@@ -263,7 +254,7 @@
                         <div class="col-md-6">
                             <div class="form-actions">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-primary" onclick="transportView.save()">Hoàn
+                                    <button type="button" class="btn btn-primary marginRight" onclick="transportView.save()">Hoàn
                                         tất
                                     </button>
                                     <button type="button" class="btn default" onclick="transportView.clearInput()">Huỷ
@@ -324,7 +315,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="table-vehicle">
+                        <table class="table table-hover" id="table-vehicle" style="width: 100%">
                             <thead>
                             <tr>
                                 <th>Mã xe</th>
@@ -359,7 +350,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="table-customer">
+                        <table class="table table-hover" id="table-customer" style="width: 100%">
                             <thead>
                             <tr>
                                 <th>Mã khách hàng</th>
@@ -395,7 +386,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="table-product">
+                        <table class="table table-hover" id="table-product" style="width: 100%">
                             <thead>
                             <tr>
                                 <th>Mã hàng</th>
@@ -428,7 +419,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="table-voucher">
+                        <table class="table table-hover" id="table-voucher" style="width: 100%">
                             <thead>
                             <tr>
                                 <th>Mã chứng từ</th>
@@ -645,6 +636,9 @@
                         $('input[id=product_id]').val($(this).find('td:eq(2)')[0].innerText);
                         transportView.displayModal("hide", "#modal-product");
                     });
+                    $('#table-voucher').on( 'draw.dt', function () {
+                        transportView.fillVoucher();
+                    } );
 
                     //Event DateTimePicker
                     $('#datetimepicker1').datetimepicker();
@@ -834,6 +828,8 @@
                     }
                 },
                 fillVoucher: function () {
+                    if(transportView.arrayVoucher.length <= 0) return;
+
                     for (var i = 0; i < transportView.arrayVoucher.length; i++) {
                         var checkbox = $("div[data-voucherId=" + transportView.arrayVoucher[i] + "]");
                         checkbox.removeClass("btn-primary").addClass("btn-success");
