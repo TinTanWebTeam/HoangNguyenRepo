@@ -384,7 +384,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="fuelCostView.displayModal('hide','#modal-addCostPrice')">Huỷ
+                                                onclick="fuelCostView.displayModal('hide','#modal-addVehicle')">Huỷ
                                         </button>
                                     </div>
                                 </div>
@@ -396,7 +396,7 @@
         </div>
     </div>
 </div>
-<!-- end Modal add CostPrice -->
+<!-- end Modal add vehicle -->
 
 
 <script>
@@ -568,9 +568,9 @@
                 },
                 clearValidation: function () {
                     $('label[class=error]').hide();
-
                 },
                 clearInput: function () {
+
                     /* form addCost*/
                     $("input[id='vehicle_id']").val('');
                     $("#vehicle_id").attr('data-id','');
@@ -763,7 +763,8 @@
                                     {data: 'size'},
                                     {data: 'weight'},
                                     {data: 'vehicleType'}
-                                ]
+                                ],
+                                order: [[0, "desc"]],
                             })
                         } else {
                             fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -849,15 +850,12 @@
                                 if (jqXHR.status == 201) {
                                     fuelCostView.showNotification("success", "Thêm thành công!");
                                     fuelCostView.displayModal("hide", "#modal-addVehicle");
-                                    fuelCostView.clearInput();
                                     fuelCostView.tableVehicleNew = data['vehicleNew'];
-
                                     fuelCostView.inputVehicle();
                                 } else {
                                     fuelCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                 }
                                 fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
-                                fuelCostView.clearInput();
                             } else {
                                 fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
@@ -925,10 +923,10 @@
                             if (jqXHR.status == 201) {
                                 fuelCostView.showNotification("success", "Thêm thành công!");
                                 fuelCostView.displayModal("hide", "#modal-addCostPrice");
-                                fuelCostView.clearInput();
                                 fuelCostView.tablePrice = data['prices'];
-                                $("input[id='literNumber']").val('');
                                 fuelCostView.inputPrice();
+                                $("input[id='literNumber']").val('');
+                                $("input[id='totalprice']").val('');
 
                             } else {
                                 fuelCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
