@@ -40,9 +40,7 @@ class HomeController extends Controller
             'ParkingCost'           => 'parking-cost',
             'OtherCost'             => 'other-cost',
             'RevenueReport'         => 'revenue-report',
-            'HistoryDeliveryReport' => 'history-delivery-report',
-            'CustomerPostage'       => 'customer-postage',
-            'MonthPostage'          => 'month-postage'
+            'HistoryDeliveryReport' => 'history-delivery-report'
         ];
 
         $array_icon = [
@@ -64,13 +62,10 @@ class HomeController extends Controller
             'VehicleManagement'   => ['VehicleInside', 'VehicleOutside'],
             'DebtManagement'      => ['DebtCustomer', 'DebtVehicleOutside'],
             'CostManagement'      => ['FuelCost', 'PetroleumCost', 'ParkingCost', 'OtherCost'],
-            'PostageManagement'   => ['CustomerPostage', 'MonthPostage'],
+            'PostageManagement'   => [],
             'DivisiveDriver'      => [],
             'Report'              => ['RevenueReport', 'HistoryDeliveryReport'],
         ];
-
-
-
 
         $array_roleid = \App\Role::whereIn(
             'id',

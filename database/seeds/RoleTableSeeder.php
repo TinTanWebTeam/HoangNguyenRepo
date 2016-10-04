@@ -137,20 +137,10 @@ class RoleTableSeeder extends Seeder
         ]);
         //23
         Role::create([
-            'name' => 'CustomerPostage',
-            'description' => 'Khách hàng'
-        ]);
-        //24
-        Role::create([
-            'name' => 'MonthPostage',
-            'description' => 'Tháng'
-        ]);
-        //25
-        Role::create([
             'name' => 'Position',
             'description' => 'Chức vụ'
         ]);
-        //26
+        //24
         Role::create([
             'name' => 'User',
             'description' => 'Tài khoản'

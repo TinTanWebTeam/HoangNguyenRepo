@@ -202,6 +202,19 @@ class ValidateController extends Controller
         ];
         return Validator::make($data, $rules, $messages);
     }
-
+    public static function ValidatePostage(array $data)
+    {
+        $rules = [
+            'customer_id'  => 'required',
+            'postage' => 'required',
+            'month' => 'required',
+        ];
+        $messages = [
+            'customer_id.required'  => 'Trường khách hàng bắt buộc nhập',
+            'postage.required' => 'Trường cước phí bắt buộc nhập',
+            'month.required' => 'Trường tháng bắt buộc nhập'
+        ];
+        return Validator::make($data, $rules, $messages);
+    }
 
 }

@@ -33,11 +33,6 @@
                         <li><a href="javascript:;">Trang chủ</a></li>
                         <li class="active">QL cước phí</li>
                     </ol>
-                    <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="postageView.addPostage();">
-                            <i class="glyphicon glyphicon-plus icon-center"></i>
-                        </div>
-                    </div>
                 </div>
             </div>
             <!-- .panel-body -->
@@ -49,9 +44,10 @@
                             <tr class="active">
                                 <th>Mã</th>
                                 <th>Cước phí</th>
-                                <th>Khách hàng</th>
                                 <th>Tháng</th>
-                                <th>Sửa/ Xóa</th>
+                                <th>Khách hàng</th>
+                                <th>Ghi chú</th>
+                                <th>Sửa</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -80,13 +76,23 @@
                     <div class="form-body">
                         <div class="col-md-12 ">
                             <div class="row ">
-                                <div class="col-md-12 ">
+                                <div class="col-md-6 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="customer_id"><b>Khách hàng</b></label>
                                         <input type="text" class="form-control cursor-copy" id="customer_id" name="customer_id"
                                                readonly placeholder="Nhấp đôi để chọn khách hàng"
-                                               data-customerId=""
-                                               ondblclick="postageView.loadListCustomer()">
+                                               data-customerId="">
+                                               <!--ondblclick="postageView.loadListCustomer()"-->
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="month"><b>Tháng</b></label>
+                                        <select class="form-control" id="month" name="month" disabled>
+                                            @for($i = 1; $i < 13; $i++)
+                                                <option value="{{$i}}">{{$i}}</option>
+                                            @endfor
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -98,13 +104,9 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="month"><b>Tháng</b></label>
-                                        <select class="form-control" id="month" name="month">
-                                            @for($i = 1; $i < 13; $i++)
-                                                <option value="{{$i}}">{{$i}}</option>
-                                            @endfor
-                                        </select>
+                                    <div class="form-group form-md-line-input">
+                                        <label for="note"><b>Ghi chú</b></label>
+                                        <input type="text" class="form-control" name="note" id="note">
                                     </div>
                                 </div>
                             </div>
@@ -339,8 +341,9 @@
                                 data: 'postage',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
+                            {data: 'month', width: "5%"},
                             {data: 'customers_fullName'},
-                            {data: 'month'},
+                            {data: 'note'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -349,13 +352,8 @@
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-danger btn-circle" onclick="postageView.deletePostage(' + full.id + ')">';
-                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
                                     return tr;
-                                }, width: "10%"
+                                }, width: "5%"
                             }
                         ],
                         order: [[0, "desc"]],
@@ -404,109 +402,40 @@
                     })
                 },
                 fillCurrentObjectToForm: function () {
-                    $("input[id='vehicle_id']").val(postageView.current["vehicles_areaCode"] + '-' + postageView.current["vehicles_vehicleNumber"]);
-                    $("#vehicle_id").attr('data-vehicleId', postageView.current["vehicles_id"]);
                     $("input[id='customer_id']").val(postageView.current["customers_fullName"]);
-                    $("#customer_id").attr('data-customerId', postageView.current["customers_id"]);
-                    $("input[id='product_id']").val(postageView.current["products_name"]);
-                    $("#product_id").attr('data-productId', postageView.current["products_id"]);
+                    $("#customer_id").attr('data-customerId', postageView.current["customer_id"]);
 
-                    $("input[id='quantumProduct']").val(postageView.current["quantumProduct"]);
-                    $("input[id='weight']").val(postageView.current["weight"]);
-                    $("input[id='cashRevenue']").val(postageView.current["cashRevenue"]);
-                    $("input[id='cashDelivery']").val(postageView.current["cashDelivery"]);
-                    $("input[id='cashReceive']").val(postageView.current["cashReceive"]);
-                    $("input[id='receiver']").val(postageView.current["receiver"]);
-
-                    var day = postageView.current["receiveDate"].substr(8,2);
-                    var month = postageView.current["receiveDate"].substr(5,2);
-                    var year = postageView.current["receiveDate"].substr(0,4);
-                    var hourMinus = postageView.current["receiveDate"].substr(11,5);
-                    $("input[id='receiveDate']").val(day + "/" + month + "/" + year + " " + hourMinus);
-
-                    $("input[id='receivePlace']").val(postageView.current["receivePlace"]);
-                    $("input[id='deliveryPlace']").val(postageView.current["deliveryPlace"]);
-                    $("input[id='voucherNumber']").val(postageView.current["voucherNumber"]);
-                    $("input[id='voucherQuantumProduct']").val(postageView.current["voucherQuantumProduct"]);
+                    $("input[id='postage']").val(postageView.current["postage"]);
                     $("input[id='note']").val(postageView.current["note"]);
-                    $("select[id='status']").val(postageView.current["status_id"]);
-                    $("input[id='cost']").val(postageView.current["cost"]);
-                    $("input[id='costs_note']").val(postageView.current["costs_note"]);
-
-                    var strVoucherName = "";
-                    for (var i = 0; i < postageView.arrayVoucher.length; i++) {
-                        var objVoucher = _.clone(_.find(postageView.dataVoucher, function (o) {
-                            return o.id == postageView.arrayVoucher[i];
-                        }), true);
-                        strVoucherName += objVoucher.name + ", ";
-                    }
-                    $("input[id='voucher_transport']").val(strVoucherName);
-
+                    $("select[id='month']").val(postageView.current["month"]);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (postageView.action == 'add') {
                         postageView.current = {
-                            vehicles_id: $("#vehicle_id").attr("data-vehicleId"),
-                            customers_id: $("#customer_id").attr("data-customerId"),
-                            products_id: $("#product_id").attr("data-productId"),
-                            quantumProduct: $("input[id='quantumProduct']").val(),
-                            weight: $("input[id='weight']").val(),
-                            cashRevenue: $("input[id='cashRevenue']").val(),
-                            cashDelivery: $("input[id='cashDelivery']").val(),
-                            cashReceive: $("input[id='cashReceive']").val(),
-                            receiver: $("input[id='receiver']").val(),
-                            receiveDate: $("input[id='receiveDate']").val(),
-                            receivePlace: $("input[id='receivePlace']").val(),
-                            deliveryPlace: $("input[id='deliveryPlace']").val(),
-                            voucherNumber: $("input[id='voucherNumber']").val(),
-                            voucherQuantumProduct: $("input[id='voucherQuantumProduct']").val(),
-                            note: $("input[id='note']").val(),
-                            status_id: $("select[id='status']").val(),
-                            cost: $("input[id='cost']").val(),
-                            costs_note: $("input[id='costs_note']").val(),
-                            voucher_transport: postageView.arrayVoucher
+                            customer_id: $("#customer_id").attr("customer_id"),
+                            postage: $("input[id='postage']").val(),
+                            month: $("select[id='month']").val(),
+                            note: $("input[id='note']").val()
                         };
                     } else if (postageView.action == 'update') {
-                        postageView.current.vehicles_id = $("#vehicle_id").attr("data-vehicleId");
-                        postageView.current.customers_id = $("#customer_id").attr("data-customerId");
-                        postageView.current.products_id = $("#product_id").attr("data-productId");
-                        postageView.current.quantumProduct = $("input[id='quantumProduct']").val();
-                        postageView.current.weight = $("input[id='weight']").val();
-                        postageView.current.cashRevenue = $("input[id='cashRevenue']").val();
-                        postageView.current.cashDelivery = $("input[id='cashDelivery']").val();
-                        postageView.current.cashReceive = $("input[id='cashReceive']").val();
-                        postageView.current.receiver = $("input[id='receiver']").val();
-                        postageView.current.receiveDate = $("input[id='receiveDate']").val();
-                        postageView.current.receivePlace = $("input[id='receivePlace']").val();
-                        postageView.current.deliveryPlace = $("input[id='deliveryPlace']").val();
-                        postageView.current.voucherNumber = $("input[id='voucherNumber']").val();
-                        postageView.current.voucherQuantumProduct = $("input[id='voucherQuantumProduct']").val();
+                        postageView.current.customer_id = $("#customer_id").attr("data-customerId");
+                        postageView.current.postage = $("input[id='postage']").val();
+                        postageView.current.month = $("select[id='month']").val();
                         postageView.current.note = $("input[id='note']").val();
-                        postageView.current.status_id = $("select[id='status']").val();
-                        postageView.current.cost = $("input[id='cost']").val();
-                        postageView.current.costs_note = $("input[id='costs_note']").val();
-                        postageView.current.voucher_transport = postageView.arrayVoucher;
                     }
                 },
 
                 editPostage: function (id) {
                     postageView.current = null;
-                    postageView.current = _.clone(_.find(postageView.dataTransport, function (o) {
+                    postageView.current = _.clone(_.find(postageView.dataPostage, function (o) {
                         return o.id == id;
                     }), true);
-
-                    var arrayVoucherTransport = _.clone(_.filter(postageView.dataVoucherTransport, function (o) {
-                        return o.transport_id == id;
-                    }), true);
-
-                    postageView.arrayVoucher = _.map(arrayVoucherTransport, 'voucher_id');
 
                     postageView.fillCurrentObjectToForm();
                     postageView.action = 'update';
                     postageView.showControl();
                 },
                 addPostage: function () {
-                    postageView.arrayVoucher = [];
                     postageView.current = null;
                     postageView.action = 'add';
                     postageView.showControl();
@@ -520,36 +449,14 @@
                 formValidate: function () {
                     $("#frmControl").validate({
                         rules: {
-                            vehicle_id: "required",
                             customer_id: "required",
-                            product_id: "required",
-                            quantumProduct: "required",
-                            weight: "required",
-                            cashRevenue: "required",
-                            cashDelivery: "required",
-                            cashReceive: "required",
-                            receiver: "required",
-                            receiveDate: "required",
-                            receivePlace: "required",
-                            deliveryPlace: "required",
-                            voucherNumber: "required",
-                            voucherQuantumProduct: "required"
+                            postage: "required",
+                            month: "required"
                         },
                         messages: {
-                            vehicle_id: "Vui lòng chọn xe",
                             customer_id: "Vui lòng chọn khách hàng",
-                            product_id: "Vui lòng chọn hàng",
-                            quantumProduct: "Vui lòng nhập số lượng hàng",
-                            weight: "Vui lòng nhập trọng lượng",
-                            cashRevenue: "Vui lòng nhập doanh thu",
-                            cashDelivery: "Vui lòng nhập tiền giao",
-                            cashReceive: "Vui lòng nhập tiền nhận",
-                            receiver: "Vui lòng nhập người nhận",
-                            receiveDate: "Vui lòng nhập ngày nhận",
-                            receivePlace: "Vui lòng nhập nơi nhận",
-                            deliveryPlace: "Vui lòng nhập nơi giao",
-                            voucherNumber: "Vui lòng nhập số chứng từ",
-                            voucherQuantumProduct: "Vui lòng nhập số lượng hàng trên chứng từ"
+                            postage: "Vui lòng nhập cước phí",
+                            month: "Vui lòng chọn tháng"
                         }
                     });
                 },
@@ -563,16 +470,8 @@
                     postageView.formValidate();
                     if ($("#frmControl").valid()) {
                         if (postageView.action != 'delete') {
-                            if ($("#vehicle_id").attr('data-vehicleId') == '') {
-                                postageView.showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
-                                return;
-                            }
                             if ($("#customer_id").attr('data-customerId') == '') {
                                 postageView.showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
-                                return;
-                            }
-                            if ($("#product_id").attr('data-productId') == '') {
-                                postageView.showNotification('warning', 'Vui lòng chọn một hàng có trong danh sách.');
                                 return;
                             }
                         }
@@ -582,15 +481,15 @@
                         var sendToServer = {
                             _token: _token,
                             _action: postageView.action,
-                            _transport: postageView.current
+                            _postage: postageView.current
                         };
                         if (postageView.action == 'delete') {
                             sendToServer._id = postageView.idDelete;
                         }
                         console.log("CLIENT");
-                        console.log(sendToServer._transport);
+                        console.log(sendToServer._postage);
                         $.ajax({
-                            url: url + 'transport/modify',
+                            url: url + 'postage/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer
@@ -600,43 +499,34 @@
                             if (jqXHR.status == 201) {
                                 switch (postageView.action) {
                                     case 'add':
-                                        data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
-                                        postageView.dataTransport.push(data['transport'][0]);
-
-                                        postageView.dataVoucherTransport = _.union(postageView.dataVoucherTransport, data['voucherTransport']);
+                                        postageView.dataPostage.push(data['postage']);
 
                                         postageView.showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
-                                        var Old = _.find(postageView.dataTransport, function (o) {
-                                            return o.id == sendToServer._transport.id;
+                                        var Old = _.find(postageView.dataPostage, function (o) {
+                                            return o.id == sendToServer._postage.id;
                                         });
-                                        var indexOfOld = _.indexOf(postageView.dataTransport, Old);
+                                        var indexOfOld = _.indexOf(postageView.dataPostage, Old);
 
-                                        data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
-                                        postageView.dataTransport.splice(indexOfOld, 1, data['transport'][0]);
-
-                                        _.remove(postageView.dataVoucherTransport, function (currentObject) {
-                                            return currentObject.transport_id === sendToServer._transport.id;
-                                        });
-                                        postageView.dataVoucherTransport = postageView.dataVoucherTransport.concat(data['voucherTransport']);
+                                        postageView.dataPostage.splice(indexOfOld, 1, data['postage']);
 
                                         postageView.showNotification("success", "Cập nhật thành công!");
                                         postageView.hideControl();
                                         break;
                                     case 'delete':
-                                        var Old = _.find(postageView.dataTransport, function (o) {
+                                        var Old = _.find(postageView.dataPostage, function (o) {
                                             return o.id == sendToServer._id;
                                         });
-                                        var indexOfOld = _.indexOf(postageView.dataTransport, Old);
-                                        postageView.dataTransport.splice(indexOfOld, 1);
+                                        var indexOfOld = _.indexOf(postageView.dataPostage, Old);
+                                        postageView.dataPostage.splice(indexOfOld, 1);
                                         postageView.showNotification("success", "Xóa thành công!");
                                         postageView.displayModal("hide", "#modal-confirmDelete");
                                         break;
                                     default:
                                         break;
                                 }
-                                postageView.table.clear().rows.add(postageView.dataTransport).draw();
+                                postageView.table.clear().rows.add(postageView.dataPostage).draw();
                                 postageView.clearInput();
                             } else {
                                 postageView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
