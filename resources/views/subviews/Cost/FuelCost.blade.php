@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 30%;
+        top: 35%;
         display: none;
         right: 0px;
         width: 40%;
