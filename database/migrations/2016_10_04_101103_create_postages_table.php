@@ -15,7 +15,7 @@ class CreatePostagesTable extends Migration
         Schema::create('postages', function (Blueprint $table) {
             $table->increments('id');
             $table->decimal('postage', 18, 0)->default(0);
-            $table->integer('month');
+            $table->dateTime('month');
             $table->integer('customer_id');
             $table->text('note');
             $table->integer('createdBy');

@@ -209,11 +209,11 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
                                         <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
+                                            <div class="col-sm-8 col-xs-8">
                                                 <input type="text" class="form-control cursor-copy"
                                                        id="voucher_transport" data-id="" readonly
                                                        name="voucher_transport"
@@ -225,8 +225,15 @@
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-2 col-xs-2">
+                                            </div>
                                         </div>
-
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="postage"><b>Cước phí</b></label>
+                                        <input type="number" class="form-control" id="postage" name="postage">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
