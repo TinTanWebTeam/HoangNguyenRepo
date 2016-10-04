@@ -18,9 +18,8 @@ class CreateCostsTable extends Migration
             $table->float('literNumber')->nullable();
             $table->dateTime('dateCheckIn')->nullable();
             $table->dateTime('dateCheckOut')->nullable();
-            $table->time('timeIn')->nullable();
-            $table->time('timeOut')->nullable();
-            $table->date('totalHour')->nullable();
+            $table->integer('totalHour');
+            $table->integer('totalDay');
             $table->dateTime('dateRefuel')->nullable();
             $table->integer('createdBy');
             $table->integer('updatedBy');
