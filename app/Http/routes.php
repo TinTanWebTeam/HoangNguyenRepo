@@ -107,8 +107,10 @@ Route::group(['middleware' => 'auth'], function(){
     });
     //Cu?c phí
     Route::group(['middleware' => 'PostageManagement'], function () {
-        Route::get('/customer-postage', 'PostageManagementController@getViewCustomerPostage');
+        Route::get('/customer-postage', 'PostageManagementController@getViewPostage');
         Route::get('/month-postage', 'PostageManagementController@getViewMonthPostage');
+
+        Route::get('postage/postages', 'PostageManagementController@getDataPostage');
     });
     Route::group(['middleware' => 'DivisiveDriver'], function () {
         //get View

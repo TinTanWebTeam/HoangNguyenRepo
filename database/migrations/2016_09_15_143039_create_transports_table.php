@@ -20,6 +20,7 @@ class CreateTransportsTable extends Migration
             $table->decimal('cashDelivery',18,0)->default(0);
             $table->decimal('cashReceive',18,0)->default(0);
             $table->decimal('cashProfit',18,0)->default(0);
+            $table->decimal('postage');
             $table->string('voucherNumber');
             $table->string('voucherQuantumProduct');
             $table->string('receiver');
