@@ -56,7 +56,9 @@ class CostTableSeeder extends Seeder
             'transport_id' => null,
             'price_id' => '4',
             'vehicle_id' => '4',
-            'dateRefuel' => '2016-09-29 16:09:48'
+            'dateCheckIn' => '2016-09-20 16:09:48',
+            'dateCheckOut' => '2016-09-29 16:09:48'
         ]);
+
     }
 }

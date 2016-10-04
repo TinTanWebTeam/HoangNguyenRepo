@@ -190,6 +190,18 @@ class ValidateController extends Controller
         ];
         return Validator::make($data, $rules, $messages);
     }
+    public static function ValidatePetroleum(array $data)
+    {
+        $rules = [
+            'vehicle_id'  => 'required',
+            'literNumber' => 'required'
+        ];
+        $messages = [
+            'vehicle_id.required'  => 'Trường xe bắt buộc nhập',
+            'literNumber.required' => 'Trường lít bắt buộc nhập'
+        ];
+        return Validator::make($data, $rules, $messages);
+    }
 
 
 }

@@ -56,7 +56,7 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
-                            <th style="display: none;">Stt</th>
+
                             <th>Số xe</th>
                             <th>Thời gian đổ</th>
                             <th>Số lít</th>
@@ -79,7 +79,7 @@
 
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary box-shadow">
             <div class="panel-heading">Thêm mới chi phí thay nhớt
                 <div class="menu-toggles pull-right" onclick="petroleumCostView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
@@ -320,7 +320,7 @@
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
                                     <label for="vehicleNumber"><b>Số xe</b></label>
-                                    <input type="text" class="form-control"
+                                    <input type="number" class="form-control"
                                            id="vehicleNumber"
                                            name="vehicleNumber">
                                 </div>
@@ -330,7 +330,7 @@
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
                                     <label for="size"><b>Kích thước</b></label>
-                                    <input type="text" class="form-control"
+                                    <input type="number" class="form-control"
                                            id="size"
                                            name="size">
                                 </div>
@@ -338,7 +338,7 @@
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
                                     <label for="weight"><b>Trọng tải</b></label>
-                                    <input type="text" class="form-control"
+                                    <input type="number" class="form-control"
                                            id="weight"
                                            name="weight">
                                 </div>
@@ -417,6 +417,11 @@
                     $('#divControl').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
+                    petroleumCostView.clearInput();
+                    petroleumCostView.clearValidation();
+                },
+                clearValidation: function () {
+                    $('label[class=error]').hide();
                 },
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
@@ -504,7 +509,7 @@
                 },
                 loadListVehicles: function () {
                     $.ajax({
-                        url: url + 'petroleum-cost/getVehicle',
+                        url: url + 'get-list-vehicle/getVehicle',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
@@ -533,28 +538,7 @@
                     });
                     petroleumCostView.displayModal("show", "#modal-searchVehicle")
                 },
-                loadListGarageAndVehicleType: function () {
-                    petroleumCostView.displayModal('show', '#modal-addVehicle');
-                    $.ajax({
-                        url: url + 'petroleum-cost/getVehicle',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            petroleumCostView.tableGarage = data['tableGarage'];
-                            petroleumCostView.loadSelectBoxGarage(data['tableGarage']);
-                            petroleumCostView.tableVehicleType = data['tableVehicleType'];
-                            petroleumCostView.loadSelectBoxVehicleType(data['tableVehicleType']);
-                            petroleumCostView.tableVehicleNew = data['tableVehicleNew'];
 
-                        } else {
-                            petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-
-                },
                 addPetroleum:function (){
                     petroleumCostView.current = null;
                     petroleumCostView.action = 'add';
@@ -646,7 +630,7 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'id',visible: false},
+
                             {data: 'fullNumber'},
                             {
                                 data: 'dateRefuel',
@@ -676,13 +660,14 @@
                                 }
 
                             }
-                        ]
+                        ],
+                        order: [[1, "desc"]],
                     })
                 },
                 save: function () {
-//                    petroleumCostView.ValidateCost();
+                    petroleumCostView.ValidateCost();
                     petroleumCostView.fillFormDataToCurrentObject();
-//                    if ($("#fromFuelCost").valid()) {
+                    if ($("#fromPetroleum").valid()) {
                         var sendToServer = {
                             _token: _token,
                             _action: petroleumCostView.action,
@@ -746,14 +731,14 @@
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
-//                    } else {
-//                        $("form#fromFuelCost").find("label[class=error]").css("color", "red");
-//                    }
+                    } else {
+                        $("form#fromPetroleum").find("label[class=error]").css("color", "red");
+                    }
                 },
                 loadListGarageAndVehicleType: function () {
                     petroleumCostView.displayModal('show', '#modal-addVehicle');
                     $.ajax({
-                        url: url + 'fuel-cost/Garage-Vehicle',
+                        url: url + 'get-list-option/Garage-Vehicle',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
@@ -775,20 +760,38 @@
                 ValidateVehicle: function () {
                     $("#fromVehicle").validate({
                         rules: {
-                            vehicleNumber: "required",
+                            vehicleNumber:{
+                                required: true,
+                                number:true
+                            },
                             areaCode: "required",
                             vehicleType_id: "required",
                             garage_id: "required",
-                            size: "required",
-                            weight: "required"
+                            size: {
+                                required: true,
+                                number:true
+                            },
+                            weight: {
+                                required: true,
+                                number:true
+                            },
                         },
                         messages: {
-                            vehicleNumber: "Vui lòng nhập số xe",
+                            vehicleNumber: {
+                                required: "Vui lòng nhập số xe",
+                                number:"Số xe phải là số"
+                            },
                             areaCode: "Vui lòng nhập mã vùng",
                             vehicleType_id: "Vui lòng chọn loại xe",
                             garage_id: "Vui lòng chọn nhà xe",
-                            size: "Vui lòng nhập kích thước",
-                            weight: "Vui lòng nhập trọng tải"
+                            size: {
+                                required: "Vui lòng nhập kích thước",
+                                number:"Kích thước phải là số"
+                            },
+                            weight: {
+                                required: "Vui lòng nhập trọng tải",
+                                number:"Trọng tải phải là số"
+                            }
 
                         }
                     });
@@ -817,7 +820,7 @@
                     };
                     if ($("#fromVehicle").valid()) {
                         $.ajax({
-                            url: url + 'fuel-cost-add-vehicle-garage/add-vehicle-garage',
+                            url: url + 'create-vehicle-new/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer
@@ -844,7 +847,7 @@
 
                 },
 
-                loadSelectBoxGarage: function (lstGarage) {
+                loadSelectBoxGarage : function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
                             .find('option')
@@ -876,20 +879,46 @@
                         select.appendChild(el);
                     }
                 },
-                ValidateCostPrice: function () {
-                    $("#fromCostPrice").validate({
+                ValidateCost: function () {
+                    $("#fromPetroleum").validate({
                         rules: {
-                            costPrice: "required",
+                            vehicle_id: "required",
+                            literNumber:{
+                                required: true,
+                                number: true
+                            }
+
                         },
                         messages: {
-                            costPrice: "Vui lòng nhập số tiền",
+                            vehicle_id: "Vui lòng chọn xe",
+                            literNumber: {
+                                required: "Vui lòng nhập số lít",
+                                number:"Số lít phải là số"
+                            }
+
                         }
                     });
-
                 },
                 inputPrice: function () {
                     $("input[id='price']").val(petroleumCostView.tablePrice.price);
                     $("#price").attr('data-priceId', petroleumCostView.tablePrice.id);
+                },
+                ValidateCostPrice: function () {
+                    $("#fromCostPrice").validate({
+                        rules: {
+                            costPrice: {
+                                required: true,
+                                number: true
+                            }
+                        },
+                        messages: {
+                            costPrice: {
+                                required : "Vui lòng nhập số tiền",
+                                number :"Giá tiền phải là số"
+                            }
+                        }
+                    });
+
                 },
                 savePriceType: function () {
                     petroleumCostView.ValidateCostPrice();
@@ -904,7 +933,7 @@
                     };
                     if ($("#fromCostPrice").valid()) {
                         $.ajax({
-                            url: url + 'fuel-price-type/modify',
+                            url: url + 'create-price-new/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer

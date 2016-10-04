@@ -16,7 +16,11 @@ class CreateCostsTable extends Migration
             $table->increments('id');
             $table->decimal('cost',18,0);
             $table->float('literNumber')->nullable();
-            $table->dateTime('dayNumber')->nullable();
+            $table->dateTime('dateCheckIn')->nullable();
+            $table->dateTime('dateCheckOut')->nullable();
+            $table->time('timeIn')->nullable();
+            $table->time('timeOut')->nullable();
+            $table->date('totalHour')->nullable();
             $table->dateTime('dateRefuel')->nullable();
             $table->integer('createdBy');
             $table->integer('updatedBy');

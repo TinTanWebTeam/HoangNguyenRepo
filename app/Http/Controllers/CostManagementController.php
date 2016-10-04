@@ -10,6 +10,7 @@ use App\Vehicle;
 use App\VehicleType;
 use Auth;
 use Carbon\Carbon;
+use DateTime;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class CostManagementController extends Controller
         return view('subviews.Cost.FuelCost');
     }
 
-    public function getDataVehicle()
+    public function getListDataVehicle()
     {
         $tableVehicle = DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
@@ -36,6 +37,28 @@ class CostManagementController extends Controller
         return response()->json($response, 200);
 
 
+    }
+
+    public function getListDataOptionGarageAndVehicle()
+    {
+        $tableVehicleType = VehicleType::all();
+        $tableVehicleNew = DB::table('vehicles')
+            ->where('active', 1)
+            ->select('id', 'areaCode', 'vehicleNumber')
+            ->orderBy('created_at', 'Desc')
+            ->first();
+
+        $tableGarage = DB::table('garages')
+            ->where('active', 1)
+            ->select('id', 'name')
+            ->get();
+        $response = [
+            'msg'              => 'Get data cost success',
+            'tableGarage'      => $tableGarage,
+            'tableVehicleType' => $tableVehicleType,
+            'tableVehicleNew'  => $tableVehicleNew,
+        ];
+        return response()->json($response, 200);
     }
 
     public function getDataFuelCost()
@@ -72,30 +95,6 @@ class CostManagementController extends Controller
         return response()->json($response, 200);
 
     }
-
-    public function getDataGarageAndVehicle()
-    {
-        $tableVehicleType = VehicleType::all();
-        $tableVehicleNew = DB::table('vehicles')
-            ->where('active', 1)
-            ->select('id', 'areaCode', 'vehicleNumber')
-            ->orderBy('created_at', 'Desc')
-            ->first();
-
-        $tableGarage = DB::table('garages')
-            ->where('active', 1)
-            ->select('id', 'name')
-            ->get();
-        $response = [
-            'msg'              => 'Get data cost success',
-            'tableGarage'      => $tableGarage,
-            'tableVehicleType' => $tableVehicleType,
-            'tableVehicleNew'  => $tableVehicleNew,
-        ];
-        return response()->json($response, 200);
-    }
-
-
     public function postModifyFuelCost(Request $request)
     {
         $prices_price = null;
@@ -200,6 +199,7 @@ class CostManagementController extends Controller
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case "delete":
+
                 $costDelete = Cost::findOrFail($request->get('_object')['id']);
                 $costDelete->active = 0;
                 if ($costDelete->update()) {
@@ -217,7 +217,7 @@ class CostManagementController extends Controller
 
     }
 
-    public function postModifyPriceType(Request $request)
+    public function postModifyPriceNew(Request $request)
     {
         $action = $request->get('_action');
         if ($action != 'delete') {
@@ -238,7 +238,39 @@ class CostManagementController extends Controller
                 $pricesNew->createdBy = Auth::user()->id;
                 if ($pricesNew->save()) {
                     $response = [
-                        'msg'    => 'Created price',
+                        'msg'    => 'Created price fuel',
+                        'prices' => $pricesNew
+
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case "addPetroleum":
+                $pricesNew = new Price();
+                $pricesNew->price = $price;
+                $pricesNew->note = $note;
+                $pricesNew->costPrice_id = 3;
+                $pricesNew->createdBy = Auth::user()->id;
+                if ($pricesNew->save()) {
+                    $response = [
+                        'msg'    => 'Created price petroleum',
+                        'prices' => $pricesNew
+
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case "addParkingCost":
+                $pricesNew = new Price();
+                $pricesNew->price = $price;
+                $pricesNew->note = $note;
+                $pricesNew->costPrice_id = 4;
+                $pricesNew->createdBy = Auth::user()->id;
+                if ($pricesNew->save()) {
+                    $response = [
+                        'msg'    => 'Created Price Parking',
                         'prices' => $pricesNew
 
                     ];
@@ -253,7 +285,7 @@ class CostManagementController extends Controller
 
     }
 
-    public function postModifyVehicleAndGarage(Request $request)
+    public function postModifyVehicleNew(Request $request)
     {
         $action = $request->get('_action');
         if ($action != 'delete') {
@@ -301,12 +333,18 @@ class CostManagementController extends Controller
 
     public function getViewPetroleumCost()
     {
-        return view('subviews.Cost.PetroleumCost');
+
+     return view('subviews.Cost.PetroleumCost');
     }
 
     public function getDataPetroleumCost()
     {
-        $petroleumCosts = \DB::table('costs')
+        $tablePrice = DB::table('prices')
+            ->select('prices.id', 'prices.price')
+            ->orderBy('prices.created_at', 'desc')
+            ->where('costPrice_id', 3)
+            ->first();
+        $petroleumCost = \DB::table('costs')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
             ->join('prices', 'prices.id', '=', 'costs.price_id')
             ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
@@ -324,12 +362,134 @@ class CostManagementController extends Controller
 
         $response = [
             'msg'            => 'Get data cost success',
-            'petroleumCosts' => $petroleumCosts,
+            'petroleumCost' => $petroleumCost,
+            'tablePrice'  => $tablePrice
 
         ];
         return response()->json($response, 200);
 
     }
+
+
+    public function postModifyPetroleum(Request $request)
+    {
+        $prices_price = null;
+        $literNumber = null;
+        $vehicle = null;
+        $totalCost = null;
+        $datetime = null;
+        $note = null;
+        $action = $request->get('_action');
+        if ($action != 'delete') {
+            $validator = ValidateController::ValidatePetroleum($request->get('_object'));
+            if ($validator->fails()) {
+                return $validator->errors();
+//                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $prices_price = $request->get('_object')['prices_price'];
+            $prices_id = $request->get('_object')['prices_id'];
+            $literNumber = $request->get('_object')['literNumber'];
+            $vehicle = $request->get('_object')['vehicle_id'];
+            $totalCost = $literNumber * $prices_price;
+            $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
+            $noted = $request->get('_object')['noted'];
+
+        }
+
+
+        switch ($action) {
+            case "add":
+                $petroleumNew = new Cost();
+                $petroleumNew->cost = $totalCost;
+                $petroleumNew ->literNumber = $literNumber;
+                $petroleumNew->dateRefuel = $datetime;
+                $petroleumNew->createdBy = Auth::user()->id;
+                $petroleumNew->updatedBy = Auth::user()->id;
+                $petroleumNew->note = $noted;
+                $petroleumNew->price_id = $prices_id;
+                $petroleumNew->vehicle_id = $vehicle;
+
+                if ($petroleumNew->save()) {
+                    $tablePetrolNew = \DB::table('costs')
+                        ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+                        ->join('prices', 'prices.id', '=', 'costs.price_id')
+                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                        ->where('costs.active', 1)
+                        ->where('costs.id', $petroleumNew->id)
+                        ->where('prices.costPrice_id', 3)
+                        ->select(
+                            'prices.price as prices_price',
+                            'costs.*',
+                            'costs.note as noteCost ',
+                            'costs.cost as totalCost',
+                            'vehicles.areaCode as vehicles_code',
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber')
+                        ->get();
+
+                    $response = [
+                        'msg'       => 'Created vehicle',
+                        'tablePetrolNew' => $tablePetrolNew
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case "update":
+
+                $petroleumUpdate = Cost::findOrFail($request->get('_object')['id']);
+                $petroleumUpdate->literNumber = $literNumber;
+                $petroleumUpdate->cost = $totalCost;
+                $petroleumUpdate->dateRefuel = $datetime;
+                $petroleumUpdate->note = $noted;
+                $petroleumUpdate->vehicle_id = $vehicle;
+                $petroleumUpdate->price_id = $prices_id;
+                $petroleumUpdate->updatedBy = Auth::user()->id;
+
+                if ($petroleumUpdate->update()) {
+                    $tablePetrolUpdate = \DB::table('costs')
+                        ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+                        ->join('prices', 'prices.id', '=', 'costs.price_id')
+                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                        ->where('costs.active', 1)
+                        ->where('costs.id', $request->get('_object')['id'])
+                        ->where('prices.costPrice_id', 3)
+                        ->select(
+                            'prices.price as prices_price',
+                            'costs.*',
+                            'costs.note as noteCost',
+                            'costs.cost as totalCost',
+                            'vehicles.areaCode as vehicles_code',
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                            'vehicles.note as vehicleNote')
+                        ->get();
+
+                    $response = [
+                        'msg'       => 'Updated Cost',
+                        'tablePetrolUpdate' => $tablePetrolUpdate
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+            case "delete":
+                $PetroDelete = Cost::findOrFail($request->get('_object')['id']);
+                $PetroDelete->active = 0;
+                if ($PetroDelete->update()) {
+                    $response = [
+                        'msg' => 'Deleted Petroleum'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
+
+    }
+
 
 
     public function getViewParkingCost()
@@ -339,13 +499,35 @@ class CostManagementController extends Controller
 
     public function getDataParkingCost()
     {
+        $tablePrice = DB::table('prices')
+            ->select('prices.id', 'prices.price')
+            ->orderBy('prices.created_at', 'desc')
+            ->where('costPrice_id', 4)
+            ->first();
         $parkingCosts = \DB::table('costs')
-            ->join('prices', 'costs.price_id', '=', 'prices.id')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-            ->select('costs.*', 'prices.price as prices_price', 'vehicles.vehicleNumber as vehicles_vehicleNumber')
-            ->where('prices.costPrice_id', '=', '3')
+            ->join('prices', 'prices.id', '=', 'costs.price_id')
+            ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+            ->where('costs.active', 1)
+            ->where('prices.costPrice_id', 4)
+            ->select(
+                'prices.price as prices_price',
+                'costs.*',
+                'costs.note as noteCost',
+                'costs.cost as totalCost',
+                'vehicles.areaCode as vehicles_code',
+                'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                'vehicles.note as vehicleNote')
             ->get();
-        return $parkingCosts;
+
+        $response = [
+            'msg'            => 'Get data ParkingCost success',
+            'tableParkingCost'      => $parkingCosts,
+            'tablePrice'  => $tablePrice
+
+
+        ];
+        return response()->json($response, 200);
     }
 
 

@@ -78,25 +78,30 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/parking-cost', 'CostManagementController@getViewParkingCost');
         Route::get('/other-cost', 'CostManagementController@getViewOtherCost');
         /*post view*/
-        Route::post('/petroleum-cost','CostManagementController@getDataPetroleumCost');
-        Route::post('/parking-cost', 'CostManagementController@getDataParkingCost');
-        Route::post('/other-cost', 'CostManagementController@getDataParkingCost');
-        
-        
-        /*Get Data View */
+          Route::post('/other-cost', 'CostManagementController@getDataOtherCost');
+
+        /*Get List Vehicle*/
+        Route::get('/get-list-vehicle/getVehicle', 'CostManagementController@getListDataVehicle');
+        Route::get('/get-list-option/Garage-Vehicle', 'CostManagementController@getListDataOptionGarageAndVehicle');
+        /*Post Create Vehicle + PriceNew*/
+        Route::post('/create-price-new/modify', 'CostManagementController@postModifyPriceNew');
+        Route::post('/create-vehicle-new/modify', 'CostManagementController@postModifyVehicleNew');
+
+
+
+        /*Get Data View fuelCost */
         Route::get('/fuel-cost/fuelCost', 'CostManagementController@getDataFuelCost');
-        Route::get('/fuel-cost/getVehicle', 'CostManagementController@getDataVehicle');
-        Route::get('/fuel-cost/Garage-Vehicle', 'CostManagementController@getDataGarageAndVehicle');
+        /*Get Data View petroleum */
         Route::get('/petroleum-cost/petroleum-cost', 'CostManagementController@getDataPetroleumCost');
-
-
-
+         /*Get Data View ParkingCost */
+        Route::get('/parking-cost/parkingCost', 'CostManagementController@getDataParkingCost');
 
         /*Post Data server */
+        /*Cost*/
         Route::post('/fuel-cost/modify', 'CostManagementController@postModifyFuelCost');
-        Route::post('/fuel-price-type/modify', 'CostManagementController@postModifyPriceType');
+         /*Petroleum*/
+        Route::post('/petroleum/modify', 'CostManagementController@postModifyPetroleum');
 
-        Route::post('/fuel-cost-add-vehicle-garage/add-vehicle-garage', 'CostManagementController@postModifyVehicleAndGarage');
 
 
     });
