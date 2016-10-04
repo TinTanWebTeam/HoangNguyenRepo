@@ -1,10 +1,5 @@
 <style>
-    .btn-del-edit {
-        float: left;
-        padding-right: 5px;
-    }
-
-    #frmControl {
+    #divControl {
         z-index: 3;
         position: fixed;
         top: 53%;
@@ -14,29 +9,16 @@
         height: 100%;
     }
 
-    .fixed {
-        top: 72px;
-        position: fixed;
-        right: 20px;
-        z-index: 2;
-    }
-
-    .menu-toggles {
-        cursor: pointer
-    }
-
-    .icon-center {
-        line-height: 130%;
-        padding-left: 3%;
-        font-size: 13px;
-    }
-
-    ol.breadcrumb {
-        border-bottom: 2px solid #e7e7e7
-    }
-
     div.col-lg-12 {
         height: 40px;
+    }
+
+    @media (max-height: 500px) {
+        #divControl {
+            top: 53px;
+            overflow: auto;
+            height: 80vh;
+        }
     }
 </style>
 
@@ -55,9 +37,7 @@
                         <div class="btn btn-warning btn-circle btn-md">
                             <i class="glyphicon glyphicon-upload icon-center"></i>
                         </div>
-                        <div class="btn btn-primary btn-circle btn-md" onclick="debtCustomerView.show()">
-                            <i class="glyphicon glyphicon-plus icon-center"></i>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -67,32 +47,20 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
-                            <th>Mã khách hàng</th>
-                            <th>Tổng nợ</th>
-                            <th>Đã trả</th>
-                            <th>Trạng thái</th>
-                            <th>Sửa/ Xóa</th>
+
+                            <th>Khách hàng</th>
+                            <th>Số xe</th>
+                            <th>Nơi giao</th>
+                            <th>Số chứng từ</th>
+                            <th>Doanh thu</th>
+                            <th>Nợ</th>
+                            <th>Người nhận</th>
+                            <th>Ngày nhận</th>
+                            <th>Thanh toán</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-success btn-circle">
-                                        <i class="glyphicon glyphicon-pencil icon-center"></i>
-                                    </div>
-                                </div>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-danger btn-circle">
-                                        <i class="glyphicon glyphicon-remove icon-center"></i>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -100,90 +68,195 @@
         </div> <!-- end table-reposive -->
     </div> <!-- end .col-md-12-->
 </div> <!-- end .row -->
-<div id="frmControl" class="col-md-offset-4 col-md-8">
-    <div class="panel panel-primary">
-        <div class="panel-heading">Thanh toán cước phí
-            <div class="menu-toggles pull-right" onclick="debtCustomerView.hide()">
-                <i class="glyphicon glyphicon-remove"></i>
+
+<div class="row">
+    <div id="divControl" class="col-md-offset-4 col-md-8">
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">Thanh toán cước phí
+                <div class="menu-toggles pull-right" onclick="debtCustomerView.hide()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <form role="form" id="formUser">
+                    <div class="form-body">
+                        <div class="col-md-12 ">
+                            <div class="row ">
+                                <div class="col-md-12 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="FullName"><b>Khách hàng</b></label>
+                                        <input type="text" class="form-control"
+                                               id="FullName"
+                                               name="FullName"
+                                               placeholder="Tên khách hàng"
+                                               autofocus>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="Payments"><b>Tiền thanh toán</b></label>
+                                        <input type="text" class="form-control"
+                                               id="Payments"
+                                               name="Payments"
+                                               placeholder="00.00">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <div class="panel-body">
-            <form role="form" id="formUser">
-                <div class="form-body">
-                    <div class="col-md-12 ">
-                        <div class="row ">
-                            <div class="col-md-12 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="FullName"><b>Khách hàng</b></label>
-                                    <input type="text" class="form-control"
-                                           id="FullName"
-                                           name="FullName"
-                                           placeholder="Tên khách hàng"
-                                           autofocus>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="Payments"><b>Tiền thanh toán</b></label>
-                                    <input type="text" class="form-control"
-                                           id="Payments"
-                                           name="Payments"
-                                           placeholder="00.00">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-actions noborder">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="">
-                                    Hoàn tất
-                                </button>
-                                <button type="button" class="btn default" onclick="">Huỷ</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
     </div>
-</div> <!-- end #frmControl -->
+</div>
+
+<!-- end #frmControl -->
 
 <script>
     if (typeof debtCustomerView === 'undefined') {
         debtCustomerView = {
+            tableCustomer: null,
             table: null,
-            show: function () {
-                $('.menu-toggle').hide();
-                $('#frmControl').slideDown();
-            },
-            hide: function () {
-                $('#frmControl').slideUp('', function () {
-                    $('.menu-toggle').show();
-                });
-            },
+
             loadData: function () {
+                $.ajax({
+                    url: url + 'get-data-customer',
+                    type: "GET",
+                    dataType: "json"
+                }).done(function (data, textStatus, jqXHR) {
+                    if (jqXHR.status == 200) {
+                        debtCustomerView.tableCustomer = data['transports'];
+                        debtCustomerView.fillDataToDatatable(data['transports']);
+
+
+                    } else {
+                        debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                });
+
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+            },
+            fillDataToDatatable: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    data[i].fullNumber = data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+                    data[i].receive = data[i]['cashRevenue'] - data[i]['cashReceive'];
+                }
+
                 debtCustomerView.table = $('#table-data').DataTable({
                     language: languageOptions,
-                    drawCallback: function () {
-                        var api = this.api(),
-                                sum = 0;
-                        api.rows(":not('.sgrouptotal')").every(function () {
-                            sum += parseFloat(this.data()[1]);
-                        });
-                        $(api.column(1).footer()).text(sum);
-                        api.rows(":not('.sgrouptotal')").every(function () {
-                            sum += parseFloat(this.data()[2]);
-                        });
-                        $(api.column(2).footer()).text(sum);
-                    }
-                });
+                    data: data,
+                    columns: [
+
+                        {data: 'customers_fullName'},
+                        {data: 'fullNumber'},
+                        {data: 'deliveryPlace'},
+                        {data: 'voucherNumber'},
+
+                        {
+                            data: 'cashRevenue',
+                            render: $.fn.dataTable.render.number(".", ",", 0)
+                        },
+                        {
+                            data: 'receive',
+                            render: $.fn.dataTable.render.number(".", ",", 0)
+                        },
+                        {data: 'receiver'},
+                        {data: 'receiveDate'},
+                        {
+                            render: function (data, type, full, meta) {
+                                var tr = '';
+                                tr += '<div class="btn-del-edit">';
+                                tr += '<div class="btn btn-success  btn-circle" onclick="fuelCostView.editFuelCost(' + full.id + ')">';
+                                tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                tr += '</div>';
+                                tr += '</div>';
+                                tr += '<div class="btn-del-edit">';
+                                tr += '<div class="btn btn-danger btn-circle" onclick="fuelCostView.msgDelete(' + full.id + ')">';
+                                tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                tr += '</div>';
+                                tr += '</div>';
+                                return tr;
+                            }
+                        }
+                    ],
+
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            extend: 'copyHtml5',
+                            text: 'Sao chép',
+                            exportOptions: {
+                                columns: [0, ':visible']
+                            }
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: 'Xuất Excel',
+                            exportOptions: {
+                                columns: ':visible'
+                            },
+                            customize: function (xlsx) {
+                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            text: 'Xuất PDF',
+                            message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
+                            customize: function (doc) {
+                                doc.content.splice(0, 1);
+                                doc.styles.tableBodyEven.alignment = 'center';
+                                doc.styles.tableBodyOdd.alignment = 'center';
+                                doc.content.columnGap = 10;
+                                doc.pageOrientation = 'landscape';
+                                for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                    for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                        doc.content[1].table.body[i].splice(6, 1);
+                                    }
+                                }
+                                doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
+                            }
+                        },
+                        {
+                            extend: 'colvis',
+                            text: 'Ẩn cột'
+                        }
+                    ]
+                })
             }
         };
         debtCustomerView.loadData();

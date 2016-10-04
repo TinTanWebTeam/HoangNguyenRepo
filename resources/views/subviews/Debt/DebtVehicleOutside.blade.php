@@ -31,18 +31,13 @@
                 <div class="col-lg-12">
                     <ol class="breadcrumb">
                         <li><a href="javascript:;">Trang chủ</a></li>
-                        <li><a href="javascript:;">QL khách hàng</a></li>
-                        <li class="active">Đơn hàng</li>
+                        <li><a href="javascript:;">QL công nợ</a></li>
+                        <li class="active">Nhà xe ngoài</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
                         <div class="btn btn-warning btn-circle btn-md"
                              data-toggle="tooltip" data-placement="left" title="Xuất hóa đơn">
                             <i class="glyphicon glyphicon-list-alt icon-center"></i>
-                        </div>
-                        <div class="btn btn-primary btn-circle btn-md"
-                             data-toggle="tooltip" data-placement="left" title="Thêm mới"
-                             onclick="debtGarageView.addTransport();">
-                            <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
                 </div>
@@ -55,18 +50,15 @@
                             <thead>
                             <tr class="active">
                                 <th>Mã</th>
+                                <th>Khách hàng</th>
                                 <th>Số xe</th>
-                                <th>Tên hàng</th>
                                 <th>Nơi nhận</th>
                                 <th>Nơi giao</th>
-                                <th>Khách hàng</th>
                                 <th>Doanh thu</th>
-                                <th>Giao xe</th>
-                                <th>Nhận</th>
-                                <th>Lợi nhuận</th>
+                                <th>Nợ</th>
                                 <th>Người nhận</th>
                                 <th>Ngày nhận</th>
-                                <th>Sửa/ Xóa</th>
+                                <th>Thanh toán</th>
                             </tr>
                             </thead>
                             <tbody>
