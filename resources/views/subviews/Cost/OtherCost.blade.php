@@ -65,9 +65,8 @@
                         <thead>
                         <tr class="active">
                             <th>Số xe</th>
+                            <th>Chi phí</th>
                             <th>Ghi chú</th>
-                            <th>Đơn giá</th>
-                            <th>Tổng chi phí</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
@@ -179,9 +178,9 @@
                         data: data,
                         columns: [
                             {data: 'vehicles_vehicleNumber'},
-                            {data: 'note'},
                             {data: 'prices_price'},
-                            {data: 'cost'},
+                            {data: 'note'},
+
                             {
                                 render: function () {
                                     var tr = '';

@@ -34,8 +34,8 @@
                         <li class="active">Khách hàng</li>
                     </ol>
                     <div class="menu-toggle  pull-right fixed">
-                        <div class="btn btn-warning btn-circle btn-md">
-                            <i class="glyphicon glyphicon-upload icon-center"></i>
+                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn">
+                            <i class="glyphicon glyphicon-list-alt icon-center"></i>
                         </div>
 
                     </div>
@@ -200,13 +200,13 @@
                             render: function (data, type, full, meta) {
                                 var tr = '';
                                 tr += '<div class="btn-del-edit">';
-                                tr += '<div class="btn btn-success  btn-circle" onclick="fuelCostView.editFuelCost(' + full.id + ')">';
-                                tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                tr += '<div class="btn btn-success  btn-circle" title="Thanh toán" onclick="fuelCostView.editFuelCost(' + full.id + ')">';
+                                tr += '<i class="glyphicon glyphicon-credit-card"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
                                 tr += '<div class="btn-del-edit">';
-                                tr += '<div class="btn btn-danger btn-circle" onclick="fuelCostView.msgDelete(' + full.id + ')">';
-                                tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                tr += '<div class="btn btn-info btn-circle" onclick="fuelCostView.msgDelete(' + full.id + ')">';
+                                tr += '<i class="fa fa-money" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
                                 return tr;
