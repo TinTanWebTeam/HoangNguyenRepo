@@ -70,6 +70,9 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'DebtManagement'], function () {
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');
         Route::get('/debt-vehicle-outside', 'DebtManagementController@getViewDebtVehicleOutside');
+        /*Get Data view*/
+        Route::get('get-data-customer','DebtManagementController@getDataDebtCustomer');
+
     });
     //Chi phí
     Route::group(['middleware' => 'CostManagement'], function () {
