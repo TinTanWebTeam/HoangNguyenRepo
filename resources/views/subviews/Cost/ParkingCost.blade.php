@@ -14,7 +14,7 @@
     }
 
 </style>
-<input onchange="parkingCostView.formatMoney(this)">
+
 <div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -430,9 +430,6 @@
                 tableVehicleNew:null,
                 idDelete: null,
                 current: null,
-                formatMoney:function(o){
-                    o.value = o.value.replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1.")
-                },
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -646,9 +643,15 @@
                                 }
                             },
 
-                            {data: 'literNumber'},
-                            {data: 'prices_price'},
-                            {data: 'totalCost'},
+                            {data: 'literNumber',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {data: 'prices_price',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {data: 'totalCost',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
                             {data: 'noteCost'},
                             {
                                 render: function (data, type, full, meta) {

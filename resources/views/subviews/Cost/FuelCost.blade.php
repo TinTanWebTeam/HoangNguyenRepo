@@ -265,8 +265,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
                                     <input type="number" class="form-control"
-                                           id="costPrice"
-                                           name="costPrice">
+                                           id="costPrice" name="costPrice">
                                 </div>
                             </div>
                         </div>
@@ -400,6 +399,8 @@
 
 <script>
     $(function () {
+
+
         $('#datetimepicker').datetimepicker();
         if (typeof (fuelCostView) === 'undefined') {
             fuelCostView = {
@@ -420,7 +421,6 @@
                     $('#divControl').fadeIn(300);
 
                 },
-
                 hide: function () {
                     $('#divControl').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
@@ -435,6 +435,7 @@
                         fuelCostView.action = null;
                         fuelCostView.idDelete = null;
                     }
+
 
                 },
                 showNotification: function (type, msg) {
@@ -492,7 +493,7 @@
                     };
                 },
                 inputPrice: function () {
-                    $("input[id='price']").val(fuelCostView.tablePrice.price);
+                    $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.tablePrice.price, '.', '.'));
                     $("#price").attr('data-priceId', fuelCostView.tablePrice.id);
                 },
                 cancel: function () {
@@ -531,11 +532,10 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(totalPrice);
+                    $("input[id='totalprice']").val(fuelCostView.formatMoney(totalPrice, '.', '.'));
                     $("input[id='noted']").val(fuelCostView.current["note"]);
-                    $("input[id='price']").val(fuelCostView.current["prices_price"]);
+                    $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.current["prices_price"], '.', '.'));
                     $("#price").attr('data-priceId', fuelCostView.current["price_id"]);
-
 
                 },
                 fillFormDataToCurrentObject: function () {
@@ -566,7 +566,7 @@
 
                     /* form addCost*/
                     $("input[id='vehicle_id']").val('');
-                    $("#vehicle_id").attr('data-id','');
+                    $("#vehicle_id").attr('data-id', '');
                     $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
                     $("input[id='totalprice']").val('');
@@ -614,9 +614,15 @@
                                 }
                             },
 
-                            {data: 'literNumber'},
-                            {data: 'prices_price'},
-                            {data: 'totalCost'},
+                            {data: 'literNumber',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {data: 'prices_price',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {data: 'totalCost',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
                             {data: 'noteCost'},
                             {
                                 render: function (data, type, full, meta) {
@@ -642,7 +648,7 @@
                     $("#fromFuelCost").validate({
                         rules: {
                             vehicle_id: "required",
-                            literNumber:{
+                            literNumber: {
                                 required: true,
                                 number: true
                             }
@@ -652,20 +658,31 @@
                             vehicle_id: "Vui lòng chọn xe",
                             literNumber: {
                                 required: "Vui lòng nhập số lít",
-                                number:"Số lít phải là số"
+                                number: "Số lít phải là số"
                             }
 
                         }
                     });
                 },
-//                formatMoney:function(o){
-//                    o.value = o.value.replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1.")
-//                },
+
+                formatMoney: function (nStr, decSeperate, groupSeperate) {
+                    nStr += '';
+                    x = nStr.split(decSeperate);
+                    x1 = x[0];
+                    x2 = x.length > 1 ? '.' + x[1] : '';
+                    var rgx = /(\d+)(\d{3})/;
+                    while (rgx.test(x1)) {
+                        x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
+                    }
+                    return x1 + x2;
+                },
+
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
+                    price = price.replace('.','');
                     var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(totalPrice);
+                    $("input[id=totalprice]").val(fuelCostView.formatMoney(totalPrice,'.','.'));
                 },
                 ValidateCostPrice: function () {
                     $("#fromCostPrice").validate({
@@ -677,8 +694,8 @@
                         },
                         messages: {
                             costPrice: {
-                                required : "Vui lòng nhập số tiền",
-                                number :"Giá tiền phải là số"
+                                required: "Vui lòng nhập số tiền",
+                                number: "Giá tiền phải là số"
                             }
                         }
                     });
@@ -814,18 +831,18 @@
                         rules: {
                             vehicleNumber: {
                                 required: true,
-                                number:true
+                                number: true
                             },
                             areaCode: "required",
                             vehicleType_id: "required",
                             garage_id: "required",
                             size: {
                                 required: true,
-                                number:true
+                                number: true
                             },
                             weight: {
                                 required: true,
-                                number:true
+                                number: true
                             },
                         },
                         messages: {

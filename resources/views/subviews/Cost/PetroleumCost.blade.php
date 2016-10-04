@@ -427,7 +427,10 @@
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
                     var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(totalPrice);
+                    price = price.replace('.','');
+                    var totalPrice = lit * price;
+                    $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice,'.','.'));
+
 
                 },
                 clearInput: function () {
@@ -615,12 +618,24 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(petroleumCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(totalPrice);
+                    $("input[id='totalprice']").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
+
                     $("input[id='noted']").val(petroleumCostView.current["note"]);
-                    $("input[id='price']").val(petroleumCostView.current["prices_price"]);
+                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.current["prices_price"], '.', '.'));
                     $("#price").attr('data-priceId', petroleumCostView.current["price_id"]);
 
 
+                },
+                formatMoney: function (nStr, decSeperate, groupSeperate) {
+                    nStr += '';
+                    x = nStr.split(decSeperate);
+                    x1 = x[0];
+                    x2 = x.length > 1 ? '.' + x[1] : '';
+                    var rgx = /(\d+)(\d{3})/;
+                    while (rgx.test(x1)) {
+                        x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
+                    }
+                    return x1 + x2;
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -639,9 +654,15 @@
                                 }
                             },
 
-                            {data: 'literNumber'},
-                            {data: 'prices_price'},
-                            {data: 'totalCost'},
+                            {data: 'literNumber',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {data: 'prices_price',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {data: 'totalCost',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
                             {data: 'noteCost'},
                             {
                                 render: function (data, type, full, meta) {
