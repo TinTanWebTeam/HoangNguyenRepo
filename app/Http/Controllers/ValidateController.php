@@ -216,5 +216,19 @@ class ValidateController extends Controller
         ];
         return Validator::make($data, $rules, $messages);
     }
+    public static function ValidateOtherCost(array $data)
+    {
+        $rules = [
+            'vehicle_id'  => 'required',
+            'cost' => 'required',
+
+        ];
+        $messages = [
+            'vehicle_id.required'  => 'Trường xe bắt buộc nhập',
+            'cost.required' => 'Trường cước phí bắt buộc nhập',
+
+        ];
+        return Validator::make($data, $rules, $messages);
+    }
 
 }

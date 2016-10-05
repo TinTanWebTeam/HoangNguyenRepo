@@ -400,7 +400,6 @@
 <script>
     $(function () {
 
-
         $('#datetimepicker').datetimepicker();
         if (typeof (fuelCostView) === 'undefined') {
             fuelCostView = {
@@ -570,10 +569,14 @@
                     $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
                     $("input[id='totalprice']").val('');
-
+                },
+                clearInputPrice: function () {
                     /* Form addPrice*/
                     $("input[id='costPrice']").val('');
-
+                    $("input[id='literNumber']").val('');
+                    $("input[id='totalprice']").val('');
+                },
+                clearInputVehicle: function () {
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
                     $("input[id='vehicleNumber']").val('');
@@ -614,13 +617,16 @@
                                 }
                             },
 
-                            {data: 'literNumber',
+                            {
+                                data: 'literNumber',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
-                            {data: 'prices_price',
+                            {
+                                data: 'prices_price',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
-                            {data: 'totalCost',
+                            {
+                                data: 'totalCost',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {data: 'noteCost'},
@@ -680,9 +686,9 @@
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
-                    price = price.replace('.','');
+                    price = price.replace('.', '');
                     var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(fuelCostView.formatMoney(totalPrice,'.','.'));
+                    $("input[id=totalprice]").val(fuelCostView.formatMoney(totalPrice, '.', '.'));
                 },
                 ValidateCostPrice: function () {
                     $("#fromCostPrice").validate({
@@ -899,6 +905,7 @@
                                     fuelCostView.displayModal("hide", "#modal-addVehicle");
                                     fuelCostView.tableVehicleNew = data['vehicleNew'];
                                     fuelCostView.inputVehicle();
+                                    fuelCostView.clearInputVehicle();
                                 } else {
                                     fuelCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                 }
@@ -969,8 +976,8 @@
                                 fuelCostView.displayModal("hide", "#modal-addCostPrice");
                                 fuelCostView.tablePrice = data['prices'];
                                 fuelCostView.inputPrice();
-                                $("input[id='literNumber']").val('');
-                                $("input[id='totalprice']").val('');
+                                fuelCostView.clearInputPrice();
+
 
                             } else {
                                 fuelCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");

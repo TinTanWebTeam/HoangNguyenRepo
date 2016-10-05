@@ -437,14 +437,18 @@
 
                     /* form addCost*/
                     $("input[id='vehicle_id']").val('');
-                    $("#vehicle_id").attr('data-id','');
+                    $("#vehicle_id").attr('data-id', '');
                     $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
                     $("input[id='totalprice']").val('');
-
+                },
+                clearInputPrice: function () {
                     /* Form addPrice*/
                     $("input[id='costPrice']").val('');
-
+                    $("input[id='literNumber']").val('');
+                    $("input[id='totalprice']").val('');
+                },
+                clearInputVehicle: function () {
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
                     $("input[id='vehicleNumber']").val('');
@@ -852,6 +856,7 @@
                                     petroleumCostView.displayModal("hide", "#modal-addVehicle");
                                     petroleumCostView.tableVehicleNew = data['vehicleNew'];
                                     petroleumCostView.inputVehicle();
+                                    petroleumCostView.clearInputVehicle();
                                 } else {
                                     petroleumCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                 }
@@ -964,8 +969,7 @@
                                 petroleumCostView.displayModal("hide", "#modal-addCostPrice");
                                 petroleumCostView.tablePrice = data['prices'];
                                 petroleumCostView.inputPrice();
-                                $("input[id='literNumber']").val('');
-                                $("input[id='totalprice']").val('');
+                                petroleumCostView.clearInputPrice();
 
                             } else {
                                 petroleumCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
