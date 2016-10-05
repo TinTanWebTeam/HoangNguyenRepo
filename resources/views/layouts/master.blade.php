@@ -88,6 +88,8 @@
 <!-- Toastr -->
 <script src="{{ URL::to('libs/toastr/toastr.min.js') }}"></script>
 
+
+
 <!-- Global -->
 <script src=" {{ URL::to('src/js/global.js') }} "></script>
 <!-- datetimepicker -->

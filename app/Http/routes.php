@@ -106,6 +106,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/fuel-cost/modify', 'CostManagementController@postModifyFuelCost');
          /*Petroleum*/
         Route::post('/petroleum/modify', 'CostManagementController@postModifyPetroleum');
+        /*Parking Cost*/
+        Route::post('/parking-cost/modify', 'CostManagementController@postModifyParkingCost');
 
 
         /*Other Cost*/

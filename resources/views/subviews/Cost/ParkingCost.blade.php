@@ -2,10 +2,10 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 28%;
+        top: 20%;
         display: none;
         right: 0px;
-        width: 40%;
+        width: 50%;
         height: 100%;
     }
 
@@ -62,6 +62,7 @@
                             <th>Số xe</th>
                             <th>Ngày vào</th>
                             <th>Ngày ra</th>
+                            <th>Số ngày đậu</th>
                             <th>Số giờ đậu</th>
                             <th>Đơn giá</th>
                             <th>Tổng chi phí</th>
@@ -91,11 +92,9 @@
 
             <div class="panel-body">
                 <form role="form" id="formParkingCost">
-                    <input type="time" style="display: block" id="timeIn">
-                    <input type="time" style="display: block" id="timeOut">
                     <div class="form-body">
-                        <div class="col-md-12 ">
-                            <div class="row ">
+                        <div class="col-md-12">
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
@@ -137,48 +136,57 @@
                                         </div>
                                     </div>
                                 </div>
+
+                            </div>
+                            <div class="row">
+                                <div class='col-md-6'>
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker'>
+                                            <label for="dateCheckIn"><b>Ngày đậu xe</b></label>
+                                            <input type='text' id="dateCheckIn" name="dateCheckIn"
+                                                   value="{{date('d-m-Y H-i')}}" class="form-control"/>
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class='col-md-6'>
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker'>
+                                            <label for="dateCheckOut"><b>Ngày lấy xe</b></label>
+                                            <input type='text' id="dateCheckOut" name="dateCheckOut"
+                                                   value="{{date('d-m-Y H-i')}}" class="form-control"/>
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="totalDay"><b>Số ngày đậu</b></label>
+                                        <input type="text" class="form-control"
+                                               id="totalDay" readonly
+                                               name="totalDay">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="totalHour"><b>Số giờ đậu</b></label>
+                                        <input type="text" class="form-control"
+                                               id="totalHour" readonly
+                                               name="totalHour">
+                                    </div>
+                                </div>
                             </div>
 
-                                <div class="row ">
-                                    <div class="col-md-6 ">
-                                        <div class="form-group">
-                                            <div class='input-group date' id='datetimeCheckIn'>
-                                                <label for="datetimeCheckIn"><b>Ngày đậu xe</b></label>
-
-                                                <input type='text' id="datetimeCheckIn" name="datetimeCheckIn"
-                                                       value="{{date('d-m-Y H-i')}}" class="form-control"/>
-                                                <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 ">
-                                        <div class="form-group">
-                                            <div class='input-group date' id='datetimeCheckOut'>
-                                                <label for="datetimeCheckOut"><b>Ngày lấy xe</b></label>
-                                                <input type='text' id="datetimeCheckOut" name="datetimeCheckOut"
-                                                       value="{{date('d-m-Y H-i')}}" class="form-control"/>
-                                                <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
                             <div class="row ">
-                                <div class="col-md-6 ">
-                                    <div class="form-group dar form-md-line-input ">
-                                        <label for="totalTime"><b>Số ngày đậu</b></label>
-                                        <input type="text" class="form-control"
-                                               id="totalTime" readonly
-                                               name="totalTime"
-                                               value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 ">
+                                <div class="col-md-6">
                                     <div class="form-group form-md-line-input ">
                                         <label for="TotalPrice"><b>Tổng chi phí</b></label>
                                         <input type="text" class="form-control"
@@ -186,17 +194,15 @@
                                                name="TotalPrice"
                                                placeholder="00.00">
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="row ">
-                                <div class="col-md-12 ">
+                                </div>
+                                <div class="col-md-6">
                                     <div class="form-group form-md-line-input ">
                                         <label for="note"><b>Ghi chú</b></label>
-                                        <input type="text" class="form-control"
+                                        <textarea type="text" class="form-control"
                                                id="note"
                                                name="note"
-                                               placeholder="Ghi chú">
+                                               placeholder="Ghi chú"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +224,6 @@
         </div>
     </div> <!-- end #frmControl -->
 </div>
-
 
 
 <!-- Modal add CostPrice -->
@@ -276,10 +281,6 @@
     </div>
 </div>
 <!-- end Modal add CostPrice -->
-
-
-
-
 
 
 <!-- Modal list searchVehicle -->
@@ -411,10 +412,38 @@
 </div>
 <!-- end Modal add Vehicle -->
 
-
-
+<p id="basicExample">
+    <input type="text" class="datestart" />
+    <input type="text" class="timestart" /> to
+    <input type="text" class="timeend" />
+    <input type="text" class="dateend" />
+</p>
 <script>
     $(function () {
+
+//        $('#timeIn').timepicker({
+//            'showDuration': true,
+//            'timeFormat': 'g:ia'
+//        });
+//        $('#timeOut').timepicker({
+//            'showDuration': true,
+//            'timeFormat': 'g:ia'
+//        });
+//        $('#dateCheckIn').datepicker({
+//            'format': 'm/d/yyyy',
+//            'autoclose': true
+//        });
+//        $('#dateCheckOut').datepicker({
+//            'format': 'm/d/yyyy',
+//            'autoclose': true
+//        });
+
+        // initialize datepair
+//        var basicExampleEl = document.getElementById('basicExample');
+//        var datepair = new Datepair(basicExampleEl);
+
+
+
         $('#datetimeCheckIn').datetimepicker();
         $('#datetimeCheckOut').datetimepicker();
         if (typeof (parkingCostView) === 'undefined') {
@@ -422,12 +451,12 @@
                 table: null,
                 data: null,
                 action: null,
-                tableVehicle:null,
+                tableVehicle: null,
                 tableParkingCost: null,
-                tablePrice :null,
+                tablePrice: null,
                 tableGarage: null,
-                tableVehicleType:null,
-                tableVehicleNew:null,
+                tableVehicleType: null,
+                tableVehicleNew: null,
                 idDelete: null,
                 current: null,
                 show: function () {
@@ -487,7 +516,7 @@
                         $("button[name=modalAgree]").show();
                     }
                 },
-                addParkingCost:function (){
+                addParkingCost: function () {
                     parkingCostView.current = null;
                     parkingCostView.action = 'add';
                     parkingCostView.inputPrice();
@@ -504,11 +533,15 @@
                     parkingCostView.show();
 
                 },
+                deleteParkingCost: function () {
+                    parkingCostView.action = 'delete';
+                    parkingCostView.save();
+                    $("#modalConfirm").modal('hide');
+                },
                 clearInput: function () {
-
                     /* form addCost*/
                     $("input[id='vehicle_id']").val('');
-                    $("#vehicle_id").attr('data-id','');
+                    $("#vehicle_id").attr('data-id', '');
                     $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
                     $("input[id='totalprice']").val('');
@@ -573,14 +606,14 @@
                             noted: $("input[id='noted']").val()
                         };
                     } else if (parkingCostView.action == 'update') {
-                       parkingCostView.current.prices_price = $("input[id='price']").val();
-                       parkingCostView.current.prices_id = $("#price").attr('data-priceId');
-                       parkingCostView.current.literNumber = $("input[id='literNumber']").val();
-                       parkingCostView.current.totalCost = $("input[id='totalprice']").val();
-                       parkingCostView.current.datetimeCheckIn = $("input[id='datetimeCheckIn']").val();
-                       parkingCostView.current.datetimeCheckOut = $("input[id='datetimeCheckOut']").val();
-                       parkingCostView.current.noted = $("input[id='noted']").val();
-                       parkingCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
+                        parkingCostView.current.prices_price = $("input[id='price']").val();
+                        parkingCostView.current.prices_id = $("#price").attr('data-priceId');
+                        parkingCostView.current.literNumber = $("input[id='literNumber']").val();
+                        parkingCostView.current.totalCost = $("input[id='totalprice']").val();
+                        parkingCostView.current.datetimeCheckIn = $("input[id='datetimeCheckIn']").val();
+                        parkingCostView.current.datetimeCheckOut = $("input[id='datetimeCheckOut']").val();
+                        parkingCostView.current.noted = $("input[id='noted']").val();
+                        parkingCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
                     }
                 },
 
@@ -588,11 +621,7 @@
                     var dayIn = parkingCostView.current["dateCheckIn"].substr(8, 2);
                     var monthIn = parkingCostView.current["dateCheckIn"].substr(5, 2);
                     var yearIn = parkingCostView.current["dateCheckIn"].substr(0, 4);
-                    var hourMinusIn = parkingCostView.current["dateCheckIn"].substr(11,5);
-
-
-
-
+                    var hourMinusIn = parkingCostView.current["dateCheckIn"].substr(11, 5);
 
                     var dayOut = parkingCostView.current["dateCheckOut"].substr(8, 2);
                     var monthOut = parkingCostView.current["dateCheckOut"].substr(5, 2);
@@ -600,10 +629,10 @@
                     var hourMinusOut = parkingCostView.current["dateCheckOut"].substr(11, 5);
                     $("input[id='timeIn']").val(hourMinusIn);
                     $("input[id='timeOut']").val(hourMinusOut);
-                    console.log( dayIn);
-                    console.log( monthIn);
-                    console.log( yearIn);
-                    console.log(  hourMinusIn - hourMinusOut );
+                    console.log(dayIn);
+                    console.log(monthIn);
+                    console.log(yearIn);
+                    console.log(hourMinusIn - hourMinusOut);
                     var vehicle = parkingCostView.current["vehicles_code"] + "-" + parkingCostView.current["vehicles_vehicleNumber"];
                     var totalPrice = parkingCostView.current["literNumber"] * parkingCostView.current["prices_price"];
 
@@ -618,7 +647,77 @@
                     $("input[id='price']").val(parkingCostView.current["prices_price"]);
                     $("#price").attr('data-priceId', parkingCostView.current["price_id"]);
 
+                },
+                save: function () {
+                    parkingCostView.ValidateCost();
+                    parkingCostView.fillFormDataToCurrentObject();
+                    if ($("#formParkingCost").valid()) {
+                        var sendToServer = {
+                            _token: _token,
+                            _action: parkingCostView.action,
+                            _object: parkingCostView.current
+                        };
 
+                        if (parkingCostView.action != 'delete') {
+                            if ($("#vehicle_id").attr('data-id') == '') {
+                                parkingCostView.showNotification('warning', 'Vui lòng chọn xe có trong danh sách.');
+                                return;
+                            }
+                        } else {
+                            sendToServer._object = {
+                                id: parkingCostView.idDelete,
+                                vehicle_id: "delete",
+
+                            };
+                        }
+
+                        $.ajax({
+                            url: url + 'parking-cost/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                switch (parkingCostView.action) {
+                                    case 'add':
+                                        data['tablePetrolNew'][0].fullNumber = data['tablePetrolNew'][0]['vehicles_code'] + "-" + data['tablePetrolNew'][0]["vehicles_vehicleNumber"];
+                                        parkingCostView.tablePetroleumCost.push(data['tablePetrolNew'][0]);
+                                        parkingCostView.showNotification("success", "Thêm thành công!");
+                                        $("#price").attr('data-priceId', parkingCostView.current["prices_id"]);
+                                        break;
+                                    case 'update':
+                                        data['tablePetrolUpdate'][0].fullNumber = data['tablePetrolUpdate'][0]['vehicles_code'] + "-" + data['tablePetrolUpdate'][0]["vehicles_vehicleNumber"];
+                                        var petrolOld = _.find(parkingCostView.tablePetroleumCost, function (o) {
+                                            return o.id == sendToServer._object.id;
+                                        });
+                                        var indexOfPetrolOld = _.indexOf(parkingCostView.tablePetroleumCost, petrolOld);
+                                        parkingCostView.tablePetroleumCost.splice(indexOfPetrolOld, 1, data['tablePetrolUpdate'][0]);
+                                        parkingCostView.showNotification("success", "Cập nhật thành công!");
+                                        parkingCostView.hide();
+                                        break;
+                                    case 'delete':
+                                        var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
+                                            return o.id == sendToServer._object.id;
+                                        });
+                                        var indexOfparkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
+                                        parkingCostView.tableParkingCost.splice(indexOfparkingOld, 1);
+                                        parkingCostView.showNotification("success", "Xóa thành công!");
+                                        parkingCostView.displayModal("hide", "#modal-confirmDelete")
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                parkingCostView.table.clear().rows.add(parkingCostView.tableParkingCost).draw();
+                                parkingCostView.clearInput();
+                            } else {
+                                parkingCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        $("form#fromPetroleum").find("label[class=error]").css("color", "red");
+                    }
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -642,17 +741,14 @@
                                     return moment(data).format("DD/MM/YYYY HH:mm:ss");
                                 }
                             },
-
-                            {data: 'literNumber',
+                            {data: 'totalDay'},
+                            {data: 'totalHour' },
+                            {data: 'prices_price' },
+                            {
+                                data: 'totalCost',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
-                            {data: 'prices_price',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
-                            },
-                            {data: 'totalCost',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
-                            },
-                            {data: 'noteCost'},
+                            {data: 'note'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -700,36 +796,36 @@
                     $("#fromVehicle").validate({
                         rules: {
                             vehicleNumber: {
-                                required:true,
-                                number:true
+                                required: true,
+                                number: true
                             },
                             areaCode: "required",
                             vehicleType_id: "required",
                             garage_id: "required",
                             size: {
-                                required:true,
-                                number:true
+                                required: true,
+                                number: true
                             },
                             weight: {
-                                required:true,
-                                number:true
+                                required: true,
+                                number: true
                             }
                         },
                         messages: {
                             vehicleNumber: {
-                                required:"Vui lòng nhập số xe",
-                                number:"Số xe phải là số"
+                                required: "Vui lòng nhập số xe",
+                                number: "Số xe phải là số"
                             },
                             areaCode: "Vui lòng nhập mã vùng",
                             vehicleType_id: "Vui lòng chọn loại xe",
                             garage_id: "Vui lòng chọn nhà xe",
                             size: {
-                                required:"Vui lòng nhập kích thước",
-                                number:"Kích thước phải là số"
+                                required: "Vui lòng nhập kích thước",
+                                number: "Kích thước phải là số"
                             },
                             weight: {
-                                required:"Vui lòng nhập trọng tải",
-                                number:"Trọng tải phải là số"
+                                required: "Vui lòng nhập trọng tải",
+                                number: "Trọng tải phải là số"
                             }
                         }
                     });
@@ -815,7 +911,7 @@
                     });
                     parkingCostView.displayModal("show", "#modal-searchVehicle")
                 },
-                loadSelectBoxGarage : function (lstGarage) {
+                loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
                             .find('option')
@@ -851,7 +947,7 @@
                     $("#fromPetroleum").validate({
                         rules: {
                             vehicle_id: "required",
-                            literNumber:{
+                            literNumber: {
                                 required: true,
                                 number: true
                             }
@@ -861,7 +957,7 @@
                             vehicle_id: "Vui lòng chọn xe",
                             literNumber: {
                                 required: "Vui lòng nhập số lít",
-                                number:"Số lít phải là số"
+                                number: "Số lít phải là số"
                             }
 
                         }
@@ -881,8 +977,8 @@
                         },
                         messages: {
                             costPrice: {
-                                required : "Vui lòng nhập số tiền",
-                                number :"Giá tiền phải là số"
+                                required: "Vui lòng nhập số tiền",
+                                number: "Giá tiền phải là số"
                             }
                         }
                     });

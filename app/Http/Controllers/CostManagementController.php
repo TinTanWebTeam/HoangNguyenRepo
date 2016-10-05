@@ -121,6 +121,9 @@ class CostManagementController extends Controller
             $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
             $noted = $request->get('_object')['noted'];
 
+//            $test =substr($datetime,  0, 10);
+//            dd ($test);
+
         }
 
 
@@ -514,7 +517,6 @@ class CostManagementController extends Controller
             ->select(
                 'prices.price as prices_price',
                 'costs.*',
-                'costs.note as noteCost',
                 'costs.cost as totalCost',
                 'vehicles.areaCode as vehicles_code',
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
@@ -530,6 +532,132 @@ class CostManagementController extends Controller
         ];
         return response()->json($response, 200);
     }
+    public function postModifyParkingCost(Request $request)
+    {
+        $prices_price = null;
+        $literNumber = null;
+        $vehicle = null;
+        $totalCost = null;
+        $datetime = null;
+        $note = null;
+        $action = $request->get('_action');
+//        if ($action != 'delete') {
+//            $validator = ValidateController::ValidatePetroleum($request->get('_object'));
+//            if ($validator->fails()) {
+//                return $validator->errors();
+////                return response()->json(['msg' => 'Input data fail'], 404);
+//            }
+//
+//            $prices_price = $request->get('_object')['prices_price'];
+//            $prices_id = $request->get('_object')['prices_id'];
+//            $literNumber = $request->get('_object')['literNumber'];
+//            $vehicle = $request->get('_object')['vehicle_id'];
+//            $totalCost = str_replace('.','',$totalCost = $literNumber * $prices_price);
+//            $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
+//            $noted = $request->get('_object')['noted'];
+//
+//        }
+
+
+        switch ($action) {
+            case "add":
+                $petroleumNew = new Cost();
+                $petroleumNew->cost = $totalCost;
+                $petroleumNew->literNumber = $literNumber;
+                $petroleumNew->dateRefuel = $datetime;
+                $petroleumNew->createdBy = Auth::user()->id;
+                $petroleumNew->updatedBy = Auth::user()->id;
+                $petroleumNew->note = $noted;
+                $petroleumNew->price_id = $prices_id;
+                $petroleumNew->vehicle_id = $vehicle;
+
+                if ($petroleumNew->save()) {
+                    $tablePetrolNew = \DB::table('costs')
+                        ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+                        ->join('prices', 'prices.id', '=', 'costs.price_id')
+                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                        ->where('costs.active', 1)
+                        ->where('costs.id', $petroleumNew->id)
+                        ->where('prices.costPrice_id', 3)
+                        ->select(
+                            'prices.price as prices_price',
+                            'costs.*',
+                            'costs.note as noteCost ',
+                            'costs.cost as totalCost',
+                            'vehicles.areaCode as vehicles_code',
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber')
+                        ->get();
+
+                    $response = [
+                        'msg'            => 'Created vehicle',
+                        'tablePetrolNew' => $tablePetrolNew
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case "update":
+
+                $petroleumUpdate = Cost::findOrFail($request->get('_object')['id']);
+                $petroleumUpdate->literNumber = $literNumber;
+                $petroleumUpdate->cost = $totalCost;
+                $petroleumUpdate->dateRefuel = $datetime;
+                $petroleumUpdate->note = $noted;
+                $petroleumUpdate->vehicle_id = $vehicle;
+                $petroleumUpdate->price_id = $prices_id;
+                $petroleumUpdate->updatedBy = Auth::user()->id;
+
+                if ($petroleumUpdate->update()) {
+                    $tablePetrolUpdate = \DB::table('costs')
+                        ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+                        ->join('prices', 'prices.id', '=', 'costs.price_id')
+                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                        ->where('costs.active', 1)
+                        ->where('costs.id', $request->get('_object')['id'])
+                        ->where('prices.costPrice_id', 3)
+                        ->select(
+                            'prices.price as prices_price',
+                            'costs.*',
+                            'costs.note as noteCost',
+                            'costs.cost as totalCost',
+                            'vehicles.areaCode as vehicles_code',
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                            'vehicles.note as vehicleNote')
+                        ->get();
+
+                    $response = [
+                        'msg'               => 'Updated Cost',
+                        'tablePetrolUpdate' => $tablePetrolUpdate
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+            case "delete":
+                $parkingDelete = Cost::findOrFail($request->get('_object')['id']);
+                $parkingDelete->active = 0;
+                if ($parkingDelete->update()) {
+                    $response = [
+                        'msg' => 'Deleted Parking Cost'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
+
+    }
+
+
+
+
+
+
+
+
 
 
     public function getViewOtherCost()
