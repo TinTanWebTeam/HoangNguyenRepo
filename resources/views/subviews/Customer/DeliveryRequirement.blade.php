@@ -209,11 +209,11 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <div class="form-group form-md-line-input">
                                         <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
                                         <div class="row">
-                                            <div class="col-sm-8 col-xs-8">
+                                            <div class="col-sm-10 col-xs-10">
                                                 <input type="text" class="form-control cursor-copy"
                                                        id="voucher_transport" data-id="" readonly
                                                        name="voucher_transport"
@@ -225,22 +225,14 @@
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-2 col-xs-2">
-                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="postage"><b>Cước phí</b></label>
-                                        <input type="number" class="form-control" id="postage" name="postage">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group form-md-line-input">
                                         <label for="price_id"><b>Chi phí</b></label>
-                                        <select name="price_id" id="price_id" class="form-control" disabled>
-                                            <option value="" selected>Khác</option>
+                                        <select name="price_id" id="price_id" class="form-control">
+
                                         </select>
                                     </div>
                                 </div>
@@ -514,6 +506,7 @@
                 dataVoucher: null,
                 dataVoucherTransport: null,
                 dataStatus: null,
+                dataCostPrice: null,
 
                 arrayVoucher: [],
                 current: null,
@@ -601,7 +594,9 @@
                             transportView.dataVoucherTransport = data['voucherTransports'];
                             transportView.dataVoucher = data['vouchers'];
                             transportView.dataStatus = data['statuses'];
-                            transportView.loadSelectBox(transportView.dataStatus);
+                            transportView.loadSelectBox(transportView.dataStatus, 'status', 'status');
+                            transportView.dataCostPrice = data['costPrices'];
+                            transportView.loadSelectBox(transportView.dataCostPrice, 'price_id', 'name');
                         } else {
                             transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -785,16 +780,16 @@
                         transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                loadSelectBox: function (lstStatus) {
+                loadSelectBox: function (lstStatus, strId, propertyName) {
                     //reset selectbox
-                    $('#status')
+                    $('#' + strId)
                             .find('option')
                             .remove()
                             .end();
                     //fill option to selectbox
-                    var select = document.getElementById("status");
+                    var select = document.getElementById(strId);
                     for (var i = 0; i < lstStatus.length; i++) {
-                        var opt = lstStatus[i]['status'];
+                        var opt = lstStatus[i][propertyName];
                         var el = document.createElement("option");
                         el.textContent = opt;
                         el.value = lstStatus[i]['id'];

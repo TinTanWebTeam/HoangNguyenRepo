@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cost;
+use App\CostPrice;
 use App\Customer;
 use App\CustomerType;
 use App\Status;
@@ -326,13 +327,15 @@ class CustomerManagementController extends Controller
         $voucherTransports = VoucherTransport::all();
         $vouchers = Voucher::all();
         $statuses = Status::where('tableName', 'transports')->get();
+        $costPrices = CostPrice::all();
 
         $response = [
             'msg'               => 'Get list all Transport',
             'transports'        => $transports,
             'voucherTransports' => $voucherTransports,
             'vouchers'          => $vouchers,
-            'statuses'          => $statuses
+            'statuses'          => $statuses,
+            'costPrices'        => $costPrices
         ];
 
         return response()->json($response, 200);
