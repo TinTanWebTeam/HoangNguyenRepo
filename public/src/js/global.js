@@ -35,7 +35,7 @@ $('a.navbar-brand').click(function () {
     $.get(url + 'dashboard', function(view) {
         $("div#page-wrapper").empty().append(view);
     });
-})
+});
 
 
 
