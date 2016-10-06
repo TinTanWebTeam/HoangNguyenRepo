@@ -20,9 +20,8 @@ class CreateTransportsTable extends Migration
             $table->decimal('cashDelivery',18,0)->default(0);
             $table->decimal('cashReceive',18,0)->default(0);
             $table->decimal('cashProfit',18,0)->default(0);
-            $table->decimal('postage');
             $table->string('voucherNumber');
-            $table->string('voucherQuantumProduct');
+            $table->string('voucherQuantumProduct')->unsigned();
             $table->string('receiver');
             $table->dateTime('receiveDate');
             $table->string('receivePlace');
@@ -34,8 +33,9 @@ class CreateTransportsTable extends Migration
             $table->integer('product_id')->unsigned();
             $table->integer('customer_id')->unsigned();
             $table->integer('invoice_id')->nullable;
-            $table->integer('status_id1')->unsigned();
-            $table->integer('status_id2')->unsigned();
+            $table->integer('status_transport')->unsigned();
+            $table->integer('status_customer')->unsigned();
+            $table->integer('status_garage')->unsigned();
             $table->timestamps();
         });
     }

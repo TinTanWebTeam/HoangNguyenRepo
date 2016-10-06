@@ -29,8 +29,9 @@ class TransportTableSeeder extends Seeder
             'createdBy'             => '1',
             'updatedBy'             => '1',
             'note'                  => '',
-            'status_id1'             => '1',
-            'status_id2'             => '5',
+            'status_transport'      => '1',
+            'status_customer'       => '5',
+            'status_garage'         => '8',
         ]);
     }
 }

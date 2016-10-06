@@ -197,14 +197,14 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
-                                        <label for="note"><b>Ghi chú</b></label>
+                                        <label for="note"><b>Ghi chú đơn hàng</b></label>
                                         <input type="text" class="form-control" id="note" name="note">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
-                                        <label for="status"><b>Trạng thái</b></label>
-                                        <select id="status" name="status" class="form-control"></select>
+                                        <label for="status_transport"><b>Trạng thái</b></label>
+                                        <select id="status_transport" name="status_transport" class="form-control"></select>
                                     </div>
                                 </div>
                             </div>
@@ -230,8 +230,8 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group form-md-line-input">
-                                        <label for="price_id"><b>Chi phí</b></label>
-                                        <select name="price_id" id="price_id" class="form-control">
+                                        <label for="costPrice_id"><b>Chi phí</b></label>
+                                        <select name="costPrice_id" id="costPrice_id" class="form-control">
 
                                         </select>
                                     </div>
@@ -244,7 +244,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group form-md-line-input">
-                                        <label for="costs_note"><b>Ghi chú</b></label>
+                                        <label for="costs_note"><b>Ghi chú chi phí</b></label>
                                         <input type="text" class="form-control" id="costs_note" name="costs_note">
                                     </div>
                                 </div>
@@ -594,9 +594,9 @@
                             transportView.dataVoucherTransport = data['voucherTransports'];
                             transportView.dataVoucher = data['vouchers'];
                             transportView.dataStatus = data['statuses'];
-                            transportView.loadSelectBox(transportView.dataStatus, 'status', 'status');
+                            transportView.loadSelectBox(transportView.dataStatus, 'status_transport', 'status');
                             transportView.dataCostPrice = data['costPrices'];
-                            transportView.loadSelectBox(transportView.dataCostPrice, 'price_id', 'name');
+                            transportView.loadSelectBox(transportView.dataCostPrice, 'costPrice_id', 'name');
                         } else {
                             transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -629,9 +629,12 @@
                         transportView.displayModal("hide", "#modal-vehicle");
                     });
                     $("#table-customer").find("tbody").on('click', 'tr', function () {
-                        $('#customer_id').attr('data-customerId', $(this).find('td:first')[0].innerText);
+                        var cust_id = $(this).find('td:first')[0].innerText;
+                        $('#customer_id').attr('data-customerId', cust_id);
                         $('input[id=customer_id]').val($(this).find('td:eq(2)')[0].innerText);
                         transportView.displayModal("hide", "#modal-customer");
+
+                        transportView.postDataPostageOfCustomer(cust_id);
                     });
                     $("#table-product").find("tbody").on('click', 'tr', function () {
                         $('#product_id').attr('data-productId', $(this).find('td:first')[0].innerText);
@@ -780,7 +783,7 @@
                         transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                loadSelectBox: function (lstStatus, strId, propertyName) {
+                loadSelectBox: function (lstData, strId, propertyName) {
                     //reset selectbox
                     $('#' + strId)
                             .find('option')
@@ -788,11 +791,11 @@
                             .end();
                     //fill option to selectbox
                     var select = document.getElementById(strId);
-                    for (var i = 0; i < lstStatus.length; i++) {
-                        var opt = lstStatus[i][propertyName];
+                    for (var i = 0; i < lstData.length; i++) {
+                        var opt = lstData[i][propertyName];
                         var el = document.createElement("option");
                         el.textContent = opt;
-                        el.value = lstStatus[i]['id'];
+                        el.value = lstData[i]['id'];
                         select.appendChild(el);
                     }
                 },
@@ -964,7 +967,7 @@
                     $("input[id='voucherNumber']").val(transportView.current["voucherNumber"]);
                     $("input[id='voucherQuantumProduct']").val(transportView.current["voucherQuantumProduct"]);
                     $("input[id='note']").val(transportView.current["note"]);
-                    $("select[id='status']").val(transportView.current["status_id"]);
+                    $("select[id='status_transport']").val(transportView.current["status_transport"]);
                     $("input[id='cost']").val(transportView.current["cost"]);
                     $("input[id='costs_note']").val(transportView.current["costs_note"]);
 
@@ -976,7 +979,7 @@
                         strVoucherName += objVoucher.name + ", ";
                     }
                     $("input[id='voucher_transport']").val(strVoucherName);
-
+                    $("select[id='costPrice_id']").val(transportView.current["costPrice_id"]);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (transportView.action == 'add') {
@@ -996,10 +999,11 @@
                             voucherNumber: $("input[id='voucherNumber']").val(),
                             voucherQuantumProduct: $("input[id='voucherQuantumProduct']").val(),
                             note: $("input[id='note']").val(),
-                            status_id: $("select[id='status']").val(),
+                            status_transport: $("select[id='status_transport']").val(),
                             cost: $("input[id='cost']").val(),
                             costs_note: $("input[id='costs_note']").val(),
-                            voucher_transport: transportView.arrayVoucher
+                            voucher_transport: transportView.arrayVoucher,
+                            costPrice_id: $("select[id='costPrice_id']").val()
                         };
                     } else if (transportView.action == 'update') {
                         transportView.current.vehicles_id = $("#vehicle_id").attr("data-vehicleId");
@@ -1017,10 +1021,11 @@
                         transportView.current.voucherNumber = $("input[id='voucherNumber']").val();
                         transportView.current.voucherQuantumProduct = $("input[id='voucherQuantumProduct']").val();
                         transportView.current.note = $("input[id='note']").val();
-                        transportView.current.status_id = $("select[id='status']").val();
+                        transportView.current.status_transport = $("select[id='status_transport']").val();
                         transportView.current.cost = $("input[id='cost']").val();
                         transportView.current.costs_note = $("input[id='costs_note']").val();
                         transportView.current.voucher_transport = transportView.arrayVoucher;
+                        transportView.current.costPrice_id = $("select[id='status_transport']").val();
                     }
                 },
 
@@ -1068,7 +1073,8 @@
                             receivePlace: "required",
                             deliveryPlace: "required",
                             voucherNumber: "required",
-                            voucherQuantumProduct: "required"
+                            voucherQuantumProduct: "required",
+                            note: "required"
                         },
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
@@ -1084,7 +1090,8 @@
                             receivePlace: "Vui lòng nhập nơi nhận",
                             deliveryPlace: "Vui lòng nhập nơi giao",
                             voucherNumber: "Vui lòng nhập số chứng từ",
-                            voucherQuantumProduct: "Vui lòng nhập số lượng hàng trên chứng từ"
+                            voucherQuantumProduct: "Vui lòng nhập số lượng hàng trên chứng từ",
+                            note: "Vui lòng nhập ghi chú"
                         }
                     });
                 },
@@ -1226,6 +1233,29 @@
                     } else {
                         $("form#frmVoucher").find("label[class=error]").css("color", "red");
                     }
+                },
+
+                postDataPostageOfCustomer: function(cust_id){
+                    var sendToServer = {
+                        _token: _token,
+                        _cust_id: cust_id
+                    };
+                    $.ajax({
+                        url: url + 'customer/postage',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 201) {
+                            $("input[id='cashDelivery']").val(data['postage']);
+                        } else {
+                            transportView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
                 }
             };
             transportView.loadData();

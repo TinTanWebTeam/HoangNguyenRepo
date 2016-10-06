@@ -6,6 +6,7 @@ use App\Cost;
 use App\CostPrice;
 use App\Customer;
 use App\CustomerType;
+use App\Postage;
 use App\Status;
 use App\Transport;
 use App\Voucher;
@@ -391,12 +392,14 @@ class CustomerManagementController extends Controller
             $receivePlace = $request->input('_transport')['receivePlace'];
             $deliveryPlace = $request->input('_transport')['deliveryPlace'];
             $note = $request->input('_transport')['note'];
-            $status_id = $request->input('_transport')['status_id'];
+            $status_transport = $request->input('_transport')['status_transport'];
+            $status_customer = ($cashRevenue == $cashReceive) ? 6 : 5;
+            $status_garage = 8;
             $vehicle_id = $request->input('_transport')['vehicles_id'];
             $product_id = $request->input('_transport')['products_id'];
             $customer_id = $request->input('_transport')['customers_id'];
             $invoice_id = null;
-
+            $costPrice_id = $request->input('_transport')['costPrice_id'];
 
             $costs_note = $request->input('_transport')['costs_note'];
 
@@ -421,7 +424,9 @@ class CustomerManagementController extends Controller
                 $transportNew->createdBy = \Auth::user()->id;
                 $transportNew->updatedBy = \Auth::user()->id;
                 $transportNew->note = $note;
-                $transportNew->status_id = $status_id;
+                $transportNew->status_transport = $status_transport;
+                $transportNew->status_customer = $status_customer;
+                $transportNew->status_garage = $status_garage;
                 $transportNew->product_id = $product_id;
                 $transportNew->customer_id = $customer_id;
 
@@ -592,5 +597,18 @@ class CustomerManagementController extends Controller
                 return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;
         }
+    }
+
+    /*
+     * Postage
+     * */
+    public function postDataPostageOfCustomer(Request $request)
+    {
+        $postage = Postage::where('customer_id', $request->input('_cust_id'))->orderBy('month', 'desc')->pluck('postage')->first();
+        $response = [
+            'msg' => 'return a postage success',
+            'postage' => $postage
+        ];
+        return response()->json($response, 201);
     }
 }

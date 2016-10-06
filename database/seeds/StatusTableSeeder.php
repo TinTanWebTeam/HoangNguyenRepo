@@ -11,56 +11,42 @@ class StatusTableSeeder extends Seeder
      */
     public function run()
     {
-        //1
-        \App\Status::create([
-           'tableName' => 'transports',
-           'status' => 'Chưa phân tài',
-        ]);
-        //2
-        \App\Status::create([
-            'tableName' => 'transports',
-            'status' => 'Đang giao hàng',
-        ]);
-        //3
-        \App\Status::create([
-            'tableName' => 'transports',
-            'status' => 'Đã giao hàng',
-        ]);
-        //4
-        \App\Status::create([
-            'tableName' => 'transports',
-            'status' => 'Không giao được',
-        ]);
-        //5
-        \App\Status::create([
-            'tableName' => 'transports',
-            'status' => 'Chưa thanh toán',
-        ]);
-        //6
-        \App\Status::create([
-            'tableName' => 'transports',
-            'status' => 'Đã thanh toán',
-        ]);
-        //7
-        \App\Status::create([
-            'tableName' => 'transports',
-            'status' => 'Đã xuất hóa đơn',
-        ]);
-        //8
-        \App\Status::create([
-            'tableName' => 'transports-customer',
-            'status' => 'Không xuất hóa đơn',
-        ]);
-        //9
-        \App\Status::create([
-            'tableName' => 'transports',
-            'status' => 'Đã giao nhà xe',
-        ]);
-        //10
-        \App\Status::create([
-            'tableName' => 'transports',
-            'status' => 'Chưa giao nhà xe',
-        ]);
+        $arr_status1 = [
+            "Chưa phân tài",
+            "Đang giao hàng",
+            "Đã giao hàng",
+            "Không giao được"
+        ];
+        $arr_status2 = [
+            "Chưa thanh toán",
+            "Đã thanh toán",
+            "Đã thanh toán và xuất hóa đơn"
+        ];
+
+        foreach ($arr_status1 as $status)
+        {
+            \App\Status::create([
+                'tableName' => 'transports',
+                'status' => $status
+            ]);
+        }
+
+        foreach ($arr_status2 as $status)
+        {
+            \App\Status::create([
+                'tableName' => 'transports-customer',
+                'status' => $status
+            ]);
+        }
+
+        foreach ($arr_status2 as $status)
+        {
+            \App\Status::create([
+                'tableName' => 'transports-garage',
+                'status' => $status
+            ]);
+        }
+
 
     }
 }
