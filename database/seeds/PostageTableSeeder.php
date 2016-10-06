@@ -11,75 +11,48 @@ class PostageTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Postage::create([
-        'postage'     => '100000',
-        'month'       => '2016-01-01 16:06:35',
-        'customer_id' => '1',
-        'createdBy'   => '1',
-        'updatedBy'   => '1'
-    ]);
-        \App\Postage::create([
-            'postage'     => '200000',
-            'month'       => '2016-02-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
-        \App\Postage::create([
-            'postage'     => '300000',
-            'month'       => '2016-03-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
-        \App\Postage::create([
-            'postage'     => '400000',
-            'month'       => '2016-04-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
-        \App\Postage::create([
-            'postage'     => '500000',
-            'month'       => '2016-05-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
-        \App\Postage::create([
-            'postage'     => '600000',
-            'month'       => '2016-06-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
-        \App\Postage::create([
-            'postage'     => '700000',
-            'month'       => '2016-07-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
-        \App\Postage::create([
-            'postage'     => '800000',
-            'month'       => '2016-08-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
-        \App\Postage::create([
-            'postage'     => '900000',
-            'month'       => '2016-09-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
-        \App\Postage::create([
-            'postage'     => '1000000',
-            'month'       => '2016-10-01 16:06:35',
-            'customer_id' => '1',
-            'createdBy'   => '1',
-            'updatedBy'   => '1'
-        ]);
+        $arr_postage = [
+            100000, 200000, 300000, 400000 ,500000 , 600000, 700000, 800000, 900000, 1000000
+        ];
+        $arr_month = [
+            '2016-01-01 12:00:00',
+            '2016-02-01 12:00:00',
+            '2016-03-01 12:00:00',
+            '2016-04-01 12:00:00',
+            '2016-05-01 12:00:00',
+            '2016-06-01 12:00:00',
+            '2016-07-01 12:00:00',
+            '2016-08-01 12:00:00',
+            '2016-09-01 12:00:00',
+            '2016-10-01 12:00:00'
+        ];
+
+        for($i=0; $i<count($arr_month); $i++) {
+            \App\Postage::create([
+                'postage'     => $arr_postage[$i],
+                'month'       => $arr_month[$i],
+                'customer_id' => '1',
+                'createdBy'   => '1',
+                'updatedBy'   => '1'
+            ]);
+        }
+        for($i=0; $i<count($arr_month); $i++) {
+            \App\Postage::create([
+                'postage'     => $arr_postage[$i],
+                'month'       => $arr_month[$i],
+                'customer_id' => '2',
+                'createdBy'   => '1',
+                'updatedBy'   => '1'
+            ]);
+        }
+        for($i=0; $i<count($arr_month); $i++) {
+            \App\Postage::create([
+                'postage'     => $arr_postage[$i],
+                'month'       => $arr_month[$i],
+                'customer_id' => '3',
+                'createdBy'   => '1',
+                'updatedBy'   => '1'
+            ]);
+        }
     }
 }

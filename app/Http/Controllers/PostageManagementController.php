@@ -15,10 +15,12 @@ class PostageManagementController extends Controller
     }
     public function getDataPostage()
     {
-        $postages = \DB::table('postages')
-            ->join('customers', 'customers.id', '=', 'postages.customer_id')
+        $postages = Postage::join('customers', 'customers.id', '=', 'postages.customer_id')
             ->select('postages.*', 'customers.fullName as customers_fullName')
-            ->get();
+            ->orderBy('postages.month', 'desc')
+            ->get()
+            ->groupBy('month')->first()->toArray();
+
         $response = [
             'msg' => 'Get success',
             'postages' => $postages

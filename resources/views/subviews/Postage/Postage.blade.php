@@ -341,7 +341,12 @@
                                 data: 'postage',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
-                            {data: 'month', width: "5%"},
+                            {
+                                data: 'month',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("MM/YYYY");
+                                }, width: "5%"
+                            },
                             {data: 'customers_fullName'},
                             {data: 'note'},
                             {
@@ -407,7 +412,8 @@
 
                     $("input[id='postage']").val(postageView.current["postage"]);
                     $("input[id='note']").val(postageView.current["note"]);
-                    $("select[id='month']").val(postageView.current["month"]);
+                    var month = moment(postageView.current["month"]).month();
+                    $("select[id='month']").val(month + 1);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (postageView.action == 'add') {
