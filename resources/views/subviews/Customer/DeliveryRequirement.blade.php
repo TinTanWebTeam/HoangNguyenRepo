@@ -60,6 +60,7 @@
                                 <th>Lợi nhuận</th>
                                 <th>Người nhận</th>
                                 <th>Ngày nhận</th>
+                                <th>Trạng thái</th>
                                 <th>Sửa/ Xóa</th>
                             </tr>
                             </thead>
@@ -230,8 +231,8 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group form-md-line-input">
-                                        <label for="costPrice_id"><b>Chi phí</b></label>
-                                        <select name="costPrice_id" id="costPrice_id" class="form-control">
+                                        <label for="costPrices_id"><b>Chi phí</b></label>
+                                        <select name="costPrices_id" id="costPrices_id" class="form-control">
 
                                         </select>
                                     </div>
@@ -596,7 +597,7 @@
                             transportView.dataStatus = data['statuses'];
                             transportView.loadSelectBox(transportView.dataStatus, 'status_transport', 'status');
                             transportView.dataCostPrice = data['costPrices'];
-                            transportView.loadSelectBox(transportView.dataCostPrice, 'costPrice_id', 'name');
+                            transportView.loadSelectBox(transportView.dataCostPrice, 'costPrices_id', 'name');
                         } else {
                             transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -843,6 +844,7 @@
                 },
 
                 fillDataToDatatable: function (data) {
+                    console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
                     }
@@ -851,11 +853,11 @@
                         data: data,
                         columns: [
                             {data: 'id'},
-                            {data: 'fullNumber'},
+                            {data: 'fullNumber', width: "10%"},
                             {data: 'products_name'},
                             {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
-                            {data: 'customers_fullName'},
+                            {data: 'customers_fullName', width: "15%"},
                             {
                                 data: 'cashRevenue',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
@@ -881,6 +883,47 @@
                             },
                             {
                                 render: function (data, type, full, meta) {
+                                    var title_customer = '';
+                                    var title_garage = '';
+                                    var color_customer = '';
+                                    var color_garage = '';
+                                    switch(full.status_customer){
+                                        case 5:
+                                            color_customer = 'btn-default';
+                                            title_customer = 'Chưa thanh toán';
+                                            break;
+                                        case 6:
+                                            color_customer = 'btn-primary';
+                                            title_customer = 'Đã thanh toán';
+                                            break;
+                                        case 7:
+                                            color_customer = 'btn-success';
+                                            title_customer = 'Đã thanh toán và xuất hóa đơn';
+                                            break;
+                                    }
+                                    switch(full.status_garage){
+                                        case 8:
+                                            color_garage = 'btn-info';
+                                            title_garage = 'Chưa thanh toán';
+                                            break;
+                                        case 9:
+                                            color_garage = 'btn-warning';
+                                            title_garage = 'Đã thanh toán';
+                                            break;
+                                        case 10:
+                                            color_garage = 'btn-danger';
+                                            title_garage = 'Đã thanh toán và xuất hóa đơn';
+                                            break;
+                                    }
+                                    var tr = '';
+                                    tr += '<a class="btn '+ color_customer +'" title="'+ title_customer +'"></a>';
+                                    tr += '<a class="btn '+ color_garage +'" title="'+ title_garage +'"></a>';
+                                    tr += '<p>'+ full.status_transport_ +'</p>';
+                                    return tr;
+                                }, width: "11%"
+                            },
+                            {
+                                render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit">';
                                     tr += '<div class="btn btn-success  btn-circle" onclick="transportView.editTransport(' + full.id + ')">';
@@ -893,7 +936,7 @@
                                     tr += '</div>';
                                     tr += '</div>';
                                     return tr;
-                                }, width: "10%"
+                                }, width: "9%"
                             }
                         ],
                         order: [[0, "desc"]],
@@ -979,7 +1022,7 @@
                         strVoucherName += objVoucher.name + ", ";
                     }
                     $("input[id='voucher_transport']").val(strVoucherName);
-                    $("select[id='costPrice_id']").val(transportView.current["costPrice_id"]);
+                    $("select[id='costPrices_id']").val(transportView.current["costPrices_id"]);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (transportView.action == 'add') {
@@ -1003,7 +1046,7 @@
                             cost: $("input[id='cost']").val(),
                             costs_note: $("input[id='costs_note']").val(),
                             voucher_transport: transportView.arrayVoucher,
-                            costPrice_id: $("select[id='costPrice_id']").val()
+                            costPrices_id: $("select[id='costPrices_id']").val()
                         };
                     } else if (transportView.action == 'update') {
                         transportView.current.vehicles_id = $("#vehicle_id").attr("data-vehicleId");
@@ -1025,7 +1068,7 @@
                         transportView.current.cost = $("input[id='cost']").val();
                         transportView.current.costs_note = $("input[id='costs_note']").val();
                         transportView.current.voucher_transport = transportView.arrayVoucher;
-                        transportView.current.costPrice_id = $("select[id='status_transport']").val();
+                        transportView.current.costPrices_id = $("select[id='costPrices_id']").val();
                     }
                 },
 
@@ -1074,7 +1117,7 @@
                             deliveryPlace: "required",
                             voucherNumber: "required",
                             voucherQuantumProduct: "required",
-                            note: "required"
+                            costs_note: "required"
                         },
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
@@ -1091,7 +1134,7 @@
                             deliveryPlace: "Vui lòng nhập nơi giao",
                             voucherNumber: "Vui lòng nhập số chứng từ",
                             voucherQuantumProduct: "Vui lòng nhập số lượng hàng trên chứng từ",
-                            note: "Vui lòng nhập ghi chú"
+                            costs_note: "Vui lòng nhập ghi chú cho chi phí"
                         }
                     });
                 },
@@ -1152,8 +1195,8 @@
                             if (jqXHR.status == 201) {
                                 switch (transportView.action) {
                                     case 'add':
-                                        data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
-                                        transportView.dataTransport.push(data['transport'][0]);
+                                        data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                        transportView.dataTransport.push(data['transport']);
 
                                         transportView.dataVoucherTransport = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
 
@@ -1165,8 +1208,8 @@
                                         });
                                         var indexOfOld = _.indexOf(transportView.dataTransport, Old);
 
-                                        data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
-                                        transportView.dataTransport.splice(indexOfOld, 1, data['transport'][0]);
+                                        data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                        transportView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
                                         _.remove(transportView.dataVoucherTransport, function (currentObject) {
                                             return currentObject.transport_id === sendToServer._transport.id;

@@ -7,14 +7,17 @@ use App\CostPrice;
 use App\Customer;
 use App\CustomerType;
 use App\Postage;
+use App\Price;
 use App\Status;
 use App\Transport;
 use App\Voucher;
 use App\VoucherTransport;
+use DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 use App\Http\Requests;
+use League\Flysystem\Exception;
 
 class CustomerManagementController extends Controller
 {
@@ -28,7 +31,7 @@ class CustomerManagementController extends Controller
 
     public function getDataCustomer()
     {
-        $customers = \DB::table('customers')
+        $customers = DB::table('customers')
             ->select('customers.*', 'customerTypes.name as customerTypes_name')
             ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
             ->where('customers.active', '=', '1')
@@ -89,7 +92,7 @@ class CustomerManagementController extends Controller
                 $customerNew->createdBy = $createdBy;
                 $customerNew->updatedBy = $updatedBy;
                 if ($customerNew->save()) {
-                    $customer = \DB::table('customers')
+                    $customer = DB::table('customers')
                         ->select('customers.*', 'customerTypes.name as customerTypes_name')
                         ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
                         ->where('customers.id', '=', $customerNew->id)
@@ -114,7 +117,7 @@ class CustomerManagementController extends Controller
                 $customerUpdate->note = $note;
                 $customerUpdate->updatedBy = $updatedBy;
                 if ($customerUpdate->update()) {
-                    $customer = \DB::table('customers')
+                    $customer = DB::table('customers')
                         ->select('customers.*', 'customerTypes.name as customerTypes_name')
                         ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
                         ->where('customers.id', '=', $customerUpdate->id)
@@ -218,7 +221,7 @@ class CustomerManagementController extends Controller
      * */
     public function getDataProduct()
     {
-        $products = \DB::table('products')
+        $products = DB::table('products')
             ->select('products.*', 'productTypes.name as productTypes_name')
             ->join('productTypes', 'productTypes.id', '=', 'products.productType_id')
             ->get();
@@ -262,48 +265,53 @@ class CustomerManagementController extends Controller
             $description = $request->input('_voucher')['description'];
         }
 
-        switch ($action) {
-            case 'add':
-                $voucherNew = new Voucher();
-                $voucherNew->name = $name;
-                $voucherNew->description = $description;
-                if ($voucherNew->save()) {
-                    $response = [
-                        'msg'     => 'Created voucher',
-                        'voucher' => $voucherNew
-                    ];
-                    return response()->json($response, 201);
-                }
-                return response()->json(['msg' => 'Create failed'], 404);
-                break;
-            case 'update':
-                $voucherUpdate = Voucher::findOrFail($request->input('_voucher')['id']);
-                $voucherUpdate->name = $name;
-                $voucherUpdate->description = $description;
-                if ($voucherUpdate->update()) {
-                    $response = [
-                        'msg'     => 'Updated voucher',
-                        'voucher' => $voucherUpdate
-                    ];
-                    return response()->json($response, 201);
-                }
-                return response()->json(['msg' => 'Update failed'], 404);
-                break;
-            case 'delete':
-                $voucherDelete = Voucher::findOrFail($request->input('_id'));
-                $voucherDelete->active = 0;
+        try {
+            switch ($action) {
+                case 'add':
+                    $voucherNew = new Voucher();
+                    $voucherNew->name = $name;
+                    $voucherNew->description = $description;
+                    if($voucherNew->save()){
+                        $response = [
+                            'msg'     => 'Created voucher',
+                            'voucher' => $voucherNew
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Create failed'], 404);
+                    break;
+                case 'update':
+                    $voucherUpdate = Voucher::findOrFail($request->input('_voucher')['id']);
+                    $voucherUpdate->name = $name;
+                    $voucherUpdate->description = $description;
+                    if ($voucherUpdate->update()) {
+                        $response = [
+                            'msg'     => 'Updated voucher',
+                            'voucher' => $voucherUpdate
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Update failed'], 404);
+                    break;
+                case 'delete':
+                    $voucherDelete = Voucher::findOrFail($request->input('_id'));
+                    $voucherDelete->active = 0;
 
-                if ($voucherDelete->update()) {
-                    $response = [
-                        'msg' => 'Deleted Voucher'
-                    ];
-                    return response()->json($response, 201);
-                }
-                return response()->json(['msg' => 'Deletion failed'], 404);
-                break;
-            default:
-                return response()->json(['msg' => 'Connection to server failed'], 404);
-                break;
+                    if ($voucherDelete->update()) {
+                        $response = [
+                            'msg' => 'Deleted Voucher'
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Deletion failed'], 404);
+                    break;
+                default:
+                    return response()->json(['msg' => 'Connection to server failed'], 404);
+                    break;
+            }
+        }
+        catch (Exception $ex){
+            return response()->json(['msg' => $ex], 404);
         }
     }
 
@@ -317,12 +325,24 @@ class CustomerManagementController extends Controller
 
     public function getDataTransport()
     {
-        $transports = \DB::table('transports')
-            ->select('transports.*', 'products.id as products_id', 'products.name as products_name', 'customers.id as customers_id', 'customers.fullName as customers_fullName', 'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note')
+        $transports = DB::table('transports')
+            ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
+                    'customers.id as customers_id', 'customers.fullName as customers_fullName',
+                    'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
+                    'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
+                    'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
+                    'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                    'statuses_gar.status as status_garage_'
+            )
             ->join('costs', 'costs.transport_id', '=', 'transports.id')
             ->join('products', 'products.id', '=', 'transports.product_id')
             ->join('customers', 'customers.id', '=', 'transports.customer_id')
             ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
+            ->join('prices', 'prices.id', '=', 'costs.price_id')
+            ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+            ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+            ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+            ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
             ->get();
 
         $voucherTransports = VoucherTransport::all();
@@ -357,11 +377,15 @@ class CustomerManagementController extends Controller
         $receivePlace = null;
         $deliveryPlace = null;
         $note = null;
-        $status_id = null;
+        $status_transport = null;
+        $status_customer = null;
+        $status_garage = null;
         $vehicle_id = null;
         $product_id = null;
         $customer_id = null;
         $invoice_id = null;
+        $costPrice_id = null;
+        $price_id = null;
 
         $cost = null;
         $costs_note = null;
@@ -398,204 +422,250 @@ class CustomerManagementController extends Controller
             $vehicle_id = $request->input('_transport')['vehicles_id'];
             $product_id = $request->input('_transport')['products_id'];
             $customer_id = $request->input('_transport')['customers_id'];
-            $invoice_id = null;
-            $costPrice_id = $request->input('_transport')['costPrice_id'];
+            $costPrice_id = $request->input('_transport')['costPrices_id'];
+            $price_id = Price::where('costPrice_id', $costPrice_id)->orderBy('created_at', 'desc')->pluck('id')->first();
 
             $costs_note = $request->input('_transport')['costs_note'];
-
             $array_voucherTransport = $request->input('_transport')['voucher_transport'];
         }
+        try{
+            DB::beginTransaction();
+            switch ($action) {
+                case 'add':
+                    $transportNew = new Transport();
+                    $transportNew->weight = $weight;
+                    $transportNew->quantumProduct = $quantumProduct;
+                    $transportNew->cashRevenue = $cashRevenue;
+                    $transportNew->cashDelivery = $cashDelivery;
+                    $transportNew->cashReceive = $cashReceive;
+                    $transportNew->cashProfit = $cashProfit;
+                    $transportNew->voucherNumber = $voucherNumber;
+                    $transportNew->voucherQuantumProduct = $voucherQuantumProduct;
+                    $transportNew->receiver = $receiver;
+                    $transportNew->receiveDate = $receiveDate;
+                    $transportNew->receivePlace = $receivePlace;
+                    $transportNew->deliveryPlace = $deliveryPlace;
+                    $transportNew->createdBy = \Auth::user()->id;
+                    $transportNew->updatedBy = \Auth::user()->id;
+                    $transportNew->note = $note;
+                    $transportNew->status_transport = $status_transport;
+                    $transportNew->status_customer = $status_customer;
+                    $transportNew->status_garage = $status_garage;
+                    $transportNew->product_id = $product_id;
+                    $transportNew->customer_id = $customer_id;
+                    $transportNew->invoice_id = $invoice_id;
 
-        switch ($action) {
-            case 'add':
-                $transportNew = new Transport();
-                $transportNew->weight = $weight;
-                $transportNew->quantumProduct = $quantumProduct;
-                $transportNew->cashRevenue = $cashRevenue;
-                $transportNew->cashDelivery = $cashDelivery;
-                $transportNew->cashReceive = $cashReceive;
-                $transportNew->cashProfit = $cashProfit;
-                $transportNew->voucherNumber = $voucherNumber;
-                $transportNew->voucherQuantumProduct = $voucherQuantumProduct;
-                $transportNew->receiver = $receiver;
-                $transportNew->receiveDate = $receiveDate;
-                $transportNew->receivePlace = $receivePlace;
-                $transportNew->deliveryPlace = $deliveryPlace;
-                $transportNew->createdBy = \Auth::user()->id;
-                $transportNew->updatedBy = \Auth::user()->id;
-                $transportNew->note = $note;
-                $transportNew->status_transport = $status_transport;
-                $transportNew->status_customer = $status_customer;
-                $transportNew->status_garage = $status_garage;
-                $transportNew->product_id = $product_id;
-                $transportNew->customer_id = $customer_id;
-
-                if ($transportNew->save()) {
-                    //Add VoucherTransport
-                    for ($i = 0; $i < count($array_voucherTransport); $i++) {
-                        $vouTranNew = new VoucherTransport();
-                        $vouTranNew->voucher_id = $array_voucherTransport[$i];
-                        $vouTranNew->transport_id = $transportNew->id;
-                        $vouTranNew->createdBy = \Auth::user()->id;
-                        $vouTranNew->updatedBy = \Auth::user()->id;
-                        if (!$vouTranNew->save()) {
-                            return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
+                    if ($transportNew->save()) {
+                        //Add VoucherTransport
+                        for ($i = 0; $i < count($array_voucherTransport); $i++) {
+                            $vouTranNew = new VoucherTransport();
+                            $vouTranNew->voucher_id = $array_voucherTransport[$i];
+                            $vouTranNew->transport_id = $transportNew->id;
+                            $vouTranNew->createdBy = \Auth::user()->id;
+                            $vouTranNew->updatedBy = \Auth::user()->id;
+                            if (!$vouTranNew->save()) {
+                                return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
+                            }
                         }
+
+                        //Add Cost
+                        $costNew = new Cost();
+                        $costNew->cost = $cost;
+                        $costNew->literNumber = null;
+                        $costNew->dateCheckIn = null;
+                        $costNew->dateCheckOut = null;
+                        $costNew->totalHour = null;
+                        $costNew->totalDay = null;
+                        $costNew->dateRefuel = null;
+                        $costNew->createdBy = \Auth::user()->id;
+                        $costNew->updatedBy = \Auth::user()->id;
+                        $costNew->note = $costs_note;
+                        $costNew->transport_id = $transportNew->id;
+                        $costNew->price_id = $price_id;
+                        $costNew->vehicle_id = $vehicle_id;
+                        if (!$costNew->save()) {
+                            return response()->json(['msg' => 'Create Cost failed'], 404);
+                        }
+
+                        //Response
+                        $transport = DB::table('transports')
+                            ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
+                                'customers.id as customers_id', 'customers.fullName as customers_fullName',
+                                'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
+                                'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
+                                'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
+                                'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                                'statuses_gar.status as status_garage_'
+                            )
+                            ->join('costs', 'costs.transport_id', '=', 'transports.id')
+                            ->join('products', 'products.id', '=', 'transports.product_id')
+                            ->join('customers', 'customers.id', '=', 'transports.customer_id')
+                            ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
+                            ->join('prices', 'prices.id', '=', 'costs.price_id')
+                            ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+                            ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+                            ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+                            ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                            ->where('transports.id', '=', $transportNew->id)
+                            ->first();
+
+                        $voucherTransport = VoucherTransport::where('transport_id', $transportNew->id)->get();
+
+                        $response = [
+                            'msg'              => 'Created transport',
+                            'transport'        => $transport,
+                            'voucherTransport' => $voucherTransport
+                        ];
+                        DB::commit();
+                        return response()->json($response, 201);
                     }
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Create failed'], 404);
+                    break;
+                case 'update':
+                    $transportUpdate = Transport::findOrFail($request->input('_transport')['id']);
+                    $transportUpdate->weight = $weight;
+                    $transportUpdate->quantumProduct = $quantumProduct;
+                    $transportUpdate->cashRevenue = $cashRevenue;
+                    $transportUpdate->cashDelivery = $cashDelivery;
+                    $transportUpdate->cashReceive = $cashReceive;
+                    $transportUpdate->cashProfit = $cashProfit;
+                    $transportUpdate->voucherNumber = $voucherNumber;
+                    $transportUpdate->voucherQuantumProduct = $voucherQuantumProduct;
+                    $transportUpdate->receiver = $receiver;
+                    $transportUpdate->receiveDate = $receiveDate;
+                    $transportUpdate->receivePlace = $receivePlace;
+                    $transportUpdate->deliveryPlace = $deliveryPlace;
 
-                    //Add Cost
-                    $costNew = new Cost();
-                    $costNew->cost = $cost;
-                    $costNew->literNumber = "";
-                    $costNew->dayNumber = "";
-                    $costNew->createdBy = \Auth::user()->id;
-                    $costNew->updatedBy = \Auth::user()->id;
-                    $costNew->note = $costs_note;
-                    $costNew->transport_id = $transportNew->id;
-                    $costNew->price_id = 1;
-                    $costNew->vehicle_id = $vehicle_id;
-                    if (!$costNew->save()) {
-                        return response()->json(['msg' => 'Create Cost failed'], 404);
+                    $createdBy = $transportUpdate->updatedBy;
+
+                    $transportUpdate->updatedBy = \Auth::user()->id;
+                    $transportUpdate->note = $note;
+                    $transportUpdate->status_transport = $status_transport;
+                    $transportUpdate->status_customer = $status_customer;
+                    $transportUpdate->status_garage = $status_garage;
+                    $transportUpdate->product_id = $product_id;
+                    $transportUpdate->customer_id = $customer_id;
+                    $transportUpdate->invoice_id = $invoice_id;
+
+                    if ($transportUpdate->update()) {
+                        //Delete VoucherTransport
+                        $vouTranDelete = VoucherTransport::where('transport_id', $transportUpdate->id)->get()->toArray();
+                        $ids_to_delete = array_map(function($item){ return $item['id']; }, $vouTranDelete);
+                        if(DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
+                            return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
+                        }
+
+                        //Add VoucherTransport
+                        for ($i = 0; $i < count($array_voucherTransport); $i++) {
+                            $vouTranNew = new VoucherTransport();
+                            $vouTranNew->voucher_id = $array_voucherTransport[$i];
+                            $vouTranNew->transport_id = $transportUpdate->id;
+                            $vouTranNew->createdBy = $createdBy;
+                            $vouTranNew->updatedBy = \Auth::user()->id;
+                            if (!$vouTranNew->save()) {
+                                return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
+                            }
+                        }
+
+                        //Delete Cost
+                        $costDelete = Cost::where('transport_id', $transportUpdate->id)->get();
+                        if (!$costDelete[0]->delete()) {
+                            return response()->json(['msg' => 'Delete Cost failed'], 404);
+                        }
+
+                        //Add Cost
+                        $costNew = new Cost();
+                        $costNew->cost = $cost;
+                        $costNew->literNumber = "";
+                        $costNew->dateCheckIn = null;
+                        $costNew->dateCheckOut = null;
+                        $costNew->totalHour = null;
+                        $costNew->totalDay = null;
+                        $costNew->dateRefuel = null;
+                        $costNew->createdBy = $createdBy;
+                        $costNew->updatedBy = \Auth::user()->id;
+                        $costNew->note = $costs_note;
+                        $costNew->transport_id = $transportUpdate->id;
+                        $costNew->price_id = $price_id;
+                        $costNew->vehicle_id = $vehicle_id;
+                        if (!$costNew->save()) {
+                            return response()->json(['msg' => 'Create Cost failed'], 404);
+                        }
+
+                        //Response
+                        $transport = DB::table('transports')
+                            ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
+                                'customers.id as customers_id', 'customers.fullName as customers_fullName',
+                                'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
+                                'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
+                                'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
+                                'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                                'statuses_gar.status as status_garage_'
+                            )
+                            ->join('costs', 'costs.transport_id', '=', 'transports.id')
+                            ->join('products', 'products.id', '=', 'transports.product_id')
+                            ->join('customers', 'customers.id', '=', 'transports.customer_id')
+                            ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
+                            ->join('prices', 'prices.id', '=', 'costs.price_id')
+                            ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+                            ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+                            ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+                            ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                            ->where('transports.id', '=', $transportUpdate->id)
+                            ->first();
+
+                        $voucherTransport = VoucherTransport::where('transport_id', $transportUpdate->id)->get();
+
+                        $response = [
+                            'msg'              => 'Updated transport',
+                            'transport'        => $transport,
+                            'voucherTransport' => $voucherTransport
+                        ];
+                        DB::commit();
+                        return response()->json($response, 201);
                     }
-
-                    //Response
-                    $transport = \DB::table('transports')
-                        ->select('transports.*', 'products.id as products_id', 'products.name as products_name', 'customers.id as customers_id', 'customers.fullName as customers_fullName', 'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note')
-                        ->where('transports.id', '=', $transportNew->id)
-                        ->join('costs', 'costs.transport_id', '=', 'transports.id')
-                        ->join('products', 'products.id', '=', 'transports.product_id')
-                        ->join('customers', 'customers.id', '=', 'transports.customer_id')
-                        ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                        ->get();
-
-                    $voucherTransport = VoucherTransport::where('transport_id', $transportNew->id)->get();
-
-                    $response = [
-                        'msg'              => 'Created transport',
-                        'transport'        => $transport,
-                        'voucherTransport' => $voucherTransport
-                    ];
-                    return response()->json($response, 201);
-                }
-                return response()->json(['msg' => 'Create failed'], 404);
-                break;
-            case 'update':
-                $transportUpdate = Transport::findOrFail($request->input('_transport')['id']);
-                $transportUpdate->weight = $weight;
-                $transportUpdate->quantumProduct = $quantumProduct;
-                $transportUpdate->cashRevenue = $cashRevenue;
-                $transportUpdate->cashDelivery = $cashDelivery;
-                $transportUpdate->cashReceive = $cashReceive;
-                $transportUpdate->cashProfit = $cashProfit;
-                $transportUpdate->voucherNumber = $voucherNumber;
-                $transportUpdate->voucherQuantumProduct = $voucherQuantumProduct;
-                $transportUpdate->receiver = $receiver;
-                $transportUpdate->receiveDate = $receiveDate;
-                $transportUpdate->receivePlace = $receivePlace;
-                $transportUpdate->deliveryPlace = $deliveryPlace;
-
-                $createdBy = $transportUpdate->updatedBy;
-
-                $transportUpdate->updatedBy = \Auth::user()->id;
-                $transportUpdate->note = $note;
-                $transportUpdate->status_id = $status_id;
-                $transportUpdate->product_id = $product_id;
-                $transportUpdate->customer_id = $customer_id;
-                $transportUpdate->invoice_id = $invoice_id;
-
-                if ($transportUpdate->update()) {
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Update failed'], 404);
+                    break;
+                case 'delete':
+                    $transport_id = $request->input('_id');
                     //Delete VoucherTransport
-                    $vouTranDelete = VoucherTransport::where('transport_id', $transportUpdate->id)->get()->toArray();
+                    $vouTranDelete = VoucherTransport::where('transport_id', $transport_id)->get()->toArray();
                     $ids_to_delete = array_map(function($item){ return $item['id']; }, $vouTranDelete);
-                    if(\DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
+                    if(DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
                         return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
                     }
 
-                    //Add VoucherTransport
-                    for ($i = 0; $i < count($array_voucherTransport); $i++) {
-                        $vouTranNew = new VoucherTransport();
-                        $vouTranNew->voucher_id = $array_voucherTransport[$i];
-                        $vouTranNew->transport_id = $transportUpdate->id;
-                        $vouTranNew->createdBy = $createdBy;
-                        $vouTranNew->updatedBy = \Auth::user()->id;
-                        if (!$vouTranNew->save()) {
-                            return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
-                        }
-                    }
-
                     //Delete Cost
-                    $costDelete = Cost::where('transport_id', $transportUpdate->id)->get();
+                    $costDelete = Cost::where('transport_id', $transport_id)->get();
                     if (!$costDelete[0]->delete()) {
                         return response()->json(['msg' => 'Delete Cost failed'], 404);
                     }
 
-                    //Add Cost
-                    $costNew = new Cost();
-                    $costNew->cost = $cost;
-                    $costNew->literNumber = "";
-                    $costNew->dayNumber = "";
-                    $costNew->createdBy = $createdBy;
-                    $costNew->updatedBy = \Auth::user()->id;
-                    $costNew->note = $costs_note;
-                    $costNew->transport_id = $transportUpdate->id;
-                    $costNew->price_id = 1;
-                    $costNew->vehicle_id = $vehicle_id;
-                    if (!$costNew->save()) {
-                        return response()->json(['msg' => 'Create Cost failed'], 404);
-                    }
+                    $transportDelete = Transport::findOrFail($request->input('_id'));
+                    $transportDelete->active = 0;
+                    $transportDelete->updatedBy = \Auth::user()->id;
 
                     //Response
-                    $transport = \DB::table('transports')
-                        ->select('transports.*', 'products.id as products_id', 'products.name as products_name', 'customers.id as customers_id', 'customers.fullName as customers_fullName', 'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note')
-                        ->join('costs', 'costs.transport_id', '=', 'transports.id')
-                        ->join('products', 'products.id', '=', 'transports.product_id')
-                        ->join('customers', 'customers.id', '=', 'transports.customer_id')
-                        ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                        ->where('transports.id', '=', $transportUpdate->id)
-                        ->get();
-
-                    $voucherTransport = VoucherTransport::where('transport_id', $transportUpdate->id)->get();
-
-                    $response = [
-                        'msg'              => 'Updated transport',
-                        'transport'        => $transport,
-                        'voucherTransport' => $voucherTransport
-                    ];
-                    return response()->json($response, 201);
-                }
-                return response()->json(['msg' => 'Update failed'], 404);
-                break;
-            case 'delete':
-                $transport_id = $request->input('_id');
-                //Delete VoucherTransport
-                $vouTranDelete = VoucherTransport::where('transport_id', $transport_id)->get()->toArray();
-                $ids_to_delete = array_map(function($item){ return $item['id']; }, $vouTranDelete);
-                if(\DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
-                    return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
-                }
-
-                //Delete Cost
-                $costDelete = Cost::where('transport_id', $transport_id)->get();
-                if (!$costDelete[0]->delete()) {
-                    return response()->json(['msg' => 'Delete Cost failed'], 404);
-                }
-
-                $transportDelete = Transport::findOrFail($request->input('_id'));
-                $transportDelete->active = 0;
-                $transportDelete->updatedBy = \Auth::user()->id;
-
-                //Response
-                if ($transportDelete->update()) {
-                    $response = [
-                        'msg' => 'Deleted vehicle'
-                    ];
-                    return response()->json($response, 201);
-                }
-                return response()->json(['msg' => 'Deletion failed'], 404);
-                break;
-            default:
-                return response()->json(['msg' => 'Connection to server failed'], 404);
-                break;
+                    if ($transportDelete->update()) {
+                        $response = [
+                            'msg' => 'Deleted vehicle'
+                        ];
+                        DB::commit();
+                        return response()->json($response, 201);
+                    }
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Deletion failed'], 404);
+                    break;
+                default:
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Connection to server failed'], 404);
+                    break;
+            }
+        } catch (Exception $ex){
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
         }
     }
 

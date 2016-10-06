@@ -19,8 +19,29 @@ class CostTableSeeder extends Seeder
             'active' => '1',
             'transport_id' => '1',
             'price_id' => '1',
-            'vehicle_id' => '1',
-            'dateRefuel' => '2016-09-29 16:09:48'
+            'vehicle_id' => '1'
+        ]);
+
+        \App\Cost::create([
+            'cost' => '1500000',
+            'createdBy' => '1',
+            'updatedBy' => '1',
+            'note' => 'Neo đêm',
+            'active' => '1',
+            'transport_id' => '2',
+            'price_id' => '2',
+            'vehicle_id' => '2'
+        ]);
+
+        \App\Cost::create([
+            'cost' => '800000',
+            'createdBy' => '1',
+            'updatedBy' => '1',
+            'note' => 'Phạt tiền',
+            'active' => '1',
+            'transport_id' => '3',
+            'price_id' => '3',
+            'vehicle_id' => '3'
         ]);
 
         \App\Cost::create([
@@ -59,6 +80,5 @@ class CostTableSeeder extends Seeder
             'dateCheckIn' => '2016-09-20 16:09:48',
             'dateCheckOut' => '2016-09-29 16:09:48'
         ]);
-
     }
 }
