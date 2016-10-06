@@ -28,7 +28,7 @@ class DebtManagementController extends Controller
             ->join('products', 'products.id', '=', 'transports.product_id')
             ->join('customers', 'customers.id', '=', 'transports.customer_id')
             ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-            ->where('transports.cashReceive','>','cashProfit')
+            ->where('transports.cashRevenue','>','cashReceive')
             ->where('transports.active',1)
             ->get();
 

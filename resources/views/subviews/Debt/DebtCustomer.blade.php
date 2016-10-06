@@ -173,7 +173,7 @@
             fillDataToDatatable: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     data[i].fullNumber = data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
-                    data[i].receive = data[i]['cashRevenue'] - data[i]['cashReceive'];
+                    data[i].debt = data[i]['cashRevenue'] - data[i]['cashReceive'];
                 }
 
                 debtCustomerView.table = $('#table-data').DataTable({
@@ -191,7 +191,7 @@
                             render: $.fn.dataTable.render.number(".", ",", 0)
                         },
                         {
-                            data: 'receive',
+                            data: 'debt',
                             render: $.fn.dataTable.render.number(".", ",", 0)
                         },
                         {data: 'receiver'},

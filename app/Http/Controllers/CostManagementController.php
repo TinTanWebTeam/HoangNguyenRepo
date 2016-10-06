@@ -560,30 +560,23 @@ class CostManagementController extends Controller
             $totalCost = $request->get('_object')['vehicle_id'];
             $note = $request->get('_object')['note'];
             $prices_id = $request->get('_object')['prices_id'];
+            $yearIn = substr($checkIn, 0, 4);
+            $monthIn = substr($checkIn, 5, 2);
             $dayIn = substr($checkIn, 8, 2);
+            $yearOut = substr($checkOut, 0, 4);
+            $monthOut = substr($checkOut, 5, 2);
             $dayOut = substr($checkOut, 8, 2);
-            $totalDay = (($dayIn + $dayOut - $dayIn) + 1);
-            $timeIn = substr($checkIn, 11, 2);
-            $timeOut = substr($checkOut, 11, 2);
-          
-            dd($totalDay);
+            $hourIn = substr($checkIn, 11, 2);
+            $hourOut = substr($checkOut, 11, 2);
+            $minIn = substr($checkIn, 14, 2);
+            $minOut = substr($checkOut, 14, 2);
+            $ymdIn = Carbon::create($yearIn, $monthIn, $dayIn, $hourIn, $minIn);
+            $ymdOut = Carbon::create($yearOut, $monthOut, $dayOut, $hourOut, $minOut);
+            $totalMinus = $ymdOut->diffInMinutes($ymdIn);
+
+
 
         }
-
-//        $yearIn =substr($checkIn,  0, 4);
-//        $yearOut =substr($checkOut, 0, 4);
-//
-//        $monthIn =substr($checkIn,   5, 2);
-//        $monthOut =substr($checkOut,   5, 2);
-//
-//        $dayIn =substr($checkIn,  8, 2);
-//        $dayOut =substr($checkOut,  8, 2);
-//
-//        $timeIn=substr($checkIn,  11, 2);
-//        $timeOut=substr($checkOut,  11, 2);
-//
-//        $minIn=substr($checkIn,  14, 2);
-//        $minOut=substr($checkOut,  14, 2);
 
 
         switch ($action) {
@@ -592,7 +585,7 @@ class CostManagementController extends Controller
                 $parkingCostNew->cost = $totalCost;
                 $parkingCostNew->dateCheckIn = $checkIn;
                 $parkingCostNew->dateCheckOut = $checkOut;
-                $parkingCostNew->totalDay = $totalDay;
+                $parkingCostNew->totalMinus = $totalMinus;
                 $parkingCostNew->note = $note;
                 $parkingCostNew->price_id = $prices_id;
                 $parkingCostNew->vehicle_id = $vehicle_id;
@@ -629,7 +622,7 @@ class CostManagementController extends Controller
                 $parkingUpdate->cost = $totalCost;
                 $parkingUpdate->dateCheckIn = $checkIn;
                 $parkingUpdate->dateCheckOut = $checkOut;
-                $parkingUpdate->totalDay = $totalDay;
+                $parkingUpdate->totalMinus = $totalMinus;
                 $parkingUpdate->note = $note;
                 $parkingUpdate->price_id = $prices_id;
                 $parkingUpdate->vehicle_id = $vehicle_id;

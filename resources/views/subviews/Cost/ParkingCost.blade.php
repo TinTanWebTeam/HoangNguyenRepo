@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 20%;
+        top: 15%;
         display: none;
         right: 0px;
         width: 50%;
@@ -157,7 +157,9 @@
                                         <div class='input-group date' id='datetimepickerOut'>
                                             <label for="datetimeCheckOut"><b>Ngày lấy xe</b></label>
                                             <input type='text' id="datetimeCheckOut" name="datetimeCheckOut"
-                                                   value="{{date('d-m-Y H-i')}}" class="form-control"/>
+                                                   value="{{date('d-m-Y H-i')}}" class="form-control"
+                                                   onload="parkingCostView.loadDatetime()"
+                                            />
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
@@ -200,9 +202,9 @@
                                     <div class="form-group form-md-line-input ">
                                         <label for="note"><b>Ghi chú</b></label>
                                         <textarea type="text" class="form-control"
-                                               id="note"
-                                               name="note"
-                                               placeholder="Ghi chú"></textarea>
+                                                  id="note"
+                                                  name="note"
+                                                  placeholder="Ghi chú"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -214,7 +216,8 @@
                                             onclick="parkingCostView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="parkingCostView.cancel()">Huỷ</button>
+                                    <button type="button" class="btn default" onclick="parkingCostView.cancel()">Huỷ
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -414,8 +417,7 @@
 
 <script>
     $(function () {
-        $('#datetimepickerIn').datetimepicker();
-        $('#datetimepickerOut').datetimepicker();
+
         if (typeof (parkingCostView) === 'undefined') {
             parkingCostView = {
                 table: null,
@@ -454,6 +456,17 @@
                 cancelDelete: function () {
                     parkingCostView.idDelete = null;
                     $("#modalConfirm").modal('hide');
+                },
+                formatMoney: function (nStr, decSeperate, groupSeperate) {
+                    nStr += '';
+                    x = nStr.split(decSeperate);
+                    x1 = x[0];
+                    x2 = x.length > 1 ? '.' + x[1] : '';
+                    var rgx = /(\d+)(\d{3})/;
+                    while (rgx.test(x1)) {
+                        x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
+                    }
+                    return x1 + x2;
                 },
                 showNotification: function (type, msg) {
                     switch (type) {
@@ -548,7 +561,22 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
+                    $('#datetimepickerIn').datetimepicker();
+                    $('#datetimepickerOut').datetimepicker();
+                    jQuery.validator.addMethod("greaterThan",
+                            function (value, element, params) {
+                                if (!/Invalid|NaN/.test(new Date(value))) {
+                                    return new Date(value) > new Date($(params).val());
+                                }
+                                return isNaN(value) && isNaN($(params).val())
+                                        || (Number(value) > Number($(params).val()));
+                            }, 'Ngày lấy xe phải hơn ngày đậu xe.');
+                    $("#table-vehicles").find("tbody").on('click', 'tr', function () {
+                        var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
+                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#vehicle_id').val(vehicle);
+                        parkingCostView.displayModal("hide", "#modal-searchVehicle");
+                    });
                     toastr.options = {
                         "closeButton": true,
                         "debug": false,
@@ -591,6 +619,8 @@
                 },
 
                 fillCurrentObjectToForm: function () {
+
+
                     var dayIn = parkingCostView.current["dateCheckIn"].substr(8, 2);
                     var monthIn = parkingCostView.current["dateCheckIn"].substr(5, 2);
                     var yearIn = parkingCostView.current["dateCheckIn"].substr(0, 4);
@@ -609,12 +639,12 @@
                     $("input[id='literNumber']").val(parkingCostView.current["literNumber"]);
                     $("input[id='totalprice']").val(totalPrice);
                     $("textarea[id='note']").val(parkingCostView.current["note"]);
-                    $("input[id='price']").val(parkingCostView.current["prices_price"]);
+                    $("input[id='price']").val(parkingCostView.formatMoney(parkingCostView.current["prices_price"], '.', '.'));
                     $("#price").attr('data-priceId', parkingCostView.current["price_id"]);
 
                 },
                 save: function () {
-                    parkingCostView.ValidateCost();
+                    parkingCostView.ValidateParking();
                     parkingCostView.fillFormDataToCurrentObject();
                     if ($("#formParkingCost").valid()) {
                         var sendToServer = {
@@ -643,14 +673,35 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
+                           
                                 switch (parkingCostView.action) {
+
                                     case 'add':
+                                        data['tableParkingNew'][0].totalDay = data['tableParkingNew'][0]['totalMinus'];
+                                        data['tableParkingNew'][0].totalHour = data['tableParkingNew'][0]['totalMinus'];
+
                                         data['tableParkingNew'][0].fullNumber = data['tableParkingNew'][0]['vehicles_code'] + "-" + data['tableParkingNew'][0]["vehicles_vehicleNumber"];
                                         parkingCostView.tableParkingCost.push(data['tableParkingNew'][0]);
                                         parkingCostView.showNotification("success", "Thêm thành công!");
                                         $("#price").attr('data-priceId', parkingCostView.current["prices_id"]);
                                         break;
                                     case 'update':
+                                        if (data['tableParkingUpdate'][0]['totalMinus'] >= 60) {
+                                            data['tableParkingUpdate'][0].totalHour = data['tableParkingUpdate'][0]['totalMinus'] / 60;
+                                        } else {
+                                            data['tableParkingUpdate'][0].totalHour = data['tableParkingUpdate'][0]['totalMinus']
+                                        }
+                                        var a = data['tableParkingUpdate'][0].totalHour.toString().substr(2, 3);
+                                        var b = data['tableParkingUpdate'][0].totalHour.toString().substr(0, 1);
+                                        var c = (a * 0.1)*60;
+                                        data['tableParkingUpdate'][0].totalHour = b + ':' + c;
+
+                                        if (data['tableParkingUpdate'][0]['totalMinus'] >= 1440) {
+                                            data['tableParkingUpdate'][0].totalDay = data['tableParkingUpdate'][0]['totalMinus'] / 60 /24;
+                                        } else {
+                                            data['tableParkingUpdate'][0].totalDay = 0;
+                                        }
+
                                         data['tableParkingUpdate'][0].fullNumber = data['tableParkingUpdate'][0]['vehicles_code'] + "-" + data['tableParkingUpdate'][0]["vehicles_vehicleNumber"];
                                         var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
                                             return o.id == sendToServer._object.id;
@@ -681,12 +732,49 @@
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#fromPetroleum").find("label[class=error]").css("color", "red");
+                        $("form#formParkingCost").find("label[class=error]").css("color", "red");
                     }
                 },
                 fillDataToDatatable: function (data) {
+
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_code'] + '-' + data[i]['vehicles_vehicleNumber'];
+
+                        if (data[i]['totalMinus'] >= 60) {
+                            data[i].totalHour = data[i]['totalMinus'] / 60;
+//                            var a = data[i].totalHour.toString().substr(2, 3);
+//                            var b = data[i].totalHour.toString().substr(0, 1);
+//                            var c = a *6;
+//                            data[i].totalHour = b + ':' + c;
+                        } else {
+                            data[i].totalHour = data[i]['totalMinus'];
+                        }
+
+
+
+                        if (data[i]['totalMinus'] >= 1440) {
+                            data[i].totalDay = data[i]['totalMinus'] / 60 / 24;
+                            data[i].totalHour =0;
+//                            var u = data[i].totalDay.toString().substr(0, 1);
+
+                        } else {
+                            data[i].totalDay = 0;
+                        }
+//                        var a1 = data[i].totalDay.toString().substr(2, 3);
+//                        var b1 = data[i].totalDay.toString().substr(0, 1);
+//                        var c1 = (a1 * 0.1)*60;
+//                        data[i].totalHour = b1 + ':' + c1;
+
+
+
+
+//
+//                        if( data[i]['totalHour'] = 24){
+//                            data[i].totalDate = (data[i]['totalMinus'] / 60) / 24;
+//                        }else {
+//                            data[i].totalDate = 0;
+//                        }
+
                     }
                     parkingCostView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -707,8 +795,15 @@
                                 }
                             },
                             {data: 'totalDay'},
-                            {data: 'totalHour' },
-                            {data: 'prices_price',
+                            {
+                                data: 'totalHour',
+
+
+                            },
+
+
+                            {
+                                data: 'prices_price',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {
@@ -910,28 +1005,22 @@
                         select.appendChild(el);
                     }
                 },
-                ValidateCost: function () {
-                    $("#fromPetroleum").validate({
+                ValidateParking: function () {
+                    $("#formParkingCost").validate({
                         rules: {
                             vehicle_id: "required",
-                            literNumber: {
-                                required: true,
-                                number: true
-                            }
+                            datetimeCheckOut: {greaterThan: "#datetimeCheckIn"}
 
                         },
                         messages: {
-                            vehicle_id: "Vui lòng chọn xe",
-                            literNumber: {
-                                required: "Vui lòng nhập số lít",
-                                number: "Số lít phải là số"
-                            }
+                            vehicle_id: "Vui lòng chọn xe"
 
                         }
                     });
                 },
                 inputPrice: function () {
-                    $("input[id='price']").val(parkingCostView.tablePrice.price);
+
+                    $("input[id='price']").val(parkingCostView.formatMoney(parkingCostView.tablePrice.price, '.', '.'));
                     $("#price").attr('data-priceId', parkingCostView.tablePrice.id);
                 },
                 ValidateCostPrice: function () {
@@ -951,6 +1040,7 @@
                     });
 
                 },
+
                 savePriceType: function () {
                     parkingCostView.ValidateCostPrice();
                     var priceType = {
@@ -986,17 +1076,15 @@
                     } else {
                         $("form#fromCostPrice").find("label[class=error]").css("color", "red");
                     }
+                },
+                loadDatetime: function () {
+                    alert('a');
                 }
             };
             parkingCostView.loadData();
         } else {
             parkingCostView.loadData();
         }
-        $("#table-vehicles").find("tbody").on('click', 'tr', function () {
-            var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
-            $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
-            $('#vehicle_id').val(vehicle);
-            parkingCostView.displayModal("hide", "#modal-searchVehicle");
-        });
+
     });
 </script>
