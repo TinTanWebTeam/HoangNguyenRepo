@@ -21,7 +21,7 @@ class CreateTransportsTable extends Migration
             $table->decimal('cashReceive',18,0)->default(0);
             $table->decimal('cashProfit',18,0)->default(0);
             $table->string('voucherNumber');
-            $table->string('voucherQuantumProduct')->unsigned();
+            $table->string('voucherQuantumProduct');
             $table->string('receiver');
             $table->dateTime('receiveDate');
             $table->string('receivePlace');
