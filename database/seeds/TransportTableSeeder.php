@@ -33,5 +33,51 @@ class TransportTableSeeder extends Seeder
             'status_customer'       => '5',
             'status_garage'         => '8',
         ]);
+
+        \App\Transport::create([
+            'weight'                => '9',
+            'quantumProduct'        => '90',
+            'cashRevenue'           => '7000000',
+            'cashDelivery'          => '2500000',
+            'cashReceive'           => '5000000',
+            'cashProfit'            => '3000000',
+            'product_id'            => '2',
+            'customer_id'           => '2',
+            'voucherNumber'         => 'AV228',
+            'voucherQuantumProduct' => '9000',
+            'receiver'              => 'Dung',
+            'receiveDate'           => '2016-7-25 16:06:35',
+            'receivePlace'          => 'Đồng Nai',
+            'deliveryPlace'         => 'Vedan',
+            'createdBy'             => '1',
+            'updatedBy'             => '1',
+            'note'                  => 'Giao hàng cho Vedan',
+            'status_transport'      => '2',
+            'status_customer'       => '6',
+            'status_garage'         => '9',
+        ]);
+
+        \App\Transport::create([
+            'weight'                => '10',
+            'quantumProduct'        => '100',
+            'cashRevenue'           => '3000000',
+            'cashDelivery'          => '1200000',
+            'cashReceive'           => '3000000',
+            'cashProfit'            => '1000000',
+            'product_id'            => '3',
+            'customer_id'           => '3',
+            'voucherNumber'         => 'AV772',
+            'voucherQuantumProduct' => '8500',
+            'receiver'              => 'Minh',
+            'receiveDate'           => '2016-10-15 16:06:35',
+            'receivePlace'          => 'Củ Chi',
+            'deliveryPlace'         => 'Hoa Đức Hòa',
+            'createdBy'             => '1',
+            'updatedBy'             => '1',
+            'note'                  => 'Giao cho HĐH',
+            'status_transport'      => '3',
+            'status_customer'       => '7',
+            'status_garage'         => '10',
+        ]);
     }
 }
