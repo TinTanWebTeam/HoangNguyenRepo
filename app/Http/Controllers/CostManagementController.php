@@ -117,7 +117,7 @@ class CostManagementController extends Controller
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
-            $totalCost = str_replace('.','',$totalCost = $literNumber * $prices_price);
+            $totalCost = str_replace('.', '', $totalCost = $literNumber * $prices_price);
             $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
             $noted = $request->get('_object')['noted'];
 
@@ -396,7 +396,7 @@ class CostManagementController extends Controller
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
-            $totalCost = str_replace('.','',$totalCost = $literNumber * $prices_price);
+            $totalCost = str_replace('.', '', $totalCost = $literNumber * $prices_price);
             $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
             $noted = $request->get('_object')['noted'];
 
@@ -532,65 +532,92 @@ class CostManagementController extends Controller
         ];
         return response()->json($response, 200);
     }
+
     public function postModifyParkingCost(Request $request)
     {
-        $prices_price = null;
-        $literNumber = null;
-        $vehicle = null;
+
+        $vehicle_id = null;
+        $checkIn = null;
+        $checkOut = null;
         $totalCost = null;
-        $datetime = null;
         $note = null;
+        $prices_id = null;
+        $dayIn = null;
+        $dayOut = null;
+        $totalDay = null;
+        $timeIn = null;
+        $timeOut = null;
         $action = $request->get('_action');
-//        if ($action != 'delete') {
-//            $validator = ValidateController::ValidatePetroleum($request->get('_object'));
-//            if ($validator->fails()) {
-//                return $validator->errors();
-////                return response()->json(['msg' => 'Input data fail'], 404);
-//            }
+        if ($action != 'delete') {
+            $validator = ValidateController::ValidateParkingCost($request->get('_object'));
+            if ($validator->fails()) {
+                return $validator->errors();
+//                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+            $vehicle_id = $request->get('_object')['vehicle_id'];
+            $checkIn = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetimeCheckIn'])->toDateTimeString();
+            $checkOut = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetimeCheckOut'])->toDateTimeString();
+            $totalCost = $request->get('_object')['vehicle_id'];
+            $note = $request->get('_object')['note'];
+            $prices_id = $request->get('_object')['prices_id'];
+            $dayIn = substr($checkIn, 8, 2);
+            $dayOut = substr($checkOut, 8, 2);
+            $totalDay = (($dayIn + $dayOut - $dayIn) + 1);
+            $timeIn = substr($checkIn, 11, 2);
+            $timeOut = substr($checkOut, 11, 2);
+          
+            dd($totalDay);
+
+        }
+
+//        $yearIn =substr($checkIn,  0, 4);
+//        $yearOut =substr($checkOut, 0, 4);
 //
-//            $prices_price = $request->get('_object')['prices_price'];
-//            $prices_id = $request->get('_object')['prices_id'];
-//            $literNumber = $request->get('_object')['literNumber'];
-//            $vehicle = $request->get('_object')['vehicle_id'];
-//            $totalCost = str_replace('.','',$totalCost = $literNumber * $prices_price);
-//            $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
-//            $noted = $request->get('_object')['noted'];
+//        $monthIn =substr($checkIn,   5, 2);
+//        $monthOut =substr($checkOut,   5, 2);
 //
-//        }
+//        $dayIn =substr($checkIn,  8, 2);
+//        $dayOut =substr($checkOut,  8, 2);
+//
+//        $timeIn=substr($checkIn,  11, 2);
+//        $timeOut=substr($checkOut,  11, 2);
+//
+//        $minIn=substr($checkIn,  14, 2);
+//        $minOut=substr($checkOut,  14, 2);
 
 
         switch ($action) {
             case "add":
-                $petroleumNew = new Cost();
-                $petroleumNew->cost = $totalCost;
-                $petroleumNew->literNumber = $literNumber;
-                $petroleumNew->dateRefuel = $datetime;
-                $petroleumNew->createdBy = Auth::user()->id;
-                $petroleumNew->updatedBy = Auth::user()->id;
-                $petroleumNew->note = $noted;
-                $petroleumNew->price_id = $prices_id;
-                $petroleumNew->vehicle_id = $vehicle;
+                $parkingCostNew = new Cost();
+                $parkingCostNew->cost = $totalCost;
+                $parkingCostNew->dateCheckIn = $checkIn;
+                $parkingCostNew->dateCheckOut = $checkOut;
+                $parkingCostNew->totalDay = $totalDay;
+                $parkingCostNew->note = $note;
+                $parkingCostNew->price_id = $prices_id;
+                $parkingCostNew->vehicle_id = $vehicle_id;
+                $parkingCostNew->createdBy = Auth::user()->id;
+                $parkingCostNew->updatedBy = Auth::user()->id;
 
-                if ($petroleumNew->save()) {
-                    $tablePetrolNew = \DB::table('costs')
+                if ($parkingCostNew->save()) {
+                    $tableParkingNew = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
                         ->join('prices', 'prices.id', '=', 'costs.price_id')
                         ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
                         ->where('costs.active', 1)
-                        ->where('costs.id', $petroleumNew->id)
-                        ->where('prices.costPrice_id', 3)
+                        ->where('costs.id', $parkingCostNew->id)
+                        ->where('prices.costPrice_id', 4)
                         ->select(
                             'prices.price as prices_price',
                             'costs.*',
-                            'costs.note as noteCost ',
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
                             'vehicles.vehicleNumber as vehicles_vehicleNumber')
                         ->get();
 
                     $response = [
-                        'msg'            => 'Created vehicle',
-                        'tablePetrolNew' => $tablePetrolNew
+                        'msg'             => 'Created Parking Cost',
+                        'tableParkingNew' => $tableParkingNew
                     ];
                     return response()->json($response, 201);
                 }
@@ -598,27 +625,28 @@ class CostManagementController extends Controller
                 break;
             case "update":
 
-                $petroleumUpdate = Cost::findOrFail($request->get('_object')['id']);
-                $petroleumUpdate->literNumber = $literNumber;
-                $petroleumUpdate->cost = $totalCost;
-                $petroleumUpdate->dateRefuel = $datetime;
-                $petroleumUpdate->note = $noted;
-                $petroleumUpdate->vehicle_id = $vehicle;
-                $petroleumUpdate->price_id = $prices_id;
-                $petroleumUpdate->updatedBy = Auth::user()->id;
+                $parkingUpdate = Cost::findOrFail($request->get('_object')['id']);
+                $parkingUpdate->cost = $totalCost;
+                $parkingUpdate->dateCheckIn = $checkIn;
+                $parkingUpdate->dateCheckOut = $checkOut;
+                $parkingUpdate->totalDay = $totalDay;
+                $parkingUpdate->note = $note;
+                $parkingUpdate->price_id = $prices_id;
+                $parkingUpdate->vehicle_id = $vehicle_id;
+                $parkingUpdate->updatedBy = Auth::user()->id;
 
-                if ($petroleumUpdate->update()) {
-                    $tablePetrolUpdate = \DB::table('costs')
+
+                if ($parkingUpdate->update()) {
+                    $tableParkingUpdate = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
                         ->join('prices', 'prices.id', '=', 'costs.price_id')
                         ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
                         ->where('costs.active', 1)
                         ->where('costs.id', $request->get('_object')['id'])
-                        ->where('prices.costPrice_id', 3)
+                        ->where('prices.costPrice_id', 4)
                         ->select(
                             'prices.price as prices_price',
                             'costs.*',
-                            'costs.note as noteCost',
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
                             'vehicles.vehicleNumber as vehicles_vehicleNumber',
@@ -626,8 +654,8 @@ class CostManagementController extends Controller
                         ->get();
 
                     $response = [
-                        'msg'               => 'Updated Cost',
-                        'tablePetrolUpdate' => $tablePetrolUpdate
+                        'msg'                => 'Updated Parking Cost',
+                        'tableParkingUpdate' => $tableParkingUpdate
                     ];
                     return response()->json($response, 201);
                 }
@@ -650,14 +678,6 @@ class CostManagementController extends Controller
         }
 
     }
-
-
-
-
-
-
-
-
 
 
     public function getViewOtherCost()
@@ -709,7 +729,7 @@ class CostManagementController extends Controller
 
             $vehicle_id = $request->get('_object')['vehicle_id'];
             $note = $request->get('_object')['note'];
-            $cost = str_replace('.','',$request->get('_object')['cost']);
+            $cost = str_replace('.', '', $request->get('_object')['cost']);
 
         }
 
@@ -738,7 +758,7 @@ class CostManagementController extends Controller
                             'vehicles.vehicleNumber as vehicles_vehicleNumber')
                         ->get();
                     $response = [
-                        'msg'            => 'Created other Cost',
+                        'msg'               => 'Created other Cost',
                         'tableOtherCostNew' => $tableOtherCostNew
                     ];
                     return response()->json($response, 201);
@@ -763,11 +783,11 @@ class CostManagementController extends Controller
                             'costs.*',
                             'vehicles.areaCode as vehicles_code',
                             'vehicles.vehicleNumber as vehicles_vehicleNumber'
-                         )
+                        )
                         ->get();
 
                     $response = [
-                        'msg'               => 'Updated Other Cost',
+                        'msg'              => 'Updated Other Cost',
                         'tableOtherUpdate' => $tableOtherUpdate
                     ];
                     return response()->json($response, 201);

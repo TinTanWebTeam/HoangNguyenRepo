@@ -141,9 +141,9 @@
                             <div class="row">
                                 <div class='col-md-6'>
                                     <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker'>
-                                            <label for="dateCheckIn"><b>Ngày đậu xe</b></label>
-                                            <input type='text' id="dateCheckIn" name="dateCheckIn"
+                                        <div class='input-group date' id='datetimepickerIn'>
+                                            <label for="datetimeCheckIn"><b>Ngày đậu xe</b></label>
+                                            <input type='text' id="datetimeCheckIn" name="datetimeCheckIn"
                                                    value="{{date('d-m-Y H-i')}}" class="form-control"/>
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
@@ -154,9 +154,9 @@
 
                                 <div class='col-md-6'>
                                     <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker'>
-                                            <label for="dateCheckOut"><b>Ngày lấy xe</b></label>
-                                            <input type='text' id="dateCheckOut" name="dateCheckOut"
+                                        <div class='input-group date' id='datetimepickerOut'>
+                                            <label for="datetimeCheckOut"><b>Ngày lấy xe</b></label>
+                                            <input type='text' id="datetimeCheckOut" name="datetimeCheckOut"
                                                    value="{{date('d-m-Y H-i')}}" class="form-control"/>
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
@@ -211,10 +211,10 @@
                             <div class="form-actions noborder">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="">
+                                            onclick="parkingCostView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                                    <button type="button" class="btn default" onclick="parkingCostView.cancel()">Huỷ</button>
                                 </div>
                             </div>
                         </div>
@@ -412,40 +412,10 @@
 </div>
 <!-- end Modal add Vehicle -->
 
-<p id="basicExample">
-    <input type="text" class="datestart" />
-    <input type="text" class="timestart" /> to
-    <input type="text" class="timeend" />
-    <input type="text" class="dateend" />
-</p>
 <script>
     $(function () {
-
-//        $('#timeIn').timepicker({
-//            'showDuration': true,
-//            'timeFormat': 'g:ia'
-//        });
-//        $('#timeOut').timepicker({
-//            'showDuration': true,
-//            'timeFormat': 'g:ia'
-//        });
-//        $('#dateCheckIn').datepicker({
-//            'format': 'm/d/yyyy',
-//            'autoclose': true
-//        });
-//        $('#dateCheckOut').datepicker({
-//            'format': 'm/d/yyyy',
-//            'autoclose': true
-//        });
-
-        // initialize datepair
-//        var basicExampleEl = document.getElementById('basicExample');
-//        var datepair = new Datepair(basicExampleEl);
-
-
-
-        $('#datetimeCheckIn').datetimepicker();
-        $('#datetimeCheckOut').datetimepicker();
+        $('#datetimepickerIn').datetimepicker();
+        $('#datetimepickerOut').datetimepicker();
         if (typeof (parkingCostView) === 'undefined') {
             parkingCostView = {
                 table: null,
@@ -539,16 +509,20 @@
                     $("#modalConfirm").modal('hide');
                 },
                 clearInput: function () {
+
                     /* form addCost*/
                     $("input[id='vehicle_id']").val('');
                     $("#vehicle_id").attr('data-id', '');
                     $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
                     $("input[id='totalprice']").val('');
-
+                },
+                clearInputPrice: function () {
                     /* Form addPrice*/
                     $("input[id='costPrice']").val('');
-
+                    $("input[id='totalprice']").val('');
+                },
+                clearInputVehicle: function () {
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
                     $("input[id='vehicleNumber']").val('');
@@ -600,10 +574,9 @@
                             datetimeCheckIn: $("input[id='datetimeCheckIn']").val(),
                             datetimeCheckOut: $("input[id='datetimeCheckOut']").val(),
                             totalPrice: $("input[id='totalprice']").val(),
-                            literNumber: $("input[id='literNumber']").val(),
                             prices_price: $("input[id='price']").val(),
                             prices_id: $("#price").attr('data-priceId'),
-                            noted: $("input[id='noted']").val()
+                            note: $("textarea[id='note']").val()
                         };
                     } else if (parkingCostView.action == 'update') {
                         parkingCostView.current.prices_price = $("input[id='price']").val();
@@ -612,7 +585,7 @@
                         parkingCostView.current.totalCost = $("input[id='totalprice']").val();
                         parkingCostView.current.datetimeCheckIn = $("input[id='datetimeCheckIn']").val();
                         parkingCostView.current.datetimeCheckOut = $("input[id='datetimeCheckOut']").val();
-                        parkingCostView.current.noted = $("input[id='noted']").val();
+                        parkingCostView.current.note = $("textarea[id='note']").val();
                         parkingCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
                     }
                 },
@@ -622,28 +595,20 @@
                     var monthIn = parkingCostView.current["dateCheckIn"].substr(5, 2);
                     var yearIn = parkingCostView.current["dateCheckIn"].substr(0, 4);
                     var hourMinusIn = parkingCostView.current["dateCheckIn"].substr(11, 5);
-
                     var dayOut = parkingCostView.current["dateCheckOut"].substr(8, 2);
                     var monthOut = parkingCostView.current["dateCheckOut"].substr(5, 2);
                     var yearOut = parkingCostView.current["dateCheckOut"].substr(0, 4);
                     var hourMinusOut = parkingCostView.current["dateCheckOut"].substr(11, 5);
-                    $("input[id='timeIn']").val(hourMinusIn);
-                    $("input[id='timeOut']").val(hourMinusOut);
-                    console.log(dayIn);
-                    console.log(monthIn);
-                    console.log(yearIn);
-                    console.log(hourMinusIn - hourMinusOut);
                     var vehicle = parkingCostView.current["vehicles_code"] + "-" + parkingCostView.current["vehicles_vehicleNumber"];
                     var totalPrice = parkingCostView.current["literNumber"] * parkingCostView.current["prices_price"];
 
                     $("input[id='datetimeCheckIn']").val(dayIn + "/" + monthIn + "/" + yearIn + " " + hourMinusIn);
                     $("input[id='datetimeCheckOut']").val(dayOut + "/" + monthOut + "/" + yearOut + " " + hourMinusOut);
-
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', parkingCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(parkingCostView.current["literNumber"]);
                     $("input[id='totalprice']").val(totalPrice);
-                    $("input[id='noted']").val(parkingCostView.current["note"]);
+                    $("textarea[id='note']").val(parkingCostView.current["note"]);
                     $("input[id='price']").val(parkingCostView.current["prices_price"]);
                     $("#price").attr('data-priceId', parkingCostView.current["price_id"]);
 
@@ -680,18 +645,18 @@
                             if (jqXHR.status == 201) {
                                 switch (parkingCostView.action) {
                                     case 'add':
-                                        data['tablePetrolNew'][0].fullNumber = data['tablePetrolNew'][0]['vehicles_code'] + "-" + data['tablePetrolNew'][0]["vehicles_vehicleNumber"];
-                                        parkingCostView.tablePetroleumCost.push(data['tablePetrolNew'][0]);
+                                        data['tableParkingNew'][0].fullNumber = data['tableParkingNew'][0]['vehicles_code'] + "-" + data['tableParkingNew'][0]["vehicles_vehicleNumber"];
+                                        parkingCostView.tableParkingCost.push(data['tableParkingNew'][0]);
                                         parkingCostView.showNotification("success", "Thêm thành công!");
                                         $("#price").attr('data-priceId', parkingCostView.current["prices_id"]);
                                         break;
                                     case 'update':
-                                        data['tablePetrolUpdate'][0].fullNumber = data['tablePetrolUpdate'][0]['vehicles_code'] + "-" + data['tablePetrolUpdate'][0]["vehicles_vehicleNumber"];
-                                        var petrolOld = _.find(parkingCostView.tablePetroleumCost, function (o) {
+                                        data['tableParkingUpdate'][0].fullNumber = data['tableParkingUpdate'][0]['vehicles_code'] + "-" + data['tableParkingUpdate'][0]["vehicles_vehicleNumber"];
+                                        var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
                                             return o.id == sendToServer._object.id;
                                         });
-                                        var indexOfPetrolOld = _.indexOf(parkingCostView.tablePetroleumCost, petrolOld);
-                                        parkingCostView.tablePetroleumCost.splice(indexOfPetrolOld, 1, data['tablePetrolUpdate'][0]);
+                                        var indexOfParkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
+                                        parkingCostView.tableParkingCost.splice(indexOfParkingOld, 1, data['tableParkingUpdate'][0]);
                                         parkingCostView.showNotification("success", "Cập nhật thành công!");
                                         parkingCostView.hide();
                                         break;
@@ -699,8 +664,8 @@
                                         var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
                                             return o.id == sendToServer._object.id;
                                         });
-                                        var indexOfparkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
-                                        parkingCostView.tableParkingCost.splice(indexOfparkingOld, 1);
+                                        var indexOfParkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
+                                        parkingCostView.tableParkingCost.splice(indexOfParkingOld, 1);
                                         parkingCostView.showNotification("success", "Xóa thành công!");
                                         parkingCostView.displayModal("hide", "#modal-confirmDelete")
                                         break;
@@ -743,7 +708,9 @@
                             },
                             {data: 'totalDay'},
                             {data: 'totalHour' },
-                            {data: 'prices_price' },
+                            {data: 'prices_price',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
                             {
                                 data: 'totalCost',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
