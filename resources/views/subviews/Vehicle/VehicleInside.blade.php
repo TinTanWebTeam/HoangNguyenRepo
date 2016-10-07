@@ -735,7 +735,7 @@
                             if (jqXHR.status == 201) {
                                 switch (vehicleInsideView.action) {
                                     case 'add':
-                                        vehicleInsideView.tableVehicle.push(data['vehicle'][0]);
+                                        vehicleInsideView.tableVehicle.push(data['vehicle']);
                                         vehicleInsideView.showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
@@ -743,7 +743,7 @@
                                             return o.id == sendToServer._vehicle.id;
                                         });
                                         var indexOfVehicleOld = _.indexOf(vehicleInsideView.tableVehicle, vehicleOld);
-                                        vehicleInsideView.tableVehicle.splice(indexOfVehicleOld, 1, data['vehicle'][0]);
+                                        vehicleInsideView.tableVehicle.splice(indexOfVehicleOld, 1, data['vehicle']);
                                         vehicleInsideView.showNotification("success", "Cập nhật thành công!");
                                         vehicleInsideView.hideControl();
                                         break;

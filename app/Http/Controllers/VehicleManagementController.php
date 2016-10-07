@@ -75,7 +75,7 @@ class VehicleManagementController extends Controller
                         ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
                         ->where('vehicles.id', $vehicleNew->id)
                         ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')
-                        ->get();
+                        ->first();
 
                     $response = [
                         'msg' => 'Created vehicle',
@@ -99,7 +99,7 @@ class VehicleManagementController extends Controller
                         ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
                         ->where('vehicles.id', $vehicleUpdate->id)
                         ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')
-                        ->get();
+                        ->first();
 
                     $response = [
                         'msg' => 'Updated vehicle',
@@ -271,5 +271,14 @@ class VehicleManagementController extends Controller
         }
     }
 
+    public function getDataVehicleType()
+    {
+        $vehicleTypes = VehicleType::all();
+        $response = [
+            'msg' => 'Get data vehicleType success',
+            'vehicleTypes' => $vehicleTypes
+        ];
+        return response()->json($response, 200);
+    }
 
 }
