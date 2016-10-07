@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 53%;
+        top: 40%;
         display: none;
         right: 0;
         width: 40%;
@@ -35,10 +35,9 @@
                         <li class="active">Khách hàng</li>
                     </ol>
                     <div class="menu-toggle  pull-right fixed">
-                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn">
+                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn" onclick="debtCustomerView">
                             <i class="glyphicon glyphicon-list-alt icon-center"></i>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -75,46 +74,73 @@
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">Thanh toán cước phí
-                <div class="menu-toggles pull-right" onclick="debtCustomerView.hide()">
+                <div class="menu-toggles pull-right" onclick="debtCustomerView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
 
             <div class="panel-body">
-                <form role="form" id="formUser">
+                <form role="form" id="frmControl">
                     <div class="form-body">
                         <div class="col-md-12 ">
                             <div class="row ">
                                 <div class="col-md-12 ">
                                     <div class="form-group form-md-line-input ">
-                                        <label for="FullName"><b>Khách hàng</b></label>
+                                        <label for="customer_id"><b>Khách hàng</b></label>
                                         <input type="text" class="form-control"
-                                               id="FullName"
-                                               name="FullName"
-                                               placeholder="Tên khách hàng"
-                                               autofocus>
+                                               id="customer_id"
+                                               name="customer_id"
+                                               data-customerId=""
+                                               readonly>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="row">
-                                <div class="col-md-12 ">
+                                <div class="col-md-6 ">
                                     <div class="form-group form-md-line-input ">
-                                        <label for="Payments"><b>Tiền thanh toán</b></label>
+                                        <label for="cashRevenue"><b>Doanh thu</b></label>
                                         <input type="text" class="form-control"
-                                               id="Payments"
-                                               name="Payments"
-                                               placeholder="00.00">
+                                               id="cashRevenue"
+                                               name="cashRevenue"
+                                               readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="debt"><b>Tiền nợ</b></label>
+                                        <input type="text" class="form-control"
+                                               id="debt"
+                                               name="debt"
+                                               readonly>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="row">
+                                <div class="col-md-6 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="cashReceive"><b>Đã trả</b></label>
+                                        <input type="text" class="form-control"
+                                               id="cashReceive"
+                                               name="cashReceive"
+                                               readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="payment"><b>Tiền thanh toán</b></label>
+                                        <input type="number" class="form-control"
+                                               id="payment"
+                                               name="payment"
+                                                autofocus>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-actions noborder">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="">
+                                            onclick="debtCustomerView.save()">
                                         Hoàn tất
                                     </button>
                                     <button type="button" class="btn default" onclick="">Huỷ</button>
@@ -132,9 +158,57 @@
 <script>
     if (typeof debtCustomerView === 'undefined') {
         debtCustomerView = {
-            tableCustomer: null,
             table: null,
 
+            dataTransport: null,
+            payment: null,
+
+            showControl: function () {
+                $('.menu-toggle').fadeOut();
+                $('#divControl').fadeIn(300);
+            },
+            hideControl: function () {
+                $('#divControl').fadeOut(300, function () {
+                    $('.menu-toggle').fadeIn();
+                });
+
+                debtCustomerView.clearValidation("#frmControl");
+                debtCustomerView.clearInput();
+            },
+            displayModal: function (type, idModal) {
+                $(idModal).modal(type);
+                if (debtCustomerView.action == 'delete' && type == 'hide') {
+                    debtCustomerView.action = null;
+                    debtCustomerView.idDelete = null;
+                }
+
+                //Clear Validate
+            },
+            showNotification: function (type, msg) {
+                switch (type) {
+                    case "info":
+                        toastr.info(msg);
+                        break;
+                    case "success":
+                        toastr.success(msg);
+                        break;
+                    case "warning":
+                        toastr.warning(msg);
+                        break;
+                    case "error":
+                        toastr.error(msg);
+                        break;
+                }
+            },
+            clearInput: function () {
+                $("#customer_id").attr('data-customerId', '');
+                $("input[id='customer_id']").val('');
+                $("input[id='cashRevenue']").val('');
+                $("input[id='debt']").val('');
+                $("input[id='cashReceive']").val('');
+                $("input[id='payment']").val('');
+            },
+            
             loadData: function () {
                 $.ajax({
                     url: url + '/debt-customer/transports',
@@ -142,10 +216,8 @@
                     dataType: "json"
                 }).done(function (data, textStatus, jqXHR) {
                     if (jqXHR.status == 200) {
-                        debtCustomerView.tableCustomer = data['transports'];
-                        debtCustomerView.fillDataToDatatable(data['transports']);
-
-
+                        debtCustomerView.dataTransport = data['transports'];
+                        debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                     } else {
                         debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     }
@@ -196,17 +268,22 @@
                             render: $.fn.dataTable.render.number(".", ",", 0)
                         },
                         {data: 'receiver'},
-                        {data: 'receiveDate'},
+                        {
+                            data: 'receiveDate',
+                            render: function (data, type, full, meta) {
+                                return moment(data).format("DD/MM/YYYY");
+                            }
+                        },
                         {
                             render: function (data, type, full, meta) {
                                 var tr = '';
                                 tr += '<div class="btn-del-edit">';
-                                tr += '<div class="btn btn-success  btn-circle" title="Thanh toán" onclick="fuelCostView.editFuelCost(' + full.id + ')">';
+                                tr += '<div class="btn btn-success  btn-circle" title="Thanh toán" onclick="debtCustomerView.editTransport(' + full.id + ')">';
                                 tr += '<i class="glyphicon glyphicon-credit-card"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
                                 tr += '<div class="btn-del-edit">';
-                                tr += '<div class="btn btn-info btn-circle" onclick="fuelCostView.msgDelete(' + full.id + ')">';
+                                tr += '<div class="btn btn-info btn-circle" title="Trả đủ" onclick="debtCustomerView.autoEditTransport(' + full.id + ')">';
                                 tr += '<i class="fa fa-money" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
@@ -258,6 +335,134 @@
                         }
                     ]
                 })
+            },
+            fillCurrentObjectToForm: function () {
+                $("input[id='customer_id']").val(debtCustomerView.current["customers_fullName"]);
+                $("#customer_id").attr('data-customerId', debtCustomerView.current["customer_id"]);
+                $("input[id='cashRevenue']").val(debtCustomerView.current["cashRevenue"]);
+                $("input[id='debt']").val(debtCustomerView.current["debt"]);
+                $("input[id='cashReceive']").val(debtCustomerView.current["cashReceive"]);
+            },
+            fillFormDataToCurrentObject: function () {
+                if (debtCustomerView.action == 'add') {
+                    debtCustomerView.current = {
+                        customer_id: $("#customer_id").attr("data-customerId"),
+                        cashRevenue: $("input[id='cashRevenue']").val(),
+                        debt: $("input[id='debt']").val(),
+                        cashReceive: $("input[id='cashReceive']").val()
+                    };
+                } else if (debtCustomerView.action == 'update') {
+                    debtCustomerView.current.customer_id = $("#customer_id").attr("data-customerId");
+                    debtCustomerView.current.cashRevenue = $("input[id='cashRevenue']").val();
+                    debtCustomerView.current.debt = $("input[id='debt']").val();
+                    debtCustomerView.current.cashReceive = $("input[id='cashReceive']").val();
+                }
+                debtCustomerView.payment = $("input[id='payment']").val();
+            },
+
+            editTransport: function (id) {
+                debtCustomerView.current = null;
+                debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
+                    return o.id == id;
+                }), true);
+
+                debtCustomerView.fillCurrentObjectToForm();
+                debtCustomerView.action = 'edit';
+                debtCustomerView.showControl();
+            },
+            autoEditTransport: function (id) {
+                debtCustomerView.current = null;
+                debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
+                    return o.id == id;
+                }), true);
+                debtCustomerView.action = 'autoEdit';
+                debtCustomerView.save();
+            },
+
+            formValidate: function () {
+                $("#frmControl").validate({
+                    rules: {
+                        payment: "required"
+                    },
+                    messages: {
+                        payment: "Vui lòng nhập số tiền thanh toán."
+                    }
+                });
+            },
+            clearValidation: function (idForm) {
+                $(idForm).find("label[class=error]").remove();
+//                    var validator = $(idForm).validate();
+//                    validator.resetForm();
+            },
+
+            save: function () {
+                debtCustomerView.formValidate();
+                if ($("#frmControl").valid()) {
+                    debtCustomerView.fillFormDataToCurrentObject();
+
+                    var _transport = {
+                        'transport_id': debtCustomerView.current['id']
+                    };
+                    if(debtCustomerView.action == 'edit'){
+                        _transport.payment = debtCustomerView.payment
+                    }
+
+                    var sendToServer = {
+                        _token: _token,
+                        _transport: _transport
+                    };
+                    console.log("CLIENT");
+                    console.log(sendToServer._transport);
+                    $.ajax({
+                        url: url + 'debt-customer/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 201) {
+                            switch (debtCustomerView.action) {
+                                case 'edit':
+                                    var Old = _.find(debtCustomerView.dataTransport, function (o) {
+                                        return o.id == sendToServer._transport.transport_id;
+                                    });
+                                    var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
+
+                                    if(data['transport']['cashReceive'] == data['transport']['cashRevenue']){
+                                        debtCustomerView.dataTransport.splice(indexOfOld, 1);
+                                    } else {
+                                        data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                        data['transport'].debt = data['transport']['cashRevenue'] - data['transport']['cashReceive'];
+                                        debtCustomerView.dataTransport.splice(indexOfOld, 1, data['transport']);
+                                    }
+
+                                    debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                                    debtCustomerView.hideControl();
+                                    break;
+                                case 'autoEdit':
+                                    var Old = _.find(debtCustomerView.dataTransport, function (o) {
+                                        return o.id == sendToServer._transport.transport_id;
+                                    });
+                                    var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
+                                    debtCustomerView.dataTransport.splice(indexOfOld, 1);
+                                    debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                                    debtCustomerView.displayModal("hide", "#modal-confirmDelete");
+                                    break;
+                                default:
+                                    break;
+                            }
+                            debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
+                            debtCustomerView.clearInput();
+                        } else {
+                            debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                } else {
+                    $("form#frmControl").find("label[class=error]").css("color", "red");
+                }
             }
         };
         debtCustomerView.loadData();

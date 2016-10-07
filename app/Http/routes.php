@@ -76,7 +76,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/debt-vehicle-outside', 'DebtManagementController@getViewDebtVehicleOutside');
         /*GET DATA*/
         Route::get('/debt-customer/transports','DebtManagementController@getDataDebtCustomer');
-
+        /*POST MODIFY*/
+        Route::post('/debt-customer/modify','DebtManagementController@postModifyDebtCustomer');
     });
     //Chi phí
     Route::group(['middleware' => 'CostManagement'], function () {

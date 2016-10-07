@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Transport;
 use Illuminate\Http\Request;
+use DB;
 
 use App\Http\Requests;
 
@@ -14,7 +15,8 @@ class DebtManagementController extends Controller
         return view('subviews.Debt.DebtCustomer');
     }
 
-    public function getDataDebtCustomer(){
+    public function getDataDebtCustomer()
+    {
         $transports = \DB::table('transports')
             ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
                 'customers.id as customers_id', 'customers.fullName as customers_fullName',
@@ -38,10 +40,65 @@ class DebtManagementController extends Controller
             ->get();
 
         $response = [
-            'msg'               => 'Get list all Transport',
-            'transports'        => $transports,
+            'msg'        => 'Get list all Transport',
+            'transports' => $transports,
         ];
         return response()->json($response, 200);
+    }
+
+    public function postModifyDebtCustomer(Request $request)
+    {
+        $transport_id = $request->input('_transport')['transport_id'];
+
+        try {
+            DB::beginTransaction();
+            $transportUpdate = Transport::findOrFail($transport_id);
+            if(array_key_exists('payment', $request->input('_transport')))
+                $transportUpdate->cashReceive += $request->input('_transport')['payment'];
+            else
+                $transportUpdate->cashReceive = $transportUpdate->cashRevenue;
+
+            if ($transportUpdate->cashReceive == $transportUpdate->cashRevenue)
+                $transportUpdate->status_customer = 7;
+
+            $transportUpdate->updatedBy = \Auth::user()->id;
+
+            if ($transportUpdate->update()) {
+                //Response
+                $transport = DB::table('transports')
+                    ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
+                        'customers.id as customers_id', 'customers.fullName as customers_fullName',
+                        'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
+                        'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
+                        'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
+                        'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                        'statuses_gar.status as status_garage_'
+                    )
+                    ->join('costs', 'costs.transport_id', '=', 'transports.id')
+                    ->join('products', 'products.id', '=', 'transports.product_id')
+                    ->join('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
+                    ->join('prices', 'prices.id', '=', 'costs.price_id')
+                    ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+                    ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+                    ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+                    ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                    ->where('transports.id', '=', $transportUpdate->id)
+                    ->first();
+
+                $response = [
+                    'msg'       => 'Updated transport',
+                    'transport' => $transport
+                ];
+                DB::commit();
+                return response()->json($response, 201);
+            }
+            DB::rollBack();
+            return response()->json(['msg' => 'Update failed'], 404);
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
+        }
     }
 
     public function getViewDebtVehicleOutside()
