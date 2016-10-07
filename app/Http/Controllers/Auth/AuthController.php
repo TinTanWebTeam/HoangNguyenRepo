@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
+use Session;
 use Validator;
 
 class AuthController extends Controller
@@ -47,7 +48,7 @@ class AuthController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -62,7 +63,7 @@ class AuthController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return User
      */
     protected function create(array $data)
@@ -82,22 +83,32 @@ class AuthController extends Controller
     public function postLogin(Request $request)
     {
         try {
-
-            $user = User::where('username',$request->get('username'))->first();
-            if($user){
-                $password = decrypt($user->password,Config::get('app.key'));
+            $user = User::where('username', $request->get('username'))->first();
+            if ($user) {
+                $password = decrypt($user->password, Config::get('app.key'));
                 if ($password == $request->get('password') && $user->active == 1) {
                     Auth::login($user);
                     return redirect('/');
-                }else{
-                    flash()->overlay('Password Miss Match, Try Again!', 'Notification');
+                } else {
+
+//                    flash()->overlay('Mật khẩu đăng nhập sai, vui lòng đăng nhập lại!', 'Thông báo');
+                    Session::flash('flash_message', 'Mật khẩu đăng nhập sai, vui lòng đăng nhập lại!', 'Thông báo');
+
+
                     return redirect('auth/login');
                 }
+            } else if ($request->get('username') == '' || $request->get('password') == '') {
+                    Session::flash('flash_message', 'Vui lòng nhập đầy đủ thông tin!', 'Thông báo');
+                return redirect('auth/login');
+                }else
+            {
+                    Session::flash('flash_message', 'Tài khoản không tồn tại, vui lòng nhập lại!', 'Thông báo');
+
+                return redirect('auth/login');
             }
-            flash()->overlay('User not found, please try again!', 'Login fails');
-            return redirect('auth/login');
-        } catch (Exception $e) {
-            flash()->overlay('Some thing went wrong, please try again!', 'Login fails');
+        } catch (Exception $ex) {
+            Session::flash('flash_message', 'Quá trình đăng nhập bị lỗi, vui lòng đăng nhập lại!', 'Thông báo');
+
             return redirect('auth/login');
         }
     }
