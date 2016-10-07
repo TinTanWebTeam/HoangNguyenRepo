@@ -426,7 +426,9 @@ class CustomerManagementController extends Controller
             $price_id = Price::where('costPrice_id', $costPrice_id)->orderBy('created_at', 'desc')->pluck('id')->first();
 
             $costs_note = $request->input('_transport')['costs_note'];
-            $array_voucherTransport = $request->input('_transport')['voucher_transport'];
+            if(array_key_exists('voucher_transport', $request->input('_transport'))){
+                $array_voucherTransport = $request->input('_transport')['voucher_transport'];
+            }
         }
         try{
             DB::beginTransaction();
@@ -551,9 +553,11 @@ class CustomerManagementController extends Controller
                     if ($transportUpdate->update()) {
                         //Delete VoucherTransport
                         $vouTranDelete = VoucherTransport::where('transport_id', $transportUpdate->id)->get()->toArray();
-                        $ids_to_delete = array_map(function($item){ return $item['id']; }, $vouTranDelete);
-                        if(DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
-                            return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
+                        if(count($vouTranDelete) > 0){
+                            $ids_to_delete = array_map(function($item){ return $item['id']; }, $vouTranDelete);
+                            if(DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
+                                return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
+                            }
                         }
 
                         //Add VoucherTransport
@@ -569,8 +573,8 @@ class CustomerManagementController extends Controller
                         }
 
                         //Delete Cost
-                        $costDelete = Cost::where('transport_id', $transportUpdate->id)->get();
-                        if (!$costDelete[0]->delete()) {
+                        $costDelete = Cost::where('transport_id', $transportUpdate->id)->first();
+                        if (!$costDelete->delete()) {
                             return response()->json(['msg' => 'Delete Cost failed'], 404);
                         }
 
@@ -632,14 +636,17 @@ class CustomerManagementController extends Controller
                     $transport_id = $request->input('_id');
                     //Delete VoucherTransport
                     $vouTranDelete = VoucherTransport::where('transport_id', $transport_id)->get()->toArray();
-                    $ids_to_delete = array_map(function($item){ return $item['id']; }, $vouTranDelete);
-                    if(DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
-                        return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
+                    if(count($vouTranDelete) > 0) {
+                        $ids_to_delete = array_map(function ($item) {
+                            return $item['id'];
+                        }, $vouTranDelete);
+                        if (DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0) {
+                            return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
+                        }
                     }
-
                     //Delete Cost
-                    $costDelete = Cost::where('transport_id', $transport_id)->get();
-                    if (!$costDelete[0]->delete()) {
+                    $costDelete = Cost::where('transport_id', $transport_id)->first();
+                    if (!$costDelete->delete()) {
                         return response()->json(['msg' => 'Delete Cost failed'], 404);
                     }
 

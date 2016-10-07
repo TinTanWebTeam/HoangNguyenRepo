@@ -71,10 +71,11 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/vehicle-type/modify', 'VehicleManagementController@postModifyVehicleType');
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
+        /*GET VIEW*/
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');
         Route::get('/debt-vehicle-outside', 'DebtManagementController@getViewDebtVehicleOutside');
-        /*Get Data view*/
-        Route::get('get-data-customer','DebtManagementController@getDataDebtCustomer');
+        /*GET DATA*/
+        Route::get('/debt-customer/transports','DebtManagementController@getDataDebtCustomer');
 
     });
     //Chi phí

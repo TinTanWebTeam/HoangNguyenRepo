@@ -493,6 +493,67 @@
 </div>
 <!-- end Modal add vehicleTypes -->
 
+<!-- Modal list color -->
+<div class="row">
+    <div id="modal-color" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Chú thích</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="table-color" style="width: 100%">
+                            <thead>
+                            <tr>
+                                <th>Màu</th>
+                                <th>Loại</th>
+                                <th>Ý nghĩa</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><a class="btn btn-default"></a></td>
+                                <td>Khách hàng</td>
+                                <td>Chưa thanh toán</td>
+                            </tr>
+                            <tr>
+                                <td><a class="btn btn-primary"></a></td>
+                                <td>Khách hàng</td>
+                                <td>Đã thanh toán</td>
+                            </tr>
+                            <tr>
+                                <td><a class="btn btn-success"></a></td>
+                                <td>Khách hàng</td>
+                                <td>Đã thanh toán và xuất hóa đơn</td>
+                            </tr>
+                            <tr>
+                                <td><a class="btn btn-info"></a></td>
+                                <td>Nhà xe ngoài</td>
+                                <td>Chưa thanh toán</td>
+                            </tr>
+                            <tr>
+                                <td><a class="btn btn-warning"></a></td>
+                                <td>Nhà xe ngoài</td>
+                                <td>Đã thanh toán</td>
+                            </tr>
+                            <tr>
+                                <td><a class="btn btn-danger"></a></td>
+                                <td>Nhà xe ngoài</td>
+                                <td>Đã thanh toán và xuất hóa đơn</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal list color -->
 
 <script>
     $(function () {
@@ -854,7 +915,7 @@
                         data: data,
                         columns: [
                             {data: 'id'},
-                            {data: 'fullNumber', width: "10%"},
+                            {data: 'fullNumber'},
                             {data: 'products_name'},
                             {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
@@ -981,6 +1042,12 @@
                             {
                                 extend: 'colvis',
                                 text: 'Ẩn cột'
+                            },
+                            {
+                                text: 'Chú thích',
+                                action: function ( e, dt, node, config ) {
+                                    transportView.displayModal('show', '#modal-color');
+                                }
                             }
                         ]
                     })

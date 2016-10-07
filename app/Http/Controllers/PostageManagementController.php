@@ -83,7 +83,7 @@ class PostageManagementController extends Controller
             case 'update':
                 $postageUpdate = Postage::findOrFail($request->input('_postage')['id']);
                 $postageUpdate->postage = $postage;
-                $postageUpdate->month = $month;
+//                $postageUpdate->month = $month;
                 $postageUpdate->customer_id = $customer_id;
                 $postageUpdate->note = $note;
                 $postageUpdate->updatedBy = $updatedBy;

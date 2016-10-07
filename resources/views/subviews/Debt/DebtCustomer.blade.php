@@ -4,7 +4,7 @@
         position: fixed;
         top: 53%;
         display: none;
-        right: 0px;
+        right: 0;
         width: 40%;
         height: 100%;
     }
@@ -22,6 +22,7 @@
     }
 </style>
 
+<!-- Begin Table -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -47,7 +48,6 @@
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
-
                             <th>Khách hàng</th>
                             <th>Số xe</th>
                             <th>Nơi giao</th>
@@ -67,8 +67,10 @@
             </div>
         </div> <!-- end table-reposive -->
     </div> <!-- end .col-md-12-->
-</div> <!-- end .row -->
+</div>
+<!-- End Table -->
 
+<!-- Begin divControl -->
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
@@ -125,8 +127,7 @@
         </div>
     </div>
 </div>
-
-<!-- end #frmControl -->
+<!-- End divControl -->
 
 <script>
     if (typeof debtCustomerView === 'undefined') {
@@ -136,7 +137,7 @@
 
             loadData: function () {
                 $.ajax({
-                    url: url + 'get-data-customer',
+                    url: url + '/debt-customer/transports',
                     type: "GET",
                     dataType: "json"
                 }).done(function (data, textStatus, jqXHR) {
@@ -263,6 +264,4 @@
     } else {
         debtCustomerView.loadData();
     }
-
-
 </script>
