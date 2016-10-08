@@ -58,7 +58,6 @@
                             <thead>
                             <tr class="active">
                                 <th>Mã xe</th>
-                                <th>Mã vùng</th>
                                 <th>Số xe</th>
                                 <th>Loại xe</th>
                                 <th>Nhà xe</th>
@@ -482,6 +481,12 @@
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut"
                     };
+
+                    $("#table-garage").find("tbody").on('click', 'tr', function () {
+                        $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
+                        vehicleInsideView.displayModal("hide", "#modal-garage");
+                    });
                 },
                 localSearch: function () {
                     var dataSearch = _.filter(vehicleInsideView.tableVehicle, function (o) {
@@ -536,13 +541,16 @@
                 },
 
                 fillDataToDatatable: function (data) {
+                    for(var i =0;i< data.length; i++){
+                        data[i].fullNumber = data[i]['areaCode'] + '-' + data[i]['vehicleNumber'];
+                    }
+
                     vehicleInsideView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
                             {data: 'id'},
-                            {data: 'areaCode'},
-                            {data: 'vehicleNumber'},
+                            {data: 'fullNumber'},
                             {data: 'vehicleTypes_name'},
                             {data: 'garages_name'},
                             {data: 'size'},
@@ -735,6 +743,7 @@
                             if (jqXHR.status == 201) {
                                 switch (vehicleInsideView.action) {
                                     case 'add':
+                                        data['vehicle'].fullNumber = data['vehicle']['areaCode'] + '-' + data['vehicle']['vehicleNumber'];
                                         vehicleInsideView.tableVehicle.push(data['vehicle']);
                                         vehicleInsideView.showNotification("success", "Thêm thành công!");
                                         break;
@@ -743,6 +752,7 @@
                                             return o.id == sendToServer._vehicle.id;
                                         });
                                         var indexOfVehicleOld = _.indexOf(vehicleInsideView.tableVehicle, vehicleOld);
+                                        data['vehicle'].fullNumber = data['vehicle']['areaCode'] + '-' + data['vehicle']['vehicleNumber'];
                                         vehicleInsideView.tableVehicle.splice(indexOfVehicleOld, 1, data['vehicle']);
                                         vehicleInsideView.showNotification("success", "Cập nhật thành công!");
                                         vehicleInsideView.hideControl();
@@ -851,11 +861,5 @@
         } else {
             vehicleInsideView.loadData();
         }
-
-        $("#table-garage").find("tbody").on('click', 'tr', function () {
-            $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
-            $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
-            vehicleInsideView.displayModal("hide", "#modal-garage");
-        });
     });
 </script>
