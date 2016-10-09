@@ -649,7 +649,6 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-
                             {data: 'fullNumber'},
                             {
                                 data: 'dateRefuel',
@@ -686,7 +685,7 @@
 
                             }
                         ],
-                        order: [[1, "desc"]],
+                        order: [[1]],
                     })
                 },
                 save: function () {
@@ -799,7 +798,7 @@
                             weight: {
                                 required: true,
                                 number:true
-                            },
+                            }
                         },
                         messages: {
                             vehicleNumber: {
@@ -823,6 +822,7 @@
 
                 },
                 inputVehicle: function () {
+
                     var numberVehicle = petroleumCostView.tableVehicleNew.areaCode + '-' + petroleumCostView.tableVehicleNew.vehicleNumber
                     $("input[id='vehicle_id']").val(numberVehicle);
                     $("#vehicle_id").attr('data-id', petroleumCostView.tableVehicleNew.id);
@@ -926,8 +926,9 @@
                     });
                 },
                 inputPrice: function () {
-                    $("input[id='price']").val(petroleumCostView.tablePrice.price);
+                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.tablePrice.price, '.', '.'));
                     $("#price").attr('data-priceId', petroleumCostView.tablePrice.id);
+
                 },
                 ValidateCostPrice: function () {
                     $("#fromCostPrice").validate({

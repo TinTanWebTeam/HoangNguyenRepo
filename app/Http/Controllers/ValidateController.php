@@ -236,7 +236,6 @@ class ValidateController extends Controller
         $rules = [
             'vehicle_id'  => 'required',
 
-
         ];
         $messages = [
             'vehicle_id.required'  => 'Trường xe bắt buộc nhập',

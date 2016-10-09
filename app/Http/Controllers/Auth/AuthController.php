@@ -90,20 +90,14 @@ class AuthController extends Controller
                     Auth::login($user);
                     return redirect('/');
                 } else {
-
-//                    flash()->overlay('Mật khẩu đăng nhập sai, vui lòng đăng nhập lại!', 'Thông báo');
-                    Session::flash('flash_message', 'Mật khẩu đăng nhập sai, vui lòng đăng nhập lại!', 'Thông báo');
-
-
+                    Session::flash('flash_message', 'Mật khẩu đăng nhập không đúng, vui lòng nhập lại!', 'Thông báo');
                     return redirect('auth/login');
                 }
             } else if ($request->get('username') == '' || $request->get('password') == '') {
-                    Session::flash('flash_message', 'Vui lòng nhập đầy đủ thông tin!', 'Thông báo');
+                Session::flash('flash_message', 'Vui lòng nhập đầy đủ thông tin!', 'Thông báo');
                 return redirect('auth/login');
-                }else
-            {
-                    Session::flash('flash_message', 'Tài khoản không tồn tại, vui lòng nhập lại!', 'Thông báo');
-
+            } else {
+                Session::flash('flash_message', 'Tài khoản không tồn tại, vui lòng nhập lại!', 'Thông báo');
                 return redirect('auth/login');
             }
         } catch (Exception $ex) {

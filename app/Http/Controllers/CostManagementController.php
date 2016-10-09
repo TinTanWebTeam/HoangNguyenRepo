@@ -113,16 +113,13 @@ class CostManagementController extends Controller
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
 
-            $prices_price = $request->get('_object')['prices_price'];
+            $prices_price = str_replace('.', '',$request->get('_object')['prices_price']);
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
-            $totalCost = str_replace('.', '', $totalCost = $literNumber * $prices_price);
+            $totalCost = $literNumber * $prices_price;
             $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
             $noted = $request->get('_object')['noted'];
-
-//            $test =substr($datetime,  0, 10);
-//            dd ($test);
 
         }
 
@@ -309,6 +306,7 @@ class CostManagementController extends Controller
 
         switch ($action) {
             case "addVehicles":
+
                 $vehicleNew = new Vehicle();
                 $vehicleNew->areaCode = $areaCode;
                 $vehicleNew->vehicleNumber = $vehicleNumber;
@@ -392,11 +390,11 @@ class CostManagementController extends Controller
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
 
-            $prices_price = $request->get('_object')['prices_price'];
+            $prices_price = str_replace('.', '',$request->get('_object')['prices_price']);
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
-            $totalCost = str_replace('.', '', $totalCost = $literNumber * $prices_price);
+            $totalCost = $totalCost = $literNumber * $prices_price;
             $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
             $noted = $request->get('_object')['noted'];
 
@@ -557,6 +555,7 @@ class CostManagementController extends Controller
             $vehicle_id = $request->get('_object')['vehicle_id'];
             $checkIn = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetimeCheckIn'])->toDateTimeString();
             $checkOut = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetimeCheckOut'])->toDateTimeString();
+
             $totalCost = $request->get('_object')['vehicle_id'];
             $note = $request->get('_object')['note'];
             $prices_id = $request->get('_object')['prices_id'];
@@ -573,8 +572,6 @@ class CostManagementController extends Controller
             $ymdIn = Carbon::create($yearIn, $monthIn, $dayIn, $hourIn, $minIn);
             $ymdOut = Carbon::create($yearOut, $monthOut, $dayOut, $hourOut, $minOut);
             $totalMinus = $ymdOut->diffInMinutes($ymdIn);
-
-
 
         }
 

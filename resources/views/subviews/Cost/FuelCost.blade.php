@@ -400,7 +400,7 @@
 <script>
     $(function () {
 
-        $('#datetimepicker').datetimepicker();
+
         if (typeof (fuelCostView) === 'undefined') {
             fuelCostView = {
                 table: null,
@@ -472,7 +472,13 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
+                    $('#datetimepicker').datetimepicker();
+                    $("#table-vehicles").find("tbody").on('click', 'tr', function () {
+                        var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
+                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#vehicle_id').val(vehicle);
+                        fuelCostView.displayModal("hide", "#modal-searchVehicle");
+                    });
                     toastr.options = {
                         "closeButton": true,
                         "debug": false,
@@ -689,6 +695,7 @@
                     price = price.replace('.', '');
                     var totalPrice = lit * price;
                     $("input[id=totalprice]").val(fuelCostView.formatMoney(totalPrice, '.', '.'));
+
                 },
                 ValidateCostPrice: function () {
                     $("#fromCostPrice").validate({
@@ -710,6 +717,7 @@
                 save: function () {
                     fuelCostView.ValidateCost();
                     fuelCostView.fillFormDataToCurrentObject();
+
                     if ($("#fromFuelCost").valid()) {
                         var sendToServer = {
                             _token: _token,
@@ -892,6 +900,7 @@
                         _action: 'addVehicles',
                         _vehicles: vehicle
                     };
+
                     if ($("#fromVehicle").valid()) {
                         $.ajax({
                             url: url + 'create-vehicle-new/modify',
@@ -995,12 +1004,7 @@
         } else {
             fuelCostView.loadData();
         }
-        $("#table-vehicles").find("tbody").on('click', 'tr', function () {
-            var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
-            $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
-            $('#vehicle_id').val(vehicle);
-            fuelCostView.displayModal("hide", "#modal-searchVehicle");
-        });
+
 
     });
 

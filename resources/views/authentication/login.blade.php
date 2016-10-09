@@ -81,7 +81,7 @@
 
 <script>
     (function(){
-        $('div.alert').delay(2500).slideUp(350);
+        $('div.alert').delay(3000).slideUp(350);
     })();
 </script>
 
