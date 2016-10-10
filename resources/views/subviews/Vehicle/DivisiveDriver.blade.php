@@ -124,7 +124,7 @@
                                                        name="user_id"
                                                        data-userId=""
                                                        placeholder="Nhấp đôi để chọn tài xế"
-                                                       readonly ondblclick="divisiveDriverView.loadListUser()">
+                                                       readonly ondblclick="divisiveDriverView.loadListDriver()">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle"
@@ -363,14 +363,14 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Thêm Xe</h4>
+                    <h4 class="modal-title">Thêm tài xế</h4>
                 </div>
                 <div class="modal-body">
                     <form id="frmDriver">
                         <div class="row ">
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
-                                    <label for="fullName"><b>Họ tên</b></label>
+                                    <label for="fullName"><b>Họ và tên</b></label>
                                     <input type="text" class="form-control"
                                            id="fullName"
                                            name="fullName">
@@ -388,16 +388,16 @@
                         <div class="row ">
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
-                                    <label for="text"><b>Địa chỉ</b></label>
-                                    <input type="number" class="form-control"
-                                           id="text"
-                                           name="text">
+                                    <label for="address"><b>Địa chỉ</b></label>
+                                    <input type="text" class="form-control"
+                                           id="address"
+                                           name="address">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
                                     <label for="note"><b>Ghi chú</b></label>
-                                    <input type="number" class="form-control"
+                                    <input type="text" class="form-control"
                                            id="note"
                                            name="note">
                                 </div>
@@ -408,11 +408,11 @@
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
-                                                onclick="divisiveDriverView.saveVehicle()">
+                                                onclick="divisiveDriverView.saveDriver()">
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="divisiveDriverView.displayModal('hide','#modal-addVehicle')">
+                                                onclick="divisiveDriverView.displayModal('hide','#modal-addDriver')">
                                             Huỷ
                                         </button>
                                     </div>
@@ -460,7 +460,8 @@
                         divisiveDriverView.action = null;
                         divisiveDriverView.idDelete = null;
                     }
-                    divisiveDriverView.clearInput();
+                    divisiveDriverView.clearInputVehicle();
+                    divisiveDriverView.clearInputDriver();
                     divisiveDriverView.clearValidation('frmVehicle');
                 },
                 showNotification: function (type, msg) {
@@ -479,18 +480,25 @@
                             break;
                     }
                 },
+
                 clearInput: function () {
                     $("input[id='vehicle_id']").val('');
                     $("input[id='user_id']").val('');
                     $("#vehicle_id").attr("data-vehicleId", '');
                     $("#user_id").attr("data-userId", '');
                     divisiveDriverView.current = null;
-
+                },
+                clearInputVehicle: function () {
                     $("input[id='areaCode']").val('');
                     $("input[id='vehicleNumber']").val('');
-                    $("input[id='areaCode']").val('');
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
+                },
+                clearInputDriver: function() {
+                    $("input[id='fullName']").val('');
+                    $("input[id='phone']").val('');
+                    $("input[id='address']").val('');
+                    $("input[id='note']").val('');
                 },
 
                 loadData: function () {
@@ -574,9 +582,9 @@
                     });
                     divisiveDriverView.displayModal("show", "#modal-vehicle")
                 },
-                loadListUser: function () {
+                loadListDriver: function () {
                     $.ajax({
-                        url: url + 'divisive-driver/users',
+                        url: url + 'divisive-driver/drivers',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
@@ -590,7 +598,7 @@
                                 data: data['user'],
                                 columns: [
                                     {data: 'id'},
-                                    {data: 'fullname'},
+                                    {data: 'fullName'},
                                     {data: 'phone'},
                                     {data: 'address'}
                                 ],
@@ -718,7 +726,7 @@
 
                 editVehicleUser: function (id) {
                     divisiveDriverView.current = null;
-                    divisiveDriverView.current = _.clone(_.find(divisiveDriverView.tableVehicleUser, function (o) {
+                    divisiveDriverView.current = _.clone(_.find(divisiveDriverView.dataVehicleUser, function (o) {
                         return o.id == id;
                     }), true);
                     divisiveDriverView.fillCurrentObjectToForm();
@@ -818,35 +826,37 @@
                         }).done(function (data, textStatus, jqXHR) {
                             console.log(data);
                             if (jqXHR.status == 201) {
+                                var vehicleUserOld = null;
+                                var indexOfVehicleUserOld = null;
                                 switch (divisiveDriverView.action) {
                                     case 'add':
-                                        data['vehicleUser'][0].fullNumber = data['vehicleUser'][0]['vehicles_areaCode'] + '-' + data['vehicleUser'][0]['vehicles_vehicleNumber'];
-                                        divisiveDriverView.tableVehicleUser.push(data['vehicleUser'][0]);
+                                        data['vehicleUser'].fullNumber = data['vehicleUser']['vehicles_areaCode'] + '-' + data['vehicleUser']['vehicles_vehicleNumber'];
+                                        divisiveDriverView.dataVehicleUser.push(data['vehicleUser']);
                                         divisiveDriverView.showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
-                                        var vehicleUserOld = _.find(divisiveDriverView.tableVehicleUser, function (o) {
+                                        vehicleUserOld = _.find(divisiveDriverView.dataVehicleUser, function (o) {
                                             return o.id == sendToServer._vehicleUser.id;
                                         });
-                                        var indexOfVehicleUserOld = _.indexOf(divisiveDriverView.tableVehicleUser, vehicleUserOld);
-                                        data['vehicleUser'][0].fullNumber = data['vehicleUser'][0]['vehicles_areaCode'] + '-' + data['vehicleUser'][0]['vehicles_vehicleNumber'];
-                                        divisiveDriverView.tableVehicleUser.splice(indexOfVehicleUserOld, 1, data['vehicleUser'][0]);
+                                        indexOfVehicleUserOld = _.indexOf(divisiveDriverView.dataVehicleUser, vehicleUserOld);
+                                        data['vehicleUser'].fullNumber = data['vehicleUser']['vehicles_areaCode'] + '-' + data['vehicleUser']['vehicles_vehicleNumber'];
+                                        divisiveDriverView.dataVehicleUser.splice(indexOfVehicleUserOld, 1, data['vehicleUser']);
                                         divisiveDriverView.showNotification("success", "Cập nhật thành công!");
                                         divisiveDriverView.hideControl();
                                         break;
                                     case 'delete':
-                                        var vehicleUserOld = _.find(divisiveDriverView.tableVehicleUser, function (o) {
+                                        vehicleUserOld = _.find(divisiveDriverView.dataVehicleUser, function (o) {
                                             return o.id == sendToServer._id;
                                         });
-                                        var indexOfVehicleUserOld = _.indexOf(divisiveDriverView.tableVehicleUser, vehicleUserOld);
-                                        divisiveDriverView.tableVehicleUser.splice(indexOfVehicleUserOld, 1);
+                                        indexOfVehicleUserOld = _.indexOf(divisiveDriverView.dataVehicleUser, vehicleUserOld);
+                                        divisiveDriverView.dataVehicleUser.splice(indexOfVehicleUserOld, 1);
                                         divisiveDriverView.showNotification("success", "Xóa thành công!");
                                         divisiveDriverView.displayModal("hide", "#modal-confirmDelete")
                                         break;
                                     default:
                                         break;
                                 }
-                                divisiveDriverView.table.clear().rows.add(divisiveDriverView.tableVehicleUser).draw();
+                                divisiveDriverView.table.clear().rows.add(divisiveDriverView.dataVehicleUser).draw();
                                 divisiveDriverView.clearInput();
                             } else {
                                 divisiveDriverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
@@ -858,7 +868,6 @@
                         $("form#frmControl").find("label[class=error]").css("color", "red");
                     }
                 },
-
 
                 addVehicle: function () {
                     if (divisiveDriverView.dataVehicleType == null) {
@@ -927,8 +936,7 @@
                                 $("#vehicle_id").attr('data-vehicleId', data['vehicle']['id']);
                                 $("input[id=vehicle_id]").val(data['vehicle']['areaCode'] + ' ' + data['vehicle']['vehicleNumber']);
 
-                                divisiveDriverView.table.clear().rows.add(divisiveDriverView.tableCost).draw();
-                                divisiveDriverView.clearInput();
+                                divisiveDriverView.clearInputVehicle();
                             } else {
                                 divisiveDriverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
@@ -939,23 +947,50 @@
                         $("form#frmVehicle").find("label[class=error]").css("color", "red");
                     }
                 },
-                addDriver: function(){
-
-                },
                 saveDriver: function () {
+                    divisiveDriverView.validateDriver();
+                    if ($("#frmDriver").valid()) {
+                        var driver = {
+                            fullName: $("input[id='fullName']").val(),
+                            phone: $("input[id='phone']").val(),
+                            address: $("input[id='address']").val(),
+                            note: $("input[id='note']").val()
+                        };
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'add',
+                            _driver: driver
+                        };
 
+                        $.ajax({
+                            url: url + 'driver/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                divisiveDriverView.showNotification("success", "Thêm thành công!");
+                                divisiveDriverView.displayModal("hide", "#modal-addDriver");
+
+                                $("#user_id").attr('data-userId', data['driver']['id']);
+                                $("input[id=user_id]").val(data['driver']['fullName']);
+
+                                divisiveDriverView.clearInputDriver();
+                            } else {
+                                divisiveDriverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        $("form#frmDriver").find("label[class=error]").css("color", "red");
+                    }
                 }
             };
             divisiveDriverView.loadData();
         } else {
             divisiveDriverView.loadData();
         }
-
-//        $("#table-garage").find("tbody").on('click', 'tr', function () {
-//            $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
-//            $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
-//            divisiveDriverView.displayModal("hide", "#modal-garage");
-//        });
     });
 
 

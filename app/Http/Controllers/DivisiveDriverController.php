@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\UserVehicle;
+use App\User;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -71,9 +72,9 @@ class DivisiveDriverController extends Controller
                         ->join('vehicles', 'vehicles.id', '=', 'userVehicles.vehicle_id')
                         ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
                         ->where('userVehicles.id', '=', $vehicleUserNew->id)
-                        ->get();
+                        ->first();
                     $response = [
-                        'msg' => 'Created vehicle',
+                        'msg' => 'Created vehicleUser',
                         'vehicleUser' => $vehicleUser
                     ];
                     return response()->json($response, 201);
@@ -92,10 +93,10 @@ class DivisiveDriverController extends Controller
                         ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
                         ->select('userVehicles.*', 'users.fullname as users_fullname', 'users.phone as users_phone', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'garages.name as garages_name')
                         ->where('userVehicles.id', $vehicleUserUpdate->id)
-                        ->get();
+                        ->first();
 
                     $response = [
-                        'msg' => 'Updated vehicle',
+                        'msg' => 'Updated vehicleUser',
                         'vehicleUser' => $vehicleUser
                     ];
                     return response()->json($response, 201);
@@ -119,7 +120,7 @@ class DivisiveDriverController extends Controller
         }
     }
 
-    public function getAllUser()
+    public function getAllDriver()
     {
         $users = \DB::table('users')
             ->select('users.*')
@@ -133,5 +134,86 @@ class DivisiveDriverController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    public function postModifyDriver(Request $request)
+    {
+        if (!\Auth::check()) {
+            return response()->json(['msg' => 'Not authorize'], 404);
+        }
+
+        $fullName = null;
+        $phone = null;
+        $address = null;
+        $note = null;
+        $createdBy = null;
+        $updatedBy = null;
+
+
+        $action = $request->input('_action');
+        if ($action != 'delete') {
+            $validator = ValidateController::ValidateDriver($request->input('_driver'));
+            if ($validator->fails()) {
+                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $fullName = $request->input('_driver')['fullName'];
+            $address = $request->input('_driver')['address'];
+            $phone = $request->input('_driver')['phone'];
+            $note = $request->input('_driver')['note'];
+            $createdBy = \Auth::user()->id;
+            $updatedBy = \Auth::user()->id;
+        }
+
+        switch ($action) {
+            case 'add':
+                $driverNew = new User();
+                $driverNew->fullName = $fullName;
+                $driverNew->address = $address;
+                $driverNew->phone = $phone;
+                $driverNew->note = $note;
+                $driverNew->createdBy = $createdBy;
+                $driverNew->updatedBy = $updatedBy;
+                if ($driverNew->save()) {
+                    $response = [
+                        'msg'      => 'Created driver',
+                        'driver' => $driverNew
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case 'update':
+                $driverUpdate = User::findOrFail($request->input('_driver')['id']);
+                $driverUpdate->fullName = $fullName;
+                $driverUpdate->address = $address;
+                $driverUpdate->phone = $phone;
+                $driverUpdate->note = $note;
+                $driverUpdate->updatedBy = $updatedBy;
+                if ($driverUpdate->update()) {
+                    $response = [
+                        'msg'      => 'Updated driver',
+                        'driver' => $driverUpdate
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+            case 'delete':
+                $driverDelete = User::findOrFail($request->input('_id'));
+                $driverDelete->active = 0;
+
+                if ($driverDelete->update()) {
+                    $response = [
+                        'msg' => 'Deleted driver'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
     }
 }

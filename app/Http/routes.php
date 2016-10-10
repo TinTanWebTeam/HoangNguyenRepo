@@ -134,9 +134,10 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/divisive-driver', 'DivisiveDriverController@getViewDivisiveDriver');
         //get Data
         Route::get('/divisive-driver/vehicle-user', 'DivisiveDriverController@getDataDivisiveDriver');
-        Route::get('/divisive-driver/users', 'DivisiveDriverController@getAllUser');
+        Route::get('/divisive-driver/drivers', 'DivisiveDriverController@getAllDriver');
         //post Modify
         Route::post('/divisive-driver/modify', 'DivisiveDriverController@postModifyDivisiveDriver');
+        Route::post('/driver/modify', 'DivisiveDriverController@postModifyDriver');
     });
     Route::group(['middleware' => 'Report'], function () {
         Route::get('/revenue-report', 'ReportController@getViewRevenueReport');
