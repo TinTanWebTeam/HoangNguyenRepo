@@ -9,6 +9,10 @@
         height: 100%;
     }
 
+    #divControl .panel-body {
+        height: 480px;
+    }
+
     div.col-lg-12 {
         height: 40px;
     }
@@ -45,6 +49,22 @@
             <div class="panel-body">
                 <div class="dataTable_wrapper">
                     <div class="table-responsive">
+                        <table border="0" cellspacing="5" cellpadding="5">
+                            <tbody>
+                            <tr>
+                                <td>Minimum age:</td>
+                                <td><input type="date" id="min" name="min"></td>
+                            </tr>
+                            <tr>
+                                <td>Maximum age:</td>
+                                <td><input type="date" id="max" name="max"></td>
+                            </tr>
+                            <tr>
+                                <td><button onclick="transportView.showdata()">sssss</button></td>
+
+                            </tr>
+                            </tbody>
+                        </table>
                         <table class="table table-bordered table-hover table-striped" id="table-data">
                             <thead>
                             <tr class="active">
@@ -76,6 +96,19 @@
 </div>
 <!-- End Table Transport -->
 
+<!-- Chú thích -->
+<div class="row">
+    <div class="col-md-6">
+        <i class="fa fa-user" aria-hidden="true" style="font-size: 1.2em; margin-right: 30px;"> Khách hàng</i>
+        <i class="fa fa-truck" aria-hidden="true" style="font-size: 1.2em;"> Nhà xe ngoài</i>
+    </div>
+    <div class="col-md-6">
+        <span class="label label-danger" style="font-size: 1em;">Chưa thanh toán</span>
+        <span class="label label-primary" style="font-size: 1em;">Đã thanh toán</span>
+        <span class="label label-success" style="font-size: 1em;">Đã thanh toán và xuất hóa đơn</span>
+    </div>
+</div>
+
 <!-- Begin divControl -->
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
@@ -85,7 +118,7 @@
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
-            <div class="panel-body" style="height: 480px;overflow: auto">
+            <div class="panel-body">
                 <form role="form" id="frmControl">
                     <div class="form-body">
                         <div class="col-md-12 ">
@@ -93,7 +126,8 @@
                                 <div class="col-md-3 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="vehicle_id"><b>Xe</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="vehicle_id" name="vehicle_id"
+                                        <input type="text" class="form-control cursor-copy" id="vehicle_id"
+                                               name="vehicle_id"
                                                readonly placeholder="Nhấp đôi để chọn xe"
                                                data-vehicleId=""
                                                ondblclick="transportView.loadListVehicle()">
@@ -102,7 +136,8 @@
                                 <div class="col-md-3 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="customer_id"><b>Khách hàng</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="customer_id" name="customer_id"
+                                        <input type="text" class="form-control cursor-copy" id="customer_id"
+                                               name="customer_id"
                                                readonly placeholder="Nhấp đôi để chọn khách hàng"
                                                data-customerId=""
                                                ondblclick="transportView.loadListCustomer()">
@@ -111,7 +146,8 @@
                                 <div class="col-md-3 ">
                                     <div class="form-group form-md-line-input ">
                                         <label for="product_id"><b>Hàng</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="product_id" name="product_id"
+                                        <input type="text" class="form-control cursor-copy" id="product_id"
+                                               name="product_id"
                                                readonly placeholder="Nhấp đôi để chọn hàng"
                                                data-productId=""
                                                ondblclick="transportView.loadListProduct()">
@@ -162,7 +198,8 @@
                                     <div class="form-group form-md-line-input">
                                         <div class='input-group date' id='datetimepicker1'>
                                             <label for="receiveDate"><b>Ngày nhận</b></label>
-                                            <input id="receiveDate" name="receiveDate" type='text' class="form-control" value="<?php echo date('d-m-Y H-i'); ?>">
+                                            <input id="receiveDate" name="receiveDate" type='text' class="form-control"
+                                                   value="<?php echo date('d-m-Y H-i'); ?>">
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
@@ -205,7 +242,8 @@
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="status_transport"><b>Trạng thái</b></label>
-                                        <select id="status_transport" name="status_transport" class="form-control"></select>
+                                        <select id="status_transport" name="status_transport"
+                                                class="form-control"></select>
                                     </div>
                                 </div>
                             </div>
@@ -222,7 +260,8 @@
                                                        ondblclick="transportView.loadListVoucher()">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle" onclick="transportView.displayModal('show', '#modal-addVoucher')">
+                                                <div class="btn btn-primary btn-sm btn-circle"
+                                                     onclick="transportView.displayModal('show', '#modal-addVoucher')">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
                                             </div>
@@ -254,7 +293,8 @@
                         <div class="col-md-6">
                             <div class="form-actions">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight" onclick="transportView.save()">Hoàn
+                                    <button type="button" class="btn btn-primary marginRight"
+                                            onclick="transportView.save()">Hoàn
                                         tất
                                     </button>
                                     <button type="button" class="btn default" onclick="transportView.clearInput()">Huỷ
@@ -480,7 +520,9 @@
                                                 onclick="transportView.saveVoucher()">
                                             Hoàn tất
                                         </button>
-                                        <button type="button" class="btn default" onclick="transportView.displayModal('hide','#modal-addVoucher')">Huỷ</button>
+                                        <button type="button" class="btn default"
+                                                onclick="transportView.displayModal('hide','#modal-addVoucher')">Huỷ
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -492,68 +534,6 @@
     </div>
 </div>
 <!-- end Modal add vehicleTypes -->
-
-<!-- Modal list color -->
-<div class="row">
-    <div id="modal-color" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Chú thích</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="table-color" style="width: 100%">
-                            <thead>
-                            <tr>
-                                <th>Màu</th>
-                                <th>Loại</th>
-                                <th>Ý nghĩa</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><a class="btn btn-default"></a></td>
-                                <td>Khách hàng</td>
-                                <td>Chưa thanh toán</td>
-                            </tr>
-                            <tr>
-                                <td><a class="btn btn-primary"></a></td>
-                                <td>Khách hàng</td>
-                                <td>Đã thanh toán</td>
-                            </tr>
-                            <tr>
-                                <td><a class="btn btn-success"></a></td>
-                                <td>Khách hàng</td>
-                                <td>Đã thanh toán và xuất hóa đơn</td>
-                            </tr>
-                            <tr>
-                                <td><a class="btn btn-info"></a></td>
-                                <td>Nhà xe ngoài</td>
-                                <td>Chưa thanh toán</td>
-                            </tr>
-                            <tr>
-                                <td><a class="btn btn-warning"></a></td>
-                                <td>Nhà xe ngoài</td>
-                                <td>Đã thanh toán</td>
-                            </tr>
-                            <tr>
-                                <td><a class="btn btn-danger"></a></td>
-                                <td>Nhà xe ngoài</td>
-                                <td>Đã thanh toán và xuất hóa đơn</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal list color -->
 
 <script>
     $(function () {
@@ -704,12 +684,17 @@
                         $('input[id=product_id]').val($(this).find('td:eq(2)')[0].innerText);
                         transportView.displayModal("hide", "#modal-product");
                     });
-                    $('#table-voucher').on( 'draw.dt', function () {
+                    $('#table-voucher').on('draw.dt', function () {
                         transportView.fillVoucher();
-                    } );
+                    });
 
                     //Event DateTimePicker
                     $('#datetimepicker1').datetimepicker();
+
+                    //Custom scrollbar
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
                 },
                 loadListVehicle: function () {
                     $.ajax({
@@ -896,7 +881,7 @@
                     }
                 },
                 fillVoucher: function () {
-                    if(transportView.arrayVoucher.length <= 0) return;
+                    if (transportView.arrayVoucher.length <= 0) return;
 
                     for (var i = 0; i < transportView.arrayVoucher.length; i++) {
                         var checkbox = $("div[data-voucherId=" + transportView.arrayVoucher[i] + "]");
@@ -906,7 +891,6 @@
                 },
 
                 fillDataToDatatable: function (data) {
-                    console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
                     }
@@ -947,7 +931,7 @@
                                 render: function (data, type, full, meta) {
                                     var color_customer = '';
                                     var color_garage = '';
-                                    switch(full.status_customer){
+                                    switch (full.status_customer) {
                                         case 5:
                                             color_customer = 'text-danger';
                                             break;
@@ -958,7 +942,7 @@
                                             color_customer = 'text-success';
                                             break;
                                     }
-                                    switch(full.status_garage){
+                                    switch (full.status_garage) {
                                         case 8:
                                             color_garage = 'text-danger';
                                             break;
@@ -970,9 +954,9 @@
                                             break;
                                     }
                                     var tr = "";
-                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-user '+ color_customer +'" aria-hidden="true"></i>';
-                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-truck '+ color_garage +'" aria-hidden="true"></i>';
-                                    tr += '<p>'+ full.status_transport_ +'</p>';
+                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-user ' + color_customer + '" aria-hidden="true"></i>';
+                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-truck ' + color_garage + '" aria-hidden="true"></i>';
+                                    tr += '<p>' + full.status_transport_ + '</p>';
 
                                     return tr;
                                 }, width: "11%"
@@ -1035,12 +1019,6 @@
                             {
                                 extend: 'colvis',
                                 text: 'Ẩn cột'
-                            },
-                            {
-                                text: 'Chú thích',
-                                action: function ( e, dt, node, config ) {
-                                    transportView.displayModal('show', '#modal-color');
-                                }
                             }
                         ]
                     })
@@ -1060,10 +1038,10 @@
                     $("input[id='cashReceive']").val(transportView.current["cashReceive"]);
                     $("input[id='receiver']").val(transportView.current["receiver"]);
 
-                    var day = transportView.current["receiveDate"].substr(8,2);
-                    var month = transportView.current["receiveDate"].substr(5,2);
-                    var year = transportView.current["receiveDate"].substr(0,4);
-                    var hourMinus = transportView.current["receiveDate"].substr(11,5);
+                    var day = transportView.current["receiveDate"].substr(8, 2);
+                    var month = transportView.current["receiveDate"].substr(5, 2);
+                    var year = transportView.current["receiveDate"].substr(0, 4);
+                    var hourMinus = transportView.current["receiveDate"].substr(11, 5);
                     $("input[id='receiveDate']").val(day + "/" + month + "/" + year + " " + hourMinus);
 
                     $("input[id='receivePlace']").val(transportView.current["receivePlace"]);
@@ -1204,7 +1182,7 @@
 //                    var validator = $(idForm).validate();
 //                    validator.resetForm();
                 },
-                validateVoucher: function(){
+                validateVoucher: function () {
                     $("#frmVoucher").validate({
                         rules: {
                             Voucher_name: "required"
@@ -1304,9 +1282,9 @@
                         $("form#frmControl").find("label[class=error]").css("color", "red");
                     }
                 },
-                saveVoucher: function(){
+                saveVoucher: function () {
                     transportView.validateVoucher();
-                    if($("#frmVoucher").valid()){
+                    if ($("#frmVoucher").valid()) {
                         var voucher = {
                             name: $("input[id='Voucher_name']").val(),
                             description: $("textarea[id='description']").val()
@@ -1339,7 +1317,7 @@
                     }
                 },
 
-                postDataPostageOfCustomer: function(cust_id){
+                postDataPostageOfCustomer: function (cust_id) {
                     var sendToServer = {
                         _token: _token,
                         _cust_id: cust_id
@@ -1360,13 +1338,39 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                },
+                showdata: function(){
+                    $(transportView.table.$('tr', {"filter":"applied"}).each( function () {
+                        console.log($(this).find("td:eq(0)").text());
+                    } ));
                 }
             };
             transportView.loadData();
+
+            /* Custom filtering function which will search data in column four between two values */
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    var min = moment($('#min').val());
+                    var max = moment($('#max').val());
+                    var age = moment(data[11], "DD-MM-YYYY");
+                    try {
+                        return age.isBetween(min, max, null, '[]');
+                    } catch (ex) {
+                        console.log(ex);
+                        return false;
+                    }
+                }
+            );
+
         } else {
             transportView.loadData();
         }
 
-        
+
+        $('#min, #max').keyup(function () {
+            transportView.table.draw();
+        });
+
+
     });
 </script>
