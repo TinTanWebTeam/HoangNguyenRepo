@@ -71,18 +71,31 @@ class UserManagementController extends Controller
     public function postModifyUser(Request $request)
     {
         try {
+
             $user = $request->get('_object');
             $array_roleid = $request->get('_object2');
+            if ($request->get('_object')['fullName'] == ''
+                && $request->get('_object')['username']
+                &&$request->get('_object')['email'])
+            {
+                Session::flash('flash_message', 'Vui lòng nhập lại !', 'Thông báo');
+
+                dd('a');
+            }
             $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
             if ($validateUser->fails()) {
                 return ['status' => 'Fail'];
             } else {
+
+
                 switch ($request->get('_action')) {
+
+
                     case "add":
                         try {
                             $userNew = new User();
-                            $userNew->fullname = $user['fullname'];
-                            $userNew->username = $user['username'];
+                            $userNew->fullName = $user['fullname'];
+                            $userNew->userName = $user['username'];
                             $userNew->password = encrypt($user['password'], Config::get('app.key'));
                             $userNew->email = $user['email'];
                             $userNew->address = $user['address'];

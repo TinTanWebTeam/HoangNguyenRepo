@@ -25,15 +25,18 @@ class ValidateController extends Controller
     {
         $rules = [
             'fullname' => 'required',
-            'username' => 'required',
-            'password' => 'required',
-            'email'    => 'required',
+            'username' => 'required|unique:users',
+            'password' => 'required|',
+            'password_conformation' =>  'required',
+            'email'    => 'required'
         ];
         $messages = [
             'fullname.required'  => 'Trường fullname bắt buộc nhập',
             'username.required'  => 'Trường username bắt buộc nhập',
+            'username.unique'    => 'Trường username không được trùng',
             'password .required' => 'Trường password bắt buộc nhập',
             'email.required'     => 'Trường email bắt buộc nhập',
+            'passwordconfirm' =>  'required',
         ];
 
         return Validator::make($data, $rules, $messages);
@@ -161,10 +164,10 @@ class ValidateController extends Controller
     public static function ValidateCostPrice(array $data)
     {
         $rules = [
-            'price'  => 'required',
+            'price' => 'required',
         ];
         $messages = [
-            'price.required'  => 'Trường giá bắt buộc nhập',
+            'price.required' => 'Trường giá bắt buộc nhập',
 
         ];
         return Validator::make($data, $rules, $messages);
@@ -182,14 +185,15 @@ class ValidateController extends Controller
         ];
         $messages = [
             'vehicleNumber.required'  => 'Trường xe bắt buộc nhập',
-            'areaCode.required' => 'Trường lít bắt buộc nhập',
-            'size.required'  => 'Trường xe bắt buộc nhập',
-            'weight.required' => 'Trường lít bắt buộc nhập',
-            'vehicleType_id.required'  => 'Trường xe bắt buộc nhập',
-            'garage_id.required' => 'Trường lít bắt buộc nhập'
+            'areaCode.required'       => 'Trường lít bắt buộc nhập',
+            'size.required'           => 'Trường xe bắt buộc nhập',
+            'weight.required'         => 'Trường lít bắt buộc nhập',
+            'vehicleType_id.required' => 'Trường xe bắt buộc nhập',
+            'garage_id.required'      => 'Trường lít bắt buộc nhập'
         ];
         return Validator::make($data, $rules, $messages);
     }
+
     public static function ValidatePetroleum(array $data)
     {
         $rules = [
@@ -202,30 +206,32 @@ class ValidateController extends Controller
         ];
         return Validator::make($data, $rules, $messages);
     }
+
     public static function ValidatePostage(array $data)
     {
         $rules = [
-            'customer_id'  => 'required',
-            'postage' => 'required',
-            'month' => 'required',
+            'customer_id' => 'required',
+            'postage'     => 'required',
+            'month'       => 'required',
         ];
         $messages = [
-            'customer_id.required'  => 'Trường khách hàng bắt buộc nhập',
-            'postage.required' => 'Trường cước phí bắt buộc nhập',
-            'month.required' => 'Trường tháng bắt buộc nhập'
+            'customer_id.required' => 'Trường khách hàng bắt buộc nhập',
+            'postage.required'     => 'Trường cước phí bắt buộc nhập',
+            'month.required'       => 'Trường tháng bắt buộc nhập'
         ];
         return Validator::make($data, $rules, $messages);
     }
+
     public static function ValidateOtherCost(array $data)
     {
         $rules = [
-            'vehicle_id'  => 'required',
-            'cost' => 'required',
+            'vehicle_id' => 'required',
+            'cost'       => 'required',
 
         ];
         $messages = [
-            'vehicle_id.required'  => 'Trường xe bắt buộc nhập',
-            'cost.required' => 'Trường cước phí bắt buộc nhập',
+            'vehicle_id.required' => 'Trường xe bắt buộc nhập',
+            'cost.required'       => 'Trường cước phí bắt buộc nhập',
 
         ];
         return Validator::make($data, $rules, $messages);
@@ -234,11 +240,11 @@ class ValidateController extends Controller
     public static function ValidateParkingCost(array $data)
     {
         $rules = [
-            'vehicle_id'  => 'required',
+            'vehicle_id' => 'required',
 
         ];
         $messages = [
-            'vehicle_id.required'  => 'Trường xe bắt buộc nhập',
+            'vehicle_id.required' => 'Trường xe bắt buộc nhập',
         ];
         return Validator::make($data, $rules, $messages);
     }

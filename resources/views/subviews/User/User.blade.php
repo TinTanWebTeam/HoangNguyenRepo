@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 10%;
+        top: 8%;
         display: none;
         right: 0;
         width: 50%;
@@ -12,6 +12,7 @@
     div.col-lg-12 {
         height: 40px;
     }
+
     @media (max-height: 500px) {
         #divControl {
             top: 53px;
@@ -92,13 +93,20 @@
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="padding-top: 0px;">
                 <form role="form" id="formUser">
+
                     <div class="form-body">
                         <div class="form-group form-md-line-input">
                             <input type="hidden" class="form-control" id="id" value="">
                         </div>
+
                         <div class="col-md-12">
+                            {{--<div class="col-md-12" style="top: 0px;">--}}
+                                {{--<div class="row">--}}
+                                    {{--<label id="email" style="display: block; color: red">Email đã tồn tại</label>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
@@ -178,11 +186,10 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
-                                        <label for="note"><b>Ghi chú</b></label>
-                                        <input type="text" class="form-control"
-                                               id="note"
-                                               name="note"
-                                               placeholder="ghi chú">
+                                        <label for="Birthday"><b>Năm Sinh</b></label>
+                                        <input type='text' id="Birthday" name="Birthday"
+                                               value="{{date('d-m-Y')}}" class="form-control"/>
+
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -199,6 +206,17 @@
                                 </div>
 
 
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="note"><b>Ghi chú</b></label>
+                                        <input type="text" class="form-control"
+                                               id="note"
+                                               name="note"
+                                               placeholder="ghi chú">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group form-md-line-input">
                                 <label><b>Phân Quyền</b></label>
@@ -429,62 +447,62 @@
                     $("#modalConfirm").modal('hide');
                 },
 
-                validate: function () {
-                    $("#formUser").validate({
-                        rules: {
-                            fullname: {
-                                required: true,
-                                minlength: 3
-                            },
-                            username: {
-                                required: true,
-                                minlength: 3
-
-                            },
-                            email: {
-                                required: true,
-                                email: true
-                            },
-                            password: {
-                                required: true,
-                                minlength: 3,
-                                maxlength: 20
-                            },
-                            passwordconfirm: {
-                                required: true,
-                                equalTo: "#password",
-                                minlength: 3,
-                                maxlength: 20
-                            }
-                        },
-                        messages: {
-                            fullname: {
-                                required: "Vui lòng nhập họ tên",
-                                minlength: "Họ tên từ 3 kí tự đến 20 kí tự",
-                            },
-                            username: {
-                                required: "Vui lòng nhập tên đăng nhập",
-                                minlength: "Tên đăng nhập từ 3 kí tự đến 20 kí tự",
-                            },
-                            email: {
-                                required: "Vui lòng nhập Email",
-                                email: 'Email không đúng định dạng'
-                            },
-                            password: {
-                                required: "Vui lòng nhập mật khẩu",
-                                minlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự",
-                                maxlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự"
-                            },
-                            passwordconfirm: {
-                                required: "Vui lòng nhập lại mật khẩu",
-                                equalTo: "Nhập lại mật khẩu không đúng",
-                                minlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự",
-                                maxlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự"
-                            }
-                        }
-                    });
-
-                },
+//                validate: function () {
+//                    $("#formUser").validate({
+//                        rules: {
+//                            fullname: {
+//                                required: true,
+//                                minlength: 3
+//                            },
+//                            username: {
+//                                required: true,
+//                                minlength: 3
+//
+//                            },
+//                            email: {
+//                                required: true,
+//                                email: true
+//                            },
+//                            password: {
+//                                required: true,
+//                                minlength: 3,
+//                                maxlength: 20
+//                            },
+//                            passwordconfirm: {
+//                                required: true,
+//                                equalTo: "#password",
+//                                minlength: 3,
+//                                maxlength: 20
+//                            }
+//                        },
+//                        messages: {
+//                            fullname: {
+//                                required: "Vui lòng nhập họ tên",
+//                                minlength: "Họ tên từ 3 kí tự đến 20 kí tự",
+//                            },
+//                            username: {
+//                                required: "Vui lòng nhập tài khoản",
+//                                minlength: "Tên đăng nhập từ 3 kí tự đến 20 kí tự",
+//                            },
+//                            email: {
+//                                required: "Vui lòng nhập Email",
+//                                email: 'Email không đúng định dạng'
+//                            },
+//                            password: {
+//                                required: "Vui lòng nhập mật khẩu",
+//                                minlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự",
+//                                maxlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự"
+//                            },
+//                            passwordconfirm: {
+//                                required: "Vui lòng nhập lại mật khẩu",
+//                                equalTo: "Nhập lại mật khẩu không đúng",
+//                                minlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự",
+//                                maxlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự"
+//                            }
+//                        }
+//                    });
+//
+//                },
                 showNotification: function (type, msg) {
                     switch (type) {
                         case "info":
@@ -502,7 +520,7 @@
                     }
                 },
                 save: function () {
-                    userView.validate();
+//                    userView.validate();
                     userView.fillFormDataToCurrentObject();
                     var sendToServer = {
                         _token: _token,
@@ -519,7 +537,7 @@
                             email: "delete",
                         };
                     }
-                    if ($("#formUser").valid()) {
+//                    if ($("#formUser").valid()) {
                         $.post(
                                 url + 'user/modify',
                                 sendToServer
@@ -558,9 +576,9 @@
                         );
                         userView.resetRolesInDom();
 
-                    } else {
-                        $("form#formUser").find("label[class=error]").css("color", "red");
-                    }
+//                    } else {
+//                        $("form#formUser").find("label[class=error]").css("color", "red");
+//                    }
                 },
                 resetRolesInDom: function () {
                     $("input[id=array_roleid]").each(function () {
