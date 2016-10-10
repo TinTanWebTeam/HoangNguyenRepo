@@ -29,6 +29,11 @@
         -moz-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
         box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
     }
+
+
+    #divControl .panel-body {
+        height: 320px;
+    }
 </style>
 
 <!-- Table -->
@@ -88,7 +93,7 @@
                 </div>
             </div>
 
-            <div class="panel-body" style="height: 320px">
+            <div class="panel-body">
                 <form role="form" id="frmControl">
                     <div class="form-body">
                         <div class="col-sm-12">

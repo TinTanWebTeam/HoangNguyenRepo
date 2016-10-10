@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 15%;
+        top: 25%;
         display: none;
         right: 0px;
         width: 50%;
@@ -12,7 +12,9 @@
     div.col-lg-12 {
         height: 40px;
     }
-
+    #divControl .panel-body {
+        height: 425px;
+    }
 </style>
 
 <div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
@@ -593,6 +595,9 @@
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut"
                     };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
                 },
                 fillFormDataToCurrentObject: function () {
                     if (parkingCostView.action == 'add') {

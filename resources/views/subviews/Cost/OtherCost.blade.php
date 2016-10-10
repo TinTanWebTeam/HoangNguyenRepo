@@ -20,6 +20,9 @@
     div.col-lg-12 {
         height: 40px;
     }
+    #divControl .panel-body {
+        height: 344px;
+    }
 </style>
 
 <div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
@@ -519,6 +522,9 @@
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut"
                     };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {

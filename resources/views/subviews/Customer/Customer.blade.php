@@ -23,6 +23,9 @@
             height: 80vh;
         }
     }
+    #divControl .panel-body {
+        height: 454px;
+    }
 </style>
 
 <!-- Table -->
@@ -364,6 +367,9 @@
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut"
                     };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
                 },
                 loadSelectBox: function (lstCustomerType) {
                     //reset selectbox

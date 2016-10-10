@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 35%;
+        top: 40%;
         display: none;
         right: 0px;
         width: 40%;
@@ -19,6 +19,9 @@
 
     div.col-lg-12 {
         height: 40px;
+    }
+    #divControl .panel-body {
+        height: 322px;
     }
 </style>
 
@@ -496,6 +499,9 @@
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut"
                     };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
                 },
                 inputPrice: function () {
                     $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.tablePrice.price, '.', '.'));

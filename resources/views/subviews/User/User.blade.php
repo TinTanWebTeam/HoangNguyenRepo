@@ -20,6 +20,9 @@
             height: 80vh;
         }
     }
+    #divControl .panel-body {
+        height: 530px;
+    }
 </style>
 <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
@@ -93,7 +96,7 @@
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
-            <div class="panel-body" style="padding-top: 0;height:530px; overflow: auto ">
+            <div class="panel-body">
                 <form role="form" id="formUser">
 
                     <div class="form-body">
@@ -309,6 +312,9 @@
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut"
                     };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
                 },
                 editUser: function (id) {
                     var pwd = null;

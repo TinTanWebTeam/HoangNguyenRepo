@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 50%;
+        top: 48%;
         display: none;
         right: 0;
         height: 60vh;
@@ -29,6 +29,9 @@
         -webkit-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
         -moz-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
         box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
+    }
+    #divControl .panel-body {
+        height: 260px;
     }
 </style>
 
@@ -266,6 +269,9 @@
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut"
                     };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
                 },
 
                 fillDataToDatatable: function (data) {
