@@ -86,7 +86,7 @@
                 </div>
             </div>
             <div class="panel-body">
-                <form role="form" id="fromPetroleum">
+                <form role="form" id="formPetroleum">
                     <div class="form-body">
                         <div class="col-md-12 ">
                             <div class="row ">
@@ -96,7 +96,8 @@
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
                                                 <input type="text" data-id=""
-                                                       ondblclick="petroleumCostView.loadListVehicles()" class="form-control"
+                                                       ondblclick="petroleumCostView.loadListVehicles()"
+                                                       class="form-control"
                                                        id="vehicle_id" readonly
                                                        name="vehicle_id"
                                                        placeholder="click 2 lần để chọn xe">
@@ -238,7 +239,6 @@
 <!-- end Modal list garages -->
 
 
-
 <!-- Modal add CostPrice -->
 <div class="row">
     <div id="modal-addCostPrice" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
@@ -251,7 +251,7 @@
                     <h4 class="modal-title">Thêm giá nhiên liệu</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="fromCostPrice">
+                    <form id="formCostPrice">
                         <div class="row ">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
@@ -281,7 +281,8 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="petroleumCostView.displayModal('hide','#modal-addCostPrice')">Huỷ
+                                                onclick="petroleumCostView.displayModal('hide','#modal-addCostPrice')">
+                                            Huỷ
                                         </button>
                                     </div>
                                 </div>
@@ -307,7 +308,7 @@
                     <h4 class="modal-title">Thêm Xe</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="fromVehicle">
+                    <form id="formVehicle">
                         <div class="row ">
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
@@ -389,9 +390,6 @@
 <!-- end Modal add Vehicle -->
 
 
-
-
-
 <script>
     $(function () {
         $('#datetimepicker').datetimepicker();
@@ -400,13 +398,13 @@
                 table: null,
                 data: null,
                 action: null,
-                tableVehicle:null,
+                tableVehicle: null,
                 tablePetroleumCost: null,
-                tablePetrolUpdate:null,
-                tablePrice :null,
+                tablePetrolUpdate: null,
+                tablePrice: null,
                 tableGarage: null,
-                tableVehicleType:null,
-                tableVehicleNew:null,
+                tableVehicleType: null,
+                tableVehicleNew: null,
                 idDelete: null,
                 current: null,
                 show: function () {
@@ -427,9 +425,9 @@
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
                     var totalPrice = lit * price;
-                    price = price.replace('.','');
+                    price = price.replace('.', '');
                     var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice,'.','.'));
+                    $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
 
 
                 },
@@ -546,7 +544,7 @@
                     petroleumCostView.displayModal("show", "#modal-searchVehicle")
                 },
 
-                addPetroleum:function (){
+                addPetroleum: function () {
                     petroleumCostView.current = null;
                     petroleumCostView.action = 'add';
                     petroleumCostView.inputPrice();
@@ -657,13 +655,16 @@
                                 }
                             },
 
-                            {data: 'literNumber',
+                            {
+                                data: 'literNumber',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
-                            {data: 'prices_price',
+                            {
+                                data: 'prices_price',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
-                            {data: 'totalCost',
+                            {
+                                data: 'totalCost',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {data: 'noteCost'},
@@ -691,7 +692,7 @@
                 save: function () {
                     petroleumCostView.ValidateCost();
                     petroleumCostView.fillFormDataToCurrentObject();
-                    if ($("#fromPetroleum").valid()) {
+                    if ($("#formPetroleum").valid()) {
                         var sendToServer = {
                             _token: _token,
                             _action: petroleumCostView.action,
@@ -756,7 +757,7 @@
                             petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#fromPetroleum").find("label[class=error]").css("color", "red");
+                        $("form#formPetroleum").find("label[class=error]").css("color", "red");
                     }
                 },
                 loadListGarageAndVehicleType: function () {
@@ -782,39 +783,39 @@
 
                 },
                 ValidateVehicle: function () {
-                    $("#fromVehicle").validate({
+                    $("#formVehicle").validate({
                         rules: {
-                            vehicleNumber:{
+                            vehicleNumber: {
                                 required: true,
-                                number:true
+                                number: true
                             },
                             areaCode: "required",
                             vehicleType_id: "required",
                             garage_id: "required",
                             size: {
                                 required: true,
-                                number:true
+                                number: true
                             },
                             weight: {
                                 required: true,
-                                number:true
+                                number: true
                             }
                         },
                         messages: {
                             vehicleNumber: {
                                 required: "Vui lòng nhập số xe",
-                                number:"Số xe phải là số"
+                                number: "Số xe phải là số"
                             },
                             areaCode: "Vui lòng nhập mã vùng",
                             vehicleType_id: "Vui lòng chọn loại xe",
                             garage_id: "Vui lòng chọn nhà xe",
                             size: {
                                 required: "Vui lòng nhập kích thước",
-                                number:"Kích thước phải là số"
+                                number: "Kích thước phải là số"
                             },
                             weight: {
                                 required: "Vui lòng nhập trọng tải",
-                                number:"Trọng tải phải là số"
+                                number: "Trọng tải phải là số"
                             }
 
                         }
@@ -843,7 +844,7 @@
                         _action: 'addVehicles',
                         _vehicles: vehicle
                     };
-                    if ($("#fromVehicle").valid()) {
+                    if ($("#formVehicle").valid()) {
                         $.ajax({
                             url: url + 'create-vehicle-new/modify',
                             type: "POST",
@@ -851,29 +852,24 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                if (jqXHR.status == 201) {
-                                    petroleumCostView.showNotification("success", "Thêm thành công!");
-                                    petroleumCostView.displayModal("hide", "#modal-addVehicle");
-                                    petroleumCostView.tableVehicleNew = data['vehicleNew'];
-                                    petroleumCostView.inputVehicle();
-                                    petroleumCostView.clearInputVehicle();
-                                } else {
-                                    petroleumCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
-                                petroleumCostView.table.clear().rows.add(petroleumCostView.tablePetroleumCost).draw();
+                                petroleumCostView.showNotification("success", "Thêm thành công!");
+                                petroleumCostView.displayModal("hide", "#modal-addVehicle");
+                                petroleumCostView.tableVehicleNew = data['vehicleNew'];
+                                petroleumCostView.inputVehicle();
+                                petroleumCostView.clearInputVehicle();
                             } else {
-                                petroleumCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                petroleumCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#fromVehicle").find("label[class=error]").css("color", "red");
+                        $("form#formVehicle").find("label[class=error]").css("color", "red");
                     }
 
                 },
 
-                loadSelectBoxGarage : function (lstGarage) {
+                loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
                             .find('option')
@@ -906,10 +902,10 @@
                     }
                 },
                 ValidateCost: function () {
-                    $("#fromPetroleum").validate({
+                    $("#formPetroleum").validate({
                         rules: {
                             vehicle_id: "required",
-                            literNumber:{
+                            literNumber: {
                                 required: true,
                                 number: true
                             }
@@ -919,7 +915,7 @@
                             vehicle_id: "Vui lòng chọn xe",
                             literNumber: {
                                 required: "Vui lòng nhập số lít",
-                                number:"Số lít phải là số"
+                                number: "Số lít phải là số"
                             }
 
                         }
@@ -931,7 +927,7 @@
 
                 },
                 ValidateCostPrice: function () {
-                    $("#fromCostPrice").validate({
+                    $("#formCostPrice").validate({
                         rules: {
                             costPrice: {
                                 required: true,
@@ -940,8 +936,8 @@
                         },
                         messages: {
                             costPrice: {
-                                required : "Vui lòng nhập số tiền",
-                                number :"Giá tiền phải là số"
+                                required: "Vui lòng nhập số tiền",
+                                number: "Giá tiền phải là số"
                             }
                         }
                     });
@@ -958,7 +954,7 @@
                         _action: 'addPetroleum',
                         _priceType: priceType
                     };
-                    if ($("#fromCostPrice").valid()) {
+                    if ($("#formCostPrice").valid()) {
                         $.ajax({
                             url: url + 'create-price-new/modify',
                             type: "POST",
@@ -979,7 +975,7 @@
                             petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#fromCostPrice").find("label[class=error]").css("color", "red");
+                        $("form#formCostPrice").find("label[class=error]").css("color", "red");
                     }
                 }
 

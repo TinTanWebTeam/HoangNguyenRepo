@@ -91,7 +91,7 @@
                 </div>
             </div>
             <div class="panel-body">
-                <form role="form" id="fromOtherCost">
+                <form role="form" id="formOtherCost">
                     <div class="form-body">
                         <div class="col-md-12 ">
                             <div class="row ">
@@ -219,7 +219,7 @@
                     <h4 class="modal-title">Thêm giá nhiên liệu</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="fromCostPrice">
+                    <form id="formCostPrice">
                         <div class="row ">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
@@ -275,7 +275,7 @@
                     <h4 class="modal-title">Thêm Xe</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="fromVehicle">
+                    <form id="formVehicle">
                         <div class="row ">
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
@@ -528,7 +528,7 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data:'created_at', visible: false},
+                            {data: 'created_at', visible: false},
                             {data: 'fullNumber'},
                             {
                                 data: 'cost',
@@ -570,7 +570,7 @@
                     $("input[id='cost']").val('');
                 },
 
-                clearInputVehicle: function(){
+                clearInputVehicle: function () {
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
                     $("input[id='vehicleNumber']").val('');
@@ -584,7 +584,7 @@
                     $("#vehicle_id").attr('data-id', otherCostView.tableVehicleNew.id);
                 },
                 ValidateOtherCost: function () {
-                    $("#fromOtherCost").validate({
+                    $("#formOtherCost").validate({
                         rules: {
                             vehicle_id: "required",
                             cost: {
@@ -605,7 +605,7 @@
                 save: function () {
                     otherCostView.ValidateOtherCost();
                     otherCostView.fillFormDataToCurrentObject();
-                    if ($("#fromOtherCost").valid()) {
+                    if ($("#formOtherCost").valid()) {
                         var sendToServer = {
                             _token: _token,
                             _action: otherCostView.action,
@@ -669,11 +669,11 @@
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#fromOtherCost").find("label[class=error]").css("color", "red");
+                        $("form#formOtherCost").find("label[class=error]").css("color", "red");
                     }
                 },
                 ValidateVehicle: function () {
-                    $("#fromVehicle").validate({
+                    $("#formVehicle").validate({
                         rules: {
                             vehicleNumber: {
                                 required: true,
@@ -727,7 +727,7 @@
                         _action: 'addVehicles',
                         _vehicles: vehicle
                     };
-                    if ($("#fromVehicle").valid()) {
+                    if ($("#formVehicle").valid()) {
                         $.ajax({
                             url: url + 'create-vehicle-new/modify',
                             type: "POST",
@@ -735,24 +735,19 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                if (jqXHR.status == 201) {
-                                    otherCostView.showNotification("success", "Thêm thành công!");
-                                    otherCostView.displayModal("hide", "#modal-addVehicle");
-                                    otherCostView.tableVehicleNew = data['vehicleNew'];
-                                    otherCostView.inputVehicle();
-                                    otherCostView.clearInputVehicle();
-                                } else {
-                                    otherCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
-                                otherCostView.table.clear().rows.add(otherCostView.tableOtherCost).draw();
+                                otherCostView.showNotification("success", "Thêm thành công!");
+                                otherCostView.displayModal("hide", "#modal-addVehicle");
+                                otherCostView.tableVehicleNew = data['vehicleNew'];
+                                otherCostView.inputVehicle();
+                                otherCostView.clearInputVehicle();
                             } else {
-                                otherCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                otherCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#fromVehicle").find("label[class=error]").css("color", "red");
+                        $("form#formVehicle").find("label[class=error]").css("color", "red");
                     }
 
                 },

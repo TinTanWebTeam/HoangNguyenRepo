@@ -241,7 +241,7 @@
                     <h4 class="modal-title">Chi phí đậu bãi</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="fromCostPrice">
+                    <form id="formCostPrice">
                         <div class="row ">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
@@ -334,7 +334,7 @@
                     <h4 class="modal-title">Thêm Xe</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="fromVehicle">
+                    <form id="formVehicle">
                         <div class="row ">
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
@@ -753,8 +753,8 @@
                         var bb1 = bb[1];
                         var bb2 = bb[0];
                         var bb10 = bb1 * 0.24;
-                        var b10 = String(b1).substr(0,3)
-                        var b11 = Math.round(b10/10);
+                        var b10 = String(b1).substr(0, 3)
+                        var b11 = Math.round(b10 / 10);
                         data[i].totalDay = bb2;
                         data[i].totalHour = bb10 + ":" + b11;
 
@@ -837,7 +837,7 @@
                 }
                 ,
                 ValidateVehicle: function () {
-                    $("#fromVehicle").validate({
+                    $("#formVehicle").validate({
                         rules: {
                             vehicleNumber: {
                                 required: true,
@@ -898,7 +898,7 @@
                         _action: 'addVehicles',
                         _vehicles: vehicle
                     };
-                    if ($("#fromVehicle").valid()) {
+                    if ($("#formVehicle").valid()) {
                         $.ajax({
                             url: url + 'create-vehicle-new/modify',
                             type: "POST",
@@ -906,23 +906,18 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                if (jqXHR.status == 201) {
-                                    parkingCostView.showNotification("success", "Thêm thành công!");
-                                    parkingCostView.displayModal("hide", "#modal-addVehicle");
-                                    parkingCostView.tableVehicleNew = data['vehicleNew'];
-                                    parkingCostView.inputVehicle();
-                                } else {
-                                    parkingCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
-                                parkingCostView.table.clear().rows.add(parkingCostView.tableParkingCost).draw();
+                                parkingCostView.showNotification("success", "Thêm thành công!");
+                                parkingCostView.displayModal("hide", "#modal-addVehicle");
+                                parkingCostView.tableVehicleNew = data['vehicleNew'];
+                                parkingCostView.inputVehicle();
                             } else {
-                                parkingCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                parkingCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#fromVehicle").find("label[class=error]").css("color", "red");
+                        $("form#formVehicle").find("label[class=error]").css("color", "red");
                     }
 
                 }
@@ -1014,7 +1009,7 @@
                 }
                 ,
                 ValidateCostPrice: function () {
-                    $("#fromCostPrice").validate({
+                    $("#formCostPrice").validate({
                         rules: {
                             costPrice: {
                                 required: true,
@@ -1043,7 +1038,7 @@
                         _action: 'addParkingCost',
                         _priceType: priceType
                     };
-                    if ($("#fromCostPrice").valid()) {
+                    if ($("#formCostPrice").valid()) {
                         $.ajax({
                             url: url + 'create-price-new/modify',
                             type: "POST",
@@ -1065,7 +1060,7 @@
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#fromCostPrice").find("label[class=error]").css("color", "red");
+                        $("form#formCostPrice").find("label[class=error]").css("color", "red");
                     }
                 }
                 ,
