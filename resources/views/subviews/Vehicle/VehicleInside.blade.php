@@ -88,7 +88,7 @@
                 </div>
             </div>
 
-            <div class="panel-body">
+            <div class="panel-body" style="height: 320px">
                 <form role="form" id="frmControl">
                     <div class="form-body">
                         <div class="col-sm-12">
@@ -486,6 +486,10 @@
                         $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
                         $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
                         vehicleInsideView.displayModal("hide", "#modal-garage");
+                    });
+
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
                     });
                 },
                 localSearch: function () {

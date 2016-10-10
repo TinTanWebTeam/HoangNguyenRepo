@@ -32,6 +32,8 @@
     <link rel="stylesheet" href="{{URL::to('libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css')}}">
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ URL::to('libs/toastr/toastr.min.css') }}">
+    <!-- malihu custom scrollbar plugin -->
+    <link rel="stylesheet" href="{{ URL::to('libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') }}">
 
     @yield('styles')
 
@@ -92,9 +94,13 @@
 
 <!-- Global -->
 <script src=" {{ URL::to('src/js/global.js') }} "></script>
-<!-- datetimepicker -->
 
-<script type="text/javascript" src="{{URL::to('libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')}}"></script>
+<!-- datetimepicker -->
+<script src="{{ URL::to('libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+<!-- malihu custom scrollbar plugin -->
+<script src="{{ URL::to('libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+
 @yield('javascripts')
 
 </body>

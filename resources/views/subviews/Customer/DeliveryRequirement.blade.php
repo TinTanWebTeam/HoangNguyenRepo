@@ -85,7 +85,7 @@
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="height: 480px;overflow: auto">
                 <form role="form" id="frmControl">
                     <div class="form-body">
                         <div class="col-md-12 ">
@@ -945,42 +945,35 @@
                             },
                             {
                                 render: function (data, type, full, meta) {
-                                    var title_customer = '';
-                                    var title_garage = '';
                                     var color_customer = '';
                                     var color_garage = '';
                                     switch(full.status_customer){
                                         case 5:
-                                            color_customer = 'btn-default';
-                                            title_customer = 'Chưa thanh toán';
+                                            color_customer = 'text-danger';
                                             break;
                                         case 6:
-                                            color_customer = 'btn-primary';
-                                            title_customer = 'Đã thanh toán';
+                                            color_customer = 'text-primary';
                                             break;
                                         case 7:
-                                            color_customer = 'btn-success';
-                                            title_customer = 'Đã thanh toán và xuất hóa đơn';
+                                            color_customer = 'text-success';
                                             break;
                                     }
                                     switch(full.status_garage){
                                         case 8:
-                                            color_garage = 'btn-info';
-                                            title_garage = 'Chưa thanh toán';
+                                            color_garage = 'text-danger';
                                             break;
                                         case 9:
-                                            color_garage = 'btn-warning';
-                                            title_garage = 'Đã thanh toán';
+                                            color_garage = 'text-primary';
                                             break;
                                         case 10:
-                                            color_garage = 'btn-danger';
-                                            title_garage = 'Đã thanh toán và xuất hóa đơn';
+                                            color_garage = 'text-success';
                                             break;
                                     }
-                                    var tr = '';
-                                    tr += '<a class="btn '+ color_customer +'" title="'+ title_customer +'"></a>';
-                                    tr += '<a class="btn '+ color_garage +'" title="'+ title_garage +'"></a>';
+                                    var tr = "";
+                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-user '+ color_customer +'" aria-hidden="true"></i>';
+                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-truck '+ color_garage +'" aria-hidden="true"></i>';
                                     tr += '<p>'+ full.status_transport_ +'</p>';
+
                                     return tr;
                                 }, width: "11%"
                             },
@@ -1373,5 +1366,7 @@
         } else {
             transportView.loadData();
         }
+
+        
     });
 </script>
