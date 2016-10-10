@@ -742,7 +742,6 @@
                 fillDataToDatatable: function (data) {
 
                     for (var i = 0; i < data.length; i++) {
-
                         data[i].fullNumber = data[i]['vehicles_code'] + '-' + data[i]['vehicles_vehicleNumber'];
                         data[i].totalMinute = data[i]['totalMinus'] / 60;
                         var b = String(data[i].totalMinute).split('.');

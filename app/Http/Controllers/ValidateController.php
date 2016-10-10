@@ -24,19 +24,18 @@ class ValidateController extends Controller
     public static function ValidateCreateUser(array $data)
     {
         $rules = [
-            'fullname' => 'required',
-            'username' => 'required|unique:users',
-            'password' => 'required|',
-            'password_conformation' =>  'required',
-            'email'    => 'required'
+            'fullName'              => 'required|min:6|max:20',
+            'username'              => 'required|min:6|max:20|unique:users',
+            'email'                 => 'required',
+            'password'              => 'required|min:6|max:20',
+
         ];
         $messages = [
-            'fullname.required'  => 'Trường fullname bắt buộc nhập',
+            'fullName.required'  => 'Trường fullname bắt buộc nhập',
             'username.required'  => 'Trường username bắt buộc nhập',
             'username.unique'    => 'Trường username không được trùng',
-            'password .required' => 'Trường password bắt buộc nhập',
             'email.required'     => 'Trường email bắt buộc nhập',
-            'passwordconfirm' =>  'required',
+
         ];
 
         return Validator::make($data, $rules, $messages);
@@ -245,6 +244,16 @@ class ValidateController extends Controller
         ];
         $messages = [
             'vehicle_id.required' => 'Trường xe bắt buộc nhập',
+        ];
+        return Validator::make($data, $rules, $messages);
+    }
+    public static function ValidateDriver(array $data)
+    {
+        $rules = [
+            'fullName'  => 'required'
+        ];
+        $messages = [
+            'fullName.required'  => 'Trường tên tài xế bắt buộc nhập',
         ];
         return Validator::make($data, $rules, $messages);
     }

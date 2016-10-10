@@ -45,6 +45,34 @@ class UserManagementController extends Controller
         }
     }
 
+    public function postDataUserValidate(Request $request)
+    {
+
+        $user = DB::table('users')
+            ->where('users.active', 1)
+            ->where('users.username','=',$request->get('_object'))
+            ->first();
+        if($user == null){
+            $response = [
+                'msg' => "User khong ton tai"
+            ];
+            return response()->json($response, 200);
+        }
+        $response = [
+            'msg' => "User đa ton tai"
+        ];
+        return response()->json($response, 201);
+
+    }
+
+
+
+
+
+
+
+
+
     public function postEditUser(Request $request)
     {
         try {
@@ -74,27 +102,17 @@ class UserManagementController extends Controller
 
             $user = $request->get('_object');
             $array_roleid = $request->get('_object2');
-            if ($request->get('_object')['fullName'] == ''
-                && $request->get('_object')['username']
-                &&$request->get('_object')['email'])
-            {
-                Session::flash('flash_message', 'Vui lòng nhập lại !', 'Thông báo');
-
-                dd('a');
-            }
             $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
             if ($validateUser->fails()) {
-                return ['status' => 'Fail'];
+                return $validateUser->errors();
+                //return ['status' => 'Fail'];
             } else {
-
-
                 switch ($request->get('_action')) {
-
-
                     case "add":
                         try {
+
                             $userNew = new User();
-                            $userNew->fullName = $user['fullname'];
+                            $userNew->fullName = $user['fullName'];
                             $userNew->userName = $user['username'];
                             $userNew->password = encrypt($user['password'], Config::get('app.key'));
                             $userNew->email = $user['email'];
@@ -129,7 +147,7 @@ class UserManagementController extends Controller
                     case "update":
                         try {
                             $userUpdate = User::findOrFail($request->get('_object')['id']);
-                            $userUpdate->fullname = $request->get('_object')['fullname'];
+                            $userUpdate->fullname = $request->get('_object')['fullName'];
                             $userUpdate->username = $request->get('_object')['username'];
                             $userUpdate->password = encrypt($request->get('_object')['password'], Config::get('app.key'));
                             $userUpdate->email = $request->get('_object')['email'];

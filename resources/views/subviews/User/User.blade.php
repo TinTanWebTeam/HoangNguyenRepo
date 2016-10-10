@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 8%;
+        top: 9%;
         display: none;
         right: 0;
         width: 50%;
@@ -21,7 +21,7 @@
         }
     }
 </style>
-<div class="modal fade" id="modalConfirm" tabindex="-1" role="" aria-hidden="true" style="display: none;">
+<div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body" id="modalContent"></div>
@@ -93,7 +93,7 @@
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
-            <div class="panel-body" style="padding-top: 0px;">
+            <div class="panel-body" style="padding-top: 0;height:530px; overflow: auto ">
                 <form role="form" id="formUser">
 
                     <div class="form-body">
@@ -102,18 +102,14 @@
                         </div>
 
                         <div class="col-md-12">
-                            {{--<div class="col-md-12" style="top: 0px;">--}}
-                                {{--<div class="row">--}}
-                                    {{--<label id="email" style="display: block; color: red">Email đã tồn tại</label>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
+
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
-                                        <label for="fullname"><b>Họ và tên</b></label>
+                                        <label for="fullName"><b>Họ và tên</b></label>
                                         <input type="text" class="form-control"
-                                               id="fullname"
-                                               name="fullname"
+                                               id="fullName"
+                                               name="fullName"
                                                placeholder="Nhập họ tên"
                                                autofocus>
                                     </div>
@@ -123,7 +119,7 @@
                                         <label for="username"><b>Tên đăng nhập</b></label>
                                         <input type="text" class="form-control"
                                                id="username"
-                                               name="username"
+                                               name="username" onblur="userView.validateUser()"
                                                placeholder="Tên đăng nhập">
                                         <label id="username" style="display: none; color: red">Tài khoản đã tồn
                                             tại</label>
@@ -135,7 +131,6 @@
                                         <input type="text" class="form-control"
                                                id="email"
                                                name="email"
-
                                                placeholder="email@example.com">
                                         <label id="email" style="display: none; color: red">Email đã tồn tại</label>
                                     </div>
@@ -149,30 +144,34 @@
                                                id="password"
                                                name="password"
                                                maxlength="20"
-                                               minlength="3"
+                                               minlength="6"
                                                placeholder="password">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
-                                        <label for="passwordconfirm"><b>Nhập lại mật khẩu</b></label>
+                                        <label for="password_confirmation"><b>Nhập lại mật khẩu</b></label>
                                         <input type="Password" class="form-control"
-                                               id="passwordconfirm"
-                                               name="passwordconfirm"
+                                               id="password_confirmation"
+                                               name="password_confirmation"
                                                maxlength="20"
-                                               minlength="3"
+                                               minlength="6"
                                                placeholder="Nhập lại mật khẩu">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
-                                        <label for="phone"><b>Số điện thoại</b></label>
-                                        <input type="text" class="form-control"
-                                               id="phone"
-                                               name="phone"
-                                               placeholder="090">
+                                        <label for="position_id"><b>Chức vụ</b></label>
+                                        <select class="form-control" id="position_id" name="position_id">
+                                            <option value="">--Chọn chức vụ--</option>
+                                            @foreach($positions as $item ){
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                            }
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
+
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
@@ -186,22 +185,19 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
-                                        <label for="Birthday"><b>Năm Sinh</b></label>
-                                        <input type='text' id="Birthday" name="Birthday"
+                                        <label for="birthday"><b>Năm Sinh</b></label>
+                                        <input type='text' id="birthday" name="birthday"
                                                value="{{date('d-m-Y')}}" class="form-control"/>
 
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
-                                        <label for="position_id"><b>Chức vụ</b></label>
-                                        <select class="form-control" id="position_id" name="position_id">
-                                            <option value="">--Chọn chức vụ--</option>
-                                            @foreach($positions as $item ){
-                                            <option value="{{$item->id}}">{{$item->name}}</option>
-                                            }
-                                            @endforeach
-                                        </select>
+                                        <label for="phone"><b>Số điện thoại</b></label>
+                                        <input type="text" class="form-control"
+                                               id="phone"
+                                               name="phone"
+                                               placeholder="090">
                                     </div>
                                 </div>
 
@@ -261,12 +257,13 @@
 <!-- end #frmControl -->
 
 <script>
+
     $(function () {
         if (typeof (userView) === 'undefined') {
             userView = {
-
                 table: null,
                 data: null,
+                tableUser: null,
                 action: null,
                 idDelete: null,
                 current: null,
@@ -289,6 +286,7 @@
                         userView.fillCurrentObjectToForm();
                     }
                 },
+
                 loadData: function () {
                     $.post(url + 'user', {_token: _token, fromDate: null, toDate: null}, function (list) {
                         userView.data = list;
@@ -332,18 +330,17 @@
                         return o.id == id;
                     }), true);
                     userView.current.password = pwd;
-                    $("input[id=passwordconfirm]").val(pwd);
+                    $("input[id=password_confirmation]").val(pwd);
                     userView.action = "update";
                     userView.fillCurrentObjectToForm();
                     userView.show();
-
                 },
                 fillCurrentObjectToForm: function () {
                     for (var propertyName in userView.current) {
                         $("select[id=" + propertyName + "]").val(userView.current[propertyName]);
                         $("input[id=" + propertyName + "]").val(userView.current[propertyName]);
                         $("input[id=password]").val(userView.current[propertyName]);
-                        $("input[id=passwordconfirm]").val(userView.current[propertyName]);
+                        $("input[id=password_confirmation]").val(userView.current[propertyName]);
 
                     }
 
@@ -368,7 +365,7 @@
                         data: data,
                         columns: [
                             {data: 'username'},
-                            {data: 'fullname'},
+                            {data: 'fullName'},
                             {data: 'email'},
                             {data: 'address'},
                             {data: 'phone'},
@@ -405,13 +402,15 @@
                     userView.array_roleid = subrole;
                     if (userView.action == 'add') {
                         userView.current = {
-                            fullname: $("input[id='fullname']").val(),
+                            fullName: $("input[id='fullName']").val(),
                             username: $("input[id='username']").val(),
                             password: $("input[id='password']").val(),
+                            password_confirmation: $("input[id='password_confirmation']").val(),
                             email: $("input[id='email']").val(),
                             address: $("input[id='address']").val(),
                             phone: $("input[id='phone']").val(),
                             note: $("input[id='note']").val(),
+                            birthday: $("input[id='birthday']").val(),
                             position_id: $("select[id='position_id']").val()
                         }
 
@@ -437,7 +436,7 @@
                         }
                     }
                     $("select[id='position_id' ]").val('');
-                    $("input[id='passwordconfirm']").val('');
+                    $("input[id='password_confirmation']").val('');
                     //clear input checkbox
                     userView.resetRolesInDom();
                 },
@@ -447,62 +446,64 @@
                     $("#modalConfirm").modal('hide');
                 },
 
-//                validate: function () {
-//                    $("#formUser").validate({
-//                        rules: {
-//                            fullname: {
-//                                required: true,
-//                                minlength: 3
-//                            },
-//                            username: {
-//                                required: true,
-//                                minlength: 3
-//
-//                            },
-//                            email: {
-//                                required: true,
-//                                email: true
-//                            },
-//                            password: {
-//                                required: true,
-//                                minlength: 3,
-//                                maxlength: 20
-//                            },
-//                            passwordconfirm: {
-//                                required: true,
-//                                equalTo: "#password",
-//                                minlength: 3,
-//                                maxlength: 20
-//                            }
-//                        },
-//                        messages: {
-//                            fullname: {
-//                                required: "Vui lòng nhập họ tên",
-//                                minlength: "Họ tên từ 3 kí tự đến 20 kí tự",
-//                            },
-//                            username: {
-//                                required: "Vui lòng nhập tài khoản",
-//                                minlength: "Tên đăng nhập từ 3 kí tự đến 20 kí tự",
-//                            },
-//                            email: {
-//                                required: "Vui lòng nhập Email",
-//                                email: 'Email không đúng định dạng'
-//                            },
-//                            password: {
-//                                required: "Vui lòng nhập mật khẩu",
-//                                minlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự",
-//                                maxlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự"
-//                            },
-//                            passwordconfirm: {
-//                                required: "Vui lòng nhập lại mật khẩu",
-//                                equalTo: "Nhập lại mật khẩu không đúng",
-//                                minlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự",
-//                                maxlength: "Mật khẩu nhập phải từ 3 kí tự đến 20 kí tự"
-//                            }
-//                        }
-//                    });
-//
-//                },
+                validate: function () {
+                    $("#formUser").validate({
+                        rules: {
+                            fullName: {
+                                required: true,
+                                minlength: 6
+                            },
+                            username: {
+                                required: true,
+                                minlength: 6
+
+                            },
+                            email: {
+                                required: true,
+                                email: true
+                            },
+                            password: {
+                                required: true,
+                                minlength: 6,
+                                maxlength: 20
+                            },
+                            password_confirmation: {
+                                required: true,
+                                equalTo: "#password",
+                                minlength: 6,
+                                maxlength: 20
+                            },
+                            position_id: "required"
+                        },
+                        messages: {
+                            fullName: {
+                                required: "Vui lòng nhập họ tên",
+                                minlength: "Họ tên từ 6 kí tự đến 20 kí tự"
+                            },
+                            username: {
+                                required: "Vui lòng nhập tài khoản",
+                                minlength: "Tên đăng nhập từ 6 kí tự đến 20 kí tự"
+                            },
+                            email: {
+                                required: "Vui lòng nhập Email",
+                                email: 'Email không đúng định dạng'
+                            },
+                            password: {
+                                required: "Vui lòng nhập mật khẩu",
+                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
+                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
+                            },
+                            password_confirmation: {
+                                required: "Vui lòng nhập lại mật khẩu",
+                                equalTo: "Nhập lại mật khẩu không đúng",
+                                minlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự",
+                                maxlength: "Mật khẩu nhập phải từ 6 kí tự đến 20 kí tự"
+                            },
+                            position_id: "Vui lòng chọn chức vụ"
+                        }
+                    });
+
+                },
                 showNotification: function (type, msg) {
                     switch (type) {
                         case "info":
@@ -519,49 +520,77 @@
                             break;
                     }
                 },
+                validateUser: function () {
+
+                    var sendToServer = {
+                        _token: _token,
+                        _object: $("input[id=username]").val()
+                    };
+                    $.ajax({
+                        url: url + 'validate-user',
+                        type: "post",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            $("form#formUser").find("label[id=username]").css("display", "none");
+                        } else if (jqXHR.status == 201) {
+                            $("form#formUser").find("label[id=username]").css("display", "block");
+                        } else {
+                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                },
+
+
                 save: function () {
-//                    userView.validate();
+                    userView.validate();
                     userView.fillFormDataToCurrentObject();
                     var sendToServer = {
                         _token: _token,
                         _action: userView.action,
                         _object: userView.current,
-                        _object2: userView.array_roleid,
+                        _object2: userView.array_roleid
                     };
                     if (userView.action == 'delete') {
                         sendToServer._object = {
                             id: userView.idDelete,
-                            fullname: "delete",
+                            fullName: "delete",
                             username: "delete",
                             password: "delete",
-                            email: "delete",
+                            email: "delete"
                         };
                     }
-//                    if ($("#formUser").valid()) {
+                    if ($("#formUser").valid()) {
                         $.post(
                                 url + 'user/modify',
                                 sendToServer
                                 , function (data) {
                                     if (data['status'] == 'Ok') {
+                                        var obj = null;
+                                        var index = null;
                                         switch (userView.action) {
                                             case'add' :
                                                 userView.data.push(data['obj'][0]);
                                                 userView.showNotification("success", "Thêm thành công!");
                                                 break;
                                             case 'update':
-                                                var obj = _.find(userView.data, function (o) {
+                                                obj = _.find(userView.data, function (o) {
                                                     return o.id == sendToServer._object.id;
                                                 });
-                                                var index = _.indexOf(userView.data, obj);
+                                                index = _.indexOf(userView.data, obj);
                                                 userView.data.splice(index, 1, data['obj'][0]);
                                                 userView.hide();
                                                 userView.showNotification("success", "Cập nhật thành công!");
                                                 break;
                                             case 'delete':
-                                                var obj = _.find(userView.data, function (o) {
+                                                obj = _.find(userView.data, function (o) {
                                                     return o.id == sendToServer._object.id;
                                                 });
-                                                var index = _.indexOf(userView.data, obj);
+                                                index = _.indexOf(userView.data, obj);
                                                 userView.data.splice(index, 1);
                                                 userView.showNotification("success", "Xóa thành công!");
                                                 break;
@@ -576,9 +605,9 @@
                         );
                         userView.resetRolesInDom();
 
-//                    } else {
-//                        $("form#formUser").find("label[class=error]").css("color", "red");
-//                    }
+                    } else {
+                        $("form#formUser").find("label[class=error]").css("color", "red");
+                    }
                 },
                 resetRolesInDom: function () {
                     $("input[id=array_roleid]").each(function () {
@@ -591,7 +620,7 @@
                             $(this).prop('checked', true);
                         }
                     });
-                },
+                }
 
             };
             userView.loadData();
@@ -600,4 +629,39 @@
         }
 
     });
+
+    //setup before functions Expense
+    //    var typingTimer;          //timer identifier
+    //    var doneTypingInterval = 500;  //time in ms, 3 second for example
+    //    var $inputExpense = $("input#ExpenseCode");
+    //
+    //    //on keyup, start the countdown
+    //    $inputExpense.on('keyup', function () {
+    //        clearTimeout(typingTimer);
+    //        typingTimer = setTimeout(doneTypingExpense, doneTypingInterval);
+    //    });
+    //
+    //    //on keydown, clear the countdown
+    //    $inputExpense.on('keydown', function () {
+    //        clearTimeout(typingTimer);
+    //    });
+    //    function doneTypingExpense() {
+    //        $.get(url + 'getSearchExpense', {
+    //            token: _token,
+    //            Code: $inputExpense.val()
+    //        }, function (data) {
+    //            if (data === "0") {
+    //                $("div[id=modal-confirm]").find("div[class=modal-body]").find("h4").text("Sorry!!!Not found this task!Please choose other one");
+    //                $("div[id=modal-confirm]").modal("show");
+    //                $inputExpense.val("");
+    //                $("input#Expense").val("");
+    //            }
+    //            else {
+    //                $inputExpense.val(data["code"]);
+    //                $("input#Expense").val(data["id"]);
+    //            }
+    //        });
+    //    }
+
+
 </script>

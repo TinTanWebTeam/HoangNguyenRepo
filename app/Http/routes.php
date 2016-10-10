@@ -35,9 +35,18 @@ Route::group(['middleware' => 'auth'], function(){
         /*Post view*/
         Route::post('/position','UserManagementController@getDataPosition');
         Route::post('/user','UserManagementController@getDataUser');
+
         Route::post('/position/modify','UserManagementController@postModifyPosition');
         Route::post('/user/edit','UserManagementController@postEditUser');
         Route::post('/user/modify','UserManagementController@postModifyUser');
+
+
+        Route::post('/validate-user','UserManagementController@postDataUserValidate');
+
+
+
+
+
 
     });
     Route::group(['middleware' => 'CustomerManagement'], function () {
