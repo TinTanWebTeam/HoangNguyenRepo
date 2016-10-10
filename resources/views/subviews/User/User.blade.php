@@ -135,7 +135,6 @@
                                                id="email"
                                                name="email"
                                                placeholder="email@example.com">
-                                        <label id="email" style="display: none; color: red">Email đã tồn tại</label>
                                     </div>
                                 </div>
                             </div>
@@ -189,8 +188,8 @@
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="birthday"><b>Năm Sinh</b></label>
-                                        <input type='text' id="birthday" name="birthday"
-                                               value="{{date('d-m-Y')}}" class="form-control"/>
+                                        <input type='date' id="birthday" name="birthday"
+                                               class="form-control"/>
 
                                     </div>
                                 </div>
@@ -315,6 +314,7 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme:"dark"
                     });
+
                 },
                 editUser: function (id) {
                     var pwd = null;
@@ -347,9 +347,7 @@
                         $("input[id=" + propertyName + "]").val(userView.current[propertyName]);
                         $("input[id=password]").val(userView.current[propertyName]);
                         $("input[id=password_confirmation]").val(userView.current[propertyName]);
-
                     }
-
                     userView.show();
                 },
                 msgDelete: function (id) {
@@ -421,11 +419,26 @@
                         }
 
                     } else if (userView.action == 'update') {
-                        for (var propertyName in userView.current) {
-                            if (propertyName != 'position_id')
-                                userView.current[propertyName] = $("input[id=" + propertyName + "]").val();
-                        }
+                        userView.current.fullName = $("input[id='fullName']").val();
+                        userView.current.username = $("input[id='username']").val();
+                        userView.current.password = $("input[id='password']").val();
+                        userView.current.email = $("input[id='email']").val();
+                        userView.current.address = $("input[id='address']").val();
+                        userView.current.phone = $("input[id='phone']").val();
+                        userView.current.birthday = $("input[id='birthday']").val();
                         userView.current['position_id'] = $("select[id='position_id']").val();
+
+
+
+//
+//                        fuelCostView.current.noted = $("input[id='noted']").val();
+//                        fuelCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
+//                        for (var propertyName in userView.current) {
+//                            if (propertyName != 'position_id')
+//                                userView.current[propertyName] = $("input[id=" + propertyName + "]").val();
+//                                userView.current[propertyName] = $("input[id=brithday]").val();
+//                        }
+
                     }
                 },
                 addNewUser: function () {
@@ -635,39 +648,6 @@
         }
 
     });
-
-    //setup before functions Expense
-    //    var typingTimer;          //timer identifier
-    //    var doneTypingInterval = 500;  //time in ms, 3 second for example
-    //    var $inputExpense = $("input#ExpenseCode");
-    //
-    //    //on keyup, start the countdown
-    //    $inputExpense.on('keyup', function () {
-    //        clearTimeout(typingTimer);
-    //        typingTimer = setTimeout(doneTypingExpense, doneTypingInterval);
-    //    });
-    //
-    //    //on keydown, clear the countdown
-    //    $inputExpense.on('keydown', function () {
-    //        clearTimeout(typingTimer);
-    //    });
-    //    function doneTypingExpense() {
-    //        $.get(url + 'getSearchExpense', {
-    //            token: _token,
-    //            Code: $inputExpense.val()
-    //        }, function (data) {
-    //            if (data === "0") {
-    //                $("div[id=modal-confirm]").find("div[class=modal-body]").find("h4").text("Sorry!!!Not found this task!Please choose other one");
-    //                $("div[id=modal-confirm]").modal("show");
-    //                $inputExpense.val("");
-    //                $("input#Expense").val("");
-    //            }
-    //            else {
-    //                $inputExpense.val(data["code"]);
-    //                $("input#Expense").val(data["id"]);
-    //            }
-    //        });
-    //    }
 
 
 </script>

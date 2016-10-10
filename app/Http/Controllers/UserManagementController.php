@@ -102,15 +102,17 @@ class UserManagementController extends Controller
 
             $user = $request->get('_object');
             $array_roleid = $request->get('_object2');
-            $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
-            if ($validateUser->fails()) {
-                return $validateUser->errors();
-                //return ['status' => 'Fail'];
-            } else {
+            if($request->get('_action') == 'add'){
+                $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
+                if ($validateUser->fails()) {
+                    return $validateUser->errors();
+                    //return ['status' => 'Fail'];
+                }
+            }
+             else {
                 switch ($request->get('_action')) {
                     case "add":
                         try {
-
                             $userNew = new User();
                             $userNew->fullName = $user['fullName'];
                             $userNew->userName = $user['username'];
@@ -119,6 +121,7 @@ class UserManagementController extends Controller
                             $userNew->address = $user['address'];
                             $userNew->phone = $user['phone'];
                             $userNew->note = $user['note'];
+                            $userNew->birthday = $user['birthday'];
                             $userNew->position_id = $user['position_id'];
                             if (!$userNew->save()) {
                                 return ['status' => 'Fail'];
