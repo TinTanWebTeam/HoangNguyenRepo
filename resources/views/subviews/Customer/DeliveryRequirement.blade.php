@@ -48,23 +48,12 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
+                    <p id="dateOnlySearch">
+                        <input type="text" class="date start" /> đến
+                        <input type="text" class="date end" />
+                        <button onclick="transportView.searchFromDateToDate()" class="btn btn-sm btn-info"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>
+                    </p>
                     <div class="table-responsive">
-                        <table border="0" cellspacing="5" cellpadding="5">
-                            <tbody>
-                            <tr>
-                                <td>Minimum age:</td>
-                                <td><input type="date" id="min" name="min"></td>
-                            </tr>
-                            <tr>
-                                <td>Maximum age:</td>
-                                <td><input type="date" id="max" name="max"></td>
-                            </tr>
-                            <tr>
-                                <td><button onclick="transportView.showdata()">sssss</button></td>
-
-                            </tr>
-                            </tbody>
-                        </table>
                         <table class="table table-bordered table-hover table-striped" id="table-data">
                             <thead>
                             <tr class="active">
@@ -535,6 +524,7 @@
 </div>
 <!-- end Modal add vehicleTypes -->
 
+
 <script>
     $(function () {
         if (typeof transportView === 'undefined') {
@@ -624,6 +614,63 @@
                     transportView.arrayVoucher = [];
                 },
 
+                renderDateTimePicker: function(){
+                    $('#dateOnlySearch .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+
+                    var dateOnlySearchEl = document.getElementById('dateOnlySearch');
+                    var dateOnlyDatepair = new Datepair(dateOnlySearchEl);
+                },
+                renderScrollbar: function(){
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
+                },
+                renderEventTableModal: function() {
+                    $("#table-vehicle").find("tbody").on('click', 'tr', function () {
+                        $('#vehicle_id').attr('data-vehicleId', $(this).find('td:first')[0].innerText);
+                        $('input[id=vehicle_id]').val($(this).find('td:eq(1)')[0].innerText);
+                        transportView.displayModal("hide", "#modal-vehicle");
+                    });
+                    $("#table-customer").find("tbody").on('click', 'tr', function () {
+                        var cust_id = $(this).find('td:first')[0].innerText;
+                        $('#customer_id').attr('data-customerId', cust_id);
+                        $('input[id=customer_id]').val($(this).find('td:eq(2)')[0].innerText);
+                        transportView.displayModal("hide", "#modal-customer");
+
+                        transportView.postDataPostageOfCustomer(cust_id);
+                    });
+                    $("#table-product").find("tbody").on('click', 'tr', function () {
+                        $('#product_id').attr('data-productId', $(this).find('td:first')[0].innerText);
+                        $('input[id=product_id]').val($(this).find('td:eq(2)')[0].innerText);
+                        transportView.displayModal("hide", "#modal-product");
+                    });
+                    $('#table-voucher').on('draw.dt', function () {
+                        transportView.fillVoucher();
+                    });
+                },
+                renderCustomToastr: function() {
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+                },
+
                 loadData: function () {
                     $.ajax({
                         url: url + 'transport/transports',
@@ -647,54 +694,13 @@
                         transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
 
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "300",
-                        "hideDuration": "1000",
-                        "timeOut": "2000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
+                    transportView.renderDateTimePicker();
 
-                    //Event click for table modal
-                    $("#table-vehicle").find("tbody").on('click', 'tr', function () {
-                        $('#vehicle_id').attr('data-vehicleId', $(this).find('td:first')[0].innerText);
-                        $('input[id=vehicle_id]').val($(this).find('td:eq(1)')[0].innerText);
-                        transportView.displayModal("hide", "#modal-vehicle");
-                    });
-                    $("#table-customer").find("tbody").on('click', 'tr', function () {
-                        var cust_id = $(this).find('td:first')[0].innerText;
-                        $('#customer_id').attr('data-customerId', cust_id);
-                        $('input[id=customer_id]').val($(this).find('td:eq(2)')[0].innerText);
-                        transportView.displayModal("hide", "#modal-customer");
+                    transportView.renderScrollbar();
 
-                        transportView.postDataPostageOfCustomer(cust_id);
-                    });
-                    $("#table-product").find("tbody").on('click', 'tr', function () {
-                        $('#product_id').attr('data-productId', $(this).find('td:first')[0].innerText);
-                        $('input[id=product_id]').val($(this).find('td:eq(2)')[0].innerText);
-                        transportView.displayModal("hide", "#modal-product");
-                    });
-                    $('#table-voucher').on('draw.dt', function () {
-                        transportView.fillVoucher();
-                    });
+                    transportView.renderEventTableModal();
 
-                    //Event DateTimePicker
-                    $('#datetimepicker1').datetimepicker();
-
-                    //Custom scrollbar
-                    $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme: "dark"
-                    });
+                    transportView.renderCustomToastr();
                 },
                 loadListVehicle: function () {
                     $.ajax({
@@ -1339,38 +1345,16 @@
                         transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                showdata: function(){
-                    $(transportView.table.$('tr', {"filter":"applied"}).each( function () {
-                        console.log($(this).find("td:eq(0)").text());
-                    } ));
+                searchFromDateToDate: function() {
+                    var fromDate = $("#dateOnlySearch").find(".start").val();
+                    var toDate = $("#dateOnlySearch").find(".end").val();
+                    console.log(fromDate);
+                    console.log(toDate);
                 }
             };
             transportView.loadData();
-
-            /* Custom filtering function which will search data in column four between two values */
-            $.fn.dataTable.ext.search.push(
-                function (settings, data, dataIndex) {
-                    var min = moment($('#min').val());
-                    var max = moment($('#max').val());
-                    var age = moment(data[11], "DD-MM-YYYY");
-                    try {
-                        return age.isBetween(min, max, null, '[]');
-                    } catch (ex) {
-                        console.log(ex);
-                        return false;
-                    }
-                }
-            );
-
         } else {
             transportView.loadData();
         }
-
-
-        $('#min, #max').keyup(function () {
-            transportView.table.draw();
-        });
-
-
     });
 </script>

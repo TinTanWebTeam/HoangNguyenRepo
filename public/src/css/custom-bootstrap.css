@@ -71,12 +71,12 @@ ol.breadcrumb {
 
 tr:hover {
     cursor: pointer;
-    background: #FDF6E3;
-    opacity: 1;
-    -webkit-transform: scale(1.01);
-    -moz-transform: scale(1.01);
-    -ms-transform: scale(1.01);
-    transform: scale(1.01);
+    /*background: #FDF6E3;*/
+    /*opacity: 1;*/
+    /*-webkit-transform: scale(1.01);*/
+    /*-moz-transform: scale(1.01);*/
+    /*-ms-transform: scale(1.01);*/
+    /*transform: scale(1.01);*/
 }
 
 
