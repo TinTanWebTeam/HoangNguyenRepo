@@ -52,6 +52,7 @@
                         <input type="text" class="date start" /> đến
                         <input type="text" class="date end" />
                         <button onclick="transportView.searchFromDateToDate()" class="btn btn-sm btn-info"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>
+                        <button onclick="transportView.clearSearch()" class="btn btn-sm btn-default"><i class="fa fa-trash-o" aria-hidden="true"></i> Xóa</button>
                     </p>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped" id="table-data">
@@ -1348,8 +1349,28 @@
                 searchFromDateToDate: function() {
                     var fromDate = $("#dateOnlySearch").find(".start").val();
                     var toDate = $("#dateOnlySearch").find(".end").val();
-                    console.log(fromDate);
-                    console.log(toDate);
+                    fromDate = moment(fromDate, "DD-MM-YYYY");
+                    toDate = moment(toDate, "DD-MM-YYYY");
+
+                    if(fromDate.isValid() && toDate.isValid()){
+                        var found = _.filter(transportView.dataTransport, function(o){
+                            var find = moment(o.receiveDate, "YYYY-MM-DD");
+                            return moment(find).isBetween(fromDate, toDate, null, '[]');
+                        });
+                        transportView.table.clear().rows.add(found).draw();
+                    } else {
+                        transportView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                    }
+                },
+                clearSearch: function(){
+                    $("#dateOnlySearch").find(".start").datepicker('update', '');
+                    $("#dateOnlySearch").find(".end").datepicker('update', '');
+                    transportView.table.clear().rows.add(transportView.dataTransport).draw();
+                },
+                showCurrentRows: function() {
+                    $(transportView.table.$('tr', {"filter":"applied"}).each( function () {
+                        console.log($(this).find("td:eq(1)").text());
+                    } ));
                 }
             };
             transportView.loadData();

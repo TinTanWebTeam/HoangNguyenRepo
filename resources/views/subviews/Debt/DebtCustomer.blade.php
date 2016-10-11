@@ -9,6 +9,10 @@
         height: 100%;
     }
 
+    #divControl .panel-body {
+        height: 320px;
+    }
+
     div.col-lg-12 {
         height: 40px;
     }
@@ -44,6 +48,12 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
+                    <p id="dateOnlySearch">
+                        <input type="text" class="date start" /> đến
+                        <input type="text" class="date end" />
+                        <button onclick="debtCustomerView.searchFromDateToDate()" class="btn btn-sm btn-info"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>
+                        <button onclick="debtCustomerView.clearSearch()" class="btn btn-sm btn-default"><i class="fa fa-trash-o" aria-hidden="true"></i> Xóa</button>
+                    </p>
                     <table class="table table-bordered table-hover" id="table-data">
                         <thead>
                         <tr class="active">
@@ -208,23 +218,13 @@
                 $("input[id='cashReceive']").val('');
                 $("input[id='payment']").val('');
             },
-            
-            loadData: function () {
-                $.ajax({
-                    url: url + '/debt-customer/transports',
-                    type: "GET",
-                    dataType: "json"
-                }).done(function (data, textStatus, jqXHR) {
-                    if (jqXHR.status == 200) {
-                        debtCustomerView.dataTransport = data['transports'];
-                        debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
-                    } else {
-                        debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                });
 
+            renderScrollbar: function(){
+                $("#divControl").find('.panel-body').mCustomScrollbar({
+                    theme: "dark"
+                });
+            },
+            renderCustomToastr: function() {
                 toastr.options = {
                     "closeButton": true,
                     "debug": false,
@@ -242,6 +242,36 @@
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 };
+            },
+            renderDateTimePicker: function(){
+                $('#dateOnlySearch .date').datepicker({
+                    'format': 'dd-mm-yyyy',
+                    'autoclose': true
+                });
+
+                var dateOnlySearchEl = document.getElementById('dateOnlySearch');
+                var dateOnlyDatepair = new Datepair(dateOnlySearchEl);
+            },
+
+            loadData: function () {
+                $.ajax({
+                    url: url + '/debt-customer/transports',
+                    type: "GET",
+                    dataType: "json"
+                }).done(function (data, textStatus, jqXHR) {
+                    if (jqXHR.status == 200) {
+                        debtCustomerView.dataTransport = data['transports'];
+                        debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
+                    } else {
+                        debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                });
+
+                debtCustomerView.renderDateTimePicker();
+                debtCustomerView.renderScrollbar();
+                debtCustomerView.renderCustomToastr();
             },
             fillDataToDatatable: function (data) {
                 for (var i = 0; i < data.length; i++) {
@@ -463,6 +493,28 @@
                 } else {
                     $("form#frmControl").find("label[class=error]").css("color", "red");
                 }
+            },
+
+            searchFromDateToDate: function() {
+                var fromDate = $("#dateOnlySearch").find(".start").val();
+                var toDate = $("#dateOnlySearch").find(".end").val();
+                fromDate = moment(fromDate, "DD-MM-YYYY");
+                toDate = moment(toDate, "DD-MM-YYYY");
+
+                if(fromDate.isValid() && toDate.isValid()){
+                    var found = _.filter(debtCustomerView.dataTransport, function(o){
+                        var find = moment(o.receiveDate, "YYYY-MM-DD");
+                        return moment(find).isBetween(fromDate, toDate, null, '[]');
+                    });
+                    debtCustomerView.table.clear().rows.add(found).draw();
+                } else {
+                    debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                }
+            },
+            clearSearch: function(){
+                $("#dateOnlySearch").find(".start").datepicker('update', '');
+                $("#dateOnlySearch").find(".end").datepicker('update', '');
+                debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
             }
         };
         debtCustomerView.loadData();
