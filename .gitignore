@@ -1,6 +1,6 @@
 /vendor
 /node_modules
-/public/storage
+/public/libs
 /storage/framework/sessions/*
 /storage/framework/views/*
 Homestead.yaml
@@ -10,3 +10,6 @@ _ide_helper.php
 .env
 .idea/
 .vscode/
+/documents/HoangNguyen.vux
+/documents/.HoangNguyen.vpp.lck
+/documents/HoangNguyen.vpp.bak*
