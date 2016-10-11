@@ -23,6 +23,7 @@
     "malihu-custom-scrollbar-plugin": "^3.1.5",
     "datepair.js": "^0.4.14",
     "jt.timepicker": "jquery-timepicker-jt#^1.11.5",
-    "bootstrap-datepicker": "^1.6.4"
+    "bootstrap-datepicker": "^1.6.4",
+    "jquery-ui": "^1.12.1"
   }
 }

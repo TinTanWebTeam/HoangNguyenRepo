@@ -525,7 +525,6 @@
 </div>
 <!-- end Modal add vehicleTypes -->
 
-
 <script>
     $(function () {
         if (typeof transportView === 'undefined') {

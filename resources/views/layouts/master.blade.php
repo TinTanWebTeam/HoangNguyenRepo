@@ -35,13 +35,19 @@
     <!-- malihu custom scrollbar plugin -->
     <link rel="stylesheet" href="{{ URL::to('libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') }}">
 
+    <link rel="stylesheet" href="{{ URL::to('libs/jquery-ui/themes/hot-sneaks/jquery-ui.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/jt.timepicker/jquery.timepicker.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/pikaday.css') }}">
+
 
     @yield('styles')
 
     <!-- jQuery 2.2 -->
     <script src=" {{ URL::to('libs/jquery/dist/jquery.min.js') }}"></script>
+    <!-- jQuery UI -->
+    <script src=" {{ URL::to('libs/jquery-ui/jquery-ui.min.js') }}"></script>
     <!-- jQuery 2.1 -->
     {{--<script   src="https://code.jquery.com/jquery-2.1.4.min.js"   integrity="sha256-8WqyJLuWKRBVhxXIL1jBDD7SDxU936oZkCnxQbWwJVw="   crossorigin="anonymous"></script>--}}
 </head>
@@ -110,9 +116,9 @@
 <script src="{{ URL::to('libs/jt.timepicker/jquery.timepicker.min.js') }}"></script>
 <script src="{{ URL::to('libs/datepair.js/dist/datepair.min.js') }}"></script>
 
-{{--<script src="{{ URL::to('libs/datepair.js/lib/pikaday.js') }}"></script>--}}
-{{--<script src="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.js') }}"></script>--}}
-{{--<script src="{{ URL::to('libs/datepair.js/lib/moment.min.js') }}"></script>--}}
+<script src="{{ URL::to('libs/datepair.js/lib/pikaday.js') }}"></script>
+<script src="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.js') }}"></script>
+<script src="{{ URL::to('libs/datepair.js/lib/moment.min.js') }}"></script>
 
 @yield('javascripts')
 
