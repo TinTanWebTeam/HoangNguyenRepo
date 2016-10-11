@@ -31,7 +31,7 @@
 @include('flash::message')
 <div class="container">
     <div class="mainbox col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3" id="loginbox" style="margin-top:50px;">
-        <div class="panel panel-success">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
                     Thông tin đăng nhập
@@ -66,7 +66,7 @@
                     <div class="form-group" style="margin-top:10px">
                         <!-- Button -->
                         <div class="col-sm-12 controls text-center">
-                            <button class="btn btn-success " type="submit">
+                            <button class="btn btn-primary " type="submit">
                                 Đăng nhập
                             </button>
                         </div>

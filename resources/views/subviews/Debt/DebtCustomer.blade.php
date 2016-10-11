@@ -1,5 +1,5 @@
 <style>
-    #divControl {
+    #divControl, #divInvoice {
         z-index: 3;
         position: fixed;
         top: 40%;
@@ -11,6 +11,10 @@
 
     #divControl .panel-body {
         height: 320px;
+    }
+
+    #divInvoice .panel-body {
+        height: 341px;
     }
 
     div.col-lg-12 {
@@ -39,7 +43,7 @@
                         <li class="active">Khách hàng</li>
                     </ol>
                     <div class="menu-toggle  pull-right fixed">
-                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn" onclick="debtCustomerView">
+                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn" onclick="debtCustomerView.showControl('divInvoice')">
                             <i class="glyphicon glyphicon-list-alt icon-center"></i>
                         </div>
                     </div>
@@ -84,7 +88,7 @@
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">Thanh toán cước phí
-                <div class="menu-toggles pull-right" onclick="debtCustomerView.hideControl()">
+                <div class="menu-toggles pull-right" onclick="debtCustomerView.hideControl('divControl')">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
@@ -149,7 +153,102 @@
                         <div class="col-md-6">
                             <div class="form-actions noborder">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-primary"
+                                    <button type="button" class="btn btn-primary marginRight"
+                                            onclick="debtCustomerView.save()">
+                                        Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn default" onclick="">Huỷ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End divControl -->
+
+<!-- Begin divInvoice -->
+<div class="row">
+    <div id="divInvoice" class="col-md-offset-4 col-md-8">
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">Xuất hóa đơn
+                <div class="menu-toggles pull-right" onclick="debtCustomerView.hideControl('divInvoice')">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
+            </div>
+            <div class="panel-body">
+                <form role="form" id="frmInvoice">
+                    <div class="form-body">
+                        <div class="col-md-12 ">
+                            <div class="row ">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="VAT"><b>VAT</b></label>
+                                        <input type="number" class="form-control"
+                                               id="VAT"
+                                               name="VAT">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="notVAT"><b>not VAT</b></label>
+                                        <input type="number" class="form-control"
+                                               id="notVAT"
+                                               name="notVAT">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="hasVAT"><b>has VAT</b></label>
+                                        <input type="number" class="form-control"
+                                               id="hasVAT"
+                                               name="hasVAT">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="exportDate"><b>Ngày xuất</b></label>
+                                        <input type="text" class="date form-control"
+                                               id="exportDate"
+                                               name="exportDate">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="invoiceDate"><b>Ngày hóa đơn</b></label>
+                                        <input type="text" class="date form-control"
+                                               id="invoiceDate"
+                                               name="invoiceDate">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="payDate"><b>Ngày trả</b></label>
+                                        <input type="text" class="date form-control"
+                                               id="payDate"
+                                               name="payDate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="note"><b>Ghi chú</b></label>
+                                        <textarea class="form-control"
+                                               id="note"
+                                               name="note"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-actions noborder">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary marginRight"
                                             onclick="debtCustomerView.save()">
                                         Hoàn tất
                                     </button>
@@ -171,14 +270,18 @@
             table: null,
 
             dataTransport: null,
+            dataSearch: null,
             payment: null,
 
-            showControl: function () {
+            showControl: function (idDiv) {
+                debtCustomerView.hideControl('divControl');
+                debtCustomerView.hideControl('divInvoice');
+
                 $('.menu-toggle').fadeOut();
-                $('#divControl').fadeIn(300);
+                $('#'+idDiv).fadeIn(300);
             },
-            hideControl: function () {
-                $('#divControl').fadeOut(300, function () {
+            hideControl: function (idDiv) {
+                $('#'+idDiv).fadeOut(300, function () {
                     $('.menu-toggle').fadeIn();
                 });
 
@@ -223,6 +326,9 @@
                 $("#divControl").find('.panel-body').mCustomScrollbar({
                     theme: "dark"
                 });
+//                $("#divInvoice").find('.panel-body').mCustomScrollbar({
+//                    theme: "dark"
+//                });
             },
             renderCustomToastr: function() {
                 toastr.options = {
@@ -251,6 +357,14 @@
 
                 var dateOnlySearchEl = document.getElementById('dateOnlySearch');
                 var dateOnlyDatepair = new Datepair(dateOnlySearchEl);
+
+                $('#divInvoice').find('.date').datepicker({
+                    "setDate": new Date(),
+                    'format': 'dd-mm-yyyy',
+                    'autoclose': true
+                });
+
+                $('#divInvoice').find('.date').datepicker("setDate", new Date());
             },
 
             loadData: function () {
@@ -398,7 +512,7 @@
 
                 debtCustomerView.fillCurrentObjectToForm();
                 debtCustomerView.action = 'edit';
-                debtCustomerView.showControl();
+                debtCustomerView.showControl("divControl");
             },
             autoEditTransport: function (id) {
                 debtCustomerView.current = null;
@@ -468,7 +582,7 @@
                                     }
 
                                     debtCustomerView.showNotification("success", "Thanh toán thành công!");
-                                    debtCustomerView.hideControl();
+                                    debtCustomerView.hideControl("divControl");
                                     break;
                                 case 'autoEdit':
                                     var Old = _.find(debtCustomerView.dataTransport, function (o) {
@@ -506,6 +620,7 @@
                         var find = moment(o.receiveDate, "YYYY-MM-DD");
                         return moment(find).isBetween(fromDate, toDate, null, '[]');
                     });
+                    debtCustomerView.dataSearch = found;
                     debtCustomerView.table.clear().rows.add(found).draw();
                 } else {
                     debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
@@ -515,6 +630,28 @@
                 $("#dateOnlySearch").find(".start").datepicker('update', '');
                 $("#dateOnlySearch").find(".end").datepicker('update', '');
                 debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
+            },
+            exportInvoice: function() {
+                var sendToServer = {
+                    _token: _token,
+                    _transports: debtCustomerView.dataSearch
+                };
+                $.ajax({
+                    url: url + 'debt-customer/export-invoice',
+                    type: "POST",
+                    dataType: "json",
+                    data: sendToServer
+                }).done(function (data, textStatus, jqXHR) {
+                    console.log("SERVER");
+                    console.log(data);
+                    if (jqXHR.status == 201) {
+
+                    } else {
+                        debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                });
             }
         };
         debtCustomerView.loadData();

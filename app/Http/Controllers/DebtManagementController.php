@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Invoice;
 use App\Transport;
 use Illuminate\Http\Request;
 use DB;
 
 use App\Http\Requests;
+use League\Flysystem\Exception;
 
 class DebtManagementController extends Controller
 {
@@ -104,5 +106,50 @@ class DebtManagementController extends Controller
     public function getViewDebtVehicleOutside()
     {
         return view('subviews.Debt.DebtVehicleOutside');
+    }
+
+    public function postExportInvoiceCustomer(Request $request)
+    {
+        $transports = $request->input('_transports');
+
+        $invoice = new Invoice();
+        $invoice->VAT = "";
+        $invoice->notVAT = "";
+        $invoice->hasVAT = "";
+        $invoice->exportDate = "";
+        $invoice->invoiceDate = "";
+        $invoice->payDate = "";
+        $invoice->note = "";
+        $invoice->createdBy = \Auth::user()->id;
+        $invoice->updatedBy = \Auth::user()->id;
+
+        try{
+            DB::beginTransaction();
+            if(!$invoice->save()){
+                DB::rollBack();
+                return response()->json(['msg' => 'Create new Invoice fail!'], 404);
+            }
+            foreach ($transports as $transport){
+                $transportUpdate = Transport::find($transport['id']);
+                $transportUpdate->cashReceive = $transportUpdate->cashRevenue;
+                $transportUpdate->invoice_id = $invoice->id;
+                $transportUpdate->status_customer = 7;
+
+                if(!$transportUpdate->update()){
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Update transport fail!'], 404);
+                }
+            }
+            DB::commit();
+            $response = [
+                'msg' => 'Export Invoice successful!'
+            ];
+            return response()->json($response, 201);
+        }catch (Exception $ex){
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
+        }
+
+
     }
 }

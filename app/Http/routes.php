@@ -88,6 +88,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/debt-customer/transports','DebtManagementController@getDataDebtCustomer');
         /*POST MODIFY*/
         Route::post('/debt-customer/modify','DebtManagementController@postModifyDebtCustomer');
+        Route::post('/debt-customer/export-invoice','DebtManagementController@postExportInvoiceCustomer');
     });
     //Chi phí
     Route::group(['middleware' => 'CostManagement'], function () {
