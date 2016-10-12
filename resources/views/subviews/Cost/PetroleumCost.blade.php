@@ -395,7 +395,7 @@
 
 <script>
     $(function () {
-        $('#datetimepicker').datetimepicker();
+
         if (typeof (petroleumCostView) === 'undefined') {
             petroleumCostView = {
                 table: null,

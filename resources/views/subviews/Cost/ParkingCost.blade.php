@@ -562,8 +562,7 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-                    $('#datetimepickerIn').datetimepicker();
-                    $('#datetimepickerOut').datetimepicker();
+
                     jQuery.validator.addMethod("greaterThan",
                             function (value, element, params) {
                                 if (!/Invalid|NaN/.test(new Date(value))) {

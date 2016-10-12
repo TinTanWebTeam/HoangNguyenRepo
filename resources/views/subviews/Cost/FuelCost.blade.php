@@ -101,7 +101,7 @@
                 <form role="form" id="formFuelCost">
                     <div class="form-body">
                         <div class="col-md-12 ">
-                            <div class="row ">
+                            <div class="row" id='datetimepicker'>
                                 <div class="col-md-6">
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
@@ -122,20 +122,21 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker'>
+                                        <div class='input-group'>
                                             <label for="datetime"><b>Ngày đổ nhiên liệu</b></label>
-                                            <input type="text" class="date start"/>
+                                            <input type="text" class="date"/>
                                         </div>
                                     </div>
 
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker'>
+                                        <div class='input-group'>
                                             <label for="datetime"><b>Giờ đổ nhiên liệu</b></label>
-                                            <input type="text" class="date start"/>
+                                            <input type="text" class="time"/>
                                         </div>
                                     </div>
                                 </div>
@@ -406,46 +407,17 @@
         </div>
     </div>
 </div>
-<!-- end Modal add vehicle -->
 
-<p id="alternateUiWidgetsExample">
-    <input type="text" class="date start"/>
-    <input type="text" class="time start"/> to<br/>
-    <input type="text" class="date end"/>
-    <input type="text" class="time end"/>
-</p>
+
+
+
+
 <script>
     $(function () {
 
-        $('#alternateUiWidgetsExample .time').ptTimeSelect({
-            'onClose': function ($self) {
-                $self.trigger('change');
-            }
-        });
 
-        $('#alternateUiWidgetsExample .date').pikaday();
 
-        var TIMEFORMAT = 'h:mm a';
-        var alternateUiWidgetsExampleEl = document.getElementById('alternateUiWidgetsExample');
-        var alternateWidgetsDatepair = new Datepair(alternateUiWidgetsExampleEl, {
-            parseTime: function (input) {
-                // use moment.js to parse time
-                var m = moment(input.value, TIMEFORMAT);
-                return m.toDate();
-            },
-            updateTime: function (input, dateObj) {
-                var m = moment(dateObj);
-                input.value = m.format(TIMEFORMAT);
-            },
-            parseDate: function (input) {
-                var picker = $(input).data('pikaday');
-                return picker.getDate();
-            },
-            updateDate: function (input, dateObj) {
-                var picker = $(input).data('pikaday');
-                return picker.setDate(dateObj);
-            }
-        });
+
         if (typeof (fuelCostView) === 'undefined') {
             fuelCostView = {
                 table: null,
@@ -460,10 +432,11 @@
                 tableVehicleType: null,
                 tableVehicleNew: null,
                 current: null,
+
+
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
-
                 },
                 hide: function () {
                     $('#divControl').fadeOut(300, function () {
@@ -517,13 +490,31 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-                    $('#datetimepicker').datetimepicker();
                     $("#table-vehicles").find("tbody").on('click', 'tr', function () {
                         var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
                         $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
                         $('#vehicle_id').val(vehicle);
                         fuelCostView.displayModal("hide", "#modal-searchVehicle");
                     });
+
+
+
+                    $('#datetimepicker .time').timepicker({
+                        'showDuration': true,
+                        'timeFormat': 'H:i'
+                    });
+
+                    $('#datetimepicker .date').datepicker({
+                        'format': 'm/d/yyyy',
+                        'autoclose': true
+                    });
+
+                    // initialize datepair
+                    $('#datetimepicker').datepair();
+
+
+
+
                     toastr.options = {
                         "closeButton": true,
                         "debug": false,
