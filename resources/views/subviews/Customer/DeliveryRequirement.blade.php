@@ -186,14 +186,10 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
-                                        <div class='input-group date' id='datetimepicker1'>
-                                            <label for="receiveDate"><b>Ngày nhận</b></label>
-                                            <input id="receiveDate" name="receiveDate" type='text' class="form-control"
-                                                   value="<?php echo date('d-m-Y H-i'); ?>">
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                        </div>
+                                        <label for="receiveDate"><b>Ngày nhận</b></label>
+                                        <input type="text" class="date form-control"
+                                               id="receiveDate"
+                                               name="receiveDate">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -622,6 +618,14 @@
 
                     var dateOnlySearchEl = document.getElementById('dateOnlySearch');
                     var dateOnlyDatepair = new Datepair(dateOnlySearchEl);
+
+                    $('#receiveDate').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+
+                    $('#receiveDate').datepicker("setDate", new Date());
                 },
                 renderScrollbar: function(){
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -701,6 +705,8 @@
                     transportView.renderEventTableModal();
 
                     transportView.renderCustomToastr();
+
+                    transportView.addDateFormat();
                 },
                 loadListVehicle: function () {
                     $.ajax({
@@ -1044,11 +1050,8 @@
                     $("input[id='cashReceive']").val(transportView.current["cashReceive"]);
                     $("input[id='receiver']").val(transportView.current["receiver"]);
 
-                    var day = transportView.current["receiveDate"].substr(8, 2);
-                    var month = transportView.current["receiveDate"].substr(5, 2);
-                    var year = transportView.current["receiveDate"].substr(0, 4);
-                    var hourMinus = transportView.current["receiveDate"].substr(11, 5);
-                    $("input[id='receiveDate']").val(day + "/" + month + "/" + year + " " + hourMinus);
+                    var receiveDate = moment(transportView.current["receiveDate"], "YYYY-MM-DD");
+                    $("input[id='receiveDate']").datepicker('update', receiveDate.format("DD-MM-YYYY"));
 
                     $("input[id='receivePlace']").val(transportView.current["receivePlace"]);
                     $("input[id='deliveryPlace']").val(transportView.current["deliveryPlace"]);
@@ -1157,7 +1160,7 @@
                             cashDelivery: "required",
                             cashReceive: "required",
                             receiver: "required",
-                            receiveDate: "required",
+                            receiveDate: {required: true, dateFormat: true},
                             receivePlace: "required",
                             deliveryPlace: "required",
                             voucherNumber: "required",
@@ -1174,7 +1177,10 @@
                             cashDelivery: "Vui lòng nhập tiền giao",
                             cashReceive: "Vui lòng nhập tiền nhận",
                             receiver: "Vui lòng nhập người nhận",
-                            receiveDate: "Vui lòng nhập ngày nhận",
+                            receiveDate: {
+                                required: "Vui lòng chọn ngày nhận",
+                                dateFormat: "Vui lòng nhập ngày theo định dạng dd-mm-yyyy."
+                            },
                             receivePlace: "Vui lòng nhập nơi nhận",
                             deliveryPlace: "Vui lòng nhập nơi giao",
                             voucherNumber: "Vui lòng nhập số chứng từ",
@@ -1197,6 +1203,12 @@
                             Voucher_name: "Vui lòng nhập tên chứng từ"
                         }
                     });
+                },
+                addDateFormat: function() {
+                    $.validator.addMethod("dateFormat",
+                            function(value, element) {
+                                return value.match(/^dd?-dd?-dd$/);
+                            }, "Vui lòng nhập ngày theo định dạng dd-mm-yyyy.");
                 },
 
                 save: function () {

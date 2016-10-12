@@ -274,15 +274,19 @@
             payment: null,
 
             showControl: function (idDiv) {
-                debtCustomerView.hideControl('divControl');
-                debtCustomerView.hideControl('divInvoice');
-
                 $('.menu-toggle').fadeOut();
                 $('#'+idDiv).fadeIn(300);
+
+                if(idDiv == 'divInvoice'){
+                    $('.btn-del-edit').find('.btn-success').fadeOut(300);
+                }
             },
             hideControl: function (idDiv) {
                 $('#'+idDiv).fadeOut(300, function () {
                     $('.menu-toggle').fadeIn();
+                    if(idDiv == 'divInvoice'){
+                        $('.btn-del-edit').find('.btn-success').fadeIn(300);
+                    }
                 });
 
                 debtCustomerView.clearValidation("#frmControl");
