@@ -11,7 +11,7 @@
     <title>@yield('title')</title>
 
     <!-- Custom Bootstrap Core CSS -->
-    <link href=" {{ URL::to('libs/bootstrap-add/dist/css/bootstrap.material.min.css') }} " rel="stylesheet">
+    <link href=" {{ URL::to('libs/bootstrap/dist/css/bootstrap.material.min.css') }} " rel="stylesheet">
 
     <!-- MetisMenu CSS -->
     <link href=" {{ URL::to('libs/metisMenu/dist/metisMenu.min.css')  }}" rel="stylesheet">
@@ -80,7 +80,7 @@
 <!-- Datatables.net -->
 <script src="{{ URL::to('libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ URL::to('libs/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ URL::to('libs/datatables.net-add/js/dataTables.tableTools.js') }}"></script>
+<script src="{{ URL::to('libs/datatables.net/js/dataTables.tableTools.js') }}"></script>
 
 <script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/pdfmake-0.1.18/build/pdfmake.min.js') }}"></script>

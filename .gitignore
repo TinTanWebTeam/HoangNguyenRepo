@@ -1,6 +1,7 @@
 /vendor
 /node_modules
-/public/libs
+/public/storage
+
 /storage/framework/sessions/*
 /storage/framework/views/*
 Homestead.yaml
