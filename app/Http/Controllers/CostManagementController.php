@@ -121,7 +121,10 @@ class CostManagementController extends Controller
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
             $totalCost = $literNumber * $prices_price;
-            $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
+
+            $datetime = Carbon::createFromFormat('d/m/Y H:i',
+                $request->get('_object')['datetime'])
+                ->toDateTimeString();
             $noted = $request->get('_object')['noted'];
 
         }

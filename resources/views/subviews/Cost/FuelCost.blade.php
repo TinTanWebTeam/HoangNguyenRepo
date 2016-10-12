@@ -5,7 +5,7 @@
         top: 40%;
         display: none;
         right: 0px;
-        width: 50%;
+        width: 40%;
         height: 100%;
     }
 
@@ -124,20 +124,16 @@
                                 </div>
 
                                 <div class="col-md-3">
-                                    <div class="form-group">
-                                        <div class='input-group'>
-                                            <label for="datetime"><b>Ngày đổ nhiên liệu</b></label>
-                                            <input type="text" class="date"/>
-                                        </div>
+                                    <div class="form-group form-md-line-input">
+                                        <label for="dateFuel"><b>Ngày đổ</b></label>
+                                        <input id="dateFuel" name="dateFuel" type="text" class="date form-control" placeholder="{{date('d/m/Y')}}" />
                                     </div>
 
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <div class='input-group'>
-                                            <label for="datetime"><b>Giờ đổ nhiên liệu</b></label>
-                                            <input type="text" class="time"/>
-                                        </div>
+                                        <label for="timeFuel"><b>Giờ đổ</b></label>
+                                        <input id="timeFuel" name="timeFuel" type="text" class="time form-control" placeholder="{{date('h:i')}}"/>
                                     </div>
                                 </div>
 
@@ -496,22 +492,15 @@
                         $('#vehicle_id').val(vehicle);
                         fuelCostView.displayModal("hide", "#modal-searchVehicle");
                     });
-
-
-
                     $('#datetimepicker .time').timepicker({
                         'showDuration': true,
                         'timeFormat': 'H:i'
                     });
 
                     $('#datetimepicker .date').datepicker({
-                        'format': 'm/d/yyyy',
+                        'format': 'dd/mm/yyyy',
                         'autoclose': true
                     });
-
-                    // initialize datepair
-                    $('#datetimepicker').datepair();
-
 
 
 
@@ -566,11 +555,21 @@
                     $("#modalConfirm").modal('hide');
                 },
                 fillCurrentObjectToForm: function () {
-                    var day = fuelCostView.current["dateRefuel"].substr(8, 2);
-                    var month = fuelCostView.current["dateRefuel"].substr(5, 2);
-                    var year = fuelCostView.current["dateRefuel"].substr(0, 4);
-                    var hourMinus = fuelCostView.current["dateRefuel"].substr(11, 5);
-                    $("input[id='datetime']").val(day + "/" + month + "/" + year + " " + hourMinus);
+//                    var day = fuelCostView.current["dateRefuel"].substr(8, 2);
+//                    var month = fuelCostView.current["dateRefuel"].substr(5, 2);
+//                    var year = fuelCostView.current["dateRefuel"].substr(0, 4);
+//                    var hourMinus = fuelCostView.current["dateRefuel"].substr(11, 5);
+
+//                    var receiveDate = moment(transportView.current["receiveDate"], "YYYY-MM-DD");
+//                    $("input[id='receiveDate']").datepicker('update', receiveDate.format("DD-MM-YYYY"));
+
+
+                    var dateFuel = moment(fuelCostView.current["dateRefuel"], "YYYY-MM-DD");
+                    var timeFuel = moment(fuelCostView.current["dateRefuel"], "YYYY-MM-DD HH:mm:ss");
+                    console.log(timeFuel);
+                    $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD/MM/YYYY"));
+                    $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
+
                     var vehicle = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
                     var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
                     $("input[id='vehicle_id']").val(vehicle);
@@ -586,7 +585,8 @@
                     if (fuelCostView.action == 'add') {
                         fuelCostView.current = {
                             vehicle_id: $("#vehicle_id").attr('data-id'),
-                            datetime: $("input[id='datetime']").val(),
+                            dateFuel: $("input[id='dateFuel']").val(),
+                            timeFuel: $("input[id='timeFuel']").val(),
                             totalPrice: $("input[id='totalprice']").val(),
                             literNumber: $("input[id='literNumber']").val(),
                             prices_price: $("input[id='price']").val(),
@@ -598,7 +598,8 @@
                         fuelCostView.current.prices_id = $("#price").attr('data-priceId');
                         fuelCostView.current.literNumber = $("input[id='literNumber']").val();
                         fuelCostView.current.totalCost = $("input[id='totalprice']").val();
-                        fuelCostView.current.datetime = $("input[id='datetime']").val();
+                        fuelCostView.current.dateFuel = $("input[id='dateFuel']").val();
+                        fuelCostView.current.timeFuel = $("input[id='timeFuel']").val();
                         fuelCostView.current.noted = $("input[id='noted']").val();
                         fuelCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
                     }
@@ -614,6 +615,9 @@
                     $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
                     $("input[id='totalprice']").val('');
+                    $("input[id='dateFuel']").val('');
+                    $("input[id='timeFuel']").val('');
+
                 },
                 clearInputPrice: function () {
                     /* Form addPrice*/
