@@ -27,15 +27,13 @@
     <link rel="stylesheet" href="{{ URL::to('libs/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/Buttons-1.2.2/css/buttons.dataTables.min.css') }}">
 
-
-
-    <link rel="stylesheet" href="{{URL::to('libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css')}}">
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ URL::to('libs/toastr/toastr.min.css') }}">
     <!-- malihu custom scrollbar plugin -->
     <link rel="stylesheet" href="{{ URL::to('libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') }}">
 
-    <link rel="stylesheet" href="{{ URL::to('libs/jquery-ui/themes/hot-sneaks/jquery-ui.min.css') }}">
+    <!-- Datepair.js -->
+    <link rel="stylesheet" href="{{ URL::to('libs/jquery-ui/themes/ui-lightness/jquery-ui.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/jt.timepicker/jquery.timepicker.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.css') }}">
@@ -104,9 +102,6 @@
 
 <!-- Global -->
 <script src=" {{ URL::to('src/js/global.js') }} "></script>
-
-<!-- datetimepicker -->
-<script src="{{ URL::to('libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
 
 <!-- malihu custom scrollbar plugin -->
 <script src="{{ URL::to('libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js') }}"></script>
