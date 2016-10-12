@@ -5,7 +5,7 @@
         top: 40%;
         display: none;
         right: 0px;
-        width: 40%;
+        width: 50%;
         height: 100%;
     }
 
@@ -20,6 +20,7 @@
     div.col-lg-12 {
         height: 40px;
     }
+
     #divControl .panel-body {
         height: 322px;
     }
@@ -121,18 +122,24 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class='col-md-6'>
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker'>
-                                            <label for="datetime"><b>Thời gian đổ nhiên liệu</b></label>
-                                            <input type='text' id="datetime" name="datetime"
-                                                   value="{{date('d-m-Y H-i')}}" class="form-control"/>
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
+                                            <label for="datetime"><b>Ngày đổ nhiên liệu</b></label>
+                                            <input type="text" class="date start"/>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker'>
+                                            <label for="datetime"><b>Giờ đổ nhiên liệu</b></label>
+                                            <input type="text" class="date start"/>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 
@@ -343,7 +350,9 @@
                                     <label for="size"><b>Kích thước</b></label>
                                     <input type="number" class="form-control"
                                            id="size"
-                                           name="size">
+                                           name="size"
+
+                                    >
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -399,11 +408,44 @@
 </div>
 <!-- end Modal add vehicle -->
 
-
+<p id="alternateUiWidgetsExample">
+    <input type="text" class="date start"/>
+    <input type="text" class="time start"/> to<br/>
+    <input type="text" class="date end"/>
+    <input type="text" class="time end"/>
+</p>
 <script>
     $(function () {
 
+        $('#alternateUiWidgetsExample .time').ptTimeSelect({
+            'onClose': function ($self) {
+                $self.trigger('change');
+            }
+        });
 
+        $('#alternateUiWidgetsExample .date').pikaday();
+
+        var TIMEFORMAT = 'h:mm a';
+        var alternateUiWidgetsExampleEl = document.getElementById('alternateUiWidgetsExample');
+        var alternateWidgetsDatepair = new Datepair(alternateUiWidgetsExampleEl, {
+            parseTime: function (input) {
+                // use moment.js to parse time
+                var m = moment(input.value, TIMEFORMAT);
+                return m.toDate();
+            },
+            updateTime: function (input, dateObj) {
+                var m = moment(dateObj);
+                input.value = m.format(TIMEFORMAT);
+            },
+            parseDate: function (input) {
+                var picker = $(input).data('pikaday');
+                return picker.getDate();
+            },
+            updateDate: function (input, dateObj) {
+                var picker = $(input).data('pikaday');
+                return picker.setDate(dateObj);
+            }
+        });
         if (typeof (fuelCostView) === 'undefined') {
             fuelCostView = {
                 table: null,
@@ -500,7 +542,7 @@
                         "hideMethod": "fadeOut"
                     };
                     $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme:"dark"
+                        theme: "dark"
                     });
                 },
                 inputPrice: function () {
@@ -890,6 +932,8 @@
                     $("input[id='vehicle_id']").val(numberVehicle);
                     $("#vehicle_id").attr('data-id', fuelCostView.tableVehicleNew.id);
                 },
+
+
                 addVehicles: function () {
                     fuelCostView.ValidateVehicle();
                     var vehicle = {
