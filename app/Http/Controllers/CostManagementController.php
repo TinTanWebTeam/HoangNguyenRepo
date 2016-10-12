@@ -115,16 +115,14 @@ class CostManagementController extends Controller
                 return $validator->errors();
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
-
             $prices_price = str_replace('.', '', $request->get('_object')['prices_price']);
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
             $totalCost = $literNumber * $prices_price;
-
-            $datetime = Carbon::createFromFormat('d/m/Y H:i',
-                $request->get('_object')['datetime'])
-                ->toDateTimeString();
+            $dateFuel = $request->get('_object')['dateFuel'];
+            $timeFuel = $request->get('_object')['timeFuel'];
+            $datetime= Carbon::createFromFormat('d-m-Y H:i', $dateFuel." ".$timeFuel)->toDateTimeString();
             $noted = $request->get('_object')['noted'];
 
         }
@@ -355,10 +353,10 @@ class CostManagementController extends Controller
             ->join('prices', 'prices.id', '=', 'costs.price_id')
             ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
             ->where([
-                    ['costs.active', 1],
-                    ['prices.costPrice_id', 3],
-                    ['costs.transport_id', null]
-                ])
+                ['costs.active', 1],
+                ['prices.costPrice_id', 3],
+                ['costs.transport_id', null]
+            ])
             ->select(
                 'prices.price as prices_price',
                 'costs.*',
@@ -401,7 +399,9 @@ class CostManagementController extends Controller
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
             $totalCost = $totalCost = $literNumber * $prices_price;
-            $datetime = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetime'])->toDateTimeString();
+            $dateFuel = $request->get('_object')['dateFuel'];
+            $timeFuel = $request->get('_object')['timeFuel'];
+            $datetime= Carbon::createFromFormat('d-m-Y H:i', $dateFuel." ".$timeFuel)->toDateTimeString();
             $noted = $request->get('_object')['noted'];
 
         }

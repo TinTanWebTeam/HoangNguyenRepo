@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 40%;
+        top: 50%;
         display: none;
         right: 0px;
         width: 40%;
@@ -92,7 +92,7 @@
                 <form role="form" id="formPetroleum">
                     <div class="form-body">
                         <div class="col-md-12 ">
-                            <div class="row ">
+                            <div class="row" id='datetimepicker'>
                                 <div class="col-md-6">
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
@@ -114,16 +114,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class='col-md-6'>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="dateFuel"><b>Ngày đổ</b></label>
+                                        <input id="dateFuel" name="dateFuel" type="text"
+                                               class="date form-control ignore"
+                                        />
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker'>
-                                            <label for="datetime"><b>Thời gian đổ nhiên liệu</b></label>
-                                            <input type='text' id="datetime" name="datetime"
-                                                   value="{{date('d-m-Y H-i')}}" class="form-control"/>
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                        </div>
+                                        <label for="timeFuel"><b>Giờ đổ</b></label>
+                                        <input id="timeFuel" name="timeFuel" type="text" class="time form-control"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -442,6 +447,8 @@
                     $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
                     $("input[id='totalprice']").val('');
+                    $("input[id='dateFuel']").val('');
+                    $("input[id='timeFuel']").val('');
                 },
                 clearInputPrice: function () {
                     /* Form addPrice*/
@@ -456,6 +463,7 @@
                     $("input[id='areaCode']").val('');
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
+
                 },
                 displayModal: function (type, idModal) {
                     $(idModal).modal(type);
@@ -548,6 +556,7 @@
                 },
 
                 addPetroleum: function () {
+                    petroleumCostView.renderDateTimePicker();
                     petroleumCostView.current = null;
                     petroleumCostView.action = 'add';
                     petroleumCostView.inputPrice();
@@ -592,12 +601,33 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme:"dark"
                     });
+
+                    $('#datetimepicker .time').timepicker({
+                        'showDuration': true,
+                        'timeFormat': 'H:i'
+                    });
+
+                    $('#datetimepicker .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+
+                },
+                renderDateTimePicker: function () {
+                    $('#dateFuel').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#dateFuel').datepicker("setDate", new Date());
+                    $('#timeFuel').timepicker('setTime', new Date());
                 },
                 fillFormDataToCurrentObject: function () {
                     if (petroleumCostView.action == 'add') {
                         petroleumCostView.current = {
                             vehicle_id: $("#vehicle_id").attr('data-id'),
-                            datetime: $("input[id='datetime']").val(),
+                            dateFuel: $("input[id='dateFuel']").val(),
+                            timeFuel: $("input[id='timeFuel']").val(),
                             totalPrice: $("input[id='totalprice']").val(),
                             literNumber: $("input[id='literNumber']").val(),
                             prices_price: $("input[id='price']").val(),
@@ -609,20 +639,24 @@
                         petroleumCostView.current.prices_id = $("#price").attr('data-priceId');
                         petroleumCostView.current.literNumber = $("input[id='literNumber']").val();
                         petroleumCostView.current.totalCost = $("input[id='totalprice']").val();
-                        petroleumCostView.current.datetime = $("input[id='datetime']").val();
+                        petroleumCostView.current.dateFuel = $("input[id='dateFuel']").val();
+                        petroleumCostView.current.timeFuel = $("input[id='timeFuel']").val();
                         petroleumCostView.current.noted = $("input[id='noted']").val();
                         petroleumCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
                     }
                 },
                 fillCurrentObjectToForm: function () {
-                    var day = petroleumCostView.current["dateRefuel"].substr(8, 2);
-                    var month = petroleumCostView.current["dateRefuel"].substr(5, 2);
-                    var year = petroleumCostView.current["dateRefuel"].substr(0, 4);
-                    var hourMinus = petroleumCostView.current["dateRefuel"].substr(11, 5);
+                    var dateFuel = moment(petroleumCostView.current["dateRefuel"], "YYYY-MM-DD");
+                    var timeFuel = moment(petroleumCostView.current["dateRefuel"], "YYYY-MM-DD HH:mm:ss");
+                    $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
+                    $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
+
+
+
+
                     var vehicle = petroleumCostView.current["vehicles_code"] + "-" + petroleumCostView.current["vehicles_vehicleNumber"];
                     var totalPrice = petroleumCostView.current["literNumber"] * petroleumCostView.current["prices_price"];
 
-                    $("input[id='datetime']").val(day + "/" + month + "/" + year + " " + hourMinus);
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(petroleumCostView.current["literNumber"]);
@@ -657,7 +691,7 @@
                             {
                                 data: 'dateRefuel',
                                 render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                                    return moment(data).format("DD/MM/YYYY HH:mm");
                                 }
                             },
 
@@ -696,7 +730,7 @@
                     })
                 },
                 save: function () {
-                    petroleumCostView.ValidateCost();
+                    petroleumCostView.ValidatePetrol();
                     petroleumCostView.fillFormDataToCurrentObject();
                     if ($("#formPetroleum").valid()) {
                         var sendToServer = {
@@ -731,6 +765,7 @@
                                         petroleumCostView.tablePetroleumCost.push(data['tablePetrolNew'][0]);
                                         petroleumCostView.showNotification("success", "Thêm thành công!");
                                         $("#price").attr('data-priceId', petroleumCostView.current["prices_id"]);
+
                                         break;
                                     case 'update':
                                         data['tablePetrolUpdate'][0].fullNumber = data['tablePetrolUpdate'][0]['vehicles_code'] + "-" + data['tablePetrolUpdate'][0]["vehicles_vehicleNumber"];
@@ -756,6 +791,7 @@
                                 }
                                 petroleumCostView.table.clear().rows.add(petroleumCostView.tablePetroleumCost).draw();
                                 petroleumCostView.clearInput();
+                                petroleumCostView.renderDateTimePicker();
                             } else {
                                 petroleumCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
@@ -907,7 +943,7 @@
                         select.appendChild(el);
                     }
                 },
-                ValidateCost: function () {
+                ValidatePetrol: function () {
                     $("#formPetroleum").validate({
                         rules: {
                             vehicle_id: "required",
@@ -917,6 +953,7 @@
                             }
 
                         },
+                        ignore: ".ignore",
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
                             literNumber: {

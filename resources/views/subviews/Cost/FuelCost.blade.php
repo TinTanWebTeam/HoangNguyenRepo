@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 40%;
+        top: 50%;
         display: none;
         right: 0px;
         width: 40%;
@@ -126,14 +126,17 @@
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="dateFuel"><b>Ngày đổ</b></label>
-                                        <input id="dateFuel" name="dateFuel" type="text" class="date form-control" placeholder="{{date('d/m/Y')}}" />
+                                        <input id="dateFuel" name="dateFuel" type="text"
+                                               class="date form-control ignore"
+                                        />
                                     </div>
 
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="timeFuel"><b>Giờ đổ</b></label>
-                                        <input id="timeFuel" name="timeFuel" type="text" class="time form-control" placeholder="{{date('h:i')}}"/>
+                                        <input id="timeFuel" name="timeFuel" type="text" class="time form-control"
+                                        />
                                     </div>
                                 </div>
 
@@ -405,13 +408,8 @@
 </div>
 
 
-
-
-
 <script>
     $(function () {
-
-
 
 
         if (typeof (fuelCostView) === 'undefined') {
@@ -498,10 +496,9 @@
                     });
 
                     $('#datetimepicker .date').datepicker({
-                        'format': 'dd/mm/yyyy',
+                        'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-
 
 
                     toastr.options = {
@@ -524,6 +521,8 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
+                    fuelCostView.renderDateTimePicker();
+
                 },
                 inputPrice: function () {
                     $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.tablePrice.price, '.', '.'));
@@ -555,19 +554,9 @@
                     $("#modalConfirm").modal('hide');
                 },
                 fillCurrentObjectToForm: function () {
-//                    var day = fuelCostView.current["dateRefuel"].substr(8, 2);
-//                    var month = fuelCostView.current["dateRefuel"].substr(5, 2);
-//                    var year = fuelCostView.current["dateRefuel"].substr(0, 4);
-//                    var hourMinus = fuelCostView.current["dateRefuel"].substr(11, 5);
-
-//                    var receiveDate = moment(transportView.current["receiveDate"], "YYYY-MM-DD");
-//                    $("input[id='receiveDate']").datepicker('update', receiveDate.format("DD-MM-YYYY"));
-
-
                     var dateFuel = moment(fuelCostView.current["dateRefuel"], "YYYY-MM-DD");
                     var timeFuel = moment(fuelCostView.current["dateRefuel"], "YYYY-MM-DD HH:mm:ss");
-                    console.log(timeFuel);
-                    $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD/MM/YYYY"));
+                    $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
                     $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
 
                     var vehicle = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
@@ -580,6 +569,16 @@
                     $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.current["prices_price"], '.', '.'));
                     $("#price").attr('data-priceId', fuelCostView.current["price_id"]);
 
+                },
+
+                renderDateTimePicker: function () {
+                    $('#dateFuel').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#dateFuel').datepicker("setDate", new Date());
+                    $('#timeFuel').timepicker('setTime', new Date());
                 },
                 fillFormDataToCurrentObject: function () {
                     if (fuelCostView.action == 'add') {
@@ -617,7 +616,6 @@
                     $("input[id='totalprice']").val('');
                     $("input[id='dateFuel']").val('');
                     $("input[id='timeFuel']").val('');
-
                 },
                 clearInputPrice: function () {
                     /* Form addPrice*/
@@ -633,12 +631,13 @@
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
                 },
-
                 addNewFuelCost: function () {
+                    fuelCostView.renderDateTimePicker();
                     fuelCostView.current = null;
                     fuelCostView.action = 'add';
                     fuelCostView.inputPrice();
                     fuelCostView.show();
+
                 },
                 editFuelCost: function (id) {
                     fuelCostView.current = null;
@@ -662,7 +661,7 @@
                             {
                                 data: 'dateRefuel',
                                 render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                                    return moment(data).format("DD/MM/YYYY HH:mm");
                                 }
                             },
 
@@ -709,12 +708,15 @@
                             }
 
                         },
+                        ignore: ".ignore",
+
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
                             literNumber: {
                                 required: "Vui lòng nhập số lít",
                                 number: "Số lít phải là số"
                             }
+
 
                         }
                     });
@@ -731,7 +733,6 @@
                     }
                     return x1 + x2;
                 },
-
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
@@ -795,7 +796,6 @@
                                         $("#price").attr('data-priceId', fuelCostView.current["prices_id"]);
                                         break;
                                     case 'update':
-
                                         data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
                                         var CostOld = _.find(fuelCostView.tableCost, function (o) {
                                             return o.id == sendToServer._object.id;
@@ -804,6 +804,7 @@
                                         fuelCostView.tableCost.splice(indexOfVehicleOld, 1, data['tableCost'][0]);
                                         fuelCostView.showNotification("success", "Cập nhật thành công!");
                                         fuelCostView.hide();
+
                                         break;
                                     case 'delete':
                                         var costOld = _.find(fuelCostView.tableCost, function (o) {
@@ -819,6 +820,7 @@
                                 }
                                 fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
                                 fuelCostView.clearInput();
+                                fuelCostView.renderDateTimePicker();
                             } else {
                                 fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }

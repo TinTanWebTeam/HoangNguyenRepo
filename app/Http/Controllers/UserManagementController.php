@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Position;
 use App\SubRole;
 use App\User;
+use Carbon\Carbon;
 use Config;
 use DB;
 use Illuminate\Http\Request;
@@ -50,9 +51,9 @@ class UserManagementController extends Controller
 
         $user = DB::table('users')
             ->where('users.active', 1)
-            ->where('users.username','=',$request->get('_object'))
+            ->where('users.username', '=', $request->get('_object'))
             ->first();
-        if($user == null){
+        if ($user == null) {
             $response = [
                 'msg' => "User khong ton tai"
             ];
@@ -64,13 +65,6 @@ class UserManagementController extends Controller
         return response()->json($response, 201);
 
     }
-
-
-
-
-
-
-
 
 
     public function postEditUser(Request $request)
@@ -101,52 +95,53 @@ class UserManagementController extends Controller
         try {
 
             $user = $request->get('_object');
+            $birthday = Carbon::createFromFormat('d-m-Y', $request->get('_object')['birthday'])->toDateTimeString();
+
             $array_roleid = $request->get('_object2');
-            if($request->get('_action') == 'add'){
+            if ($request->get('_action') == 'add') {
                 $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
                 if ($validateUser->fails()) {
                     return $validateUser->errors();
                     //return ['status' => 'Fail'];
-                }
-            }
-             else {
-                switch ($request->get('_action')) {
-                    case "add":
-                        try {
-                            $userNew = new User();
-                            $userNew->fullName = $user['fullName'];
-                            $userNew->userName = $user['username'];
-                            $userNew->password = encrypt($user['password'], Config::get('app.key'));
-                            $userNew->email = $user['email'];
-                            $userNew->address = $user['address'];
-                            $userNew->phone = $user['phone'];
-                            $userNew->note = $user['note'];
-                            $userNew->birthday = $user['birthday'];
-                            $userNew->position_id = $user['position_id'];
-                            if (!$userNew->save()) {
-                                return ['status' => 'Fail'];
-                            }
-                            //insert subrole
-                            for ($i = 0; $i < count($array_roleid); $i++) {
-                                $subRoleNew = new SubRole();
-                                $subRoleNew->user_id = $userNew->id;
-                                $subRoleNew->role_id = $array_roleid[$i];
-                                if (!$subRoleNew->save()) {
-                                    return ['status' => 'Fail'];
-                                };
-                            }
-                            $userRow = DB::table('users')
-                                ->join('positions', 'users.position_id', '=', 'positions.id')
-                                ->where('users.id', $userNew->id)
-                                ->select('users.*', 'positions.name as positions_name')
-                                ->get();
-                            return ['status' => 'Ok',
-                                    'obj'    => $userRow
-                            ];
-                        } catch (Exception $ex) {
+                } else {
+                    try {
+                        $userNew = new User();
+                        $userNew->fullName = $user['fullName'];
+                        $userNew->userName = $user['username'];
+                        $userNew->password = encrypt($user['password'], Config::get('app.key'));
+                        $userNew->email = $user['email'];
+                        $userNew->address = $user['address'];
+                        $userNew->phone = $user['phone'];
+                        $userNew->note = $user['note'];
+                        $userNew->birthday = $birthday;
+                        $userNew->position_id = $user['position_id'];
+                        if (!$userNew->save()) {
                             return ['status' => 'Fail'];
                         }
-                        break;
+                        //insert subrole
+                        for ($i = 0; $i < count($array_roleid); $i++) {
+                            $subRoleNew = new SubRole();
+                            $subRoleNew->user_id = $userNew->id;
+                            $subRoleNew->role_id = $array_roleid[$i];
+                            if (!$subRoleNew->save()) {
+                                return ['status' => 'Fail'];
+                            };
+                        }
+                        $userRow = DB::table('users')
+                            ->join('positions', 'users.position_id', '=', 'positions.id')
+                            ->where('users.id', $userNew->id)
+                            ->select('users.*', 'positions.name as positions_name')
+                            ->get();
+                        return ['status' => 'Ok',
+                                'obj'    => $userRow
+                        ];
+                    } catch (Exception $ex) {
+                        return ['status' => 'Fail'];
+                    }
+
+                }
+            } else {
+                switch ($request->get('_action')) {
                     case "update":
                         try {
                             $userUpdate = User::findOrFail($request->get('_object')['id']);
@@ -157,6 +152,7 @@ class UserManagementController extends Controller
                             $userUpdate->address = $user['address'];
                             $userUpdate->phone = $user['phone'];
                             $userUpdate->note = $user['note'];
+                            $userUpdate->birthday = $birthday;
                             $userUpdate->position_id = $request->get('_object')['position_id'];
                             if (!$userUpdate->save()) {
                                 return ['status' => 'Fail'];
@@ -200,11 +196,16 @@ class UserManagementController extends Controller
                         }
                         break;
                     case "delete":
-                        $userDelete = User::findOrFail($request->get('_object')['id']);
-                        $userDelete->active = 0;
-                        if ($userDelete->save())
-                            return ['status' => 'Ok'];
-                        return ['status' => 'Fail'];
+                        try {
+                            $userDelete = User::findOrFail($request->get('_object')['id']);
+                            $userDelete->active = 0;
+                            if ($userDelete->save())
+                                return ['status' => 'Ok'];
+                            return ['status' => 'Fail'];
+
+                        } catch (\Exception $ex) {
+                            return $ex;
+                        }
                         break;
                     default:
                         break;

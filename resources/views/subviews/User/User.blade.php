@@ -185,11 +185,11 @@
                                                placeholder="Địa chỉ">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" id="datePicker">
                                     <div class="form-group form-md-line-input">
                                         <label for="birthday"><b>Năm Sinh</b></label>
-                                        <input type='date' id="birthday" name="birthday"
-                                               class="form-control"/>
+                                        <input id="birthday" name="birthday" type="text"
+                                               class="date form-control ignore"/>
 
                                     </div>
                                 </div>
@@ -315,6 +315,10 @@
                         theme:"dark"
                     });
 
+                    $('#datePicker .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
                 },
                 editUser: function (id) {
                     var pwd = null;
@@ -348,7 +352,25 @@
                         $("input[id=password]").val(userView.current[propertyName]);
                         $("input[id=password_confirmation]").val(userView.current[propertyName]);
                     }
+
+
+                    var dateBirthday = moment(userView.current["birthday"], "YYYY-MM-DD");
+                    $("input[id='birthday']").datepicker('update', dateBirthday.format("DD-MM-YYYY"));
+
+
+
+
+
                     userView.show();
+                },
+
+                renderDateTimePicker: function () {
+                    $('#birthday').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#birthday').datepicker("setDate", new Date());
                 },
                 msgDelete: function (id) {
                     if (id) {
@@ -492,8 +514,10 @@
                                 minlength: 6,
                                 maxlength: 20
                             },
-                            position_id: "required"
+                            position_id: "required",
+
                         },
+                        ignore: ".ignore",
                         messages: {
                             fullName: {
                                 required: "Vui lòng nhập họ tên",
@@ -618,6 +642,7 @@
                                         }
                                         userView.table.clear().rows.add(userView.data).draw();
                                         userView.clearInput();
+                                        userView.renderDateTimePicker();
                                     }
 
                                 }
