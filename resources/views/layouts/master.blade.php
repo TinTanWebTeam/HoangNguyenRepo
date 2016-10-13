@@ -113,7 +113,7 @@
 
 <script src="{{ URL::to('libs/datepair.js/lib/pikaday.js') }}"></script>
 <script src="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.js') }}"></script>
-<script src="{{ URL::to('libs/datepair.js/lib/moment.min.js') }}"></script>
+{{--<script src="{{ URL::to('libs/datepair.js/lib/moment.min.js') }}"></script>--}}
 
 @yield('javascripts')
 
