@@ -31,6 +31,6 @@ class CreatePrintHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('print_histories');
+        Schema::drop('printHistories');
     }
 }

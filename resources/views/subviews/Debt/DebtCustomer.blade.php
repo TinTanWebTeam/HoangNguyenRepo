@@ -1,30 +1,16 @@
 <style>
-    #divControl {
-        z-index: 3;
-        position: fixed;
-        top: 40%;
-        display: none;
-        right: 0;
-        width: 40%;
-        height: 100%;
-    }
-
     #divInvoice {
         z-index: 3;
         position: fixed;
-        top: 40%;
+        top: 30%;
         display: none;
         right: 0;
         width: 70%;
         height: 100%;
     }
 
-    #divControl .panel-body {
-        height: 320px;
-    }
-
     #divInvoice .panel-body {
-        height: 341px;
+        height: 400px;
     }
 
     div.col-lg-12 {
@@ -100,51 +86,17 @@
                         <table class="table table-bordered table-hover" id="table-CustomerInvoice">
                             <thead>
                             <tr class="active">
+                                <th>Mã hóa đơn</th>
                                 <th>Khách hàng</th>
-                                <th>Số xe</th>
-                                <th>Nơi giao</th>
-                                <th>Số chứng từ</th>
-                                <th>Doanh thu</th>
+                                <th>Ngày xuất</th>
+                                <th>Ngày hóa đơn</th>
+                                <th>Tổng tiền</th>
+                                <th>Tổng trả</th>
                                 <th>Nợ</th>
-                                <th>Người nhận</th>
-                                <th>Ngày nhận</th>
-                                <th>Thanh toán</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                            </tr>
-                            <tr>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                            </tr>
-                            <tr>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                                <td>aaaaaaaaa</td>
-                            </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -154,93 +106,6 @@
     </div> <!-- end .col-md-12-->
 </div>
 <!-- End Table -->
-
-<!-- Begin divControl -->
-<div class="row">
-    <div id="divControl" class="col-md-offset-4 col-md-8">
-        <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thanh toán cước phí
-                <div class="menu-toggles pull-right" onclick="debtCustomerView.hideControl('divControl')">
-                    <i class="glyphicon glyphicon-remove"></i>
-                </div>
-            </div>
-
-            <div class="panel-body">
-                <form role="form" id="frmControl">
-                    <div class="form-body">
-                        <div class="row ">
-                            <div class="col-md-12 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="customer_id"><b>Khách hàng</b></label>
-                                    <input type="text" class="form-control"
-                                           id="customer_id"
-                                           name="customer_id"
-                                           data-customerId=""
-                                           readonly>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="cashRevenue"><b>Doanh thu</b></label>
-                                    <input type="text" class="form-control"
-                                           id="cashRevenue"
-                                           name="cashRevenue"
-                                           readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="debt"><b>Tiền nợ</b></label>
-                                    <input type="text" class="form-control"
-                                           id="debt"
-                                           name="debt"
-                                           readonly>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="cashReceive"><b>Đã trả</b></label>
-                                    <input type="text" class="form-control"
-                                           id="cashReceive"
-                                           name="cashReceive"
-                                           readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="payment"><b>Tiền thanh toán</b></label>
-                                    <input type="number" class="form-control"
-                                           id="payment"
-                                           name="payment"
-                                           autofocus>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-actions noborder">
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight"
-                                                onclick="debtCustomerView.save()">
-                                            Hoàn tất
-                                        </button>
-                                        <button type="button" class="btn default" onclick="">Huỷ</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- End divControl -->
 
 <!-- Begin divInvoice -->
 <div class="row">
@@ -256,6 +121,24 @@
                     <div class="col-md-6">
                         <form role="form" id="frmInvoice">
                             <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="VAT"><b>Mã hóa đơn</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="VAT"
+                                                   name="VAT">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="totalPay"><b>Tổng tiền</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="totalPay"
+                                                   name="totalPay">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row ">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
@@ -267,7 +150,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="notVAT"><b>not VAT</b></label>
+                                            <label for="notVAT"><b>Chưa VAT</b></label>
                                             <input type="number" class="form-control"
                                                    id="notVAT"
                                                    name="notVAT">
@@ -275,7 +158,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="hasVAT"><b>has VAT</b></label>
+                                            <label for="hasVAT"><b>Có VAT</b></label>
                                             <input type="number" class="form-control"
                                                    id="hasVAT"
                                                    name="hasVAT">
@@ -309,12 +192,28 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debt"><b>Còn nợ</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="debt"
+                                                   name="debt">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="paidAmt"><b>Tiền trả</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="paidAmt"
+                                                   name="paidAmt">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="note"><b>Ghi chú</b></label>
-                                            <textarea class="form-control"
+                                            <input class="form-control"
                                                       id="note"
-                                                      name="note"></textarea>
+                                                      name="note">
                                         </div>
                                     </div>
                                 </div>
@@ -335,39 +234,17 @@
                         </form>
                     </div>
                     <div class="col-md-6">
+                        <span class="text text-primary">Lịch sử</span>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover">
                                 <thead>
                                 <tr class="active">
-                                    <th>Khách hàng</th>
-                                    <th>Số xe</th>
-                                    <th>Nơi giao</th>
-                                    <th>Nơi giao</th>
-                                    <th>aaaaaaaaa</th>
+                                    <th>Ngày trả</th>
+                                    <th>Tiền trả</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                </tr>
-                                <tr>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                </tr>
-                                <tr>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                    <td>aaaaaaaaa</td>
-                                </tr>
+
                                 </tbody>
                             </table>
                         </div>
@@ -380,42 +257,36 @@
     </div>
 </div>
 </div>
-<!-- End divControl -->
+<!-- End divInvoice -->
 
 <script>
     if (typeof debtCustomerView === 'undefined') {
         debtCustomerView = {
             table: null,
+            tableInvoiceCustomer: null,
 
             dataTransport: null,
+            dataInvoiceCustomer: null,
             dataSearch: null,
             payment: null,
 
-            showControl: function (idDiv) {
-                $('.menu-toggle').fadeOut();
-                $('#' + idDiv).fadeIn(300);
+            current: null,
+            currentInvoiceCustomer: null,
 
-                if (idDiv == 'divInvoice') {
-                    $('.btn-del-edit').find('.btn-success').fadeOut(300);
-                }
+            showControl: function () {
+                $('.menu-toggle').fadeOut();
+                $('#divInvoice').fadeIn(300);
             },
             hideControl: function (idDiv) {
-                $('#' + idDiv).fadeOut(300, function () {
+                $('#divInvoice').fadeOut(300, function () {
                     $('.menu-toggle').fadeIn();
-                    if (idDiv == 'divInvoice') {
-                        $('.btn-del-edit').find('.btn-success').fadeIn(300);
-                    }
                 });
 
-                debtCustomerView.clearValidation("#frmControl");
+                debtCustomerView.clearValidation("#frmInvoice");
                 debtCustomerView.clearInput();
             },
             displayModal: function (type, idModal) {
                 $(idModal).modal(type);
-                if (debtCustomerView.action == 'delete' && type == 'hide') {
-                    debtCustomerView.action = null;
-                    debtCustomerView.idDelete = null;
-                }
 
                 //Clear Validate
             },
@@ -436,12 +307,17 @@
                 }
             },
             clearInput: function () {
-                $("#customer_id").attr('data-customerId', '');
-                $("input[id='customer_id']").val('');
-                $("input[id='cashRevenue']").val('');
+                $("input[id='invoiceCode']").val('');
+                $("input[id='totalPay']").val('');
+                $("input[id='VAT']").val('');
+                $("input[id='notVAT']").val('');
+                $("input[id='hasVAT']").val('');
+                $("input[id='exportDate]").val('');
+                $("input[id='invoiceDate]").val('');
+                $("input[id='payDate]").val('');
                 $("input[id='debt']").val('');
-                $("input[id='cashReceive']").val('');
-                $("input[id='payment']").val('');
+                $("input[id='paidAmt']").val('');
+                $("input[id='note']").val('');
             },
 
             renderScrollbar: function () {
@@ -498,6 +374,8 @@
                     if (jqXHR.status == 200) {
                         debtCustomerView.dataTransport = data['transports'];
                         debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
+                        debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                        debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
                     } else {
                         debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     }
@@ -543,15 +421,8 @@
                         {
                             render: function (data, type, full, meta) {
                                 var tr = '';
-                                tr += '<div class="btn-del-edit">';
-                                tr += '<div class="btn btn-success  btn-circle" title="Thanh toán" onclick="debtCustomerView.editTransport(' + full.id + ')">';
-                                tr += '<i class="glyphicon glyphicon-credit-card"></i>';
-                                tr += '</div>';
-                                tr += '</div>';
-                                tr += '<div class="btn-del-edit">';
-                                tr += '<div class="btn btn-info btn-circle" title="Trả đủ" onclick="debtCustomerView.autoEditTransport(' + full.id + ')">';
+                                tr += '<div class="btn btn-success btn-circle" title="Trả đủ" onclick="debtCustomerView.autoEditTransport(' + full.id + ')">';
                                 tr += '<i class="fa fa-money" aria-hidden="true"></i>';
-                                tr += '</div>';
                                 tr += '</div>';
                                 return tr;
                             }
@@ -602,40 +473,78 @@
                     ]
                 })
             },
+            fillDataToDatatableInvoiceCustomer: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    data[i].debt = data[i]['totalPay'] - data[i]['totalPaid'];
+                }
+                debtCustomerView.tableInvoiceCustomer = $('#table-CustomerInvoice').DataTable({
+                    language: languageOptions,
+                    data: data,
+                    columns: [
+                        {data: 'invoiceCode'},
+                        {data: 'fullName'},
+                        {
+                            data: 'exportDate',
+                            render: function (data, type, full, meta) {
+                                return moment(data).format("DD/MM/YYYY");
+                            }
+                        },
+                        {
+                            data: 'invoiceDate',
+                            render: function (data, type, full, meta) {
+                                return moment(data).format("DD/MM/YYYY");
+                            }
+                        },
+                        {data: 'totalPay', render: $.fn.dataTable.render.number(".", ",", 0)},
+                        {data: 'totalPaid', render: $.fn.dataTable.render.number(".", ",", 0)},
+                        {data: 'debt', render: $.fn.dataTable.render.number(".", ",", 0)},
+
+                        {
+                            render: function (data, type, full, meta) {
+                                var tr = '';
+                                tr += '<div class="btn btn-primary btn-circle" title="Xem lịch sử" onclick="">';
+                                tr += '<i class="glyphicon glyphicon-credit-card"></i>';
+                                tr += '</div>';
+                                return tr;
+                            }
+                        }
+                    ]
+                })
+            },
             fillCurrentObjectToForm: function () {
-                $("input[id='customer_id']").val(debtCustomerView.current["customers_fullName"]);
-                $("#customer_id").attr('data-customerId', debtCustomerView.current["customer_id"]);
-                $("input[id='cashRevenue']").val(debtCustomerView.current["cashRevenue"]);
-                $("input[id='debt']").val(debtCustomerView.current["debt"]);
-                $("input[id='cashReceive']").val(debtCustomerView.current["cashReceive"]);
+                $("input[id='invoiceCode']").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
+                $("input[id='totalPay']").val(debtCustomerView.currentInvoiceCustomer["totalPay"]);
+                $("input[id='VAT']").val(debtCustomerView.currentInvoiceCustomer["VAT"]);
+                $("input[id='notVAT']").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
+                $("input[id='hasVAT']").val(debtCustomerView.currentInvoiceCustomer["hasVAT"]);
+
+                var exportDate = moment(debtCustomerView.currentInvoiceCustomer["exportDate"], "YYYY-MM-DD");
+                $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
+
+                var invoiceDate = moment(debtCustomerView.currentInvoiceCustomer["invoiceDate"], "YYYY-MM-DD");
+                $("input[id='invoiceDate']").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
+
+                var payDate = moment(debtCustomerView.currentInvoiceCustomer["payDate"], "YYYY-MM-DD");
+                $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
+
+                $("input[id='debt']").val(debtCustomerView.currentInvoiceCustomer["debt"]);
+                $("input[id='paidAmt']").val(debtCustomerView.currentInvoiceCustomer["paidAmt"]);
+                $("input[id='note']").val(debtCustomerView.currentInvoiceCustomer["note"]);
             },
             fillFormDataToCurrentObject: function () {
-                if (debtCustomerView.action == 'add') {
-                    debtCustomerView.current = {
-                        customer_id: $("#customer_id").attr("data-customerId"),
-                        cashRevenue: $("input[id='cashRevenue']").val(),
-                        debt: $("input[id='debt']").val(),
-                        cashReceive: $("input[id='cashReceive']").val()
-                    };
-                } else if (debtCustomerView.action == 'update') {
-                    debtCustomerView.current.customer_id = $("#customer_id").attr("data-customerId");
-                    debtCustomerView.current.cashRevenue = $("input[id='cashRevenue']").val();
-                    debtCustomerView.current.debt = $("input[id='debt']").val();
-                    debtCustomerView.current.cashReceive = $("input[id='cashReceive']").val();
-                }
-                debtCustomerView.payment = $("input[id='payment']").val();
+                debtCustomerView.currentInvoiceCustomer.invoiceCode = $("input[id='invoiceCode']").val();
+                debtCustomerView.currentInvoiceCustomer.totalPay = $("input[id='totalPay']").val();
+                debtCustomerView.currentInvoiceCustomer.VAT = $("input[id='VAT']").val();
+                debtCustomerView.currentInvoiceCustomer.notVAT = $("input[id='notVAT']").val();
+                debtCustomerView.currentInvoiceCustomer.hasVAT = $("input[id='hasVAT']").val();
+                debtCustomerView.currentInvoiceCustomer.exportDate = $("input[id='exportDate']").val();
+                debtCustomerView.currentInvoiceCustomer.invoiceDate = $("input[id='invoiceDate']").val();
+                debtCustomerView.currentInvoiceCustomer.payDate = $("input[id='payDate']").val();
+                debtCustomerView.currentInvoiceCustomer.debt = $("input[id='debt']").val();
+                debtCustomerView.currentInvoiceCustomer.paidAmt = $("input[id='paidAmt']").val();
+                debtCustomerView.currentInvoiceCustomer.note = $("input[id='note']").val();
             },
 
-            editTransport: function (id) {
-                debtCustomerView.current = null;
-                debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
-                    return o.id == id;
-                }), true);
-
-                debtCustomerView.fillCurrentObjectToForm();
-                debtCustomerView.action = 'edit';
-                debtCustomerView.showControl("divControl");
-            },
             autoEditTransport: function (id) {
                 debtCustomerView.current = null;
                 debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
@@ -646,41 +555,65 @@
             },
 
             formValidate: function () {
-                $("#frmControl").validate({
+                $("#frmInvoice").validate({
                     rules: {
-                        payment: "required"
+                        paidAmt: "required"
                     },
                     messages: {
-                        payment: "Vui lòng nhập số tiền thanh toán."
+                        paidAmt: "Vui lòng nhập số tiền thanh toán."
                     }
                 });
             },
             clearValidation: function (idForm) {
                 $(idForm).find("label[class=error]").remove();
-//                    var validator = $(idForm).validate();
-//                    validator.resetForm();
             },
 
-            save: function () {
-                debtCustomerView.formValidate();
-                if ($("#frmControl").valid()) {
-                    debtCustomerView.fillFormDataToCurrentObject();
+            save: function(){
+                var sendToServer = {
+                    _token: _token,
+                    _transport: debtCustomerView.current.id
+                };
+                console.log("CLIENT");
+                console.log(sendToServer._transport);
+                $.ajax({
+                    url: url + 'debt-customer/modify',
+                    type: "POST",
+                    dataType: "json",
+                    data: sendToServer
+                }).done(function (data, textStatus, jqXHR) {
+                    console.log("SERVER");
+                    console.log(data);
+                    if (jqXHR.status == 201) {
+                        var Old = _.find(debtCustomerView.dataTransport, function (o) {
+                            return o.id == sendToServer._transport;
+                        });
+                        var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
+                        debtCustomerView.dataTransport.splice(indexOfOld, 1);
+                        debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                        debtCustomerView.displayModal("hide", "#modal-confirmDelete");
 
-                    var _transport = {
-                        'transport_id': debtCustomerView.current['id']
-                    };
-                    if (debtCustomerView.action == 'edit') {
-                        _transport.payment = debtCustomerView.payment
+                        debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
+                        debtCustomerView.clearInput();
+                    } else {
+                        debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                     }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                });
+            },
+            saveInvoiceCustomer: function () {
+                debtCustomerView.formValidate();
+                if ($("#frmInvoice").valid()) {
+                    debtCustomerView.fillFormDataToCurrentObject();
 
                     var sendToServer = {
                         _token: _token,
-                        _transport: _transport
+                        _invoiceCustomer: debtCustomerView.currentInvoiceCustomer
                     };
                     console.log("CLIENT");
-                    console.log(sendToServer._transport);
+                    console.log(sendToServer._invoiceCustomer);
                     $.ajax({
-                        url: url + 'debt-customer/modify',
+                        url: url + 'invoice-customer/modify',
                         type: "POST",
                         dataType: "json",
                         data: sendToServer
@@ -688,37 +621,7 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            switch (debtCustomerView.action) {
-                                case 'edit':
-                                    var Old = _.find(debtCustomerView.dataTransport, function (o) {
-                                        return o.id == sendToServer._transport.transport_id;
-                                    });
-                                    var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
-
-                                    if (data['transport']['cashReceive'] == data['transport']['cashRevenue']) {
-                                        debtCustomerView.dataTransport.splice(indexOfOld, 1);
-                                    } else {
-                                        data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
-                                        data['transport'].debt = data['transport']['cashRevenue'] - data['transport']['cashReceive'];
-                                        debtCustomerView.dataTransport.splice(indexOfOld, 1, data['transport']);
-                                    }
-
-                                    debtCustomerView.showNotification("success", "Thanh toán thành công!");
-                                    debtCustomerView.hideControl("divControl");
-                                    break;
-                                case 'autoEdit':
-                                    var Old = _.find(debtCustomerView.dataTransport, function (o) {
-                                        return o.id == sendToServer._transport.transport_id;
-                                    });
-                                    var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
-                                    debtCustomerView.dataTransport.splice(indexOfOld, 1);
-                                    debtCustomerView.showNotification("success", "Thanh toán thành công!");
-                                    debtCustomerView.displayModal("hide", "#modal-confirmDelete");
-                                    break;
-                                default:
-                                    break;
-                            }
-                            debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
+                            debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
                             debtCustomerView.clearInput();
                         } else {
                             debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
@@ -727,7 +630,7 @@
                         debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 } else {
-                    $("form#frmControl").find("label[class=error]").css("color", "red");
+                    $("form#frmInvoice").find("label[class=error]").css("color", "red");
                 }
             },
 
@@ -752,28 +655,6 @@
                 $("#dateOnlySearch").find(".start").datepicker('update', '');
                 $("#dateOnlySearch").find(".end").datepicker('update', '');
                 debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
-            },
-            exportInvoice: function () {
-                var sendToServer = {
-                    _token: _token,
-                    _transports: debtCustomerView.dataSearch
-                };
-                $.ajax({
-                    url: url + 'debt-customer/export-invoice',
-                    type: "POST",
-                    dataType: "json",
-                    data: sendToServer
-                }).done(function (data, textStatus, jqXHR) {
-                    console.log("SERVER");
-                    console.log(data);
-                    if (jqXHR.status == 201) {
-
-                    } else {
-                        debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                });
             }
         };
         debtCustomerView.loadData();

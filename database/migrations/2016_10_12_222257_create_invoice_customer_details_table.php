@@ -31,6 +31,6 @@ class CreateInvoiceCustomerDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('invoice_customer_details');
+        Schema::drop('invoiceCustomerDetails');
     }
 }

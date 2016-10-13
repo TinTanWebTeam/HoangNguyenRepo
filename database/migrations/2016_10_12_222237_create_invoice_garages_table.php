@@ -38,6 +38,6 @@ class CreateInvoiceGaragesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('invoice_garages');
+        Schema::drop('invoiceGarages');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Invoice;
+use App\InvoiceCustomer;
 use App\Transport;
 use Illuminate\Http\Request;
 use DB;
@@ -12,6 +12,7 @@ use League\Flysystem\Exception;
 
 class DebtManagementController extends Controller
 {
+    //Customer
     public function getViewDebtCustomer()
     {
         return view('subviews.Debt.DebtCustomer');
@@ -41,27 +42,30 @@ class DebtManagementController extends Controller
             ->where('transports.active', '=', '1')
             ->get();
 
+        $invoiceCustomers = DB::table('invoiceCustomers')
+            ->select('invoiceCustomers.*', 'customers.fullName')
+            ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+            ->join('customers', 'customers.id', '=', 'transports.customer_id')
+            ->where('invoiceCustomers.active', '=', '1')
+            ->get();
+
         $response = [
             'msg'        => 'Get list all Transport',
             'transports' => $transports,
+            'invoiceCustomers' => $invoiceCustomers
         ];
         return response()->json($response, 200);
     }
 
     public function postModifyDebtCustomer(Request $request)
     {
-        $transport_id = $request->input('_transport')['transport_id'];
+        $transport_id = $request->input('_transport');
 
         try {
             DB::beginTransaction();
             $transportUpdate = Transport::findOrFail($transport_id);
-            if(array_key_exists('payment', $request->input('_transport')))
-                $transportUpdate->cashReceive += $request->input('_transport')['payment'];
-            else
-                $transportUpdate->cashReceive = $transportUpdate->cashRevenue;
-
-            if ($transportUpdate->cashReceive == $transportUpdate->cashRevenue)
-                $transportUpdate->status_customer = 7;
+            $transportUpdate->cashReceive = $transportUpdate->cashRevenue;
+            $transportUpdate->status_customer = 7;
 
             $transportUpdate->updatedBy = \Auth::user()->id;
 
@@ -101,11 +105,6 @@ class DebtManagementController extends Controller
             DB::rollBack();
             return response()->json(['msg' => $ex], 404);
         }
-    }
-
-    public function getViewDebtVehicleOutside()
-    {
-        return view('subviews.Debt.DebtVehicleOutside');
     }
 
     public function postExportInvoiceCustomer(Request $request)
@@ -152,4 +151,11 @@ class DebtManagementController extends Controller
 
 
     }
+
+    //Garage
+    public function getViewDebtVehicleOutside()
+    {
+        return view('subviews.Debt.DebtVehicleOutside');
+    }
+
 }

@@ -38,6 +38,6 @@ class CreateInvoiceCustomersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('invoice_customers');
+        Schema::drop('invoiceCustomers');
     }
 }
