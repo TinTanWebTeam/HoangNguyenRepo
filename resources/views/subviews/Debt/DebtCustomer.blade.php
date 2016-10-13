@@ -40,7 +40,7 @@
                     </ol>
                     <div class="menu-toggle pull-right fixed">
                         <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn"
-                             onclick="debtCustomerView.showControl('divInvoice')">
+                             onclick="debtCustomerView.createInvoiceCustomer()">
                             <i class="glyphicon glyphicon-list-alt icon-center"></i>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                     <hr>
                     <label class="text-primary">Hóa đơn khách hàng</label>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="table-CustomerInvoice">
+                        <table class="table table-bordered table-hover" id="table-customerInvoice">
                             <thead>
                             <tr class="active">
                                 <th>Mã hóa đơn</th>
@@ -112,7 +112,7 @@
     <div id="divInvoice" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">Xuất hóa đơn
-                <div class="menu-toggles pull-right" onclick="debtCustomerView.hideControl('divInvoice')">
+                <div class="menu-toggles pull-right" onclick="debtCustomerView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
@@ -124,10 +124,10 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="VAT"><b>Mã hóa đơn</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="VAT"
-                                                   name="VAT">
+                                            <label for="invoiceCode"><b>Mã hóa đơn</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="invoiceCode"
+                                                   name="invoiceCode">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -135,7 +135,7 @@
                                             <label for="totalPay"><b>Tổng tiền</b></label>
                                             <input type="number" class="form-control"
                                                    id="totalPay"
-                                                   name="totalPay">
+                                                   name="totalPay" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -169,7 +169,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="exportDate"><b>Ngày xuất</b></label>
-                                            <input type="text" class="date form-control"
+                                            <input type="text" class="date form-control ignore"
                                                    id="exportDate"
                                                    name="exportDate">
                                         </div>
@@ -177,7 +177,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="invoiceDate"><b>Ngày hóa đơn</b></label>
-                                            <input type="text" class="date form-control"
+                                            <input type="text" class="date form-control ignore"
                                                    id="invoiceDate"
                                                    name="invoiceDate">
                                         </div>
@@ -185,7 +185,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="payDate"><b>Ngày trả</b></label>
-                                            <input type="text" class="date form-control"
+                                            <input type="text" class="date form-control ignore"
                                                    id="payDate"
                                                    name="payDate">
                                         </div>
@@ -197,7 +197,7 @@
                                             <label for="debt"><b>Còn nợ</b></label>
                                             <input type="number" class="form-control"
                                                    id="debt"
-                                                   name="debt">
+                                                   name="debt" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -212,8 +212,8 @@
                                         <div class="form-group form-md-line-input ">
                                             <label for="note"><b>Ghi chú</b></label>
                                             <input class="form-control"
-                                                      id="note"
-                                                      name="note">
+                                                   id="note"
+                                                   name="note">
                                         </div>
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@
                                         <div class="form-actions noborder">
                                             <div class="form-group">
                                                 <button type="button" class="btn btn-primary marginRight"
-                                                        onclick="debtCustomerView.save()">
+                                                        onclick="debtCustomerView.saveInvoiceCustomer()">
                                                     Hoàn tất
                                                 </button>
                                                 <button type="button" class="btn default" onclick="">Huỷ</button>
@@ -236,7 +236,7 @@
                     <div class="col-md-6">
                         <span class="text text-primary">Lịch sử</span>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
+                            <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
                                 <thead>
                                 <tr class="active">
                                     <th>Ngày trả</th>
@@ -264,6 +264,7 @@
         debtCustomerView = {
             table: null,
             tableInvoiceCustomer: null,
+            tableHistory: null,
 
             dataTransport: null,
             dataInvoiceCustomer: null,
@@ -373,6 +374,7 @@
                 }).done(function (data, textStatus, jqXHR) {
                     if (jqXHR.status == 200) {
                         debtCustomerView.dataTransport = data['transports'];
+                        debtCustomerView.dataSearch = data['transports'];
                         debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                         debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
                         debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
@@ -397,12 +399,10 @@
                     language: languageOptions,
                     data: data,
                     columns: [
-
                         {data: 'customers_fullName'},
                         {data: 'fullNumber'},
                         {data: 'deliveryPlace'},
                         {data: 'voucherNumber'},
-
                         {
                             data: 'cashRevenue',
                             render: $.fn.dataTable.render.number(".", ",", 0)
@@ -428,7 +428,6 @@
                             }
                         }
                     ],
-
                     dom: 'Bfrtip',
                     buttons: [
                         {
@@ -477,7 +476,7 @@
                 for (var i = 0; i < data.length; i++) {
                     data[i].debt = data[i]['totalPay'] - data[i]['totalPaid'];
                 }
-                debtCustomerView.tableInvoiceCustomer = $('#table-CustomerInvoice').DataTable({
+                debtCustomerView.tableInvoiceCustomer = $('#table-customerInvoice').DataTable({
                     language: languageOptions,
                     data: data,
                     columns: [
@@ -498,7 +497,6 @@
                         {data: 'totalPay', render: $.fn.dataTable.render.number(".", ",", 0)},
                         {data: 'totalPaid', render: $.fn.dataTable.render.number(".", ",", 0)},
                         {data: 'debt', render: $.fn.dataTable.render.number(".", ",", 0)},
-
                         {
                             render: function (data, type, full, meta) {
                                 var tr = '';
@@ -507,6 +505,24 @@
                                 tr += '</div>';
                                 return tr;
                             }
+                        }
+                    ]
+                })
+            },
+            fillDataToDatatableHistory: function (data) {
+                debtCustomerView.tableHistory = $('#table-invoiceCustomerDetail').DataTable({
+                    language: languageOptions,
+                    data: data,
+                    columns: [
+                        {
+                            data: 'payDate',
+                            render: function (data, type, full, meta) {
+                                return moment(data).format("DD/MM/YYYY");
+                            }
+                        },
+                        {
+                            data: 'paidAmt',
+                            render: $.fn.dataTable.render.number(".", ",", 0)
                         }
                     ]
                 })
@@ -553,12 +569,27 @@
                 debtCustomerView.action = 'autoEdit';
                 debtCustomerView.save();
             },
+            createInvoiceCustomer: function () {
+                debtCustomerView.showControl();
+
+                var totalPaid = 0, totalPay = 0;
+                for (var i = 0; i < debtCustomerView.dataSearch.length; i++) {
+                    totalPay += parseInt(debtCustomerView.dataSearch[i]['cashRevenue']);
+                    totalPaid += parseInt(debtCustomerView.dataSearch[i]['cashReceive']);
+                }
+                var debt = totalPay - totalPaid;
+                $("input[id=totalPay]").val(totalPay);
+                $("input[id=debt]").val(debt);
+
+//                debtCustomerView.fillDataToDatatableHistory();
+            },
 
             formValidate: function () {
                 $("#frmInvoice").validate({
                     rules: {
                         paidAmt: "required"
                     },
+                    ignore: ".ignore",
                     messages: {
                         paidAmt: "Vui lòng nhập số tiền thanh toán."
                     }
@@ -568,7 +599,7 @@
                 $(idForm).find("label[class=error]").remove();
             },
 
-            save: function(){
+            save: function () {
                 var sendToServer = {
                     _token: _token,
                     _transport: debtCustomerView.current.id
@@ -606,12 +637,15 @@
                 if ($("#frmInvoice").valid()) {
                     debtCustomerView.fillFormDataToCurrentObject();
 
+                    var array_transportId = _.map(debtCustomerView.dataSearch, 'id');
+
                     var sendToServer = {
                         _token: _token,
-                        _invoiceCustomer: debtCustomerView.currentInvoiceCustomer
+                        _invoiceCustomer: debtCustomerView.currentInvoiceCustomer,
+                        _array_transportId: array_transportId
                     };
                     console.log("CLIENT");
-                    console.log(sendToServer._invoiceCustomer);
+                    console.log(sendToServer);
                     $.ajax({
                         url: url + 'invoice-customer/modify',
                         type: "POST",
@@ -621,6 +655,8 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
+
+
                             debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
                             debtCustomerView.clearInput();
                         } else {
@@ -642,7 +678,7 @@
 
                 if (fromDate.isValid() && toDate.isValid()) {
                     var found = _.filter(debtCustomerView.dataTransport, function (o) {
-                        var find = moment(o.receiveDate, "YYYY-MM-DD");
+                        var find = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return moment(find).isBetween(fromDate, toDate, null, '[]');
                     });
                     debtCustomerView.dataSearch = found;

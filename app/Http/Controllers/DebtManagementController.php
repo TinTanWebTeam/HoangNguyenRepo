@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\InvoiceCustomer;
+use App\InvoiceCustomerDetail;
 use App\Transport;
 use Illuminate\Http\Request;
 use DB;
@@ -107,31 +108,50 @@ class DebtManagementController extends Controller
         }
     }
 
-    public function postExportInvoiceCustomer(Request $request)
-    {
-        $transports = $request->input('_transports');
+    //Invoice Customer
 
-        $invoice = new Invoice();
-        $invoice->VAT = "";
-        $invoice->notVAT = "";
-        $invoice->hasVAT = "";
-        $invoice->exportDate = "";
-        $invoice->invoiceDate = "";
-        $invoice->payDate = "";
-        $invoice->note = "";
-        $invoice->createdBy = \Auth::user()->id;
-        $invoice->updatedBy = \Auth::user()->id;
+    public function postModifyInvoiceCustomer(Request $request)
+    {
+        $array_transportId = $request->input('_array_transportId');
+        dd($request->input('_invoiceCustomer'));
+
+        $invoiceCustomer = new InvoiceCustomer();
+        $invoiceCustomer->invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
+        $invoiceCustomer->VAT = $request->input('_invoiceCustomer')['VAT'];
+        $invoiceCustomer->notVAT = $request->input('_invoiceCustomer')['notVAT'];
+        $invoiceCustomer->hasVAT = $request->input('_invoiceCustomer')['hasVAT'];
+        $invoiceCustomer->exportDate = $request->input('_invoiceCustomer')['exportDate'];
+        $invoiceCustomer->invoiceDate = $request->input('_invoiceCustomer')['invoiceDate'];
+        $invoiceCustomer->payDate = $request->input('_invoiceCustomer')['payDate'];
+        $invoiceCustomer->note = $request->input('_invoiceCustomer')['note'];
+        $invoiceCustomer->totalPay = $request->input('_invoiceCustomer')['totalPay'];
+        $invoiceCustomer->totalPaid = $request->input('_invoiceCustomer')['totalPaid'];
+        $invoiceCustomer->createdBy = \Auth::user()->id;
+        $invoiceCustomer->updatedBy = \Auth::user()->id;
 
         try{
             DB::beginTransaction();
-            if(!$invoice->save()){
+            if(!$invoiceCustomer->save()){
                 DB::rollBack();
                 return response()->json(['msg' => 'Create new Invoice fail!'], 404);
             }
-            foreach ($transports as $transport){
-                $transportUpdate = Transport::find($transport['id']);
-                $transportUpdate->cashReceive = $transportUpdate->cashRevenue;
-                $transportUpdate->invoice_id = $invoice->id;
+
+            $invoiceCustomerDetail = new InvoiceCustomerDetail();
+            $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
+            $invoiceCustomerDetail->paidAmt = $request->input('_invoiceCustomer')['paidAmt'];
+            $invoiceCustomerDetail->payDate = $request->input('_invoiceCustomer')['payDate'];
+            $invoiceCustomerDetail->modify = false;
+            $invoiceCustomerDetail->createdBy = \Auth::user()->id;
+            $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
+
+            if(!$invoiceCustomerDetail->update()){
+                DB::rollBack();
+                return response()->json(['msg' => 'Create InvoiceCustomerDetail fail!'], 404);
+            }
+
+            foreach ($array_transportId as $transport_id){
+                $transportUpdate = Transport::find($transport_id);
+                $transportUpdate->invoice_id = $invoiceCustomer->id;
                 $transportUpdate->status_customer = 7;
 
                 if(!$transportUpdate->update()){
@@ -139,17 +159,16 @@ class DebtManagementController extends Controller
                     return response()->json(['msg' => 'Update transport fail!'], 404);
                 }
             }
+
             DB::commit();
             $response = [
-                'msg' => 'Export Invoice successful!'
+                'msg' => 'Create Invoice successful!'
             ];
             return response()->json($response, 201);
         }catch (Exception $ex){
             DB::rollBack();
             return response()->json(['msg' => $ex], 404);
         }
-
-
     }
 
     //Garage
