@@ -187,7 +187,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="receiveDate"><b>Ngày nhận</b></label>
-                                        <input type="text" class="date form-control"
+                                        <input type="text" class="date form-control ignore"
                                                id="receiveDate"
                                                name="receiveDate">
                                     </div>
@@ -705,8 +705,6 @@
                     transportView.renderEventTableModal();
 
                     transportView.renderCustomToastr();
-
-                    transportView.addDateFormat();
                 },
                 loadListVehicle: function () {
                     $.ajax({
@@ -1160,13 +1158,13 @@
                             cashDelivery: "required",
                             cashReceive: "required",
                             receiver: "required",
-                            receiveDate: {required: true, dateFormat: true},
                             receivePlace: "required",
                             deliveryPlace: "required",
                             voucherNumber: "required",
                             voucherQuantumProduct: "required",
                             costs_note: "required"
                         },
+                        ignore: ".ignore",
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
                             customer_id: "Vui lòng chọn khách hàng",
@@ -1177,10 +1175,6 @@
                             cashDelivery: "Vui lòng nhập tiền giao",
                             cashReceive: "Vui lòng nhập tiền nhận",
                             receiver: "Vui lòng nhập người nhận",
-                            receiveDate: {
-                                required: "Vui lòng chọn ngày nhận",
-                                dateFormat: "Vui lòng nhập ngày theo định dạng dd-mm-yyyy."
-                            },
                             receivePlace: "Vui lòng nhập nơi nhận",
                             deliveryPlace: "Vui lòng nhập nơi giao",
                             voucherNumber: "Vui lòng nhập số chứng từ",
@@ -1203,12 +1197,6 @@
                             Voucher_name: "Vui lòng nhập tên chứng từ"
                         }
                     });
-                },
-                addDateFormat: function() {
-                    $.validator.addMethod("dateFormat",
-                            function(value, element) {
-                                return value.match(/^dd?-dd?-dd$/);
-                            }, "Vui lòng nhập ngày theo định dạng dd-mm-yyyy.");
                 },
 
                 save: function () {

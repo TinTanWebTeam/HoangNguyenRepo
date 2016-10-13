@@ -1,11 +1,21 @@
 <style>
-    #divControl, #divInvoice {
+    #divControl {
         z-index: 3;
         position: fixed;
         top: 40%;
         display: none;
         right: 0;
         width: 40%;
+        height: 100%;
+    }
+
+    #divInvoice {
+        z-index: 3;
+        position: fixed;
+        top: 40%;
+        display: none;
+        right: 0;
+        width: 70%;
         height: 100%;
     }
 
@@ -42,8 +52,9 @@
                         <li><a href="javascript:;">QL công nợ</a></li>
                         <li class="active">Khách hàng</li>
                     </ol>
-                    <div class="menu-toggle  pull-right fixed">
-                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn" onclick="debtCustomerView.showControl('divInvoice')">
+                    <div class="menu-toggle pull-right fixed">
+                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn"
+                             onclick="debtCustomerView.showControl('divInvoice')">
                             <i class="glyphicon glyphicon-list-alt icon-center"></i>
                         </div>
                     </div>
@@ -53,29 +64,90 @@
             <div class="panel-body">
                 <div class="dataTable_wrapper">
                     <p id="dateOnlySearch">
-                        <input type="text" class="date start" /> đến
-                        <input type="text" class="date end" />
-                        <button onclick="debtCustomerView.searchFromDateToDate()" class="btn btn-sm btn-info"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>
-                        <button onclick="debtCustomerView.clearSearch()" class="btn btn-sm btn-default"><i class="fa fa-trash-o" aria-hidden="true"></i> Xóa</button>
+                        <input type="text" class="date start"/> đến
+                        <input type="text" class="date end"/>
+                        <button onclick="debtCustomerView.searchFromDateToDate()" class="btn btn-sm btn-info"><i
+                                    class="fa fa-search" aria-hidden="true"></i> Tìm
+                        </button>
+                        <button onclick="debtCustomerView.clearSearch()" class="btn btn-sm btn-default"><i
+                                    class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                        </button>
                     </p>
-                    <table class="table table-bordered table-hover" id="table-data">
-                        <thead>
-                        <tr class="active">
-                            <th>Khách hàng</th>
-                            <th>Số xe</th>
-                            <th>Nơi giao</th>
-                            <th>Số chứng từ</th>
-                            <th>Doanh thu</th>
-                            <th>Nợ</th>
-                            <th>Người nhận</th>
-                            <th>Ngày nhận</th>
-                            <th>Thanh toán</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="table-data">
+                            <thead>
+                            <tr class="active">
+                                <th>Khách hàng</th>
+                                <th>Số xe</th>
+                                <th>Nơi giao</th>
+                                <th>Số chứng từ</th>
+                                <th>Doanh thu</th>
+                                <th>Nợ</th>
+                                <th>Người nhận</th>
+                                <th>Ngày nhận</th>
+                                <th>Thanh toán</th>
+                            </tr>
+                            </thead>
+                            <tbody>
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <hr>
+                    <label class="text-primary">Hóa đơn khách hàng</label>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="table-CustomerInvoice">
+                            <thead>
+                            <tr class="active">
+                                <th>Khách hàng</th>
+                                <th>Số xe</th>
+                                <th>Nơi giao</th>
+                                <th>Số chứng từ</th>
+                                <th>Doanh thu</th>
+                                <th>Nợ</th>
+                                <th>Người nhận</th>
+                                <th>Ngày nhận</th>
+                                <th>Thanh toán</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                            </tr>
+                            <tr>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                            </tr>
+                            <tr>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                                <td>aaaaaaaaa</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div> <!-- end table-reposive -->
@@ -96,71 +168,72 @@
             <div class="panel-body">
                 <form role="form" id="frmControl">
                     <div class="form-body">
-                        <div class="col-md-12 ">
-                            <div class="row ">
-                                <div class="col-md-12 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="customer_id"><b>Khách hàng</b></label>
-                                        <input type="text" class="form-control"
-                                               id="customer_id"
-                                               name="customer_id"
-                                               data-customerId=""
-                                               readonly>
-                                    </div>
+                        <div class="row ">
+                            <div class="col-md-12 ">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="customer_id"><b>Khách hàng</b></label>
+                                    <input type="text" class="form-control"
+                                           id="customer_id"
+                                           name="customer_id"
+                                           data-customerId=""
+                                           readonly>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="cashRevenue"><b>Doanh thu</b></label>
-                                        <input type="text" class="form-control"
-                                               id="cashRevenue"
-                                               name="cashRevenue"
-                                               readonly>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="debt"><b>Tiền nợ</b></label>
-                                        <input type="text" class="form-control"
-                                               id="debt"
-                                               name="debt"
-                                               readonly>
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="cashRevenue"><b>Doanh thu</b></label>
+                                    <input type="text" class="form-control"
+                                           id="cashRevenue"
+                                           name="cashRevenue"
+                                           readonly>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="cashReceive"><b>Đã trả</b></label>
-                                        <input type="text" class="form-control"
-                                               id="cashReceive"
-                                               name="cashReceive"
-                                               readonly>
-                                    </div>
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="debt"><b>Tiền nợ</b></label>
+                                    <input type="text" class="form-control"
+                                           id="debt"
+                                           name="debt"
+                                           readonly>
                                 </div>
-                                <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="payment"><b>Tiền thanh toán</b></label>
-                                        <input type="number" class="form-control"
-                                               id="payment"
-                                               name="payment"
-                                                autofocus>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="cashReceive"><b>Đã trả</b></label>
+                                    <input type="text" class="form-control"
+                                           id="cashReceive"
+                                           name="cashReceive"
+                                           readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="payment"><b>Tiền thanh toán</b></label>
+                                    <input type="number" class="form-control"
+                                           id="payment"
+                                           name="payment"
+                                           autofocus>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="debtCustomerView.save()">
+                                            Hoàn tất
+                                        </button>
+                                        <button type="button" class="btn default" onclick="">Huỷ</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-actions noborder">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight"
-                                            onclick="debtCustomerView.save()">
-                                        Hoàn tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="">Huỷ</button>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </form>
             </div>
@@ -179,88 +252,133 @@
                 </div>
             </div>
             <div class="panel-body">
-                <form role="form" id="frmInvoice">
-                    <div class="form-body">
-                        <div class="col-md-12 ">
-                            <div class="row ">
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="VAT"><b>VAT</b></label>
-                                        <input type="number" class="form-control"
-                                               id="VAT"
-                                               name="VAT">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form role="form" id="frmInvoice">
+                            <div class="form-body">
+                                <div class="row ">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="VAT"><b>VAT</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="VAT"
+                                                   name="VAT">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="notVAT"><b>not VAT</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="notVAT"
+                                                   name="notVAT">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="hasVAT"><b>has VAT</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="hasVAT"
+                                                   name="hasVAT">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="notVAT"><b>not VAT</b></label>
-                                        <input type="number" class="form-control"
-                                               id="notVAT"
-                                               name="notVAT">
+                                <div class="row ">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="exportDate"><b>Ngày xuất</b></label>
+                                            <input type="text" class="date form-control"
+                                                   id="exportDate"
+                                                   name="exportDate">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="invoiceDate"><b>Ngày hóa đơn</b></label>
+                                            <input type="text" class="date form-control"
+                                                   id="invoiceDate"
+                                                   name="invoiceDate">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="payDate"><b>Ngày trả</b></label>
+                                            <input type="text" class="date form-control"
+                                                   id="payDate"
+                                                   name="payDate">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="hasVAT"><b>has VAT</b></label>
-                                        <input type="number" class="form-control"
-                                               id="hasVAT"
-                                               name="hasVAT">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="note"><b>Ghi chú</b></label>
+                                            <textarea class="form-control"
+                                                      id="note"
+                                                      name="note"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-actions noborder">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-primary marginRight"
+                                                        onclick="debtCustomerView.save()">
+                                                    Hoàn tất
+                                                </button>
+                                                <button type="button" class="btn default" onclick="">Huỷ</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row ">
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="exportDate"><b>Ngày xuất</b></label>
-                                        <input type="text" class="date form-control"
-                                               id="exportDate"
-                                               name="exportDate">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="invoiceDate"><b>Ngày hóa đơn</b></label>
-                                        <input type="text" class="date form-control"
-                                               id="invoiceDate"
-                                               name="invoiceDate">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="payDate"><b>Ngày trả</b></label>
-                                        <input type="text" class="date form-control"
-                                               id="payDate"
-                                               name="payDate">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="note"><b>Ghi chú</b></label>
-                                        <textarea class="form-control"
-                                               id="note"
-                                               name="note"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-actions noborder">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight"
-                                            onclick="debtCustomerView.save()">
-                                        Hoàn tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="">Huỷ</button>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
-                </form>
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr class="active">
+                                    <th>Khách hàng</th>
+                                    <th>Số xe</th>
+                                    <th>Nơi giao</th>
+                                    <th>Nơi giao</th>
+                                    <th>aaaaaaaaa</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                </tr>
+                                <tr>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                </tr>
+                                <tr>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                    <td>aaaaaaaaa</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+</div>
 </div>
 <!-- End divControl -->
 
@@ -275,16 +393,16 @@
 
             showControl: function (idDiv) {
                 $('.menu-toggle').fadeOut();
-                $('#'+idDiv).fadeIn(300);
+                $('#' + idDiv).fadeIn(300);
 
-                if(idDiv == 'divInvoice'){
+                if (idDiv == 'divInvoice') {
                     $('.btn-del-edit').find('.btn-success').fadeOut(300);
                 }
             },
             hideControl: function (idDiv) {
-                $('#'+idDiv).fadeOut(300, function () {
+                $('#' + idDiv).fadeOut(300, function () {
                     $('.menu-toggle').fadeIn();
-                    if(idDiv == 'divInvoice'){
+                    if (idDiv == 'divInvoice') {
                         $('.btn-del-edit').find('.btn-success').fadeIn(300);
                     }
                 });
@@ -326,7 +444,7 @@
                 $("input[id='payment']").val('');
             },
 
-            renderScrollbar: function(){
+            renderScrollbar: function () {
                 $("#divControl").find('.panel-body').mCustomScrollbar({
                     theme: "dark"
                 });
@@ -334,7 +452,7 @@
 //                    theme: "dark"
 //                });
             },
-            renderCustomToastr: function() {
+            renderCustomToastr: function () {
                 toastr.options = {
                     "closeButton": true,
                     "debug": false,
@@ -353,7 +471,7 @@
                     "hideMethod": "fadeOut"
                 };
             },
-            renderDateTimePicker: function(){
+            renderDateTimePicker: function () {
                 $('#dateOnlySearch .date').datepicker({
                     'format': 'dd-mm-yyyy',
                     'autoclose': true
@@ -551,7 +669,7 @@
                     var _transport = {
                         'transport_id': debtCustomerView.current['id']
                     };
-                    if(debtCustomerView.action == 'edit'){
+                    if (debtCustomerView.action == 'edit') {
                         _transport.payment = debtCustomerView.payment
                     }
 
@@ -577,7 +695,7 @@
                                     });
                                     var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
 
-                                    if(data['transport']['cashReceive'] == data['transport']['cashRevenue']){
+                                    if (data['transport']['cashReceive'] == data['transport']['cashRevenue']) {
                                         debtCustomerView.dataTransport.splice(indexOfOld, 1);
                                     } else {
                                         data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
@@ -613,14 +731,14 @@
                 }
             },
 
-            searchFromDateToDate: function() {
+            searchFromDateToDate: function () {
                 var fromDate = $("#dateOnlySearch").find(".start").val();
                 var toDate = $("#dateOnlySearch").find(".end").val();
                 fromDate = moment(fromDate, "DD-MM-YYYY");
                 toDate = moment(toDate, "DD-MM-YYYY");
 
-                if(fromDate.isValid() && toDate.isValid()){
-                    var found = _.filter(debtCustomerView.dataTransport, function(o){
+                if (fromDate.isValid() && toDate.isValid()) {
+                    var found = _.filter(debtCustomerView.dataTransport, function (o) {
                         var find = moment(o.receiveDate, "YYYY-MM-DD");
                         return moment(find).isBetween(fromDate, toDate, null, '[]');
                     });
@@ -630,12 +748,12 @@
                     debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
                 }
             },
-            clearSearch: function(){
+            clearSearch: function () {
                 $("#dateOnlySearch").find(".start").datepicker('update', '');
                 $("#dateOnlySearch").find(".end").datepicker('update', '');
                 debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
             },
-            exportInvoice: function() {
+            exportInvoice: function () {
                 var sendToServer = {
                     _token: _token,
                     _transports: debtCustomerView.dataSearch

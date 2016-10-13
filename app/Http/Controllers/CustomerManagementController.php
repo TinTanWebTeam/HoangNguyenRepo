@@ -383,7 +383,8 @@ class CustomerManagementController extends Controller
         $vehicle_id = null;
         $product_id = null;
         $customer_id = null;
-        $invoice_id = null;
+        $invoiceCustomer_id = null;
+        $invoiceGarage_id = null;
         $costPrice_id = null;
         $price_id = null;
 
@@ -455,7 +456,8 @@ class CustomerManagementController extends Controller
                     $transportNew->status_garage = $status_garage;
                     $transportNew->product_id = $product_id;
                     $transportNew->customer_id = $customer_id;
-                    $transportNew->invoice_id = $invoice_id;
+                    $transportNew->invoiceCustomer_id = $invoiceCustomer_id;
+                    $transportNew->invoiceGarage_id = $invoiceGarage_id;
 
                     if ($transportNew->save()) {
                         //Add VoucherTransport
@@ -548,7 +550,8 @@ class CustomerManagementController extends Controller
                     $transportUpdate->status_garage = $status_garage;
                     $transportUpdate->product_id = $product_id;
                     $transportUpdate->customer_id = $customer_id;
-                    $transportUpdate->invoice_id = $invoice_id;
+                    $transportUpdate->invoiceCustomer_id = $invoiceCustomer_id;
+                    $transportUpdate->invoiceGarage_id = $invoiceGarage_id;
 
                     if ($transportUpdate->update()) {
                         //Delete VoucherTransport

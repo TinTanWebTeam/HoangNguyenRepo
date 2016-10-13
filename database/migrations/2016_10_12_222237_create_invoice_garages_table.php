@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInvoicesTable extends Migration
+class CreateInvoiceGaragesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,14 @@ class CreateInvoicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('invoiceGarages', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('invoiceCode');
             $table->float('VAT');
             $table->decimal('notVAT');
             $table->decimal('hasVAT');
+            $table->decimal('totalPay');
+            $table->decimal('totalPaid');
             $table->dateTime('exportDate');
             $table->dateTime('invoiceDate');
             $table->dateTime('payDate');
@@ -35,6 +38,6 @@ class CreateInvoicesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('invoices');
+        Schema::drop('invoice_garages');
     }
 }
