@@ -387,8 +387,8 @@
                         "hideMethod": "fadeOut"
                     };
 
-                    //Event DateTimePicker
-                    $('#datetimepicker1').datetimepicker();
+
+
                 },
                 loadSelectBox: function (lstStatus) {
                     //reset selectbox
