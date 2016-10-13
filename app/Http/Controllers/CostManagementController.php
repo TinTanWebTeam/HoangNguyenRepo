@@ -101,6 +101,7 @@ class CostManagementController extends Controller
 
     public function postModifyFuelCost(Request $request)
     {
+        dd($request->get('_action'));
         $prices_price = null;
         $literNumber = null;
         $vehicle = null;
@@ -124,87 +125,91 @@ class CostManagementController extends Controller
             $timeFuel = $request->get('_object')['timeFuel'];
             $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
             $noted = $request->get('_object')['noted'];
-
         }
-
 
         switch ($action) {
             case "add":
-                $fuelCostsNew = new Cost();
-                $fuelCostsNew->cost = $totalCost;
-                $fuelCostsNew->literNumber = $literNumber;
-                $fuelCostsNew->dateRefuel = $datetime;
-                $fuelCostsNew->createdBy = Auth::user()->id;
-                $fuelCostsNew->updatedBy = Auth::user()->id;
-                $fuelCostsNew->note = $noted;
-                $fuelCostsNew->price_id = $prices_id;
-                $fuelCostsNew->vehicle_id = $vehicle;
+                try {
+                    $fuelCostsNew = new Cost();
+                    $fuelCostsNew->cost = $totalCost;
+                    $fuelCostsNew->literNumber = $literNumber;
+                    $fuelCostsNew->dateRefuel = $datetime;
+                    $fuelCostsNew->createdBy = Auth::user()->id;
+                    $fuelCostsNew->updatedBy = Auth::user()->id;
+                    $fuelCostsNew->note = $noted;
+                    $fuelCostsNew->price_id = $prices_id;
+                    $fuelCostsNew->vehicle_id = $vehicle;
+                    if ($fuelCostsNew->save()) {
+                        $costs = \DB::table('costs')
+                            ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+                            ->join('prices', 'prices.id', '=', 'costs.price_id')
+                            ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                            ->where('costs.active', 1)
+                            ->where('costs.id', $fuelCostsNew->id)
+                            ->where('prices.costPrice_id', 2)
+                            ->select(
+                                'prices.price as prices_price',
+                                'costs.*',
+                                'costs.note as noteCost ',
+                                'costs.cost as totalCost',
+                                'vehicles.areaCode as vehicles_code',
+                                'vehicles.vehicleNumber as vehicles_vehicleNumber')
+                            ->get();
 
-                if ($fuelCostsNew->save()) {
-                    $costs = \DB::table('costs')
-                        ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-                        ->join('prices', 'prices.id', '=', 'costs.price_id')
-                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
-                        ->where('costs.active', 1)
-                        ->where('costs.id', $fuelCostsNew->id)
-                        ->where('prices.costPrice_id', 2)
-                        ->select(
-                            'prices.price as prices_price',
-                            'costs.*',
-                            'costs.note as noteCost ',
-                            'costs.cost as totalCost',
-                            'vehicles.areaCode as vehicles_code',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber')
-                        ->get();
+                        $response = [
+                            'msg'       => 'Created vehicle',
+                            'tableCost' => $costs
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Create failed'], 404);
 
-                    $response = [
-                        'msg'       => 'Created vehicle',
-                        'tableCost' => $costs
-                    ];
-                    return response()->json($response, 201);
+                } catch (Exception $ex) {
+                    return $ex;
                 }
-                return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case "update":
+                try {
+                    $fuelCostsUpdate = Cost::findOrFail($request->get('_object')['id']);
+                    $fuelCostsUpdate->literNumber = $literNumber;
+                    $fuelCostsUpdate->cost = $totalCost;
+                    $fuelCostsUpdate->dateRefuel = $datetime;
+                    $fuelCostsUpdate->note = $noted;
+                    $fuelCostsUpdate->vehicle_id = $vehicle;
+                    $fuelCostsUpdate->price_id = $prices_id;
+                    $fuelCostsUpdate->updatedBy = Auth::user()->id;
+                    if ($fuelCostsUpdate->update()) {
 
-                $fuelCostsUpdate = Cost::findOrFail($request->get('_object')['id']);
-                $fuelCostsUpdate->literNumber = $literNumber;
-                $fuelCostsUpdate->cost = $totalCost;
-                $fuelCostsUpdate->dateRefuel = $datetime;
-                $fuelCostsUpdate->note = $noted;
-                $fuelCostsUpdate->vehicle_id = $vehicle;
-                $fuelCostsUpdate->price_id = $prices_id;
-                $fuelCostsUpdate->updatedBy = Auth::user()->id;
+                        $tableCost = \DB::table('costs')
+                            ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+                            ->join('prices', 'prices.id', '=', 'costs.price_id')
+                            ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                            ->where('costs.active', 1)
+                            ->where('costs.id', $request->get('_object')['id'])
+                            ->where('prices.costPrice_id', 2)
+                            ->select(
+                                'prices.price as prices_price',
+                                'costs.*',
+                                'costs.note as noteCost',
+                                'costs.cost as totalCost',
+                                'vehicles.areaCode as vehicles_code',
+                                'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                                'vehicles.note as vehicleNote')
+                            ->get();
 
-                if ($fuelCostsUpdate->update()) {
+                        $response = [
+                            'msg'       => 'Updated Cost',
+                            'tableCost' => $tableCost
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Update failed'], 404);
+                } catch (Exception $ex) {
 
-                    $tableCost = \DB::table('costs')
-                        ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-                        ->join('prices', 'prices.id', '=', 'costs.price_id')
-                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
-                        ->where('costs.active', 1)
-                        ->where('costs.id', $request->get('_object')['id'])
-                        ->where('prices.costPrice_id', 2)
-                        ->select(
-                            'prices.price as prices_price',
-                            'costs.*',
-                            'costs.note as noteCost',
-                            'costs.cost as totalCost',
-                            'vehicles.areaCode as vehicles_code',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                            'vehicles.note as vehicleNote')
-                        ->get();
-
-                    $response = [
-                        'msg'       => 'Updated Cost',
-                        'tableCost' => $tableCost
-                    ];
-                    return response()->json($response, 201);
+                    return $ex;
                 }
-                return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case "delete":
-
                 $costDelete = Cost::findOrFail($request->get('_object')['id']);
                 $costDelete->active = 0;
                 if ($costDelete->update()) {
@@ -219,6 +224,7 @@ class CostManagementController extends Controller
                 return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;
         }
+
 
     }
 
@@ -236,52 +242,67 @@ class CostManagementController extends Controller
         }
         switch ($action) {
             case "addFuelCost":
-                $pricesNew = new Price();
-                $pricesNew->price = $price;
-                $pricesNew->note = $note;
-                $pricesNew->costPrice_id = 2;
-                $pricesNew->createdBy = Auth::user()->id;
-                if ($pricesNew->save()) {
-                    $response = [
-                        'msg'    => 'Created price fuel',
-                        'prices' => $pricesNew
+                try {
+                    $pricesNew = new Price();
+                    $pricesNew->price = $price;
+                    $pricesNew->note = $note;
+                    $pricesNew->costPrice_id = 2;
+                    $pricesNew->createdBy = Auth::user()->id;
+                    if ($pricesNew->save()) {
+                        $response = [
+                            'msg'    => 'Created price fuel',
+                            'prices' => $pricesNew
 
-                    ];
-                    return response()->json($response, 201);
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Create failed'], 404);
+                } catch (Exception $ex) {
+                    return $ex;
                 }
-                return response()->json(['msg' => 'Create failed'], 404);
+
                 break;
             case "addPetroleum":
-                $pricesNew = new Price();
-                $pricesNew->price = $price;
-                $pricesNew->note = $note;
-                $pricesNew->costPrice_id = 3;
-                $pricesNew->createdBy = Auth::user()->id;
-                if ($pricesNew->save()) {
-                    $response = [
-                        'msg'    => 'Created price petroleum',
-                        'prices' => $pricesNew
+                try {
+                    $pricesNew = new Price();
+                    $pricesNew->price = $price;
+                    $pricesNew->note = $note;
+                    $pricesNew->costPrice_id = 3;
+                    $pricesNew->createdBy = Auth::user()->id;
+                    if ($pricesNew->save()) {
+                        $response = [
+                            'msg'    => 'Created price petroleum',
+                            'prices' => $pricesNew
 
-                    ];
-                    return response()->json($response, 201);
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Create failed'], 404);
+                } catch (Exception $ex) {
+                    return $ex;
                 }
-                return response()->json(['msg' => 'Create failed'], 404);
+
                 break;
             case "addParkingCost":
-                $pricesNew = new Price();
-                $pricesNew->price = $price;
-                $pricesNew->note = $note;
-                $pricesNew->costPrice_id = 4;
-                $pricesNew->createdBy = Auth::user()->id;
-                if ($pricesNew->save()) {
-                    $response = [
-                        'msg'    => 'Created Price Parking',
-                        'prices' => $pricesNew
+                try {
+                    $pricesNew = new Price();
+                    $pricesNew->price = $price;
+                    $pricesNew->note = $note;
+                    $pricesNew->costPrice_id = 4;
+                    $pricesNew->createdBy = Auth::user()->id;
+                    if ($pricesNew->save()) {
+                        $response = [
+                            'msg'    => 'Created Price Parking',
+                            'prices' => $pricesNew
 
-                    ];
-                    return response()->json($response, 201);
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Create failed'], 404);
+                } catch (Exception $ex) {
+                    return $ex;
                 }
-                return response()->json(['msg' => 'Create failed'], 404);
+
                 break;
 
             default:
@@ -310,21 +331,26 @@ class CostManagementController extends Controller
 
         switch ($action) {
             case "addVehicles":
-                $vehicleNew = new Vehicle();
-                $vehicleNew->areaCode = $areaCode;
-                $vehicleNew->vehicleNumber = $vehicleNumber;
-                $vehicleNew->size = $size;
-                $vehicleNew->weight = $weight;
-                $vehicleNew->vehicleType_id = $vehicleType_id;
-                $vehicleNew->garage_id = $garage_id;
-                if ($vehicleNew->save()) {
-                    $response = [
-                        'msg'        => 'Created price',
-                        'vehicleNew' => $vehicleNew
-                    ];
-                    return response()->json($response, 201);
+                try {
+                    $vehicleNew = new Vehicle();
+                    $vehicleNew->areaCode = $areaCode;
+                    $vehicleNew->vehicleNumber = $vehicleNumber;
+                    $vehicleNew->size = $size;
+                    $vehicleNew->weight = $weight;
+                    $vehicleNew->vehicleType_id = $vehicleType_id;
+                    $vehicleNew->garage_id = $garage_id;
+                    if ($vehicleNew->save()) {
+                        $response = [
+                            'msg'        => 'Created price',
+                            'vehicleNew' => $vehicleNew
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Create failed'], 404);
+                } catch (Exception $ex) {
+                    return $ex;
                 }
-                return response()->json(['msg' => 'Create failed'], 404);
+
                 break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
@@ -605,16 +631,6 @@ class CostManagementController extends Controller
             $ymdOut = Carbon::create($yearOut, $monthOut, $dayOut);
             $totalDate = $ymdOut->diffInMinutes($ymdIn);
 
-
-
-//
-//            $hourIn = substr($checkIn, 11, 2);
-//            $hourOut = substr($checkOut, 11, 2);
-//            $minIn = substr($checkIn, 14, 2);
-//            $minOut = substr($checkOut, 14, 2);
-//            $timeIn = Carbon::create($hourIn, $minIn);
-//            $timeOut = Carbon::create($hourOut, $minOut);
-//            $totalHour = $timeOut->diffInMinutes($timeIn);
 
         }
 

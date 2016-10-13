@@ -44,7 +44,7 @@
                         <li class="active">Phân tài</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="divisiveDriverView.addVehicleUser();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="divisiveDriverView.addVehicleUser();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                                                        ondblclick="divisiveDriverView.loadListVehicle()">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle"
+                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
                                                      onclick="divisiveDriverView.addVehicle()">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
@@ -127,7 +127,7 @@
                                                        readonly ondblclick="divisiveDriverView.loadListDriver()">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle"
+                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm mới tài xế"
                                                      onclick="divisiveDriverView.displayModal('show', '#modal-addDriver')">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
@@ -646,12 +646,12 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
                                     tr += '<div class="btn btn-success  btn-circle" onclick="divisiveDriverView.editVehicleUser(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Xóa">';
                                     tr += '<div class="btn btn-danger btn-circle" onclick="divisiveDriverView.deleteVehicleUser(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';

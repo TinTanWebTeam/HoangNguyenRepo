@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 45%;
+        top: 50%;
         display: none;
         right: 0;
         width: 40%;
@@ -21,22 +21,21 @@
         }
     }
 
-    #boxShadow {
-        -webkit-box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
-        -moz-box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
-        box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
+    #divControl .panel-body {
+        height: 256px;
     }
+
 </style>
 <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-body"><h5 id="modalContent"></h5></div>
             <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" name="modalClose"
-                        onclick="PositionView.cancelDelete()">Hủy
-                </button>
-                <button type="button" class="btn green" name="modalAgree"
+                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
                         onclick="PositionView.deletePosition()">Ðồng ý
+                </button>
+                <button type="button" class="btn default" name="modalClose"
+                        onclick="PositionView.cancelDelete()">Hủy
                 </button>
             </div>
         </div>
@@ -60,7 +59,8 @@
                         <li class="active">Chức vụ</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="PositionView.addNewPosition()">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="PositionView.addNewPosition()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -91,9 +91,9 @@
 <!-- Start #divControl -->
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
-        <div class="panel panel-primary" id="boxShadow">
+        <div class="panel panel-primary box-shadow">
             <div class="panel-heading">Thêm mới chức vụ
-                <div class="menu-toggles pull-right" onclick="PositionView.hide()">
+                <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="PositionView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
@@ -220,6 +220,9 @@
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut"
                     };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
                 },
                 validate: function () {
                     $("#formPosition").validate({
@@ -242,12 +245,12 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
                                     tr += '<div class="btn btn-success  btn-circle" onclick="PositionView.editPosition(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Xóa">';
                                     tr += '<div class="btn btn-danger btn-circle" onclick="PositionView.msgDelete(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
@@ -284,7 +287,7 @@
                     if (id) {
                         PositionView.idDelete = id;
                         $("div#modalConfirm").modal("show");
-                        $("div#modalContent").empty().append("Bạn có muốn xóa ?");
+                        $("h5#modalContent").empty().append("Bạn có muốn xóa chức vụ này ?");
                         $("button[name=modalAgree]").show();
                     }
                 },

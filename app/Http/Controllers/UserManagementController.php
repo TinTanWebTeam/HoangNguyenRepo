@@ -112,7 +112,6 @@ class UserManagementController extends Controller
                         $userNew->email = $user['email'];
                         $userNew->address = $user['address'];
                         $userNew->phone = $user['phone'];
-                        $userNew->note = $user['note'];
                         $userNew->birthday = $birthday;
                         $userNew->position_id = $user['position_id'];
                         if (!$userNew->save()) {
@@ -151,7 +150,6 @@ class UserManagementController extends Controller
                             $userUpdate->email = $request->get('_object')['email'];
                             $userUpdate->address = $user['address'];
                             $userUpdate->phone = $user['phone'];
-                            $userUpdate->note = $user['note'];
                             $userUpdate->birthday = $birthday;
                             $userUpdate->position_id = $request->get('_object')['position_id'];
                             if (!$userUpdate->save()) {

@@ -18,16 +18,17 @@
     }
 </style>
 
+
 <div class="modal fade" id="modalConfirm" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-body"><h5 id="modalContent"></h5></div>
             <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" name="modalClose"
-                        onclick="parkingCostView.cancelDelete()">Hủy
-                </button>
-                <button type="button" class="btn green" name="modalAgree"
+                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
                         onclick="parkingCostView.deleteParkingCost()">Ðồng ý
+                </button>
+                <button type="button" class="btn default" name="modalClose"
+                        onclick="parkingCostView.cancelDelete()">Hủy
                 </button>
             </div>
         </div>
@@ -36,6 +37,7 @@
     <!-- /.modal-dialog -->
 </div>
 {{--End Modal--}}
+
 
 
 <div class="row">
@@ -50,7 +52,7 @@
                         <li class="active">Đậu Bãi</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="parkingCostView.addParkingCost()">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="parkingCostView.addParkingCost()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -111,7 +113,7 @@
                                                        placeholder="click 2 lần để chọn xe">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle"
+                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
                                                      onclick="parkingCostView.createVehicle()">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
@@ -130,7 +132,7 @@
                                                        name="price" data-priceId="">
                                             </div>
                                             <div class="col-sm-3 col-xs-3">
-                                                <div class="btn btn-primary btn-sm btn-circle"
+                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
                                                      onclick="parkingCostView.displayModal('show', '#modal-addCostPrice')">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
@@ -506,7 +508,7 @@
                     if (id) {
                         parkingCostView.idDelete = id;
                         $("div#modalConfirm").modal("show");
-                        $("div#modalContent").empty().append("Bạn có muốn xóa ?");
+                        $("h5#modalContent").empty().append("Bạn có muốn xóa bãi đậu này ?");
                         $("button[name=modalAgree]").show();
                     }
                 },
@@ -729,11 +731,29 @@
 
                     var start = moment([yearIn,monthIn, dayIn]);
                     var end   = moment([yearOut,monthOut, dayOut ]);
-                    
-                   console.log(end.from(start, true));
 
 
 
+                   "in a day"
+                  console.log(start.to(new Date(end)));   // "in a day"
+                   console.log(start.to(end));          // "in a day"
+
+                    start.diff(end) // 86400000
+
+                    end.diff(start, 'days')
+//                    console.log(dateOut);
+//                    console.log(end.diff(start,'minute'));
+//                    var a = moment([2007, 0, 28]);
+//                    var b = moment([2007, 0, 29]);
+//                    start.from(end);                     // "a day ago"
+//                    a.from([2007, 0, 29]);         // "a day ago"
+//                    a.from(new Date(2007, 0, 29)); // "a day ago"
+//                    a.from("2007-01-29");          // "a day ago"
+//                   console.log(end.from(start, true));
+//                    console.log( start.from(end)  );
+
+
+//                   console.log(end.diff(start, 'days'));  // 1
 
 
 
@@ -802,7 +822,6 @@
                                 }
                                 parkingCostView.table.clear().rows.add(parkingCostView.tableParkingCost).draw();
                                 parkingCostView.clearInput();
-                                parkingCostView.renderDateTimePicker();
                             } else {
                                 parkingCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
@@ -851,12 +870,12 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
                                     tr += '<div class="btn btn-success  btn-circle" onclick="parkingCostView.editParkingCost(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Xóa">';
                                     tr += '<div class="btn btn-danger btn-circle" onclick="parkingCostView.msgDelete(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';

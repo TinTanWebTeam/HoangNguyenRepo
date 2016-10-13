@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 9%;
+        top: 10%;
         display: none;
         right: 0;
         width: 50%;
@@ -21,20 +21,21 @@
         }
     }
     #divControl .panel-body {
-        height: 530px;
+        height: 500px;
     }
 </style>
 <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-body"><h5 id="modalContent"></h5></div>
             <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" name="modalClose"
-                        onclick="userView.cancelDelete()">Hủy
-                </button>
-                <button type="button" class="btn green" name="modalAgree"
+                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
                         onclick="userView.deleteUser()">Ðồng ý
                 </button>
+                <button type="button" class="btn default" name="modalClose"
+                        onclick="userView.cancelDelete()">Hủy
+                </button>
+
             </div>
         </div>
         <!-- /.modal-content -->
@@ -56,7 +57,7 @@
                         <li class="active">Tài khoản</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="userView.addNewUser()">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="userView.addNewUser()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -92,20 +93,17 @@
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">Đăng ký người dùng
-                <div class="menu-toggles pull-right" onclick="userView.hide()">
+                <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="userView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body portlet-body">
                 <form role="form" id="formUser">
-
                     <div class="form-body">
                         <div class="form-group form-md-line-input">
                             <input type="hidden" class="form-control" id="id" value="">
                         </div>
-
                         <div class="col-md-12">
-
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
@@ -173,7 +171,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
@@ -203,18 +200,6 @@
                                     </div>
                                 </div>
 
-
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="note"><b>Ghi chú</b></label>
-                                        <input type="text" class="form-control"
-                                               id="note"
-                                               name="note"
-                                               placeholder="ghi chú">
-                                    </div>
-                                </div>
                             </div>
                             <div class="form-group form-md-line-input">
                                 <label><b>Phân Quyền</b></label>
@@ -353,14 +338,8 @@
                         $("input[id=password_confirmation]").val(userView.current[propertyName]);
                     }
 
-
                     var dateBirthday = moment(userView.current["birthday"], "YYYY-MM-DD");
                     $("input[id='birthday']").datepicker('update', dateBirthday.format("DD-MM-YYYY"));
-
-
-
-
-
                     userView.show();
                 },
 
@@ -376,7 +355,7 @@
                     if (id) {
                         userView.idDelete = id;
                         $("div#modalConfirm").modal("show");
-                        $("div#modalContent").empty().append("Bạn có muốn xóa ?");
+                        $("h5#modalContent").empty().append("Bạn có muốn xóa tài khoản này ?");
                         $("button[name=modalAgree]").show();
 
                     }
@@ -399,12 +378,12 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
                                     tr += '<div class="btn btn-success  btn-circle" onclick="userView.editUser(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Xóa">';
                                     tr += '<div class="btn btn-danger btn-circle" onclick="userView.msgDelete(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
@@ -449,17 +428,6 @@
                         userView.current.phone = $("input[id='phone']").val();
                         userView.current.birthday = $("input[id='birthday']").val();
                         userView.current['position_id'] = $("select[id='position_id']").val();
-
-
-
-//
-//                        fuelCostView.current.noted = $("input[id='noted']").val();
-//                        fuelCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
-//                        for (var propertyName in userView.current) {
-//                            if (propertyName != 'position_id')
-//                                userView.current[propertyName] = $("input[id=" + propertyName + "]").val();
-//                                userView.current[propertyName] = $("input[id=brithday]").val();
-//                        }
 
                     }
                 },

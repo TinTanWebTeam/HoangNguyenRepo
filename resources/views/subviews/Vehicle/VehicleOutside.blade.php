@@ -48,7 +48,7 @@
                         <li class="active">Nhà xe</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="garageView.addGarage();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="garageView.addGarage();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -287,12 +287,12 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
                                     tr += '<div class="btn btn-success  btn-circle" onclick="garageView.editGarage(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Xóa">';
                                     tr += '<div class="btn btn-danger btn-circle" onclick="garageView.deleteGarage(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';

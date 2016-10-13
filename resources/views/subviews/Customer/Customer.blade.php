@@ -41,7 +41,7 @@
                         <li class="active">Khách hàng</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" onclick="customerView.addCustomer();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="customerView.addCustomer();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
         <div class="panel panel-primary" id="boxShadow">
             <div class="panel-heading">Thêm mới khách hàng
-                <div class="menu-toggles pull-right" onclick="customerView.hideControl()">
+                <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="customerView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle"
+                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm loại khách hàng"
                                                      onclick="customerView.displayModal('show', '#modal-addCustomerType')">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
@@ -404,12 +404,12 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Chỉnh Sửa">';
                                     tr += '<div class="btn btn-success  btn-circle" onclick="customerView.editCustomer(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
+                                    tr += '<div class="btn-del-edit" title="Xóa">';
                                     tr += '<div class="btn btn-danger btn-circle" onclick="customerView.deleteCustomer(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
