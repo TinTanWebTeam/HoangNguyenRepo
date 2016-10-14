@@ -549,9 +549,12 @@
                     $("#modalConfirm").modal('hide');
                 },
                 deleteFuelCost: function () {
+
                     fuelCostView.action = 'delete';
                     fuelCostView.save();
                     $("#modalConfirm").modal('hide');
+
+
                 },
                 fillCurrentObjectToForm: function () {
                     var dateFuel = moment(fuelCostView.current["dateRefuel"], "YYYY-MM-DD");
@@ -646,6 +649,7 @@
                     fuelCostView.fillCurrentObjectToForm();
                     fuelCostView.action = 'update';
                     fuelCostView.show();
+                    fuelCostView.clearValidation();
 
                 },
                 fillDataToDatatable: function (data) {
@@ -756,25 +760,27 @@
                     });
 
                 },
+
                 save: function () {
                     fuelCostView.ValidateCost();
                     fuelCostView.fillFormDataToCurrentObject();
-                    var sendToServer = {
-                        _token: _token,
-                        _action: fuelCostView.action,
-                        _object: fuelCostView.current
-                    };
-                    if (fuelCostView.action == 'delete') {
-                        sendToServer._object = {
-                            id: fuelCostView.idDelete,
-                            vehicle_id: "1",
-                            literNumber: "1"
-                        };
-                    }
-
-
-
                     if ($("#formFuelCost").valid()) {
+                        var sendToServer = {
+                            _token: _token,
+                            _action: fuelCostView.action,
+                            _object: fuelCostView.current
+                        };
+                        if (fuelCostView.action != 'delete') {
+                            if ($("#vehicle_id").attr('data-id') == '') {
+                                fuelCostView.showNotification('warning', 'Vui lòng chọn xe có trong danh sách.');
+                                return;
+                            }
+                        } else {
+                            sendToServer._object = {
+                                id: fuelCostView.idDelete,
+                                vehicle_id: "delete",
+                            };
+                        }
                         $.ajax({
                             url: url + 'fuel-cost/modify',
                             type: "POST",
@@ -800,22 +806,21 @@
                                         fuelCostView.showNotification("success", "Cập nhật thành công!");
                                         fuelCostView.hide();
                                         break;
-                                    case 'delete':
-                                        alert('delete');
-                                        var costOld = _.find(fuelCostView.tableCost, function (o) {
-                                            return o.id == sendToServer._object.id;
-                                        });
-                                        var indexOfcostOld = _.indexOf(fuelCostView.tableCost, costOld);
-                                        fuelCostView.tableCost.splice(indexOfcostOld, 1);
-                                        fuelCostView.showNotification("success", "Xóa thành công!");
-                                        fuelCostView.displayModal("hide", "#modal-confirmDelete");
-                                        break;
+                                     case 'delete':
+
+                                    var costOld = _.find(fuelCostView.tableCost, function (o) {
+                                        return o.id == sendToServer._object.id;
+                                    });
+                                    var indexOfcostOld = _.indexOf(fuelCostView.tableCost, costOld);
+                                    fuelCostView.tableCost.splice(indexOfcostOld, 1);
+                                    fuelCostView.showNotification("success", "Xóa thành công!");
+                                    fuelCostView.displayModal("hide", "#modal-confirmDelete");
+                                    break;
                                     default:
                                         break;
                                 }
                                 fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
                                 fuelCostView.clearInput();
-                                fuelCostView.renderDateTimePicker();
                             } else {
                                 fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
@@ -826,6 +831,7 @@
                         $("form#formFuelCost").find("label[class=error]").css("color", "red");
                     }
                 },
+
 
                 loadListVehicles: function () {
                     $.ajax({
@@ -981,7 +987,7 @@
                         el.value = lstGarage[i]['id'];
                         select.appendChild(el);
                     }
-                }  ,
+                },
                 loadSelectBoxVehicleType: function (lstVehicleType) {
                     //reset selectbox
                     $('#vehicleType_id')

@@ -734,7 +734,6 @@
 
 
 
-                   "in a day"
                   console.log(start.to(new Date(end)));   // "in a day"
                    console.log(start.to(end));          // "in a day"
 
