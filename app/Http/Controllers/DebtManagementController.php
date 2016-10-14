@@ -8,7 +8,6 @@ use App\Transport;
 use Illuminate\Http\Request;
 use DB;
 
-use App\Http\Requests;
 use League\Flysystem\Exception;
 
 class DebtManagementController extends Controller
@@ -39,7 +38,7 @@ class DebtManagementController extends Controller
             ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-            ->whereRaw('transports.cashReceive < transports.cashRevenue')
+//            ->whereRaw('transports.cashReceive < transports.cashRevenue')
             ->where('transports.active', '=', '1')
             ->get();
 
@@ -60,6 +59,7 @@ class DebtManagementController extends Controller
 
     public function postModifyDebtCustomer(Request $request)
     {
+        //Trả đủ
         $transport_id = $request->input('_transport');
 
         try {

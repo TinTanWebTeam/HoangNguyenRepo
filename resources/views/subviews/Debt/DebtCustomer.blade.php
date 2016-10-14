@@ -40,7 +40,7 @@
                     </ol>
                     <div class="menu-toggle pull-right fixed">
                         <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn"
-                             onclick="debtCustomerView.createInvoiceCustomer()">
+                             onclick="debtCustomerView.createInvoiceCustomer(0)">
                             <i class="glyphicon glyphicon-list-alt icon-center"></i>
                         </div>
                     </div>
@@ -49,56 +49,123 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <p id="dateOnlySearch">
-                        <input type="text" class="date start"/> đến
-                        <input type="text" class="date end"/>
-                        <button onclick="debtCustomerView.searchFromDateToDate()" class="btn btn-sm btn-info"><i
-                                    class="fa fa-search" aria-hidden="true"></i> Tìm
-                        </button>
-                        <button onclick="debtCustomerView.clearSearch()" class="btn btn-sm btn-default"><i
-                                    class="fa fa-trash-o" aria-hidden="true"></i> Xóa
-                        </button>
-                    </p>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="table-data">
-                            <thead>
-                            <tr class="active">
-                                <th>Khách hàng</th>
-                                <th>Số xe</th>
-                                <th>Nơi giao</th>
-                                <th>Số chứng từ</th>
-                                <th>Doanh thu</th>
-                                <th>Nợ</th>
-                                <th>Người nhận</th>
-                                <th>Ngày nhận</th>
-                                <th>Thanh toán</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    <p class="lead text-primary text-left"><strong>Đơn hàng</strong></p>
+                    <div class="row">
+                        <div class="col-md-6" id="dateSearchTransport">
+                            <input type="text" class="date start"/> đến
+                            <input type="text" class="date end"/>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="custName_transport" name="custName_transport" placeholder="Nhập tên khách hàng">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="radio" id="invoice">
+                                <label style="margin-right: 10px"><input type="radio" name="optradio" checked
+                                                                         value="NotInvoice">Chưa xuất hóa đơn</label>
+                                <label><input type="radio" name="optradio" value="All">Tất cả</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="radio">
+                                <button onclick="debtCustomerView.searchTransport()"
+                                        class="btn btn-sm btn-info"><i
+                                            class="fa fa-search" aria-hidden="true"></i> Tìm
+                                </button>
+                                <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('transport')">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="table-data">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Khách hàng</th>
+                                        <th>Số xe</th>
+                                        <th>Nơi giao</th>
+                                        <th>Số chứng từ</th>
+                                        <th>Doanh thu</th>
+                                        <th>Nợ</th>
+                                        <th>Người nhận</th>
+                                        <th>Ngày nhận</th>
+                                        <th>Thanh toán</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
-                    <hr>
-                    <label class="text-primary">Hóa đơn khách hàng</label>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="table-customerInvoice">
-                            <thead>
-                            <tr class="active">
-                                <th>Mã hóa đơn</th>
-                                <th>Khách hàng</th>
-                                <th>Ngày xuất</th>
-                                <th>Ngày hóa đơn</th>
-                                <th>Tổng tiền</th>
-                                <th>Tổng trả</th>
-                                <th>Nợ</th>
-                            </tr>
-                            </thead>
-                            <tbody>
 
-                            </tbody>
-                        </table>
+                    <hr>
+                    <p class="lead text-primary text-left"><strong>Hóa đơn khách hàng</strong></p>
+                    <div class="row">
+                        <div class="col-md-7" id="dateSearchInvoice">
+                            <input type="text" class="date start"/> đến
+                            <input type="text" class="date end"/>
+                            <button onclick="debtCustomerView.searchFromDateToDate('invoice')"
+                                    class="btn btn-sm btn-info"><i
+                                        class="fa fa-search" aria-hidden="true"></i> Tìm
+                            </button>
+                            <button onclick="debtCustomerView.clearSearch('invoice')" class="btn btn-sm btn-default"><i
+                                        class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="custName_invoice" name="custName_invoice"
+                                   placeholder="Nhập tên khách hàng">
+                        </div>
+                        <div class="col-md-2">
+                            <div class="radio">
+                                <label><input type="radio" name="optradio2" checked>Còn nợ</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="optradio2">Trả đủ</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="table-customerInvoice">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Mã hóa đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>Ngày xuất</th>
+                                        <th>Ngày hóa đơn</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Tổng trả</th>
+                                        <th>Thanh toán</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>111</td>
+                                        <td>111</td>
+                                        <td>aaa</td>
+                                        <td>aaa</td>
+                                        <td>aa</td>
+                                        <td>aa</td>
+                                        <td>
+                                            <div class="btn btn-success btn-circle"
+                                                 onclick="debtCustomerView.createInvoiceCustomer(1)">
+                                                <i class="fa fa-usd" aria-hidden="true"></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -118,7 +185,7 @@
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6" id="frm-control">
                         <form role="form" id="frmInvoice">
                             <div class="form-body">
                                 <div class="row">
@@ -233,29 +300,61 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-6">
-                        <span class="text text-primary">Lịch sử</span>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
-                                <thead>
-                                <tr class="active">
-                                    <th>Ngày trả</th>
-                                    <th>Tiền trả</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
+                    <div class="col-md-6" id="tbl-history">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span class="text text-primary">Lịch sử</span>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
+                                        <thead>
+                                        <tr class="active">
+                                            <th>Ngày trả</th>
+                                            <th>Tiền trả</th>
+                                            <th>In</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>aaa</td>
+                                            <td>aaa</td>
+                                            <td>
+                                                <div class="btn btn-success btn-circle"
+                                                     onclick="debtCustomerView.createInvoiceCustomer(1)">
+                                                    <i class="fa fa-money" aria-hidden="true"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span class="text text-primary">Lịch sử in</span>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
+                                        <thead>
+                                        <tr class="active">
+                                            <th>Ngày in</th>
+                                            <th>Người in</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>aaa</td>
+                                            <td>aaa</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-</div>
 </div>
 <!-- End divInvoice -->
 
@@ -274,7 +373,16 @@
             current: null,
             currentInvoiceCustomer: null,
 
-            showControl: function () {
+            showControl: function (flag) {
+                if (flag == 0) {
+                    $('#divInvoice').css("width", "40%");
+                    $("#tbl-history").hide();
+                    $("#frm-control").removeClass("col-md-6").addClass("col-md-12");
+                } else {
+                    $('#divInvoice').css("width", "70%");
+                    $("#tbl-history").show();
+                    $("#frm-control").removeClass("col-md-12").addClass("col-md-6");
+                }
                 $('.menu-toggle').fadeOut();
                 $('#divInvoice').fadeIn(300);
             },
@@ -322,12 +430,9 @@
             },
 
             renderScrollbar: function () {
-                $("#divControl").find('.panel-body').mCustomScrollbar({
+                $("#divInvoice").find('.panel-body').mCustomScrollbar({
                     theme: "dark"
                 });
-//                $("#divInvoice").find('.panel-body').mCustomScrollbar({
-//                    theme: "dark"
-//                });
             },
             renderCustomToastr: function () {
                 toastr.options = {
@@ -349,13 +454,13 @@
                 };
             },
             renderDateTimePicker: function () {
-                $('#dateOnlySearch .date').datepicker({
+                $('#dateSearchTransport .date').datepicker({
                     'format': 'dd-mm-yyyy',
                     'autoclose': true
                 });
 
-                var dateOnlySearchEl = document.getElementById('dateOnlySearch');
-                var dateOnlyDatepair = new Datepair(dateOnlySearchEl);
+                var dateSearchTransportEl = document.getElementById('dateSearchTransport');
+                var dateOnlyDatepair = new Datepair(dateSearchTransportEl);
 
                 $('#divInvoice').find('.date').datepicker({
                     "setDate": new Date(),
@@ -422,7 +527,7 @@
                             render: function (data, type, full, meta) {
                                 var tr = '';
                                 tr += '<div class="btn btn-success btn-circle" title="Trả đủ" onclick="debtCustomerView.autoEditTransport(' + full.id + ')">';
-                                tr += '<i class="fa fa-money" aria-hidden="true"></i>';
+                                tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 return tr;
                             }
@@ -506,6 +611,48 @@
                                 return tr;
                             }
                         }
+                    ],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            extend: 'copyHtml5',
+                            text: 'Sao chép',
+                            exportOptions: {
+                                columns: [0, ':visible']
+                            }
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: 'Xuất Excel',
+                            exportOptions: {
+                                columns: ':visible'
+                            },
+                            customize: function (xlsx) {
+                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            text: 'Xuất PDF',
+                            message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
+                            customize: function (doc) {
+                                doc.content.splice(0, 1);
+                                doc.styles.tableBodyEven.alignment = 'center';
+                                doc.styles.tableBodyOdd.alignment = 'center';
+                                doc.content.columnGap = 10;
+                                doc.pageOrientation = 'landscape';
+                                for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                    for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                        doc.content[1].table.body[i].splice(6, 1);
+                                    }
+                                }
+                                doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
+                            }
+                        },
+                        {
+                            extend: 'colvis',
+                            text: 'Ẩn cột'
+                        }
                     ]
                 })
             },
@@ -569,8 +716,8 @@
                 debtCustomerView.action = 'autoEdit';
                 debtCustomerView.save();
             },
-            createInvoiceCustomer: function () {
-                debtCustomerView.showControl();
+            createInvoiceCustomer: function (flag) {
+                debtCustomerView.showControl(flag);
 
                 var totalPaid = 0, totalPay = 0;
                 for (var i = 0; i < debtCustomerView.dataSearch.length; i++) {
@@ -670,31 +817,111 @@
                 }
             },
 
-            searchFromDateToDate: function () {
-                var fromDate = $("#dateOnlySearch").find(".start").val();
-                var toDate = $("#dateOnlySearch").find(".end").val();
-                fromDate = moment(fromDate, "DD-MM-YYYY");
-                toDate = moment(toDate, "DD-MM-YYYY");
-
-                if (fromDate.isValid() && toDate.isValid()) {
-                    var found = _.filter(debtCustomerView.dataTransport, function (o) {
-                        var find = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-                        return moment(find).isBetween(fromDate, toDate, null, '[]');
-                    });
-                    debtCustomerView.dataSearch = found;
-                    debtCustomerView.table.clear().rows.add(found).draw();
+            clearSearch: function (tableName) {
+                if (tableName == "transport") {
+                    $("#dateSearchTransport").find(".start").datepicker('update', '');
+                    $("#dateSearchTransport").find(".end").datepicker('update', '');
+                    debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
                 } else {
-                    debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                    $("#dateSearchInvoice").find(".start").datepicker('update', '');
+                    $("#dateSearchInvoice").find(".end").datepicker('update', '');
+//                    debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
                 }
+
             },
-            clearSearch: function () {
-                $("#dateOnlySearch").find(".start").datepicker('update', '');
-                $("#dateOnlySearch").find(".end").datepicker('update', '');
-                debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
+            searchTransport: function () {
+                //Customer Name
+                custName = $("#custName_transport").val();
+                if(custName == '') delete custName;
+
+                //Invoice Id
+                invoice = $("#invoice").find("input:checked").val();
+                if (invoice == 'All') delete invoice;
+
+                //Date to date
+                fromDate = $("#dateSearchTransport").find(".start").val();
+                toDate = $("#dateSearchTransport").find(".end").val();
+
+                if (fromDate == '' && toDate == ''){
+                    delete fromDate;
+                    delete toDate;
+                } else{
+                    fromDate = moment(fromDate, "DD-MM-YYYY");
+                    toDate = moment(toDate, "DD-MM-YYYY");
+                    if (!fromDate.isValid() && !toDate.isValid()) {
+                        debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                        return;
+                    }
+                }
+
+                var data = debtCustomerView.dataSearch;
+                if(data.length == 0)
+                    data = debtCustomerView.dataTransport;
+                var found = _.filter(data, function (o) {
+                    if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
+                            && typeof custName !== 'undefined'
+                            && typeof invoice !== 'undefined'){
+                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
+                                && o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
+                                && o.invoiceCustomer_id == null);
+                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
+                            && typeof custName === 'undefined'
+                            && typeof invoice === 'undefined'){
+                        return false;
+                    } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
+                            && typeof custName === 'undefined'
+                            && typeof invoice !== 'undefined'){
+                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
+                        && o.invoiceCustomer_id == null);
+                    } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
+                            && typeof custName !== 'undefined'
+                            && typeof invoice === 'undefined'){
+                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
+                        && o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
+                            && typeof custName !== 'undefined'
+                            && typeof invoice !== 'undefined'){
+                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
+                                && o.invoiceCustomer_id == null);
+                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
+                            && typeof custName === 'undefined'
+                            && typeof invoice !== 'undefined'){
+                        return false;
+                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
+                            && typeof custName !== 'undefined'
+                            && typeof invoice === 'undefined'){
+                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                    }else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
+                            && typeof custName === 'undefined'
+                            && typeof invoice === 'undefined'){
+                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]'));
+                    }
+                });
+                if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
+                        && typeof custName === 'undefined'
+                        && typeof invoice === 'undefined'){
+                    found = debtCustomerView.dataTransport;
+                } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
+                        && typeof custName === 'undefined'
+                        && typeof invoice !== 'undefined'){
+                    found = _.filter(debtCustomerView.dataTransport, function(o){
+                       return (o.invoiceCustomer_id == null);
+                    });
+                }
+                debtCustomerView.dataSearch = found;
+                debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
             }
         };
         debtCustomerView.loadData();
     } else {
         debtCustomerView.loadData();
     }
+
+    $('input[type=radio][name=optradio]').change(function () {
+        debtCustomerView.searchTransport();
+    });
 </script>
