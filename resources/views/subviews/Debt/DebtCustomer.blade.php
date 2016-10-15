@@ -85,6 +85,7 @@
                                 <table class="table table-bordered table-hover" id="table-data">
                                     <thead>
                                     <tr class="active">
+                                        <th>Mã đơn hàng</th>
                                         <th>Khách hàng</th>
                                         <th>Số xe</th>
                                         <th>Nơi giao</th>
@@ -378,6 +379,7 @@
 
             current: null,
             currentInvoiceCustomer: null,
+            array_transportId: [],
 
             showControl: function (flag) {
                 if (flag == 0) {
@@ -510,6 +512,7 @@
                     language: languageOptions,
                     data: data,
                     columns: [
+                        {data: 'id'},
                         {data: 'customers_fullName'},
                         {data: 'fullNumber'},
                         {data: 'deliveryPlace'},
@@ -726,15 +729,24 @@
                 debtCustomerView.showControl(flag);
 
                 var totalPaid = 0, totalPay = 0;
-                for (var i = 0; i < debtCustomerView.dataSearch.length; i++) {
-                    totalPay += parseInt(debtCustomerView.dataSearch[i]['cashRevenue']);
-                    totalPaid += parseInt(debtCustomerView.dataSearch[i]['cashReceive']);
+                debtCustomerView.getListCurrentRowTransport();
+                for(var i = 0; i < debtCustomerView.array_transportId.length; i++ ){
+                    var currentRow = _.find(debtCustomerView.dataTransport, function(o){
+                        return o.id == debtCustomerView.array_transportId[i];
+                    });
+
+                    if(typeof currentRow !== 'undefined'){
+                        totalPay += parseInt(currentRow['cashRevenue']);
+                        totalPaid += parseInt(currentRow['cashReceive']);
+                    }
                 }
                 var debt = totalPay - totalPaid;
                 $("input[id=totalPay]").val(totalPay);
                 $("input[id=debt]").val(debt);
 
-//                debtCustomerView.fillDataToDatatableHistory();
+                if(flag != 0){
+                    debtCustomerView.fillDataToDatatableHistory();
+                }
             },
 
             formValidate: function () {
@@ -790,12 +802,10 @@
                 if ($("#frmInvoice").valid()) {
                     debtCustomerView.fillFormDataToCurrentObject();
 
-                    var array_transportId = _.map(debtCustomerView.dataSearch, 'id');
-
                     var sendToServer = {
                         _token: _token,
                         _invoiceCustomer: debtCustomerView.currentInvoiceCustomer,
-                        _array_transportId: array_transportId
+                        _array_transportId: debtCustomerView.array_transportId
                     };
                     console.log("CLIENT");
                     console.log(sendToServer);
@@ -1008,6 +1018,11 @@
                 }
                 debtCustomerView.dataSearchInvoiceCustomer = found;
                 debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataSearchInvoiceCustomer).draw();
+            },
+            getListCurrentRowTransport: function() {
+                $(debtCustomerView.table.$('tr', {"filter":"applied"}).each( function () {
+                    debtCustomerView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
+                } ));
             }
         };
         debtCustomerView.loadData();
