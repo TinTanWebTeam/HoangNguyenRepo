@@ -15,7 +15,7 @@ class CreateInvoiceGarageDetailsTable extends Migration
         Schema::create('invoiceGarageDetails', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('invoiceGarage_id');
-            $table->decimal('paidAmt');
+            $table->decimal('paidAmt', 18, 0)->default(0);
             $table->dateTime('payDate');
             $table->boolean('modify');
             $table->integer('createdBy');

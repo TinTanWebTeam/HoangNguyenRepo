@@ -15,7 +15,7 @@ class CreateInvoiceCustomerDetailsTable extends Migration
         Schema::create('invoiceCustomerDetails', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('invoiceCustomer_id');
-            $table->decimal('paidAmt');
+            $table->decimal('paidAmt', 18, 0)->default(0);
             $table->dateTime('payDate');
             $table->boolean('modify');
             $table->integer('createdBy');

@@ -68,5 +68,16 @@ class CustomerTableSeeder extends Seeder
             'taxCode' => '0303551493',
             'customerType_id' => '1'
         ]);
+        Customer::create([
+            'fullName' => 'CTY PHẦN MỀM TIN TẤN',
+            'address'  => '662 Le Quang Dinh',
+            'phone'    => '09000000',
+            'email'    => 'thkhanh@tintansoft.com',
+            'note'     => '',
+            'createdBy'=> '1',
+            'updatedBy' => '1',
+            'taxCode' => '0303551493',
+            'customerType_id' => '1'
+        ]);
     }
 }

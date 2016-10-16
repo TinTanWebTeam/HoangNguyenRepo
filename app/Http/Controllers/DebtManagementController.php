@@ -7,6 +7,7 @@ use App\InvoiceCustomerDetail;
 use App\Transport;
 use Illuminate\Http\Request;
 use DB;
+use Carbon\Carbon;
 
 use League\Flysystem\Exception;
 
@@ -47,12 +48,23 @@ class DebtManagementController extends Controller
             ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
             ->join('customers', 'customers.id', '=', 'transports.customer_id')
             ->where('invoiceCustomers.active', '=', '1')
+            ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
+            ->get();
+
+        $invoiceCustomerDetails = DB::table('invoiceCustomerDetails')
+            ->get();
+
+        $printHistories = DB::table('printHistories')
+            ->join('users', 'users.id', '=', 'printHistories.updatedBy')
+            ->select('printHistories.*', 'users.fullName as users_fullName')
             ->get();
 
         $response = [
             'msg'        => 'Get list all Transport',
             'transports' => $transports,
-            'invoiceCustomers' => $invoiceCustomers
+            'invoiceCustomers' => $invoiceCustomers,
+            'invoiceCustomerDetails' => $invoiceCustomerDetails,
+            'printHistories' => $printHistories
         ];
         return response()->json($response, 200);
     }
@@ -113,19 +125,25 @@ class DebtManagementController extends Controller
     public function postModifyInvoiceCustomer(Request $request)
     {
         $array_transportId = $request->input('_array_transportId');
-        dd($request->input('_invoiceCustomer'));
 
         $invoiceCustomer = new InvoiceCustomer();
         $invoiceCustomer->invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
         $invoiceCustomer->VAT = $request->input('_invoiceCustomer')['VAT'];
         $invoiceCustomer->notVAT = $request->input('_invoiceCustomer')['notVAT'];
         $invoiceCustomer->hasVAT = $request->input('_invoiceCustomer')['hasVAT'];
-        $invoiceCustomer->exportDate = $request->input('_invoiceCustomer')['exportDate'];
-        $invoiceCustomer->invoiceDate = $request->input('_invoiceCustomer')['invoiceDate'];
-        $invoiceCustomer->payDate = $request->input('_invoiceCustomer')['payDate'];
+
+        $exportDate = $request->input('_invoiceCustomer')['exportDate'];
+        $invoiceCustomer->exportDate = Carbon::createFromFormat('d-m-Y', $exportDate)->toDateTimeString();
+
+        $invoiceDate = $request->input('_invoiceCustomer')['invoiceDate'];
+        $invoiceCustomer->invoiceDate = Carbon::createFromFormat('d-m-Y', $invoiceDate)->toDateTimeString();
+
+        $payDate = $request->input('_invoiceCustomer')['payDate'];
+        $invoiceCustomer->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
+
         $invoiceCustomer->note = $request->input('_invoiceCustomer')['note'];
         $invoiceCustomer->totalPay = $request->input('_invoiceCustomer')['totalPay'];
-        $invoiceCustomer->totalPaid = $request->input('_invoiceCustomer')['totalPaid'];
+        $invoiceCustomer->totalPaid = $request->input('_invoiceCustomer')['paidAmt'];
         $invoiceCustomer->createdBy = \Auth::user()->id;
         $invoiceCustomer->updatedBy = \Auth::user()->id;
 
@@ -139,30 +157,47 @@ class DebtManagementController extends Controller
             $invoiceCustomerDetail = new InvoiceCustomerDetail();
             $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
             $invoiceCustomerDetail->paidAmt = $request->input('_invoiceCustomer')['paidAmt'];
-            $invoiceCustomerDetail->payDate = $request->input('_invoiceCustomer')['payDate'];
+
+            $payDate = $request->input('_invoiceCustomer')['payDate'];
+            $invoiceCustomerDetail->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
+
             $invoiceCustomerDetail->modify = false;
             $invoiceCustomerDetail->createdBy = \Auth::user()->id;
             $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
 
-            if(!$invoiceCustomerDetail->update()){
+            if(!$invoiceCustomerDetail->save()){
                 DB::rollBack();
                 return response()->json(['msg' => 'Create InvoiceCustomerDetail fail!'], 404);
             }
 
             foreach ($array_transportId as $transport_id){
                 $transportUpdate = Transport::find($transport_id);
-                $transportUpdate->invoice_id = $invoiceCustomer->id;
+                $transportUpdate->invoiceCustomer_id = $invoiceCustomer->id;
                 $transportUpdate->status_customer = 7;
+                $transportUpdate->updatedBy = \Auth::user()->id;
 
-                if(!$transportUpdate->update()){
+                if(!$transportUpdate->save()){
                     DB::rollBack();
                     return response()->json(['msg' => 'Update transport fail!'], 404);
                 }
             }
 
             DB::commit();
+
+            $invoiceCustomer = DB::table('invoiceCustomers')
+                ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                ->join('customers', 'customers.id', '=', 'transports.customer_id')
+                ->where([
+                    ['invoiceCustomers.id', '=', $invoiceCustomer->id],
+                    ['invoiceCustomers.active', '=', '1']
+                ])
+                ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
+                ->first();
+
             $response = [
-                'msg' => 'Create Invoice successful!'
+                'msg' => 'Create Invoice successful!',
+                'invoiceCustomer' => $invoiceCustomer,
+                'invoiceCustomerDetail' => $invoiceCustomerDetail
             ];
             return response()->json($response, 201);
         }catch (Exception $ex){
