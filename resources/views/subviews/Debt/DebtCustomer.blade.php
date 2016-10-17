@@ -406,6 +406,7 @@
             transportId: null,
             invoiceCustomerId: null,
             action: null,
+            invoiceCode: null,
 
             showControl: function (flag) {
                 if (flag == 0) {
@@ -433,22 +434,6 @@
 
                 //Clear Validate
             },
-            showNotification: function (type, msg) {
-                switch (type) {
-                    case "info":
-                        toastr.info(msg);
-                        break;
-                    case "success":
-                        toastr.success(msg);
-                        break;
-                    case "warning":
-                        toastr.warning(msg);
-                        break;
-                    case "error":
-                        toastr.error(msg);
-                        break;
-                }
-            },
             clearInput: function () {
                 $("input[id='invoiceCode']").val('');
                 $("input[id='totalPay']").val('');
@@ -468,33 +453,15 @@
                     theme: "dark"
                 });
             },
-            renderCustomToastr: function () {
-                toastr.options = {
-                    "closeButton": true,
-                    "debug": false,
-                    "newestOnTop": true,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "2000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                };
-            },
             renderDateTimePicker: function () {
                 $('#dateSearchTransport .date').datepicker({
                     'format': 'dd-mm-yyyy',
                     'autoclose': true
                 });
-
-                var dateSearchTransportEl = document.getElementById('dateSearchTransport');
-                var dateOnlyDatepair = new Datepair(dateSearchTransportEl);
+                $('#dateSearchInvoice .date').datepicker({
+                    'format': 'dd-mm-yyyy',
+                    'autoclose': true
+                });
 
                 $('#divInvoice').find('.date').datepicker({
                     "setDate": new Date(),
@@ -515,7 +482,7 @@
                     }
                 });
 
-                $('input[type=radio][name=rdoInvoice]').change(function () {
+                $('input[type="radio"][name=rdoInvoice]').on('change', function(e) {
                     debtCustomerView.searchInvoice();
                 });
             },
@@ -758,22 +725,24 @@
                         debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
 
                         debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                        debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
                         debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
 
                         debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
                         debtCustomerView.dataPrintHistory = data['printHistories'];
 
+                        debtCustomerView.invoiceCode = data['invoiceCode'];
+
                         debtCustomerView.searchTransport();
                     } else {
-                        debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                 });
 
                 debtCustomerView.renderDateTimePicker();
                 debtCustomerView.renderScrollbar();
-                debtCustomerView.renderCustomToastr();
                 debtCustomerView.renderEventRadioInput();
             },
             fillCurrentObjectToForm: function () {
@@ -842,6 +811,7 @@
                     $("input[id=totalPay]").val(totalPay);
                     $("input[id=debt]").val(debt);
                     $("input[id=prePaid]").val(totalPaid);
+                    $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
 
                     //remove readly input
                     $("input[id=invoiceCode]").prop('readonly', false);
@@ -945,13 +915,13 @@
                         debtCustomerView.clearInput();
 
                         //Show notification
-                        debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                        showNotification("success", "Thanh toán thành công!");
                         debtCustomerView.displayModal("hide", "#modal-confirmDelete");
                     } else {
-                        debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                 });
             },
             saveInvoiceCustomer: function () {
@@ -978,6 +948,7 @@
                         if (jqXHR.status == 201) {
                             var invoiceCustomer = data['invoiceCustomer'];
                             var invoiceCustomerDetail = data['invoiceCustomerDetail'];
+                            debtCustomerView.invoiceCode = data['invoiceCode'];
                             invoiceCustomer.debt = invoiceCustomer['totalPay'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
 
                             if(debtCustomerView.action == 'new'){
@@ -1008,7 +979,7 @@
                                 debtCustomerView.hideControl();
 
                                 //Show notification
-                                debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                                showNotification("success", "Thanh toán thành công!");
                             } else {
                                 //Remove & Add InvoiceCustomer
                                 var Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
@@ -1032,15 +1003,17 @@
                                 $("input[id=paidAmt]").val('');
                                 $("input[id=note]").val('');
 
+                                $("input[id=debt]").val(parseInt($("input[id=debt]").val()) - parseInt(sendToServer._invoiceCustomer['paidAmt']));
+
                                 //Show notification
-                                debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                                showNotification("success", "Thanh toán thành công!");
                             }
 
                         } else {
-                            debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 } else {
                     $("form#frmInvoice").find("label[class=error]").css("color", "red");
@@ -1087,7 +1060,7 @@
                     fromDate = moment(fromDate, "DD-MM-YYYY");
                     toDate = moment(toDate, "DD-MM-YYYY");
                     if (!fromDate.isValid() && !toDate.isValid()) {
-                        debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                        showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
                         return;
                     }
                 }
@@ -1101,7 +1074,7 @@
                             && typeof invoice !== 'undefined'){
                         var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                                && o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
+                                && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
                                 && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
@@ -1118,11 +1091,11 @@
                             && typeof invoice === 'undefined'){
                         var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase())));
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice !== 'undefined'){
-                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
+                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
                                 && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
@@ -1131,7 +1104,7 @@
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice === 'undefined'){
-                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase())));
                     }else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName === 'undefined'
                             && typeof invoice === 'undefined'){
@@ -1173,7 +1146,7 @@
                     fromDate = moment(fromDate, "DD-MM-YYYY");
                     toDate = moment(toDate, "DD-MM-YYYY");
                     if (!fromDate.isValid() && !toDate.isValid()) {
-                        debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                        showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
                         return;
                     }
                 }
@@ -1185,9 +1158,9 @@
                     if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice !== 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
+                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
                         && o.invoiceCustomer_id == null);
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
@@ -1196,19 +1169,19 @@
                     } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName === 'undefined'
                             && typeof invoice !== 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
                         && o.invoiceCustomer_id == null);
                     } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice === 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase())));
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice !== 'undefined'){
-                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
+                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
                         && o.invoiceCustomer_id == null);
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
@@ -1217,11 +1190,11 @@
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice === 'undefined'){
-                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase())));
                     }else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName === 'undefined'
                             && typeof invoice === 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]'));
                     }
                 });
