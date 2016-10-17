@@ -20,6 +20,7 @@ class CreateInvoiceGarageDetailsTable extends Migration
             $table->boolean('modify');
             $table->integer('createdBy');
             $table->integer('updatedBy');
+            $table->string('fileName')->nullable();
             $table->timestamps();
         });
     }

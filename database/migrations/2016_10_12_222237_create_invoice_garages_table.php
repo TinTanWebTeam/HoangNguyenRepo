@@ -19,6 +19,7 @@ class CreateInvoiceGaragesTable extends Migration
             $table->decimal('notVAT', 18, 0)->default(0);
             $table->decimal('hasVAT', 18, 0)->default(0);
             $table->decimal('totalPay', 18, 0)->default(0);
+            $table->decimal('prePaid', 18, 0)->default(0);
             $table->decimal('totalPaid', 18, 0)->default(0);
             $table->dateTime('exportDate');
             $table->dateTime('invoiceDate');

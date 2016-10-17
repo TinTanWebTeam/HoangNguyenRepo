@@ -143,6 +143,7 @@ class DebtManagementController extends Controller
 
         $invoiceCustomer->note = $request->input('_invoiceCustomer')['note'];
         $invoiceCustomer->totalPay = $request->input('_invoiceCustomer')['totalPay'];
+        $invoiceCustomer->prePaid = $request->input('_invoiceCustomer')['prePaid'];
         $invoiceCustomer->totalPaid = $request->input('_invoiceCustomer')['paidAmt'];
         $invoiceCustomer->createdBy = \Auth::user()->id;
         $invoiceCustomer->updatedBy = \Auth::user()->id;
