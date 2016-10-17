@@ -151,7 +151,7 @@
                                         <th>Tổng tiền</th>
                                         <th>Tổng trả</th>
                                         <th>Nợ</th>
-                                        <th>Thanh toán</th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -297,7 +297,7 @@
                     <div class="col-md-6" id="tbl-history">
                         <div class="row">
                             <div class="col-md-12">
-                                <span class="text text-primary">Lịch sử</span>
+                                <span class="text text-primary">Lịch sử trả nợ</span>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
                                         <thead>
@@ -342,6 +342,37 @@
 </div>
 <!-- End divInvoice -->
 
+<!-- Modal confirm tra du -->
+<div class="row">
+    <div id="modal-confirmDelete" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Có chắc muốn trả đủ cho đơn hàng này?</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
+                            <button type="button" class="btn btn-primary marginRight"
+                                    onclick="debtCustomerView.autoEditTransport()">
+                                Đồng ý
+                            </button>
+                            <button type="button" class="btn default"
+                                    onclick="debtCustomerView.transportId = null;debtCustomerView.displayModal('hide','#modal-confirmDelete')">
+                                Huỷ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal confirm tra du -->
+
 <script>
     if (typeof debtCustomerView === 'undefined') {
         debtCustomerView = {
@@ -361,6 +392,7 @@
             current: null,
             currentInvoiceCustomer: null,
             array_transportId: [],
+            transportId: null,
 
             showControl: function (flag) {
                 if (flag == 0) {
@@ -375,7 +407,7 @@
                 $('.menu-toggle').fadeOut();
                 $('#divInvoice').fadeIn(300);
             },
-            hideControl: function (idDiv) {
+            hideControl: function () {
                 $('#divInvoice').fadeOut(300, function () {
                     $('.menu-toggle').fadeIn();
                 });
@@ -508,7 +540,7 @@
                         {
                             render: function (data, type, full, meta) {
                                 var tr = '';
-                                tr += '<div class="btn btn-success btn-circle" title="Trả đủ" onclick="debtCustomerView.autoEditTransport(' + full.id + ')">';
+                                tr += "<div class='btn btn-success btn-circle' title='Trả đủ' onclick='debtCustomerView.transportId = "+full.id+";debtCustomerView.displayModal(\"show\", \"#modal-confirmDelete\")'>";
                                 tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 return tr;
@@ -589,7 +621,7 @@
                             render: function (data, type, full, meta) {
                                 var tr = '';
                                 tr += '<div class="btn btn-primary btn-circle" title="Xem lịch sử" onclick="debtCustomerView.createInvoiceCustomer(1, '+full.id+')">';
-                                tr += '<i class="glyphicon glyphicon-credit-card"></i>';
+                                tr += '<i class="fa fa-eye" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 return tr;
                             }
@@ -640,6 +672,9 @@
                 })
             },
             fillDataToDatatableInvoiceCustomerDetail: function (data) {
+                if (debtCustomerView.tableInvoiceCustomerDetail != null) {
+                    debtCustomerView.tableInvoiceCustomerDetail.destroy();
+                }
                 debtCustomerView.tableInvoiceCustomerDetail = $('#table-invoiceCustomerDetail').DataTable({
                     language: languageOptions,
                     data: data,
@@ -658,8 +693,8 @@
                         {
                             render: function (data, type, full, meta) {
                                 var tr = '';
-                                tr += '<div class="btn btn-primary btn-circle" title="In" onclick="">';
-                                tr += '<i class="glyphicon glyphicon-credit-card"></i>';
+                                tr += '<div class="btn btn-primary btn-circle" title="In" onclick="debtCustomerView.printInvoice()">';
+                                tr += '<span class="glyphicon glyphicon-print" aria-hidden="true"></span>';
                                 tr += '</div>';
                                 return tr;
                             }
@@ -668,6 +703,9 @@
                 })
             },
             fillDataToDatatablePrintHistory: function(data){
+                if (debtCustomerView.tablePrintHistory != null) {
+                    debtCustomerView.tablePrintHistory.destroy();
+                }
                 debtCustomerView.tablePrintHistory = $('#table-printHistory').DataTable({
                     language: languageOptions,
                     data: data,
@@ -701,6 +739,8 @@
 
                         debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
                         debtCustomerView.dataPrintHistory = data['printHistories'];
+
+                        debtCustomerView.searchTransport();
                     } else {
                         debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     }
@@ -749,10 +789,10 @@
                 }
             },
 
-            autoEditTransport: function (id) {
+            autoEditTransport: function () {
                 debtCustomerView.current = null;
                 debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
-                    return o.id == id;
+                    return o.id == debtCustomerView.transportId;
                 }), true);
                 debtCustomerView.action = 'autoEdit';
                 debtCustomerView.save();
@@ -777,12 +817,33 @@
                     $("input[id=totalPay]").val(totalPay);
                     $("input[id=debt]").val(debt);
                 } else {
+                    //fill data to table InvoiceCustomerDetail
                     if(typeof invoiceCustomer_id === 'undefined') return;
                     var data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
                        return o.invoiceCustomer_id == invoiceCustomer_id;
                     });
                     if(typeof data === 'undefined') return;
                     debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(data);
+
+                    //fill data to table PrintHistory
+                    var data2 = [];
+                    for(var i = 0; i < data.length; i++){
+                        var found = _.find(debtCustomerView.dataPrintHistory, function(o){
+                            return o.invoiceCustomerDetail_id == data[i]['id'];
+                        });
+                        if(typeof found !== 'undefined')
+                            data2.push(found);
+                    }
+                    debtCustomerView.fillDataToDatatablePrintHistory(data2);
+
+                    //load data to input
+                    var rowInvoiceCustomer = _.find(debtCustomerView.dataInvoiceCustomer, function(o){
+                        return o.id == invoiceCustomer_id;
+                    });
+                    if(typeof rowInvoiceCustomer === 'undefined') return;
+                    var debt = parseInt(rowInvoiceCustomer['totalPay']) - parseInt(rowInvoiceCustomer['totalPaid']);
+                    $("input[id=totalPay]").val(rowInvoiceCustomer['totalPay']);
+                    $("input[id=debt]").val(debt);
                 }
             },
 
@@ -817,16 +878,28 @@
                     console.log("SERVER");
                     console.log(data);
                     if (jqXHR.status == 201) {
+                        //Remove and Add Transport
                         var Old = _.find(debtCustomerView.dataTransport, function (o) {
                             return o.id == sendToServer._transport;
                         });
                         var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
-                        debtCustomerView.dataTransport.splice(indexOfOld, 1);
+                        data['transport'].fullNumber = data['transport']['areaCode'] + ' ' + data['transport']['vehicleNumber'];
+                        data['transport'].debt = data['transport']['cashRevenue'] - data['transport']['cashReceive'];
+                        debtCustomerView.dataTransport.splice(indexOfOld, 1, data['transport']);
+
+                        //reload 2 table
+                        debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
+
+                        //call search Method
+                        debtCustomerView.dataSearch = debtCustomerView.dataTransport;
+                        debtCustomerView.searchTransport();
+
+                        //clear Input
+                        debtCustomerView.clearInput();
+
+                        //Show notification
                         debtCustomerView.showNotification("success", "Thanh toán thành công!");
                         debtCustomerView.displayModal("hide", "#modal-confirmDelete");
-
-                        debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
-                        debtCustomerView.clearInput();
                     } else {
                         debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                     }
@@ -883,6 +956,10 @@
 
                             //clear Input
                             debtCustomerView.clearInput();
+                            debtCustomerView.hideControl();
+
+                            //Show notification
+                            debtCustomerView.showNotification("success", "Thanh toán thành công!");
                         } else {
                             debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -892,6 +969,9 @@
                 } else {
                     $("form#frmInvoice").find("label[class=error]").css("color", "red");
                 }
+            },
+            printInvoice: function() {
+                alert('in hoa don');
             },
 
             clearSearch: function (tableName) {
@@ -943,7 +1023,7 @@
                         var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
                                 && o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
-                                && o.invoiceCustomer_id == null);
+                                && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
                             && typeof invoice === 'undefined'){
@@ -953,7 +1033,7 @@
                             && typeof invoice !== 'undefined'){
                         var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.invoiceCustomer_id == null);
+                        && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
                     } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice === 'undefined'){
@@ -964,7 +1044,7 @@
                             && typeof custName !== 'undefined'
                             && typeof invoice !== 'undefined'){
                         return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
-                                && o.invoiceCustomer_id == null);
+                                && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
                             && typeof invoice !== 'undefined'){
@@ -988,7 +1068,7 @@
                         && typeof custName === 'undefined'
                         && typeof invoice !== 'undefined'){
                     found = _.filter(debtCustomerView.dataTransport, function(o){
-                       return (o.invoiceCustomer_id == null);
+                       return (o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
                     });
                 }
                 debtCustomerView.dataSearch = found;
