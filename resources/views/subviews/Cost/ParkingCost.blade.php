@@ -758,77 +758,86 @@
 
                 },
                 save: function () {
-                    parkingCostView.ValidateParking();
-                    parkingCostView.fillFormDataToCurrentObject();
-                    if ($("#formParkingCost").valid()) {
-                        var sendToServer = {
+                    var sendToServer = null;
+                    if(parkingCostView.action == 'delete') {
+                        sendToServer = {
                             _token: _token,
                             _action: parkingCostView.action,
-                            _object: parkingCostView.current
+                            _object: parkingCostView.idDelete
                         };
-
-                        if (parkingCostView.action != 'delete') {
-                            if ($("#vehicle_id").attr('data-id') == '') {
-                                parkingCostView.showNotification('warning', 'Vui lòng chọn xe có trong danh sách.');
-                                return;
-                            }
-                        } else {
-                            sendToServer._object = {
-                                id: parkingCostView.idDelete,
-                                vehicle_id: "delete",
-
-                            };
-                        }
 
                         $.ajax({
                             url: url + 'parking-cost/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer
-                        }).done(function (data, textStatus, jqXHR) {
+                        }).done(function(data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                switch (parkingCostView.action) {
-                                    case 'add':
-                                        data['tableParkingNew'][0].totalDate = ((data['tableParkingNew'][0]['totalDate'] / 60) / 24);
+                                var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
+                                    return o.id == sendToServer._object;
+                                });
+                                var indexOfParkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
+                                parkingCostView.tableParkingCost.splice(indexOfParkingOld, 1);
+                                parkingCostView.showNotification("success", "Xóa thành công!");
+                                parkingCostView.displayModal("hide", "#modal-confirmDelete");
 
-                                        data['tableParkingNew'][0].fullNumber = data['tableParkingNew'][0]['vehicles_code'] + "-" + data['tableParkingNew'][0]["vehicles_vehicleNumber"];
-                                        parkingCostView.tableParkingCost.push(data['tableParkingNew'][0]);
-                                        parkingCostView.showNotification("success", "Thêm thành công!");
-                                        $("#price").attr('data-priceId', parkingCostView.current["prices_id"]);
-                                        break;
-                                    case 'update':
-                                        data['tableParkingUpdate'][0].totalDate = ((data['tableParkingUpdate'][0]['totalDate'] / 60) / 24);
-                                        data['tableParkingUpdate'][0].fullNumber = data['tableParkingUpdate'][0]['vehicles_code'] + "-" + data['tableParkingUpdate'][0]["vehicles_vehicleNumber"];
-                                        var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
-                                            return o.id == sendToServer._object.id;
-                                        });
-                                        var indexOfParkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
-                                        parkingCostView.tableParkingCost.splice(indexOfParkingOld, 1, data['tableParkingUpdate'][0]);
-                                        parkingCostView.showNotification("success", "Cập nhật thành công!");
-                                        parkingCostView.hide();
-                                        break;
-                                    case 'delete':
-                                        var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
-                                            return o.id == sendToServer._object.id;
-                                        });
-                                        var indexOfParkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
-                                        parkingCostView.tableParkingCost.splice(indexOfParkingOld, 1);
-                                        parkingCostView.showNotification("success", "Xóa thành công!");
-                                        parkingCostView.displayModal("hide", "#modal-confirmDelete")
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                parkingCostView.table.clear().rows.add(parkingCostView.tableParkingCost).draw();
-                                parkingCostView.clearInput();
-                            } else {
-                                parkingCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
+                            parkingCostView.table.clear().rows.add(parkingCostView.tableParkingCost).draw();
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#formParkingCost").find("label[class=error]").css("color", "red");
+                        parkingCostView.ValidateParking();
+                        if ($("#formParkingCost").valid()) {
+                            sendToServer = {
+                                _token: _token,
+                                _action: parkingCostView.action,
+                                _object: parkingCostView.current
+                            };
+
+                            parkingCostView.fillFormDataToCurrentObject();
+
+                            $.ajax({
+                                url: url + 'parking-cost/modify',
+                                type: "POST",
+                                dataType: "json",
+                                data: sendToServer
+                            }).done(function(data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    switch (parkingCostView.action) {
+                                        case 'add':
+                                            data['tableParkingNew'][0].totalDate = ((data['tableParkingNew'][0]['totalDate'] / 60) / 24);
+                                            data['tableParkingNew'][0].fullNumber = data['tableParkingNew'][0]['vehicles_code'] + "-" + data['tableParkingNew'][0]["vehicles_vehicleNumber"];
+                                            parkingCostView.tableParkingCost.push(data['tableParkingNew'][0]);
+                                            parkingCostView.showNotification("success", "Thêm thành công!");
+                                            $("#price").attr('data-priceId', parkingCostView.current["prices_id"]);
+                                            break;
+                                        case 'update':
+                                            data['tableParkingUpdate'][0].totalDate = ((data['tableParkingUpdate'][0]['totalDate'] / 60) / 24);
+                                            data['tableParkingUpdate'][0].fullNumber = data['tableParkingUpdate'][0]['vehicles_code'] + "-" + data['tableParkingUpdate'][0]["vehicles_vehicleNumber"];
+                                            var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var indexOfParkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
+                                            parkingCostView.tableParkingCost.splice(indexOfParkingOld, 1, data['tableParkingUpdate'][0]);
+                                            parkingCostView.showNotification("success", "Cập nhật thành công!");
+                                            parkingCostView.hide();
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                    parkingCostView.table.clear().rows.add(parkingCostView.tableParkingCost).draw();
+                                    parkingCostView.clearInput();
+                                } else {
+                                    parkingCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            });
+                        } else {
+                            $("form#formParkingCost").find("label[class=error]").css("color", "red");
+                        }
                     }
                 },
                 fillDataToDatatable: function (data) {
@@ -1060,7 +1069,6 @@
                         rules: {
                             vehicle_id: "required",
                             dateCheckOut: {greaterThan: "#dateCheckIn"}
-
                         },
                         ignore: ".ignore",
                         messages: {

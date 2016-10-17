@@ -38,9 +38,12 @@
     <link rel="stylesheet" href="{{ URL::to('libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/pikaday.css') }}">
+    <!-- parsleyjs -->
+
+    {{--<link rel="stylesheet" href="{{ URL::to('libs/parsleyjs/src/parsleyddd.css') }}">--}}
 
 
-    @yield('styles')
+@yield('styles')
 
     <!-- jQuery 2.2 -->
     <script src=" {{ URL::to('libs/jquery/dist/jquery.min.js') }}"></script>
@@ -60,6 +63,10 @@
     <!-- /#page-wrapper -->
 </div>
 <!-- /#wrapper -->
+<!-- parsleyjs -->
+<script src="{{ URL::to('libs/parsleyjs/bower_components/jquery/dist/jquery.js') }}"></script>
+<script src="{{ URL::to('libs/parsleyjs/dist/parsley.min.js') }}"></script>
+<script src="{{ URL::to('libs/parsleyjs/dist/parsley.js') }}"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src=" {{ URL::to('libs/bootstrap/dist/js/bootstrap.min.js') }}"></script>
@@ -89,11 +96,13 @@
 <script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/JSZip-2.5.0/jszip.min.js') }}"></script>
 
+
 <!-- Hightcharts -->
 <script src="{{ URL::to('libs/highcharts/highcharts.js') }}"></script>
 
 <!-- Validate -->
 <script src="{{ URL::to('libs/jquery-validation/dist/jquery.validate.min.js') }}"></script>
+<script src="{{ URL::to('libs/jquery-validation/dist/additional-methods.min.js') }}"></script>
 
 <!-- Toastr -->
 <script src="{{ URL::to('libs/toastr/toastr.min.js') }}"></script>
@@ -113,7 +122,8 @@
 
 <script src="{{ URL::to('libs/datepair.js/lib/pikaday.js') }}"></script>
 <script src="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.js') }}"></script>
-{{--<script src="{{ URL::to('libs/datepair.js/lib/moment.min.js') }}"></script>--}}
+
+
 
 @yield('javascripts')
 

@@ -20,6 +20,7 @@
             height: 80vh;
         }
     }
+
     #divControl .panel-body {
         height: 500px;
     }
@@ -110,9 +111,13 @@
                                         <label for="fullName"><b>Họ và tên</b></label>
                                         <input type="text" class="form-control"
                                                id="fullName"
-                                               name="fullName"
+                                               name="fullName" onkeyup="userView.validateLength()"
                                                placeholder="Nhập họ tên"
                                                autofocus>
+                                        <label class="error" id="fullName" style="display: none; color: red">Vui lòng
+                                            nhập họ tên</label>
+                                        <label class="error" id="fullNameLength" style="display: none; color: red">Vui
+                                            lòng nhập 6 ký tự đến 20 ký tự</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4 ">
@@ -121,18 +126,28 @@
                                         <input type="text" class="form-control"
                                                id="username"
                                                name="username" onblur="userView.validateUser()"
+                                               onkeyup="userView.validateLength()"
                                                placeholder="Tên đăng nhập">
                                         <label id="username" style="display: none; color: red">Tài khoản đã tồn
                                             tại</label>
+                                        <label id="usernameEmpty" style="display: none; color: red">Vui lòng nhập tài
+                                            khoản</label>
+                                        <label id="usernameLength" style="display: none; color: red">Vui lòng nhập 6 ký
+                                            tự đến 20 ký tự</label>
+
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="email"><b>Email</b></label>
-                                        <input type="text" class="form-control"
+                                        <input type="email" class="form-control"
                                                id="email"
                                                name="email"
+                                               onkeyup="userView.validateLength()"
                                                placeholder="email@example.com">
+                                        <label id="email" style="display: none; color: red">Vui lòng nhập email</label>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -146,6 +161,11 @@
                                                maxlength="20"
                                                minlength="6"
                                                placeholder="password">
+                                        <label id="password" style="display: none; color: red">Vui lòng nhập
+                                            password</label>
+                                        <label id="passwordLength" style="display: none; color: red">Vui lòng nhập 6 ký
+                                            tự đến 20 ký tự</label>
+
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -157,6 +177,8 @@
                                                maxlength="20"
                                                minlength="6"
                                                placeholder="Nhập lại mật khẩu">
+                                        <label id="password_confirmation" style="display: none; color: red">Vui lòng xác
+                                            nhận password</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -169,6 +191,8 @@
                                             }
                                             @endforeach
                                         </select>
+                                        <label id="position_id" style="display: none; color: red">Vui lòng chọn chức
+                                            vụ</label>
                                     </div>
                                 </div>
                             </div>
@@ -228,7 +252,7 @@
                             <div class="form-actions noborder">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="userView.save()">
+                                            onclick="userView.validate()">
                                         Hoàn tất
                                     </button>
                                     <button type="button" class="btn default" onclick="userView.cancel()">Huỷ</button>
@@ -297,7 +321,7 @@
                         "hideMethod": "fadeOut"
                     };
                     $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme:"dark"
+                        theme: "dark"
                     });
 
                     $('#datePicker .date').datepicker({
@@ -532,7 +556,6 @@
                     }
                 },
                 validateUser: function () {
-
                     var sendToServer = {
                         _token: _token,
                         _object: $("input[id=username]").val()

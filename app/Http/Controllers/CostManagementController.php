@@ -102,6 +102,7 @@ class CostManagementController extends Controller
     public function postModifyFuelCost(Request $request)
     {
 
+
         $prices_price = null;
         $literNumber = null;
         $vehicle = null;
@@ -123,7 +124,12 @@ class CostManagementController extends Controller
             $totalCost = $literNumber * $prices_price;
             $dateFuel = $request->get('_object')['dateFuel'];
             $timeFuel = $request->get('_object')['timeFuel'];
-            $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
+            if (Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel) !== false) {
+                $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
+            }
+            else{
+                return response()->json(['msg' => 'date invalid'], 207);
+            }
             $noted = $request->get('_object')['noted'];
         }
 
@@ -210,7 +216,7 @@ class CostManagementController extends Controller
                 }
                 break;
             case "delete":
-                $costDelete = Cost::findOrFail($request->get('_object')['id']);
+                $costDelete = Cost::findOrFail($request->get('_object'));
                 $costDelete->active = 0;
                 if ($costDelete->update()) {
                     $response = [
@@ -713,7 +719,7 @@ class CostManagementController extends Controller
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case "delete":
-                $parkingDelete = Cost::findOrFail($request->get('_object')['id']);
+                $parkingDelete = Cost::findOrFail($request->get('_object'));
                 $parkingDelete->active = 0;
                 if ($parkingDelete->update()) {
                     $response = [
