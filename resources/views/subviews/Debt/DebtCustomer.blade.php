@@ -978,36 +978,64 @@
                         if (jqXHR.status == 201) {
                             var invoiceCustomer = data['invoiceCustomer'];
                             var invoiceCustomerDetail = data['invoiceCustomerDetail'];
-                            //Update InvoiceCustomer_Id for Transports
-                            for(var i = 0; i < debtCustomerView.array_transportId.length; i++){
-                                var Old = _.find(debtCustomerView.dataTransport, function (o) {
-                                    return o.id == debtCustomerView.array_transportId[i];
-                                });
-                                Old['invoiceCustomer_id'] = invoiceCustomer['id'];
-                            }
-                            console.log(debtCustomerView.dataTransport);
-
-                            //add InvoiceCustomer
                             invoiceCustomer.debt = invoiceCustomer['totalPay'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
-                            debtCustomerView.dataInvoiceCustomer.push(invoiceCustomer);
 
-                            //add InvoiceCustomerDetails
-                            debtCustomerView.dataInvoiceCustomerDetail.push(invoiceCustomerDetail);
+                            if(debtCustomerView.action == 'new'){
+                                //Update InvoiceCustomer_Id for Transports
+                                for(var i = 0; i < debtCustomerView.array_transportId.length; i++){
+                                    var Old = _.find(debtCustomerView.dataTransport, function (o) {
+                                        return o.id == debtCustomerView.array_transportId[i];
+                                    });
+                                    Old['invoiceCustomer_id'] = invoiceCustomer['id'];
+                                }
 
-                            //reload 2 table
-                            debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
-                            debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
+                                //add InvoiceCustomer
+                                debtCustomerView.dataInvoiceCustomer.push(invoiceCustomer);
 
-                            //call search Method
-                            debtCustomerView.dataSearch = debtCustomerView.dataTransport;
-                            debtCustomerView.searchTransport();
+                                //add InvoiceCustomerDetails
+                                debtCustomerView.dataInvoiceCustomerDetail.push(invoiceCustomerDetail);
 
-                            //clear Input
-                            debtCustomerView.clearInput();
-                            debtCustomerView.hideControl();
+                                //reload 2 table
+                                debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
+                                debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
 
-                            //Show notification
-                            debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                                //call search Method
+                                debtCustomerView.dataSearch = debtCustomerView.dataTransport;
+                                debtCustomerView.searchTransport();
+
+                                //clear Input
+                                debtCustomerView.clearInput();
+                                debtCustomerView.hideControl();
+
+                                //Show notification
+                                debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                            } else {
+                                //Remove & Add InvoiceCustomer
+                                var Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
+                                    return o.id == sendToServer._invoiceCustomer.id;
+                                });
+                                var indexOfOld = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
+                                debtCustomerView.dataInvoiceCustomer.splice(indexOfOld, 1, invoiceCustomer);
+
+                                //add InvoiceCustomerDetails
+                                debtCustomerView.dataInvoiceCustomerDetail.push(invoiceCustomerDetail);
+
+                                //reload 2 table
+                                debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
+                                debtCustomerView.tableInvoiceCustomerDetail.clear().rows.add(debtCustomerView.dataInvoiceCustomerDetail).draw();
+
+                                //call search Method
+                                debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
+                                debtCustomerView.searchInvoice();
+
+                                //clear Input
+                                $("input[id=paidAmt]").val('');
+                                $("input[id=note]").val('');
+
+                                //Show notification
+                                debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                            }
+
                         } else {
                             debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
