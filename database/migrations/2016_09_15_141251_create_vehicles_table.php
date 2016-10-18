@@ -16,12 +16,12 @@ class CreateVehiclesTable extends Migration
             $table->increments('id');
             $table->string('areaCode');
             $table->string('vehicleNumber');
-            $table->float('size');
-            $table->float('weight');
-            $table->text('note');
+            $table->float('size')->nullable();
+            $table->float('weight')->nullable();
+            $table->text('note')->nullable();
             $table->boolean('active')->default(1);
-            $table->integer('vehicleType_id');
-            $table->integer('garage_id');
+            $table->integer('vehicleType_id')->unsigned();
+            $table->integer('garage_id')->unsigned();
             $table->timestamps();
         });
     }

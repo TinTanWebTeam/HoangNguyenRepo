@@ -59,12 +59,15 @@ class DebtManagementController extends Controller
             ->select('printHistories.*', 'users.fullName as users_fullName')
             ->get();
 
+        $invoiceCode = $this->generateInvoiceCode();
+
         $response = [
             'msg'        => 'Get list all Transport',
             'transports' => $transports,
             'invoiceCustomers' => $invoiceCustomers,
             'invoiceCustomerDetails' => $invoiceCustomerDetails,
-            'printHistories' => $printHistories
+            'printHistories' => $printHistories,
+            'invoiceCode' => $invoiceCode
         ];
         return response()->json($response, 200);
     }
@@ -128,7 +131,18 @@ class DebtManagementController extends Controller
             $array_transportId = $request->input('_array_transportId');
 
             $invoiceCustomer = new InvoiceCustomer();
-            $invoiceCustomer->invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
+
+            $invoiceCode = $this->generateInvoiceCode();
+            if($request->input('_invoiceCustomer')['invoiceCode'] == '')
+                $invoiceCustomer->invoiceCode = $invoiceCode;
+            else {
+                $invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
+                if(InvoiceCustomer::where('invoiceCode', $invoiceCode)->get()->count() == 0)
+                    $invoiceCustomer->invoiceCode = $invoiceCode;
+                else
+                    return response()->json(['msg' => 'invoiceCode exists!'], 203);
+            }
+
             $invoiceCustomer->VAT = $request->input('_invoiceCustomer')['VAT'];
             $invoiceCustomer->notVAT = $request->input('_invoiceCustomer')['notVAT'];
             $invoiceCustomer->hasVAT = $request->input('_invoiceCustomer')['hasVAT'];
@@ -199,7 +213,8 @@ class DebtManagementController extends Controller
                 $response = [
                     'msg' => 'Create Invoice successful!',
                     'invoiceCustomer' => $invoiceCustomer,
-                    'invoiceCustomerDetail' => $invoiceCustomerDetail
+                    'invoiceCustomerDetail' => $invoiceCustomerDetail,
+                    'invoiceCode' => $this->generateInvoiceCode()
                 ];
                 return response()->json($response, 201);
             }catch (Exception $ex){
@@ -260,7 +275,8 @@ class DebtManagementController extends Controller
                 $response = [
                     'msg' => 'Create Invoice successful!',
                     'invoiceCustomer' => $invoiceCustomer,
-                    'invoiceCustomerDetail' => $invoiceCustomerDetail
+                    'invoiceCustomerDetail' => $invoiceCustomerDetail,
+                    'invoiceCode' => $this->generateInvoiceCode()
                 ];
                 return response()->json($response, 201);
             }catch (Exception $ex){
@@ -274,6 +290,15 @@ class DebtManagementController extends Controller
     public function getViewDebtVehicleOutside()
     {
         return view('subviews.Debt.DebtVehicleOutside');
+    }
+
+    //Generate invoiceCode
+    public function generateInvoiceCode()
+    {
+        $invoiceCode = "HD" . date('ymd');
+        $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode.'%')->get()->count();
+        $invoiceCode .= substr("00" . $stt, -3);
+        return $invoiceCode;
     }
 
 }

@@ -14,10 +14,10 @@ class CreateVoucherTransportsTable extends Migration
     {
         Schema::create('voucherTransports', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('voucher_id');
-            $table->integer('transport_id');
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
+            $table->integer('voucher_id')->unsigned();
+            $table->integer('transport_id')->unsigned();
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
             $table->timestamps();
         });
     }

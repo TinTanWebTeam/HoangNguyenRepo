@@ -56,7 +56,9 @@
                             <input type="text" class="date end"/>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="custName_transport" name="custName_transport" placeholder="Nhập tên khách hàng">
+                            <div class="ui-widget">
+                                <input type="text" class="form-control" id="custName_transport" name="custName_transport" placeholder="Nhập tên khách hàng">
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -69,7 +71,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="radio">
-                                <button onclick="debtCustomerView.searchTransport()"
+                                <button onclick="debtCustomerView.searchTransport()" id="btnSearchTransport"
                                         class="btn btn-sm btn-info"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
                                 </button>
@@ -127,7 +129,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="radio">
-                                <button onclick="debtCustomerView.searchInvoice()"
+                                <button onclick="debtCustomerView.searchInvoice()" id="btnSearchInvoice"
                                         class="btn btn-sm btn-info"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
                                 </button>
@@ -174,7 +176,10 @@
     <div id="divInvoice" class="col-md-offset-2 col-md-10">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">Xuất hóa đơn
-                <div class="menu-toggles pull-right" onclick="debtCustomerView.hideControl()">
+                <div class="menu-toggles pull-right" onclick="
+                                debtCustomerView.clearInput();
+                                debtCustomerView.clearValidation('#frmInvoice');
+                                debtCustomerView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
@@ -204,18 +209,18 @@
                                 <div class="row ">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="VAT"><b>VAT (%)</b></label>
+                                            <label for="notVAT"><b>Chưa VAT</b></label>
                                             <input type="number" class="form-control"
-                                                   id="VAT"
-                                                   name="VAT">
+                                                   id="notVAT"
+                                                   name="notVAT" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="notVAT"><b>Chưa VAT</b></label>
+                                            <label for="VAT"><b>VAT (%)</b></label>
                                             <input type="number" class="form-control"
-                                                   id="notVAT"
-                                                   name="notVAT">
+                                                   id="VAT" name="VAT"
+                                                   onchange="debtCustomerView.computeHasVAT(this.value)">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -223,7 +228,7 @@
                                             <label for="hasVAT"><b>Có VAT</b></label>
                                             <input type="number" class="form-control"
                                                    id="hasVAT"
-                                                   name="hasVAT">
+                                                   name="hasVAT" onchange="debtCustomerView.computeVAT(this.value)">
                                         </div>
                                     </div>
                                 </div>
@@ -259,15 +264,15 @@
                                             <label for="paidAmt"><b>Tiền trả</b></label>
                                             <input type="number" class="form-control"
                                                    id="paidAmt"
-                                                   name="paidAmt">
+                                                   name="paidAmt" onchange="debtCustomerView.computeDebt(this.value)">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="debt"><b>Còn nợ</b></label>
                                             <input type="number" class="form-control"
-                                                   id="debt"
-                                                   name="debt" readonly>
+                                                   id="debt" name="debt" readonly
+                                                   debt-real="">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -384,6 +389,26 @@
 </div>
 <!-- end Modal confirm tra du -->
 
+<!-- Modal print review -->
+<div class="row">
+    <div id="modal-printReview" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">In review</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal print review -->
+
 <script>
     if (typeof debtCustomerView === 'undefined') {
         debtCustomerView = {
@@ -406,6 +431,9 @@
             transportId: null,
             invoiceCustomerId: null,
             action: null,
+            invoiceCode: null,
+            tagsCustomerNameTransport: [],
+            tagsCustomerNameInvoice: [],
 
             showControl: function (flag) {
                 if (flag == 0) {
@@ -422,31 +450,21 @@
             },
             hideControl: function () {
                 $('#divInvoice').fadeOut(300, function () {
-                    $('.menu-toggle').fadeIn();
+                    debtCustomerView.displayButtonExportInvoice()
                 });
-
-                debtCustomerView.clearValidation("#frmInvoice");
-                debtCustomerView.clearInput();
             },
             displayModal: function (type, idModal) {
                 $(idModal).modal(type);
 
                 //Clear Validate
             },
-            showNotification: function (type, msg) {
-                switch (type) {
-                    case "info":
-                        toastr.info(msg);
-                        break;
-                    case "success":
-                        toastr.success(msg);
-                        break;
-                    case "warning":
-                        toastr.warning(msg);
-                        break;
-                    case "error":
-                        toastr.error(msg);
-                        break;
+            displayButtonExportInvoice: function(){
+                var array_customerId = _.map(debtCustomerView.dataSearch, 'customer_id');
+                var array_customerId_unique = _.uniq(array_customerId);
+                if(array_customerId_unique.length == 1){
+                    $('.menu-toggle').fadeIn();
+                } else {
+                    $('.menu-toggle').fadeOut();
                 }
             },
             clearInput: function () {
@@ -468,33 +486,15 @@
                     theme: "dark"
                 });
             },
-            renderCustomToastr: function () {
-                toastr.options = {
-                    "closeButton": true,
-                    "debug": false,
-                    "newestOnTop": true,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "2000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                };
-            },
             renderDateTimePicker: function () {
                 $('#dateSearchTransport .date').datepicker({
                     'format': 'dd-mm-yyyy',
                     'autoclose': true
                 });
-
-                var dateSearchTransportEl = document.getElementById('dateSearchTransport');
-                var dateOnlyDatepair = new Datepair(dateSearchTransportEl);
+                $('#dateSearchInvoice .date').datepicker({
+                    'format': 'dd-mm-yyyy',
+                    'autoclose': true
+                });
 
                 $('#divInvoice').find('.date').datepicker({
                     "setDate": new Date(),
@@ -508,15 +508,37 @@
                 $('input[type="radio"][name=rdoTransport]').on('change', function(e) {
                     debtCustomerView.searchTransport(e.currentTarget.defaultValue);
 
-                    if(e.currentTarget.defaultValue == 'All'){
-                        $('.menu-toggle').fadeOut();
-                    } else {
-                        $('.menu-toggle').fadeIn();
+//                    if(e.currentTarget.defaultValue == 'All'){
+//                        $('.menu-toggle').fadeOut();
+//                    } else {
+//                        $('.menu-toggle').fadeIn();
+//                    }
+                });
+
+                $('input[type="radio"][name=rdoInvoice]').on('change', function(e) {
+                    debtCustomerView.searchInvoice();
+                });
+            },
+            renderAutoCompleteSearch: function(){
+                $( "#custName_transport" ).autocomplete({
+                    source: debtCustomerView.tagsCustomerNameTransport
+                });
+
+                $( "#custName_invoice" ).autocomplete({
+                    source: debtCustomerView.tagsCustomerNameInvoice
+                });
+            },
+            renderEventKeyCode: function(){
+                $("#custName_transport").keyup(function(event){
+                    if(event.keyCode == 13){ //Enter
+                        $("#btnSearchTransport").click();
                     }
                 });
 
-                $('input[type=radio][name=rdoInvoice]').change(function () {
-                    debtCustomerView.searchInvoice();
+                $("#custName_invoice").keyup(function(event){
+                    if(event.keyCode == 13){ //Enter
+                        $("#btnSearchInvoice").click();
+                    }
                 });
             },
 
@@ -712,10 +734,10 @@
                             render: function (data, type, full, meta) {
                                 var tr = '';
                                 tr += '<div class="text-center">';
-                                tr += '<div class="btn btn-primary btn-circle marginRight" title="In" onclick="debtCustomerView.printInvoice()">';
+                                tr += '<div class="btn btn-primary btn-circle marginRight" title="In" onclick="debtCustomerView.printReview('+full.id+')">';
                                 tr += '<span class="glyphicon glyphicon-print" aria-hidden="true"></span>';
                                 tr += '</div>';
-                                tr += '<div class="btn btn-default btn-circle" title="Đính kèm tập tin" onclick="debtCustomerView.attachFile()">';
+                                tr += '<div class="btn btn-default btn-circle" title="Đính kèm tập tin" onclick="debtCustomerView.attachFile('+full.id+')">';
                                 tr += '<i class="fa fa-file" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
@@ -758,23 +780,27 @@
                         debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
 
                         debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                        debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
                         debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
 
                         debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
                         debtCustomerView.dataPrintHistory = data['printHistories'];
 
+                        debtCustomerView.invoiceCode = data['invoiceCode'];
+
                         debtCustomerView.searchTransport();
+                        debtCustomerView.searchInvoice();
                     } else {
-                        debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                 });
 
                 debtCustomerView.renderDateTimePicker();
                 debtCustomerView.renderScrollbar();
-                debtCustomerView.renderCustomToastr();
                 debtCustomerView.renderEventRadioInput();
+                debtCustomerView.renderEventKeyCode();
             },
             fillCurrentObjectToForm: function () {
                 $("input[id='invoiceCode']").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
@@ -809,7 +835,7 @@
                     note : $("input[id='note']").val(),
                     totalPay : $("input[id='totalPay']").val(),
                     prePaid : $("input[id='prePaid']").val(),
-                    debt : $("input[id='debt']").val(),
+                    debt : $("#debt").attr('debt-real'),
                     paidAmt : $("input[id='paidAmt']").val()
                 }
             },
@@ -826,7 +852,7 @@
                 debtCustomerView.showControl(flag);
                 if (flag == 0){
                     debtCustomerView.action = "new";
-                    var totalPaid = 0, totalPay = 0;
+                    var prePaid = 0, totalPay = 0;
                     debtCustomerView.getListCurrentRowTransport();
                     for(var i = 0; i < debtCustomerView.array_transportId.length; i++ ){
                         var currentRow = _.find(debtCustomerView.dataTransport, function(o){
@@ -835,19 +861,30 @@
 
                         if(typeof currentRow !== 'undefined'){
                             totalPay += parseInt(currentRow['cashRevenue']);
-                            totalPaid += parseInt(currentRow['cashReceive']);
+                            prePaid += parseInt(currentRow['cashReceive']);
                         }
                     }
-                    var debt = totalPay - totalPaid;
+
                     $("input[id=totalPay]").val(totalPay);
+                    $("input[id=prePaid]").val(prePaid);
+
+                    var debt = totalPay - prePaid;
                     $("input[id=debt]").val(debt);
-                    $("input[id=prePaid]").val(totalPaid);
+                    $("#debt").attr('debt-real', debt);
+                    $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
+
+                    //set default value
+                    $("input[id=notVAT]").val(totalPay);
+                    $("input[id=VAT]").val(0);
+                    $("input[id=hasVAT]").val(totalPay);
+                    $("input[id=paidAmt]").val(0);
 
                     //remove readly input
                     $("input[id=invoiceCode]").prop('readonly', false);
                     $("input[id=VAT]").prop('readonly', false);
-                    $("input[id=notVAT]").prop('readonly', false);
                     $("input[id=hasVAT]").prop('readonly', false);
+
+                    $("input[id=invoiceCode]").focus();
                 } else {
                     if(typeof invoiceCustomer_id === 'undefined') return;
 
@@ -876,21 +913,31 @@
                         return o.id == invoiceCustomer_id;
                     });
                     if(typeof rowInvoiceCustomer === 'undefined') return;
-                    var debt = parseInt(rowInvoiceCustomer['totalPay']) - parseInt(rowInvoiceCustomer['totalPaid']);
-                    $("input[id=totalPay]").val(rowInvoiceCustomer['totalPay']);
+
+                    var totalPay = parseInt(rowInvoiceCustomer['totalPay']);
+                    var hasVAT = parseInt(rowInvoiceCustomer['hasVAT']);
+                    var totalPaid = parseInt(rowInvoiceCustomer['totalPaid']);
+                    var prePaid = parseInt(rowInvoiceCustomer['prePaid']);
+                    var debt = hasVAT - (totalPaid + prePaid);
+                    $("input[id=totalPay]").val(totalPay);
                     $("input[id=debt]").val(debt);
+                    $("#debt").attr('debt-real', debt);
 
                     $("input[id=invoiceCode]").val(rowInvoiceCustomer['invoiceCode']);
                     $("input[id=VAT]").val(rowInvoiceCustomer['VAT']);
                     $("input[id=notVAT]").val(rowInvoiceCustomer['notVAT']);
-                    $("input[id=hasVAT]").val(rowInvoiceCustomer['hasVAT']);
-                    $("input[id=prePaid]").val(rowInvoiceCustomer['prePaid']);
+                    $("input[id=hasVAT]").val(hasVAT);
+                    $("input[id=prePaid]").val(prePaid);
+
+                    //set default value
+                    $("input[id=paidAmt]").val(0);
 
                     //add readly input
                     $("input[id=invoiceCode]").prop('readonly', true);
                     $("input[id=VAT]").prop('readonly', true);
-                    $("input[id=notVAT]").prop('readonly', true);
                     $("input[id=hasVAT]").prop('readonly', true);
+
+                    $("input[id=paidAmt]").focus();
                 }
             },
 
@@ -945,13 +992,13 @@
                         debtCustomerView.clearInput();
 
                         //Show notification
-                        debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                        showNotification("success", "Thanh toán thành công!");
                         debtCustomerView.displayModal("hide", "#modal-confirmDelete");
                     } else {
-                        debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                    debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                 });
             },
             saveInvoiceCustomer: function () {
@@ -975,9 +1022,11 @@
                     }).done(function (data, textStatus, jqXHR) {
                         console.log("SERVER");
                         console.log(data);
+                        debugger;
                         if (jqXHR.status == 201) {
                             var invoiceCustomer = data['invoiceCustomer'];
                             var invoiceCustomerDetail = data['invoiceCustomerDetail'];
+                            debtCustomerView.invoiceCode = data['invoiceCode'];
                             invoiceCustomer.debt = invoiceCustomer['totalPay'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
 
                             if(debtCustomerView.action == 'new'){
@@ -995,20 +1044,22 @@
                                 //add InvoiceCustomerDetails
                                 debtCustomerView.dataInvoiceCustomerDetail.push(invoiceCustomerDetail);
 
-                                //reload 2 table
-                                debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
-                                debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
+                                //reload 2 table & search
+                                debtCustomerView.dataSearch = [];
+                                debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
+                                debtCustomerView.tagsCustomerNameTransport = [];
 
-                                //call search Method
-                                debtCustomerView.dataSearch = debtCustomerView.dataTransport;
-                                debtCustomerView.searchTransport();
+                                debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
+                                debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataSearchInvoiceCustomer).draw();
+                                debtCustomerView.searchInvoice();
 
                                 //clear Input
                                 debtCustomerView.clearInput();
+                                debtCustomerView.clearValidation("#frmInvoice");
                                 debtCustomerView.hideControl();
 
                                 //Show notification
-                                debtCustomerView.showNotification("success", "Thanh toán thành công!");
+                                showNotification("success", "Thanh toán thành công!");
                             } else {
                                 //Remove & Add InvoiceCustomer
                                 var Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
@@ -1032,25 +1083,33 @@
                                 $("input[id=paidAmt]").val('');
                                 $("input[id=note]").val('');
 
-                                //Show notification
-                                debtCustomerView.showNotification("success", "Thanh toán thành công!");
-                            }
+                                var prePaid = parseInt(sendToServer._invoiceCustomer['paidAmt']);
+                                var debtReal = parseInt($("#debt").attr("data-real")) - prePaid;
+                                $("input[id=debt]").val(debtReal);
+                                $("#debt").attr("data-real", debtReal);
 
+                                //Show notification
+                                showNotification("success", "Thanh toán thành công!");
+                            }
+                        } else if (jqXHR.status == 203){
+                            showNotification("error", "Tác vụ thất bại! Mã HĐ này đã tồn tại. Vui lòng nhập một mã HĐ khác và thử lại.");
                         } else {
-                            debtCustomerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        debtCustomerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 } else {
                     $("form#frmInvoice").find("label[class=error]").css("color", "red");
                 }
             },
-            printInvoice: function() {
-                alert('in hoa don');
+
+            printReview: function(invoiceCustomerDetail_id) {
+                debtCustomerView.displayModal('show', '#modal-printReview');
+                console.log(invoiceCustomerDetail_id);
             },
-            attachFile: function() {
-                alert('dinh kem file');
+            attachFile: function(invoiceCustomerDetail_id) {
+                console.log(invoiceCustomerDetail_id);
             },
 
             clearSearch: function (tableName) {
@@ -1087,7 +1146,7 @@
                     fromDate = moment(fromDate, "DD-MM-YYYY");
                     toDate = moment(toDate, "DD-MM-YYYY");
                     if (!fromDate.isValid() && !toDate.isValid()) {
-                        debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                        showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
                         return;
                     }
                 }
@@ -1101,7 +1160,7 @@
                             && typeof invoice !== 'undefined'){
                         var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                                && o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
+                                && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
                                 && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
@@ -1118,11 +1177,12 @@
                             && typeof invoice === 'undefined'){
                         var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase())));
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice !== 'undefined'){
-                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
+
+                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
                                 && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
@@ -1131,7 +1191,7 @@
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName !== 'undefined'
                             && typeof invoice === 'undefined'){
-                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase())));
                     }else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName === 'undefined'
                             && typeof invoice === 'undefined'){
@@ -1139,6 +1199,7 @@
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]'));
                     }
                 });
+                //set data for except circumstance
                 if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                         && typeof custName === 'undefined'
                         && typeof invoice === 'undefined'){
@@ -1152,15 +1213,21 @@
                 }
                 debtCustomerView.dataSearch = found;
                 debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
+
+                debtCustomerView.displayButtonExportInvoice();
+
+                //fill data to listSearch
+                debtCustomerView.tagsCustomerNameTransport = _.map(debtCustomerView.dataSearch, 'customers_fullName');
+                debtCustomerView.renderAutoCompleteSearch();
             },
             searchInvoice: function () {
                 //Customer Name
                 custName = $("#custName_invoice").val();
                 if(custName == '') delete custName;
 
-                //Invoice Id
-                invoice = $("#invoiceDown").find("input:checked").val();
-                if (invoice == 'fullPay') delete invoice;
+                //Money
+                money = $("#invoiceDown").find("input:checked").val();
+                if (money == 'fullPay') delete money;
 
                 //Date to date
                 fromDate = $("#dateSearchInvoice").find(".start").val();
@@ -1173,7 +1240,7 @@
                     fromDate = moment(fromDate, "DD-MM-YYYY");
                     toDate = moment(toDate, "DD-MM-YYYY");
                     if (!fromDate.isValid() && !toDate.isValid()) {
-                        debtCustomerView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                        showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
                         return;
                     }
                 }
@@ -1184,70 +1251,92 @@
                 var found = _.filter(data, function (o) {
                     if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName !== 'undefined'
-                            && typeof invoice !== 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                            && typeof money !== 'undefined'){
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
-                        && o.invoiceCustomer_id == null);
+                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
+                        && (parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid)));
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
-                            && typeof invoice === 'undefined'){
-                        return false;
+                            && typeof money === 'undefined'){
+                        return (parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid));
                     } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName === 'undefined'
-                            && typeof invoice !== 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                            && typeof money !== 'undefined'){
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.invoiceCustomer_id == null);
+                        && (parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid)));
                     } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName !== 'undefined'
-                            && typeof invoice === 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                            && typeof money === 'undefined'){
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
                         return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
+                        && (parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid)));
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName !== 'undefined'
-                            && typeof invoice !== 'undefined'){
-                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase())
-                        && o.invoiceCustomer_id == null);
+                            && typeof money !== 'undefined'){
+                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
+                        && (parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid)));
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName === 'undefined'
-                            && typeof invoice !== 'undefined'){
-                        return false;
+                            && typeof money !== 'undefined'){
+                        return (parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid));
                     } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
                             && typeof custName !== 'undefined'
-                            && typeof invoice === 'undefined'){
-                        return (o.customers_fullName.toLowerCase().includes(custName.toLowerCase()));
+                            && typeof money === 'undefined'){
+                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
+                        && (parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid)));
                     }else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
                             && typeof custName === 'undefined'
-                            && typeof invoice === 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]'));
+                            && typeof money === 'undefined'){
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
+                        && (parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid)));
                     }
                 });
-                if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                        && typeof custName === 'undefined'
-                        && typeof invoice === 'undefined'){
-                    found = debtCustomerView.dataInvoiceCustomer;
-                } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                        && typeof custName === 'undefined'
-                        && typeof invoice !== 'undefined'){
-                    found = _.filter(debtCustomerView.dataInvoiceCustomer, function(o){
-                        return (o.invoiceCustomer_id == null);
-                    });
-                }
                 debtCustomerView.dataSearchInvoiceCustomer = found;
                 debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataSearchInvoiceCustomer).draw();
+
+                //fill data to listSearch
+                debtCustomerView.tagsCustomerNameInvoice = _.map(debtCustomerView.dataSearchInvoiceCustomer, 'customers_fullName');
+                debtCustomerView.renderAutoCompleteSearch();
             },
+
             getListCurrentRowTransport: function() {
                 debtCustomerView.array_transportId = [];
                 $(debtCustomerView.table.$('tr', {"filter":"applied"}).each( function () {
                     debtCustomerView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
                 } ));
+            },
+            computeDebt: function(paidAmt){
+                var debtReal = $("#debt").attr('debt-real');
+                $("#debt").val(debtReal - paidAmt);
+            },
+            computeHasVAT: function(vat){
+                var notVat = parseInt($("#notVAT").val());
+                var hasVat = notVat - (vat/100) * notVat
+                $("#hasVAT").val(hasVat);
+
+                var prePaid = parseInt($("#prePaid").val());
+                var paidAmt = parseInt($("#paidAmt").val());
+                $("#debt").attr("debt-real", hasVat - prePaid - paidAmt);
+                $("input[id=debt]").val(hasVat - prePaid - paidAmt)
+            },
+            computeVAT: function(hasVat){
+                var notVat = parseInt($("#notVAT").val());
+                var hasVat = (notVat - hasVat) * 100 / notVat
+                $("#VAT").val(hasVat);
+
+                var prePaid = parseInt($("#prePaid").val());
+                var paidAmt = parseInt($("#paidAmt").val());
+                $("#debt").attr("debt-real", hasVat - prePaid - paidAmt);
+                $("input[id=debt]").val(hasVat - prePaid - paidAmt)
             }
         };
         debtCustomerView.loadData();
     } else {
         debtCustomerView.loadData();
     }
+
 </script>

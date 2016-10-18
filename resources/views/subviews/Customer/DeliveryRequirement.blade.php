@@ -1124,6 +1124,10 @@
                         return o.id == id;
                     }), true);
 
+                    if(transportView.current['invoiceCustomer_id'] != null){
+                        alert('Đơn hàng này đã xuất hóa đơn, có chắc muốn sửa');
+                    }
+
                     var arrayVoucherTransport = _.clone(_.filter(transportView.dataVoucherTransport, function (o) {
                         return o.transport_id == id;
                     }), true);

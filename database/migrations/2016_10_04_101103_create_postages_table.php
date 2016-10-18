@@ -16,10 +16,10 @@ class CreatePostagesTable extends Migration
             $table->increments('id');
             $table->decimal('postage', 18, 0)->default(0);
             $table->dateTime('month');
-            $table->integer('customer_id');
-            $table->text('note');
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
+            $table->integer('customer_id')->unsigned();
+            $table->text('note')->nullable();
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

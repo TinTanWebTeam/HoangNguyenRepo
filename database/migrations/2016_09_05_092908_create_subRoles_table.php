@@ -16,8 +16,8 @@ class CreateSubRolesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('role_id')->unsigned();
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('no action');
