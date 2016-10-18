@@ -38,9 +38,6 @@
     <link rel="stylesheet" href="{{ URL::to('libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/pikaday.css') }}">
-    <!-- parsleyjs -->
-
-    {{--<link rel="stylesheet" href="{{ URL::to('libs/parsleyjs/src/parsleyddd.css') }}">--}}
 
 
 @yield('styles')
@@ -63,10 +60,6 @@
     <!-- /#page-wrapper -->
 </div>
 <!-- /#wrapper -->
-<!-- parsleyjs -->
-<script src="{{ URL::to('libs/parsleyjs/bower_components/jquery/dist/jquery.js') }}"></script>
-<script src="{{ URL::to('libs/parsleyjs/dist/parsley.min.js') }}"></script>
-<script src="{{ URL::to('libs/parsleyjs/dist/parsley.js') }}"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src=" {{ URL::to('libs/bootstrap/dist/js/bootstrap.min.js') }}"></script>

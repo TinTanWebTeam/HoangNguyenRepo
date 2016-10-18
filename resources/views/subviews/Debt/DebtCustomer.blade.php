@@ -204,18 +204,18 @@
                                 <div class="row ">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="VAT"><b>VAT (%)</b></label>
+                                            <label for="notVAT"><b>Chưa VAT</b></label>
                                             <input type="number" class="form-control"
-                                                   id="VAT"
-                                                   name="VAT">
+                                                   id="notVAT"
+                                                   name="notVAT" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="notVAT"><b>Chưa VAT</b></label>
+                                            <label for="VAT"><b>VAT (%)</b></label>
                                             <input type="number" class="form-control"
-                                                   id="notVAT"
-                                                   name="notVAT">
+                                                   id="VAT"
+                                                   name="VAT" onchange="debtCustomerView.computeHasVAT()">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -266,8 +266,8 @@
                                         <div class="form-group form-md-line-input ">
                                             <label for="debt"><b>Còn nợ</b></label>
                                             <input type="number" class="form-control"
-                                                   id="debt"
-                                                   name="debt" readonly>
+                                                   id="debt" name="debt" readonly
+                                                   debt-real="">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -383,6 +383,26 @@
     </div>
 </div>
 <!-- end Modal confirm tra du -->
+
+<!-- Modal print review -->
+<div class="row">
+    <div id="modal-printReview" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">In review</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal print report -->
 
 <script>
     if (typeof debtCustomerView === 'undefined') {
@@ -679,10 +699,10 @@
                             render: function (data, type, full, meta) {
                                 var tr = '';
                                 tr += '<div class="text-center">';
-                                tr += '<div class="btn btn-primary btn-circle marginRight" title="In" onclick="debtCustomerView.printInvoice()">';
+                                tr += '<div class="btn btn-primary btn-circle marginRight" title="In" onclick="debtCustomerView.printReview('+full.id+')">';
                                 tr += '<span class="glyphicon glyphicon-print" aria-hidden="true"></span>';
                                 tr += '</div>';
-                                tr += '<div class="btn btn-default btn-circle" title="Đính kèm tập tin" onclick="debtCustomerView.attachFile()">';
+                                tr += '<div class="btn btn-default btn-circle" title="Đính kèm tập tin" onclick="debtCustomerView.attachFile('+full.id+')">';
                                 tr += '<i class="fa fa-file" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
@@ -812,11 +832,11 @@
                     $("input[id=debt]").val(debt);
                     $("input[id=prePaid]").val(totalPaid);
                     $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
+                    $("input[id=notVAT]").val(totalPay);
 
                     //remove readly input
                     $("input[id=invoiceCode]").prop('readonly', false);
                     $("input[id=VAT]").prop('readonly', false);
-                    $("input[id=notVAT]").prop('readonly', false);
                     $("input[id=hasVAT]").prop('readonly', false);
                 } else {
                     if(typeof invoiceCustomer_id === 'undefined') return;
@@ -859,7 +879,6 @@
                     //add readly input
                     $("input[id=invoiceCode]").prop('readonly', true);
                     $("input[id=VAT]").prop('readonly', true);
-                    $("input[id=notVAT]").prop('readonly', true);
                     $("input[id=hasVAT]").prop('readonly', true);
                 }
             },
@@ -1019,11 +1038,13 @@
                     $("form#frmInvoice").find("label[class=error]").css("color", "red");
                 }
             },
-            printInvoice: function() {
-                alert('in hoa don');
+
+            printReview: function(invoiceCustomerDetail_id) {
+                debtCustomerView.displayModal('show', '#modal-printReview');
+                console.log(invoiceCustomerDetail_id);
             },
-            attachFile: function() {
-                alert('dinh kem file');
+            attachFile: function(invoiceCustomerDetail_id) {
+                console.log(invoiceCustomerDetail_id);
             },
 
             clearSearch: function (tableName) {
@@ -1212,11 +1233,23 @@
                 debtCustomerView.dataSearchInvoiceCustomer = found;
                 debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataSearchInvoiceCustomer).draw();
             },
+
             getListCurrentRowTransport: function() {
                 debtCustomerView.array_transportId = [];
                 $(debtCustomerView.table.$('tr', {"filter":"applied"}).each( function () {
                     debtCustomerView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
                 } ));
+            },
+            computeDebt: function(){
+
+            },
+            computeHasVAT: function(){
+                var vat = parseInt($("#VAT").val());
+                var notVat = parseInt($("#notVAT").val());
+                $("#hasVAT").val($("#hasVAT").val() - (vat/100) * notVat);
+            },
+            computeVAT: function(){
+
             }
         };
         debtCustomerView.loadData();
