@@ -398,10 +398,10 @@ class CustomerManagementController extends Controller
 
         $action = $request->input('_action');
         if ($action != 'delete') {
-            $validator = ValidateController::ValidateVoucherTransport($request->input('_transport'));
-            if ($validator->fails()) {
-                return response()->json(['msg' => 'Input data fail'], 404);
-            }
+//            $validator = ValidateController::ValidateVoucherTransport($request->input('_transport'));
+//            if ($validator->fails()) {
+//                return response()->json(['msg' => 'Input data fail'], 404);
+//            }
 
             $weight = $request->input('_transport')['weight'];
             $quantumProduct = $request->input('_transport')['quantumProduct'];
@@ -416,7 +416,7 @@ class CustomerManagementController extends Controller
             $receiver = $request->input('_transport')['receiver'];
 
             $receiveDate = $request->input('_transport')['receiveDate'];
-            $receiveDate = Carbon::createFromFormat('d/m/Y H:i', $receiveDate)->toDateTimeString();
+            $receiveDate = Carbon::createFromFormat('d-m-Y', $receiveDate)->toDateTimeString();
 
             $receivePlace = $request->input('_transport')['receivePlace'];
             $deliveryPlace = $request->input('_transport')['deliveryPlace'];
@@ -481,12 +481,6 @@ class CustomerManagementController extends Controller
                         //Add Cost
                         $costNew = new Cost();
                         $costNew->cost = $cost;
-                        $costNew->literNumber = null;
-                        $costNew->dateCheckIn = null;
-                        $costNew->dateCheckOut = null;
-                        $costNew->totalHour = null;
-                        $costNew->totalDay = null;
-                        $costNew->dateRefuel = null;
                         $costNew->createdBy = \Auth::user()->id;
                         $costNew->updatedBy = \Auth::user()->id;
                         $costNew->note = $costs_note;
@@ -602,12 +596,6 @@ class CustomerManagementController extends Controller
                         //Add Cost
                         $costNew = new Cost();
                         $costNew->cost = $cost;
-                        $costNew->literNumber = "";
-                        $costNew->dateCheckIn = null;
-                        $costNew->dateCheckOut = null;
-                        $costNew->totalHour = null;
-                        $costNew->totalDay = null;
-                        $costNew->dateRefuel = null;
                         $costNew->createdBy = $createdBy;
                         $costNew->updatedBy = \Auth::user()->id;
                         $costNew->note = $costs_note;
@@ -620,7 +608,12 @@ class CustomerManagementController extends Controller
                         }
 
                         //Update InvoiceCustomer for Transport
-                        if($transportUpdate->invoiceCustomer_id != null){
+
+                        if($transportUpdate->invoiceCustomer_id == null){
+
+                        } else {
+                            DB::rollBack();
+                            dd($transportUpdate);
                             $invoiceCustomer = InvoiceCustomer::find($transportUpdate->invoiceCustomer_id);
                             $invoiceCustomer->totalPay = $invoiceCustomer->totalPay - $kp_cashRevenue + $transportUpdate->cashRevenue;
                             $invoiceCustomer->prePaid = $invoiceCustomer->prePaid - $kp_cashReceive + $transportUpdate->cashReceive;

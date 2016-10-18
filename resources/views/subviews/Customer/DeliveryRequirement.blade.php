@@ -529,6 +529,26 @@
 </div>
 <!-- end Modal add vehicleTypes -->
 
+<!-- Modal warningTransport -->
+<div class="row">
+    <div id="modal-warningTransport" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Cảnh báo</h5>
+                </div>
+                <div class="modal-body">
+                    <p class="bg-warning" style="padding: 10px">Đơn hàng này đã xuất hóa đơn.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal warningTransport -->
+
 <script>
     $(function () {
         if (typeof transportView === 'undefined') {
@@ -1135,7 +1155,11 @@
                     }), true);
 
                     if(transportView.current['invoiceCustomer_id'] != null){
-                        alert('Đơn hàng này đã xuất hóa đơn, có chắc muốn sửa');
+                        $("#modal-warningTransport").modal("show").on("shown.bs.modal", function () {
+                            window.setTimeout(function () {
+                                $("#modal-warningTransport").modal("hide");
+                            }, 3000);
+                        });
                     }
 
                     var arrayVoucherTransport = _.clone(_.filter(transportView.dataVoucherTransport, function (o) {
