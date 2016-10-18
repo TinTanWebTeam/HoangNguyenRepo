@@ -25,7 +25,7 @@ class ValidateController extends Controller
     {
         $rules = [
             'fullName' => 'required|min:6|max:20',
-            'username' => 'required|min:6|max:20|unique:users',
+            'username' => 'required|min:6|max:20',
             'email'    => 'required',
             'password' => 'required|min:6|max:20',
 
@@ -33,7 +33,6 @@ class ValidateController extends Controller
         $messages = [
             'fullName.required' => 'Trường fullname bắt buộc nhập',
             'username.required' => 'Trường username bắt buộc nhập',
-            'username.unique'   => 'Trường username không được trùng',
             'email.required'    => 'Trường email bắt buộc nhập',
             'password.required' => 'Trường password bắt buộc nhập',
         ];

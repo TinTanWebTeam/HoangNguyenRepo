@@ -35,12 +35,21 @@ class UserManagementController extends Controller
     public function getDataUser()
     {
         try {
+            $position = Position::all();
+
             $users = DB::table('users')
                 ->where('users.active', 1)
                 ->join('positions', 'users.position_id', '=', 'positions.id')
                 ->select('users.*', 'positions.name as positions_name')
                 ->get();
-            return $users;
+            $response = [
+                'msg'           => 'Get data User success',
+                'tableUser'     => $users,
+                'tablePosition' => $position
+            ];
+            return response()->json($response, 200);
+
+
         } catch (Exception $ex) {
             return $ex;
         }
@@ -69,20 +78,24 @@ class UserManagementController extends Controller
 
     public function postEditUser(Request $request)
     {
-        try {
-            $subroles = DB::table('subroles')
-                ->where('user_id', $request->get('user_id'))
-                ->get();
 
+        try {
+            $subRoles = DB::table('subroles')
+                ->where('user_id', $request->get('_object'))
+                ->get();
             $password = DB::table('users')
-                ->where('id', $request->get('user_id'))
+                ->where('id', $request->get('_object'))
                 ->select('users.password')
                 ->first();
-            $pass2 = decrypt($password->password, Config::get('app.key'));
-            return [
-                'subroles' => $subroles,
-                'password' => $pass2
+            $password_confirm = decrypt($password->password, Config::get('app.key'));
+            $response = [
+                'msg'            => 'Get data user success',
+                'subRoles' => $subRoles,
+                'password' => $password_confirm
+
             ];
+            return response()->json($response, 200);
+
         } catch (\Exception $ex) {
             return $ex;
         }
@@ -92,126 +105,169 @@ class UserManagementController extends Controller
 
     public function postModifyUser(Request $request)
     {
-        try {
+        $fullName = null;
+        $userName = null;
+        $password = null;
+        $email = null;
+        $address = null;
+        $phone = null;
+        $user = null;
+        $array_roleId = null;
+        $birthday = null;
+        $position_id = null;
+        $action = $request->get('_action');
 
-            $user = $request->get('_object');
+
+        if ($action != 'delete') {
+            $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
+            if ($validateUser->fails()) {
+                return $validateUser->errors();
+//                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $fullName = $request->get('_object')['fullName'];
+            $userName = $request->get('_object')['username'];
+            $password = encrypt($request->get('_object')['password']);
+            $email = $request->get('_object')['email'];
+            $address = $request->get('_object')['address'];
+            $phone = $request->get('_object')['phone'];
+            $array_roleId = $request->get('_object2');
             $birthday = Carbon::createFromFormat('d-m-Y', $request->get('_object')['birthday'])->toDateTimeString();
+            $position_id = $request->get('_object')['position_id'];
+        }
 
-            $array_roleid = $request->get('_object2');
-            if ($request->get('_action') == 'add') {
-                $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
-                if ($validateUser->fails()) {
-                    return $validateUser->errors();
-                    //return ['status' => 'Fail'];
-                } else {
-                    try {
-                        $userNew = new User();
-                        $userNew->fullName = $user['fullName'];
-                        $userNew->userName = $user['username'];
-                        $userNew->password = encrypt($user['password'], Config::get('app.key'));
-                        $userNew->email = $user['email'];
-                        $userNew->address = $user['address'];
-                        $userNew->phone = $user['phone'];
-                        $userNew->birthday = $birthday;
-                        $userNew->position_id = $user['position_id'];
-                        if (!$userNew->save()) {
-                            return ['status' => 'Fail'];
-                        }
-                        //insert subrole
-                        for ($i = 0; $i < count($array_roleid); $i++) {
+
+        switch ($action) {
+            case "add":
+                try {
+                    $userNew = new User();
+                    $userNew->fullName = $fullName;
+                    $userNew->username = $userName;
+                    $userNew->password = $password;
+                    $userNew->email = $email;
+                    $userNew->address = $address;
+                    $userNew->phone = $phone;
+                    $userNew->birthday = $birthday;
+                    $userNew->position_id = $position_id;
+                    $userNew->createdBy = \Auth::user()->id;
+                    $userNew->updatedBy = \Auth::user()->id;
+                    if ($userNew->save()) {
+                        for ($i = 0; $i < count($array_roleId); $i++) {
                             $subRoleNew = new SubRole();
                             $subRoleNew->user_id = $userNew->id;
-                            $subRoleNew->role_id = $array_roleid[$i];
-                            if (!$subRoleNew->save()) {
-                                return ['status' => 'Fail'];
-                            };
-                        }
-                        $userRow = DB::table('users')
+                            $subRoleNew->role_id = $array_roleId[$i];
+                            if ($subRoleNew->save()) {
+                                $response = [
+                                    'msg'    => 'Created Position',
+                                    'subRow' => $subRoleNew
+                                ];
+                                return response()->json($response, 201);
+                            }
+                            return response()->json(['msg' => 'Create failed'], 404);
+                        };
+
+                        $userAdd = \DB::table('user')
+                            ->where('users.active', 1)
                             ->join('positions', 'users.position_id', '=', 'positions.id')
-                            ->where('users.id', $userNew->id)
                             ->select('users.*', 'positions.name as positions_name')
                             ->get();
-                        return ['status' => 'Ok',
-                                'obj'    => $userRow
+                        $response = [
+                            'msg'          => 'Created user',
+                            'tableUserAdd' => $userAdd
                         ];
-                    } catch (Exception $ex) {
-                        return ['status' => 'Fail'];
+                        return response()->json($response, 201);
                     }
-
+                    return response()->json(['msg' => 'Create failed'], 404);
+                } catch (Exception $ex) {
+                    return $ex;
                 }
-            } else {
-                switch ($request->get('_action')) {
-                    case "update":
-                        try {
-                            $userUpdate = User::findOrFail($request->get('_object')['id']);
-                            $userUpdate->fullname = $request->get('_object')['fullName'];
-                            $userUpdate->username = $request->get('_object')['username'];
-                            $userUpdate->password = encrypt($request->get('_object')['password'], Config::get('app.key'));
-                            $userUpdate->email = $request->get('_object')['email'];
-                            $userUpdate->address = $user['address'];
-                            $userUpdate->phone = $user['phone'];
-                            $userUpdate->birthday = $birthday;
-                            $userUpdate->position_id = $request->get('_object')['position_id'];
-                            if (!$userUpdate->save()) {
-                                return ['status' => 'Fail'];
-                            }
-                            /* delete subrole*/
-                            $deleteList = SubRole::where('user_id', $request->get('_object')['id'])->pluck('role_id');
-                            for ($i = 0; $i < count($deleteList); $i++) {
-                                $subroleDelete = SubRole::where([
-                                        ['role_id', '=', $deleteList[$i]],
-                                        ['user_id', '=', $request->get('_object')['id']]
-                                    ]
-                                )->get();
-                                for ($j = 0; $j < count($subroleDelete); $j++) {
-                                    $deleteSubrole = SubRole::findOrFail($subroleDelete[$j]['id']);
-                                    if (!$deleteSubrole->delete()) {
-                                        return ['status' => 'Fail'];
-                                    };
+                break;
+            case "update":
+                try {
+                    $userUpdate = User::findOrFail($request->get('_object')['id']);
+                    $userUpdate->fullName = $fullName;
+                    $userUpdate->username = $userName;
+                    $userUpdate->password = $password;
+                    $userUpdate->email = $email;
+                    $userUpdate->address = $address;
+                    $userUpdate->phone = $phone;
+                    $userUpdate->birthday = $birthday;
+                    $userUpdate->position_id = $position_id;
+                    $userUpdate->updatedBy = \Auth::user()->id;
+                    if ($userUpdate->save()) {
+                        $deleteList = SubRole::where('user_id', $request->get('_object')['id'])->pluck('role_id');
+                        for ($i = 0; $i < count($deleteList); $i++) {
+                            $subRoleDelete = SubRole::where([
+                                    ['role_id', '=', $deleteList[$i]],
+                                    ['user_id', '=', $request->get('_object')['id']]
+                                ]
+                            )->get();
+                            for ($j = 0; $j < count($subRoleDelete); $j++) {
+                                $deleteSubRole = SubRole::findOrFail($subRoleDelete[$j]['id']);
+                                if (!$deleteSubRole->delete()) {
+                                    $response = [
+                                        'msg'          => 'Created Position',
+                                        'deleteSubRow' => $deleteSubRole
+                                    ];
+                                    return response()->json($response, 201);
                                 }
-
-                            }
-                            //insert subrole
-                            for ($i = 0; $i < count($array_roleid); $i++) {
-                                $subRoleUpdate = new SubRole();
-                                $subRoleUpdate->user_id = $userUpdate->id;
-                                $subRoleUpdate->role_id = $array_roleid[$i];
-                                if (!$subRoleUpdate->save()) {
-                                    return ['status' => 'Fail'];
-                                };
+                                return response()->json(['msg' => 'update failed'], 404);
                             }
 
-                            $roleRowUpdate = DB::table('users')
-                                ->join('positions', 'users.position_id', '=', 'positions.id')
+
+                        }
+                        //insert subrole
+                        for ($i = 0; $i < count($array_roleId); $i++) {
+                            $subRoleUpdate = new SubRole();
+                            $subRoleUpdate->user_id = $userUpdate->id;
+                            $subRoleUpdate->role_id = $array_roleId[$i];
+                            if ($subRoleUpdate->save()) {
+                                $response = [
+                                    'msg'    => 'Created sub row',
+                                    'subRow' => $subRoleUpdate
+                                ];
+                                return response()->json($response, 201);
+                            }
+                            return response()->json(['msg' => 'Create failed'], 404);
+                        };
+
+
+
+
+                        $userUpdate = \DB::table('users')
+                            ->join('positions', 'users.position_id', '=', 'positions.id')
                                 ->where('users.id', $userUpdate->id)
                                 ->select('users.*', 'positions.name as positions_name')
                                 ->get();
-                            return ['status' => 'Ok',
-                                    'obj'    => $roleRowUpdate
-                            ];
-                        } catch (Exception $ex) {
-                            return ['status' => 'Fail'];
-                        }
-                        break;
-                    case "delete":
-                        try {
-                            $userDelete = User::findOrFail($request->get('_object')['id']);
-                            $userDelete->active = 0;
-                            if ($userDelete->save())
-                                return ['status' => 'Ok'];
-                            return ['status' => 'Fail'];
+                        $response = [
+                            'msg'             => 'Updated user',
+                            'tableUserUpdate' => $userUpdate
+                        ];
 
-                        } catch (\Exception $ex) {
-                            return $ex;
-                        }
-                        break;
-                    default:
-                        break;
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Update failed'], 404);
+                } catch (Exception $ex) {
+                    return $ex;
                 }
-            }
-        } catch (\Exception $ex) {
-            return $ex;
+                break;
+            case "delete":
+                $userDelete = User::findOrFail($request->get('_object'));
+                $userDelete->active = 0;
+                if ($userDelete->update()) {
+                    $response = [
+                        'msg' => 'Deleted user'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
         }
+
+
     }
 
     public function getViewPosition()

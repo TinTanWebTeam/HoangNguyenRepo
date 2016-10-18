@@ -101,8 +101,6 @@ class CostManagementController extends Controller
 
     public function postModifyFuelCost(Request $request)
     {
-
-
         $prices_price = null;
         $literNumber = null;
         $vehicle = null;

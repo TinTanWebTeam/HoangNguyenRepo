@@ -184,15 +184,10 @@
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="position_id"><b>Chức vụ</b></label>
-                                        <select class="form-control" id="position_id" name="position_id">
-                                            <option value="">--Chọn chức vụ--</option>
-                                            @foreach($positions as $item ){
-                                            <option value="{{$item->id}}">{{$item->name}}</option>
-                                            }
-                                            @endforeach
+                                        <select class="form-control" id="position_id"
+                                                name="position_id">
                                         </select>
-                                        <label id="position_id" style="display: none; color: red">Vui lòng chọn chức
-                                            vụ</label>
+
                                     </div>
                                 </div>
                             </div>
@@ -235,7 +230,7 @@
                                                     @foreach($row as $item)
                                                         <div class="col-sm-4">
                                                             <label>
-                                                                <input type="checkbox" id="array_roleid"
+                                                                <input type="checkbox" id="array_roleId"
                                                                        value="{{$item->id}}"
                                                                        onclick="userView.checkRole(this)">{{$item->description}}
                                                             </label>
@@ -252,7 +247,7 @@
                             <div class="form-actions noborder">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="userView.validate()">
+                                            onclick="userView.save()">
                                         Hoàn tất
                                     </button>
                                     <button type="button" class="btn default" onclick="userView.cancel()">Huỷ</button>
@@ -275,10 +270,13 @@
                 table: null,
                 data: null,
                 tableUser: null,
+                tablePosition: null,
                 action: null,
                 idDelete: null,
                 current: null,
-                array_roleid: null,
+                array_roleId: null,
+                user_id: null,
+                tableSubRow: null,
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -289,6 +287,7 @@
                     });
                     userView.resetRolesInDom();
                     $('label[class=error]').hide();
+                    userView.clearInput();
                 },
                 cancel: function () {
                     if (userView.action == 'add') {
@@ -299,9 +298,22 @@
                 },
 
                 loadData: function () {
-                    $.post(url + 'user', {_token: _token, fromDate: null, toDate: null}, function (list) {
-                        userView.data = list;
-                        userView.fillDataToDatatable(list);
+                    $.ajax({
+                        url: url + 'user/users',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            userView.tableUser = data['tableUser'];
+                            userView.fillDataToDatatable(data['tableUser']);
+                            userView.tablePosition = data['tablePosition'];
+                            userView.loadSelectBoxPosition(data['tablePosition']);
+
+                        } else {
+                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                     toastr.options = {
                         "closeButton": true,
@@ -323,50 +335,33 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
-
-                    $('#datePicker .date').datepicker({
+                    $("#datePicker .date").datepicker({
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
                 },
-                editUser: function (id) {
-                    var pwd = null;
-                    $.post(url + 'user/edit', {
-                        _token: _token,
-                        user_id: id,
-                        fromDate: null,
-                        toDate: null
-                    }, function (lstsubroles) {
-                        userView.resetRolesInDom();
-                        var roles_array = [];
-                        for (var i = 0; i < lstsubroles['subroles'].length; i++) {
-                            roles_array.push(lstsubroles['subroles'][i]['role_id'])
-                        }
-                        pwd = lstsubroles['password'][0];
-                        userView.fillRolesToDom(roles_array);
-                    });
-                    userView.current = _.clone(_.find(userView.data, function (o) {
-                        return o.id == id;
-                    }), true);
-                    userView.current.password = pwd;
-                    $("input[id=password_confirmation]").val(pwd);
-                    userView.action = "update";
-                    userView.fillCurrentObjectToForm();
-                    userView.show();
+
+                clearValidation: function () {
+                    $('label[class=error]').hide();
                 },
-                fillCurrentObjectToForm: function () {
-                    for (var propertyName in userView.current) {
-                        $("select[id=" + propertyName + "]").val(userView.current[propertyName]);
-                        $("input[id=" + propertyName + "]").val(userView.current[propertyName]);
-                        $("input[id=password]").val(userView.current[propertyName]);
-                        $("input[id=password_confirmation]").val(userView.current[propertyName]);
+
+                loadSelectBoxPosition: function (lstPosition) {
+                    //reset selectbox
+                    $('#position_id')
+                            .find('option')
+                            .remove()
+                            .end();
+                    //fill option to selectbox
+                    var select = document.getElementById("position_id");
+                    for (var i = 0; i < lstPosition.length; i++) {
+                        var opt = lstPosition[i]['name'];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = lstPosition[i]['id'];
+                        select.appendChild(el);
                     }
-
-                    var dateBirthday = moment(userView.current["birthday"], "YYYY-MM-DD");
-                    $("input[id='birthday']").datepicker('update', dateBirthday.format("DD-MM-YYYY"));
-                    userView.show();
+//                    $("#position_id").find('option').eq(0)
                 },
-
                 renderDateTimePicker: function () {
                     $('#birthday').datepicker({
                         "setDate": new Date(),
@@ -422,13 +417,14 @@
                     $(element).attr('value') + ' ' + $(element).prop('checked');
                 },
                 fillFormDataToCurrentObject: function () {
-                    var subrole = [];
-                    $("input[id=array_roleid]").each(function () {
+                    var subRole = [];
+                    $("input[id=array_roleId]").each(function () {
                         if ($(this).prop('checked')) {
-                            subrole.push($(this).attr('value'));
+                            subRole.push($(this).attr('value'));
                         }
                     });
-                    userView.array_roleid = subrole;
+
+                    userView.array_roleId = subRole;
                     if (userView.action == 'add') {
                         userView.current = {
                             fullName: $("input[id='fullName']").val(),
@@ -438,7 +434,6 @@
                             email: $("input[id='email']").val(),
                             address: $("input[id='address']").val(),
                             phone: $("input[id='phone']").val(),
-                            note: $("input[id='note']").val(),
                             birthday: $("input[id='birthday']").val(),
                             position_id: $("select[id='position_id']").val()
                         }
@@ -446,15 +441,71 @@
                     } else if (userView.action == 'update') {
                         userView.current.fullName = $("input[id='fullName']").val();
                         userView.current.username = $("input[id='username']").val();
-                        userView.current.password = $("input[id='password']").val();
                         userView.current.email = $("input[id='email']").val();
                         userView.current.address = $("input[id='address']").val();
                         userView.current.phone = $("input[id='phone']").val();
                         userView.current.birthday = $("input[id='birthday']").val();
-                        userView.current['position_id'] = $("select[id='position_id']").val();
+                        userView.current.position_id = $("select[id='position_id']").val();
 
                     }
                 },
+                fillCurrentObjectToForm: function () {
+                    var dateBirthday = moment(userView.current["birthday"], "YYYY-MM-DD");
+                    $("input[id='birthday']").datepicker('update', dateBirthday.format("DD-MM-YYYY"));
+                    $("input[id='fullName']").val(userView.current["fullName"]);
+                    $("input[id='username']").val(userView.current["username"]);
+                    $("input[id='email']").val(userView.current["email"]);
+                    $("input[id='password']").val(userView.current["password"]);
+                    $("input[id='password_confirmation']").val(userView.current["password_confirmation"]);
+                    $("input[id='position_id']").val(userView.current["position_id"]);
+                    $("input[id='address']").val(userView.current["address"]);
+                    $("input[id='phone']").val(userView.current["phone"]);
+//                    for (var propertyName in userView.current) {
+//                        $("input[id=password]").val(userView.current[propertyName]);
+//                        $("input[id=password_confirmation]").val(userView.current[propertyName]);
+//                    }
+
+
+                },
+                editUser: function(id){
+                    userView.current = null;
+                    var pwd = null;
+                    var  sendToServer = {
+                        _token: _token,
+                        _object: id
+                    };
+                    $.ajax({
+                        url: url + 'user/edit',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            var roles_array = [];
+                            for (var i = 0; i < data['subRoles'].length; i++) {
+                                roles_array.push(data['subRoles'][i]['role_id']);
+                            }
+                            pwd = data['password'];
+                            userView.fillRolesToDom(roles_array);
+                            userView.current = _.clone(_.find(userView.tableUser, function (o) {
+                                return o.id == id;
+                            }), true);
+
+                            userView.fillCurrentObjectToForm();
+                            userView.current.password = pwd;
+                            $("input[id=password_confirmation]").val(pwd);
+                            userView.action = 'update';
+                            userView.show();
+
+                            userView.clearValidation();
+
+                            }
+
+                        });
+
+
+                },
+
                 addNewUser: function () {
                     userView.action = 'add';
                     userView.show();
@@ -578,79 +629,109 @@
                     });
 
                 },
+                displayModal: function (type, idModal) {
+                    $(idModal).modal(type);
+                    if (userView.action == 'delete' && type == 'hide') {
+                        userView.action = null;
+                        userView.idDelete = null;
+                    }
 
+
+                },
 
                 save: function () {
-                    userView.validate();
-                    userView.fillFormDataToCurrentObject();
-                    var sendToServer = {
-                        _token: _token,
-                        _action: userView.action,
-                        _object: userView.current,
-                        _object2: userView.array_roleid
-                    };
+                    var sendToServer = null;
                     if (userView.action == 'delete') {
-                        sendToServer._object = {
-                            id: userView.idDelete,
-                            fullName: "delete",
-                            username: "delete",
-                            password: "delete",
-                            email: "delete"
+                        sendToServer = {
+                            _token: _token,
+                            _action: userView.action,
+                            _object: userView.idDelete
                         };
-                    }
-                    if ($("#formUser").valid()) {
-                        $.post(
-                                url + 'user/modify',
-                                sendToServer
-                                , function (data) {
-                                    if (data['status'] == 'Ok') {
-                                        var obj = null;
-                                        var index = null;
-                                        switch (userView.action) {
-                                            case'add' :
-                                                userView.data.push(data['obj'][0]);
-                                                userView.showNotification("success", "Thêm thành công!");
-                                                break;
-                                            case 'update':
-                                                obj = _.find(userView.data, function (o) {
-                                                    return o.id == sendToServer._object.id;
-                                                });
-                                                index = _.indexOf(userView.data, obj);
-                                                userView.data.splice(index, 1, data['obj'][0]);
-                                                userView.hide();
-                                                userView.showNotification("success", "Cập nhật thành công!");
-                                                break;
-                                            case 'delete':
-                                                obj = _.find(userView.data, function (o) {
-                                                    return o.id == sendToServer._object.id;
-                                                });
-                                                index = _.indexOf(userView.data, obj);
-                                                userView.data.splice(index, 1);
-                                                userView.showNotification("success", "Xóa thành công!");
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                        userView.table.clear().rows.add(userView.data).draw();
-                                        userView.clearInput();
-                                        userView.renderDateTimePicker();
-                                    }
+                        $.ajax({
+                            url: url + 'user/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                var userOld = _.find(userView.tableUser, function (o) {
+                                    return o.id == sendToServer._object;
+                                });
+                                var indexOfUserOld = _.indexOf(userView.tableUser, userOld);
+                                userView.tableUser.splice(indexOfUserOld, 1);
+                                userView.showNotification("success", "Xóa thành công!");
+                                userView.displayModal("hide", "#modal-confirmDelete");
 
-                                }
-                        );
-                        userView.resetRolesInDom();
-
+                            }
+                            userView.table.clear().rows.add(userView.tableUser).draw();
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
                     } else {
-                        $("form#formUser").find("label[class=error]").css("color", "red");
+                        userView.validate();
+                        if ($("#formUser").valid()) {
+                            sendToServer = {
+                                _token: _token,
+                                _action: userView.action,
+                                _object: userView.current,
+                                _object2: userView.array_roleId
+                            };
+                            userView.fillFormDataToCurrentObject();
+                            $.ajax({
+                                url: url + 'user/modify',
+                                type: "POST",
+                                dataType: "json",
+                                data: sendToServer
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    switch (userView.action) {
+                                        case 'add':
+                                            var UserOld = _.find(userView.tableUser, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var indexOfUserOld = _.indexOf(  userView.tableUser, UserOld);
+                                            userView.tableUser.splice(indexOfUserOld, 1, data['tableUserAdd'][0]);
+                                            userView.tableUser.push(data['tableUserAdd'][0]);
+                                            userView.showNotification("success", "Thêm thành công!");
+                                            break;
+                                        case 'update':
+                                            var UserOld = _.find(userView.tableUser, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var indexOfUserOld = _.indexOf(userView.tableUser, UserOld);
+                                            userView.tableUser.splice(indexOfUserOld, 1, data['tableUserUpdate']);
+                                            userView.showNotification("success", "Cập nhật thành công!");
+                                            userView.hide();
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                    userView.table.clear().rows.add(userView.tableUser).draw();
+                                    userView.clearInput();
+                                } else {
+                                    userView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                }
+
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+
+                                userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+
+                            });
+                        } else {
+                            $("form#formUser").find("label[class=error]").css("color", "red");
+                        }
                     }
                 },
+
+
                 resetRolesInDom: function () {
-                    $("input[id=array_roleid]").each(function () {
+                    $("input[id=array_roleId]").each(function () {
                         $(this).prop('checked', false);
                     });
                 },
                 fillRolesToDom: function (roles_array) {
-                    $("input[id=array_roleid]").each(function () {
+                    $("input[id=array_roleId]").each(function () {
                         if (roles_array.includes(Number($(this).attr('value')))) {
                             $(this).prop('checked', true);
                         }

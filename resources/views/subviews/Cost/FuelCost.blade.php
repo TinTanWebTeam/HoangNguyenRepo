@@ -133,7 +133,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="dateFuel"><b>Ngày đổ</b></label>
-                                        <input id="dateFuel" name="dateFuel" type="text"
+                                        <input  type="text" id="dateFuel" name="dateFuel"
                                                class="date form-control ignore"
                                         />
 
@@ -378,7 +378,6 @@
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
                                     <label for="garage_id"><b>Nhà xe</b></label>
-
                                     <select class="form-control" id="garage_id"
                                             name="garage_id">
                                     </select>
@@ -749,11 +748,8 @@
                             vehicle_id: "required",
                             literNumber: {
                                 required: true,
-                                number: true
-                            },
-                            dateFuel: {
-                                required: true,
-                                maxlength:5
+                                number: true,
+                                maxlength:3
                             }
 
                         },
@@ -762,12 +758,8 @@
                             vehicle_id: "Vui lòng chọn xe",
                             literNumber: {
                                 required: "Vui lòng nhập số lít",
-                                number: "Số lít phải là số"
-                            },
-                            dateFuel:{
-                                required: "Vui lòng nhập ngày",
+                                number: "Số lít phải là số",
                                 maxlength: "Ngày tháng không hợp lệ",
-
                             }
 
                         }
