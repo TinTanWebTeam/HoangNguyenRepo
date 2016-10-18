@@ -6,6 +6,8 @@ use App\Cost;
 use App\CostPrice;
 use App\Customer;
 use App\CustomerType;
+use App\InvoiceCustomer;
+use App\InvoiceCustomerDetail;
 use App\Postage;
 use App\Price;
 use App\Status;
@@ -368,6 +370,7 @@ class CustomerManagementController extends Controller
         $quantumProduct = null;
         $cashRevenue = null;
         $cashDelivery = null;
+        $cashPreDelivery = null;
         $cashReceive = null;
         $cashProfit = null;
         $voucherNumber = null;
@@ -395,15 +398,16 @@ class CustomerManagementController extends Controller
 
         $action = $request->input('_action');
         if ($action != 'delete') {
-//            $validator = ValidateController::ValidateVoucherTransport($request->input('_transport'));
-//            if ($validator->fails()) {
-//                return response()->json(['msg' => 'Input data fail'], 404);
-//            }
+            $validator = ValidateController::ValidateVoucherTransport($request->input('_transport'));
+            if ($validator->fails()) {
+                return response()->json(['msg' => 'Input data fail'], 404);
+            }
 
             $weight = $request->input('_transport')['weight'];
             $quantumProduct = $request->input('_transport')['quantumProduct'];
             $cashRevenue = $request->input('_transport')['cashRevenue'];
             $cashDelivery = $request->input('_transport')['cashDelivery'];
+            $cashPreDelivery = $request->input('_transport')['cashPreDelivery'];
             $cashReceive = $request->input('_transport')['cashReceive'];
             $cost = $request->input('_transport')['cost'];
             $cashProfit = $cashRevenue - $cashDelivery - $cost;
@@ -440,6 +444,7 @@ class CustomerManagementController extends Controller
                     $transportNew->quantumProduct = $quantumProduct;
                     $transportNew->cashRevenue = $cashRevenue;
                     $transportNew->cashDelivery = $cashDelivery;
+                    $transportNew->cashPreDelivery = $cashPreDelivery;
                     $transportNew->cashReceive = $cashReceive;
                     $transportNew->cashProfit = $cashProfit;
                     $transportNew->voucherNumber = $voucherNumber;
@@ -468,6 +473,7 @@ class CustomerManagementController extends Controller
                             $vouTranNew->createdBy = \Auth::user()->id;
                             $vouTranNew->updatedBy = \Auth::user()->id;
                             if (!$vouTranNew->save()) {
+                                DB::rollBack();
                                 return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
                             }
                         }
@@ -488,6 +494,7 @@ class CustomerManagementController extends Controller
                         $costNew->price_id = $price_id;
                         $costNew->vehicle_id = $vehicle_id;
                         if (!$costNew->save()) {
+                            DB::rollBack();
                             return response()->json(['msg' => 'Create Cost failed'], 404);
                         }
 
@@ -528,10 +535,18 @@ class CustomerManagementController extends Controller
                     break;
                 case 'update':
                     $transportUpdate = Transport::findOrFail($request->input('_transport')['id']);
+
+                    //keep value old row
+                    $kp_cashRevenue = $transportUpdate->cashRevenue;
+                    $kp_cashDelivery = $transportUpdate->cashDelivery;
+                    $kp_cashReceive = $transportUpdate->cashReceive;
+                    $kp_cashProfit = $transportUpdate->cashProfit;
+
                     $transportUpdate->weight = $weight;
                     $transportUpdate->quantumProduct = $quantumProduct;
                     $transportUpdate->cashRevenue = $cashRevenue;
                     $transportUpdate->cashDelivery = $cashDelivery;
+                    $transportUpdate->cashPreDelivery = $cashPreDelivery;
                     $transportUpdate->cashReceive = $cashReceive;
                     $transportUpdate->cashProfit = $cashProfit;
                     $transportUpdate->voucherNumber = $voucherNumber;
@@ -559,6 +574,7 @@ class CustomerManagementController extends Controller
                         if(count($vouTranDelete) > 0){
                             $ids_to_delete = array_map(function($item){ return $item['id']; }, $vouTranDelete);
                             if(DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
+                                DB::rollBack();
                                 return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
                             }
                         }
@@ -571,6 +587,7 @@ class CustomerManagementController extends Controller
                             $vouTranNew->createdBy = $createdBy;
                             $vouTranNew->updatedBy = \Auth::user()->id;
                             if (!$vouTranNew->save()) {
+                                DB::rollBack();
                                 return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
                             }
                         }
@@ -578,6 +595,7 @@ class CustomerManagementController extends Controller
                         //Delete Cost
                         $costDelete = Cost::where('transport_id', $transportUpdate->id)->first();
                         if (!$costDelete->delete()) {
+                            DB::rollBack();
                             return response()->json(['msg' => 'Delete Cost failed'], 404);
                         }
 
@@ -597,7 +615,33 @@ class CustomerManagementController extends Controller
                         $costNew->price_id = $price_id;
                         $costNew->vehicle_id = $vehicle_id;
                         if (!$costNew->save()) {
+                            DB::rollBack();
                             return response()->json(['msg' => 'Create Cost failed'], 404);
+                        }
+
+                        //Update InvoiceCustomer for Transport
+                        if($transportUpdate->invoiceCustomer_id != null){
+                            $invoiceCustomer = InvoiceCustomer::find($transportUpdate->invoiceCustomer_id);
+                            $invoiceCustomer->totalPay = $invoiceCustomer->totalPay - $kp_cashRevenue + $transportUpdate->cashRevenue;
+                            $invoiceCustomer->prePaid = $invoiceCustomer->prePaid - $kp_cashReceive + $transportUpdate->cashReceive;
+                            $invoiceCustomer->totalPaid = $invoiceCustomer->totalPay - $invoiceCustomer->prePaid;
+                            $invoiceCustomer->notVAT = $invoiceCustomer->totalPay;
+                            $invoiceCustomer->hasVAT = $invoiceCustomer->notVAT * $invoiceCustomer->VAT / 100;
+                            $invoiceCustomer->updatedBy = \Auth::user()->id;
+                            if(!$invoiceCustomer->update()){
+                                DB::rollBack();
+                                return response()->json(['msg' => 'Create Cost failed'], 404);
+                            }
+
+                            $invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomer->id)->orderBy('created_at', 'desc')->first();
+                            $invoiceCustomerDetail->paidAmt = $invoiceCustomerDetail->paidAmt + ($transportUpdate->cashReceive - $kp_cashReceive);
+                            $invoiceCustomerDetail->paidDate = date('Y-m-d H:i');
+                            $invoiceCustomerDetail->modify = true;
+                            $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
+                            if($invoiceCustomerDetail->update()){
+                                DB::rollBack();
+                                return response()->json(['msg' => 'Create Cost failed'], 404);
+                            }
                         }
 
                         //Response
@@ -644,12 +688,14 @@ class CustomerManagementController extends Controller
                             return $item['id'];
                         }, $vouTranDelete);
                         if (DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0) {
+                            DB::rollBack();
                             return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
                         }
                     }
                     //Delete Cost
                     $costDelete = Cost::where('transport_id', $transport_id)->first();
                     if (!$costDelete->delete()) {
+                        DB::rollBack();
                         return response()->json(['msg' => 'Delete Cost failed'], 404);
                     }
 

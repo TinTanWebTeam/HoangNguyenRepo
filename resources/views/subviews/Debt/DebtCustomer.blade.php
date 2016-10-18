@@ -227,8 +227,8 @@
                                         <div class="form-group form-md-line-input ">
                                             <label for="hasVAT"><b>Có VAT</b></label>
                                             <input type="number" class="form-control"
-                                                   id="hasVAT"
-                                                   name="hasVAT" onchange="debtCustomerView.computeVAT(this.value)">
+                                                   id="hasVAT" name="hasVAT" step="1000" min="0"
+                                                   onchange="debtCustomerView.computeVAT(this.value)">
                                         </div>
                                     </div>
                                 </div>
@@ -263,8 +263,8 @@
                                         <div class="form-group form-md-line-input ">
                                             <label for="paidAmt"><b>Tiền trả</b></label>
                                             <input type="number" class="form-control"
-                                                   id="paidAmt"
-                                                   name="paidAmt" onchange="debtCustomerView.computeDebt(this.value)">
+                                                   id="paidAmt" name="paidAmt" step="1000" min="0"
+                                                   onchange="debtCustomerView.computeDebt(this.value)">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -944,11 +944,17 @@
             formValidate: function () {
                 $("#frmInvoice").validate({
                     rules: {
-                        paidAmt: "required"
+                        paidAmt: {
+                            required: true,
+                            min: 1
+                        }
                     },
                     ignore: ".ignore",
                     messages: {
-                        paidAmt: "Vui lòng nhập số tiền thanh toán."
+                        paidAmt: {
+                            required: "Vui lòng nhập số tiền thanh toán.",
+                            min: "Số tiền trả phải lớn hơn 0"
+                        }
                     }
                 });
             },
@@ -1022,7 +1028,6 @@
                     }).done(function (data, textStatus, jqXHR) {
                         console.log("SERVER");
                         console.log(data);
-                        debugger;
                         if (jqXHR.status == 201) {
                             var invoiceCustomer = data['invoiceCustomer'];
                             var invoiceCustomerDetail = data['invoiceCustomerDetail'];
@@ -1084,9 +1089,10 @@
                                 $("input[id=note]").val('');
 
                                 var prePaid = parseInt(sendToServer._invoiceCustomer['paidAmt']);
-                                var debtReal = parseInt($("#debt").attr("data-real")) - prePaid;
+                                var debtReal = parseInt($("#debt").attr("debt-real")) - prePaid;
                                 $("input[id=debt]").val(debtReal);
                                 $("#debt").attr("data-real", debtReal);
+                                $("#paidAmt").focus();
 
                                 //Show notification
                                 showNotification("success", "Thanh toán thành công!");
