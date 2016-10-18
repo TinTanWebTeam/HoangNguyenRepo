@@ -15,15 +15,15 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('fullName', 100);
-            $table->string('address', 500);
-            $table->string('phone', 50);
-            $table->string('email', 100)->unique();
-            $table->string('taxCode');
-            $table->text('note', 500);
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
+            $table->string('address', 500)->nullable();
+            $table->string('phone', 50)->nullable();
+            $table->string('email', 100)->unique()->nullable();
+            $table->string('taxCode')->nullable();
+            $table->text('note', 500)->nullable();
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
             $table->boolean('active')->default(1);
-            $table->integer('customerType_id');
+            $table->integer('customerType_id')->unsigned();
             $table->timestamps();
         });
     }

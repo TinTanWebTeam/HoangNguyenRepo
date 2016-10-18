@@ -135,8 +135,14 @@ class DebtManagementController extends Controller
             $invoiceCode = $this->generateInvoiceCode();
             if($request->input('_invoiceCustomer')['invoiceCode'] == '')
                 $invoiceCustomer->invoiceCode = $invoiceCode;
-            else
-                $invoiceCustomer->invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
+            else {
+                $invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
+                if(InvoiceCustomer::where('invoiceCode', $invoiceCode)->get()->count() == 0)
+                    $invoiceCustomer->invoiceCode = $invoiceCode;
+                else
+                    return response()->json(['msg' => 'invoiceCode exists!'], 203);
+            }
+
             $invoiceCustomer->VAT = $request->input('_invoiceCustomer')['VAT'];
             $invoiceCustomer->notVAT = $request->input('_invoiceCustomer')['notVAT'];
             $invoiceCustomer->hasVAT = $request->input('_invoiceCustomer')['hasVAT'];

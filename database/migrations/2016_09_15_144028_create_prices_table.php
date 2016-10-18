@@ -14,12 +14,12 @@ class CreatePricesTable extends Migration
     {
         Schema::create('prices', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('price',18,0);
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
-            $table->string('note');
+            $table->decimal('price',18,0)->default(0);
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
+            $table->string('note')->nullable();
             $table->boolean('active')->default(1);
-            $table->integer('costPrice_id');
+            $table->integer('costPrice_id')->unsigned();
             $table->timestamps();
         });
     }

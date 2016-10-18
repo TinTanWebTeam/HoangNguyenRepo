@@ -14,8 +14,8 @@ class CreateInvoiceGaragesTable extends Migration
     {
         Schema::create('invoiceGarages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('invoiceCode');
-            $table->float('VAT');
+            $table->string('invoiceCode')->unique();
+            $table->float('VAT')->default(0);
             $table->decimal('notVAT', 18, 0)->default(0);
             $table->decimal('hasVAT', 18, 0)->default(0);
             $table->decimal('totalPay', 18, 0)->default(0);
@@ -24,9 +24,9 @@ class CreateInvoiceGaragesTable extends Migration
             $table->dateTime('exportDate');
             $table->dateTime('invoiceDate');
             $table->dateTime('payDate');
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
-            $table->text('note');
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
+            $table->text('note')->nullable();
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

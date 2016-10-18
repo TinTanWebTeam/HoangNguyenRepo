@@ -15,10 +15,10 @@ class CreateGaragesTable extends Migration
         Schema::create('garages', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('contactor');
-            $table->string('address');
-            $table->string('phone');
-            $table->text('note');
+            $table->string('contactor')->nullable();
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
+            $table->text('note')->nullable();
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

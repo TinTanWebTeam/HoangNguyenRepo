@@ -14,16 +14,16 @@ class CreateCostsTable extends Migration
     {
         Schema::create('costs', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('cost',18,0);
+            $table->decimal('cost',18,0)->default(0);
             $table->float('literNumber')->nullable();
             $table->dateTime('dateCheckIn')->nullable();
             $table->dateTime('dateCheckOut')->nullable();
-            $table->integer('totalDate')->unsigned();
-            $table->integer('totalHour')->unsigned();
+            $table->integer('totalDate')->nullable();
+            $table->integer('totalHour')->nullable();
             $table->dateTime('dateRefuel')->nullable();
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
-            $table->text('note');
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
+            $table->text('note')->nullable();
             $table->boolean('active')->default(1);
             $table->integer('transport_id')->nullable();
             $table->integer('price_id')->unsigned();

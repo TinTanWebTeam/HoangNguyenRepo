@@ -14,12 +14,12 @@ class CreateInvoiceGarageDetailsTable extends Migration
     {
         Schema::create('invoiceGarageDetails', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('invoiceGarage_id');
+            $table->integer('invoiceGarage_id')->unsigned();
             $table->decimal('paidAmt', 18, 0)->default(0);
             $table->dateTime('payDate');
-            $table->boolean('modify');
-            $table->integer('createdBy');
-            $table->integer('updatedBy');
+            $table->boolean('modify')->default(0);
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
             $table->string('fileName')->nullable();
             $table->timestamps();
         });

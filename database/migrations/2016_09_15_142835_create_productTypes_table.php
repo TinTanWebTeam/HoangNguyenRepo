@@ -15,7 +15,7 @@ class CreateProductTypesTable extends Migration
         Schema::create('productTypes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
