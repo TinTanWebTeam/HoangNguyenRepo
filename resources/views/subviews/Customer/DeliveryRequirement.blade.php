@@ -2,15 +2,15 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 9%;
+        top: 15%;
         display: none;
         right: 0;
-        width: 60%;
+        width: 80%;
         height: 100%;
     }
 
     #divControl .panel-body {
-        height: 560px;
+        height: 507px;
     }
 
     div.col-lg-12 {
@@ -39,7 +39,8 @@
                         <li class="active">Đơn hàng</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="transportView.addTransport();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="transportView.addTransport();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -49,10 +50,14 @@
             <div class="panel-body">
                 <div class="dataTable_wrapper">
                     <p id="dateOnlySearch">
-                        <input type="text" class="date start" /> đến
-                        <input type="text" class="date end" />
-                        <button onclick="transportView.searchFromDateToDate()" class="btn btn-sm btn-info"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>
-                        <button onclick="transportView.clearSearch()" class="btn btn-sm btn-default"><i class="fa fa-trash-o" aria-hidden="true"></i> Xóa</button>
+                        <input type="text" class="date start"/> đến
+                        <input type="text" class="date end"/>
+                        <button onclick="transportView.searchFromDateToDate()" class="btn btn-sm btn-info"><i
+                                    class="fa fa-search" aria-hidden="true"></i> Tìm
+                        </button>
+                        <button onclick="transportView.clearSearch()" class="btn btn-sm btn-default"><i
+                                    class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                        </button>
                     </p>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped" id="table-data">
@@ -111,188 +116,207 @@
             <div class="panel-body">
                 <form role="form" id="frmControl">
                     <div class="form-body">
-                        <div class="col-md-12 ">
-                            <div class="row ">
-                                <div class="col-md-4 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="vehicle_id"><b>Xe</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="vehicle_id"
-                                               name="vehicle_id"
-                                               readonly placeholder="Nhấp đôi để chọn xe"
-                                               data-vehicleId=""
-                                               ondblclick="transportView.loadListVehicle()">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="vehicle_id"><b>Xe</b></label>
+                                            <input type="text" class="form-control cursor-copy" id="vehicle_id"
+                                                   name="vehicle_id"
+                                                   readonly placeholder="Nhấp đôi để chọn xe"
+                                                   data-vehicleId=""
+                                                   ondblclick="transportView.loadListVehicle()">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="customer_id"><b>Khách hàng</b></label>
+                                            <input type="text" class="form-control cursor-copy" id="customer_id"
+                                                   name="customer_id"
+                                                   readonly placeholder="Nhấp đôi để chọn khách hàng"
+                                                   data-customerId=""
+                                                   ondblclick="transportView.loadListCustomer()">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="product_id"><b>Hàng</b></label>
+                                            <input type="text" class="form-control cursor-copy" id="product_id"
+                                                   name="product_id"
+                                                   readonly placeholder="Nhấp đôi để chọn hàng"
+                                                   data-productId=""
+                                                   ondblclick="transportView.loadListProduct()">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="status_transport"><b>Trạng thái</b></label>
+                                            <select id="status_transport" name="status_transport"
+                                                    class="form-control"></select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="customer_id"><b>Khách hàng</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="customer_id"
-                                               name="customer_id"
-                                               readonly placeholder="Nhấp đôi để chọn khách hàng"
-                                               data-customerId=""
-                                               ondblclick="transportView.loadListCustomer()">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="weight"><b>Trọng tải</b></label>
+                                            <input type="number" class="form-control" id="weight" name="weight">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="product_id"><b>Hàng</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="product_id"
-                                               name="product_id"
-                                               readonly placeholder="Nhấp đôi để chọn hàng"
-                                               data-productId=""
-                                               ondblclick="transportView.loadListProduct()">
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="quantumProduct"><b>Số lượng hàng</b></label>
+                                            <input type="number" class="form-control" id="quantumProduct"
+                                                   name="quantumProduct">
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="quantumProduct"><b>Số lượng hàng</b></label>
-                                        <input type="number" class="form-control" id="quantumProduct"
-                                               name="quantumProduct">
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="voucherNumber"><b>Số chứng từ</b></label>
+                                            <input type="text" class="form-control" id="voucherNumber"
+                                                   name="voucherNumber">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="weight"><b>Trọng tải</b></label>
-                                        <input type="number" class="form-control" id="weight" name="weight">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="cashRevenue"><b>Doanh thu</b></label>
-                                        <input type="number" class="form-control" id="cashRevenue" name="cashRevenue">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="cashDelivery"><b>Giao xe</b></label>
-                                        <input type="number" class="form-control" id="cashDelivery" name="cashDelivery">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="cashPreDelivery"><b>Giao trước</b></label>
-                                        <input type="number" class="form-control" id="cashPreDelivery" name="cashPreDelivery">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="cashReceive"><b>Nhận</b></label>
-                                        <input type="number" class="form-control" id="cashReceive" name="cashReceive">
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
+                                            <input type="number" class="form-control" id="voucherQuantumProduct"
+                                                   name="voucherQuantumProduct">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="receiver"><b>Người nhận</b></label>
-                                        <input type="text" class="form-control" id="receiver" name="receiver">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="receiveDate"><b>Ngày nhận</b></label>
-                                        <input type="text" class="date form-control ignore"
-                                               id="receiveDate"
-                                               name="receiveDate">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="receivePlace"><b>Nơi nhận</b></label>
-                                        <input type="text" class="form-control" id="receivePlace" name="receivePlace">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="deliveryPlace"><b>Nơi giao</b></label>
-                                        <input type="text" class="form-control" id="deliveryPlace" name="deliveryPlace">
-                                    </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="note"><b>Ghi chú đơn hàng</b></label>
+                                    <textarea type="text" class="form-control" id="note" name="note"
+                                              rows="4"></textarea>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="voucherNumber"><b>Số chứng từ</b></label>
-                                        <input type="text" class="form-control" id="voucherNumber" name="voucherNumber">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="voucherQuantumProduct"><b>Số hàng trên chứng từ</b></label>
-                                        <input type="number" class="form-control" id="voucherQuantumProduct"
-                                               name="voucherQuantumProduct">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="note"><b>Ghi chú đơn hàng</b></label>
-                                        <input type="text" class="form-control" id="note" name="note">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="status_transport"><b>Trạng thái</b></label>
-                                        <select id="status_transport" name="status_transport"
-                                                class="form-control"></select>
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="cashRevenue"><b>Doanh thu</b></label>
+                                    <input type="number" class="form-control" id="cashRevenue"
+                                           name="cashRevenue">
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
-                                        <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
-                                                <input type="text" class="form-control cursor-copy"
-                                                       id="voucher_transport" data-id="" readonly
-                                                       name="voucher_transport"
-                                                       placeholder="Nhấp đôi để chọn chứng từ"
-                                                       ondblclick="transportView.loadListVoucher()">
-                                            </div>
-                                            <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm mới chứng từ"
-                                                     onclick="transportView.displayModal('show', '#modal-addVoucher')">
-                                                    <i class="glyphicon glyphicon-plus"></i>
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <label for="cashDelivery"><b>Giao xe</b></label>
+                                    <input type="number" class="form-control" id="cashDelivery"
+                                           name="cashDelivery">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <label for="cashPreDelivery"><b>Giao trước</b></label>
+                                    <input type="number" class="form-control" id="cashPreDelivery"
+                                           name="cashPreDelivery">
+                                </div>
+                            </div>
+                            <div class="col-md-3 ">
+                                <div class="form-group form-md-line-input">
+                                    <label for="cashReceive"><b>Nhận</b></label>
+                                    <input type="number" class="form-control" id="cashReceive"
+                                           name="cashReceive">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <label for="receiver"><b>Người nhận</b></label>
+                                    <input type="text" class="form-control" id="receiver" name="receiver">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <label for="receiveDate"><b>Ngày nhận</b></label>
+                                    <input type="text" class="date form-control ignore"
+                                           id="receiveDate"
+                                           name="receiveDate">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <label for="receivePlace"><b>Nơi nhận</b></label>
+                                    <input type="text" class="form-control" id="receivePlace"
+                                           name="receivePlace">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <label for="deliveryPlace"><b>Nơi giao</b></label>
+                                    <input type="text" class="form-control" id="deliveryPlace"
+                                           name="deliveryPlace">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
+                                            <div class="row">
+                                                <div class="col-sm-10 col-xs-10">
+                                                    <input type="text" class="form-control cursor-copy"
+                                                           id="voucher_transport" data-id="" readonly
+                                                           name="voucher_transport"
+                                                           placeholder="Nhấp đôi để chọn chứng từ"
+                                                           ondblclick="transportView.loadListVoucher()">
+                                                </div>
+                                                <div class="col-sm-2 col-xs-2">
+                                                    <div class="btn btn-primary btn-sm btn-circle"
+                                                         title="Thêm mới chứng từ"
+                                                         onclick="transportView.displayModal('show', '#modal-addVoucher')">
+                                                        <i class="glyphicon glyphicon-plus"></i>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="costPrices_id"><b>Chi phí</b></label>
-                                        <select name="costPrices_id" id="costPrices_id" class="form-control">
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="costPrices_id"><b>Chi phí</b></label>
+                                            <select name="costPrices_id" id="costPrices_id"
+                                                    class="form-control">
 
-                                        </select>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="cost"><b>Số tiền</b></label>
+                                            <input type="number" class="form-control" id="cost" name="cost">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="cost"><b>Số tiền</b></label>
-                                        <input type="number" class="form-control" id="cost" name="cost">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="costs_note"><b>Ghi chú chi phí</b></label>
-                                        <input type="text" class="form-control" id="costs_note" name="costs_note">
-                                    </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="costs_note"><b>Ghi chú chi phí</b></label>
+                                    <textarea type="text" class="form-control" id="costs_note" name="costs_note"
+                                              rows="2"></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-actions">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight"
-                                            onclick="transportView.save()">Hoàn
-                                        tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="transportView.clearInput()">Huỷ
-                                    </button>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-actions">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="transportView.save()">Hoàn
+                                            tất
+                                        </button>
+                                        <button type="button" class="btn default"
+                                                onclick="transportView.clearInput()">Huỷ
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -638,7 +662,7 @@
                     transportView.arrayVoucher = [];
                 },
 
-                renderDateTimePicker: function(){
+                renderDateTimePicker: function () {
                     $('#dateOnlySearch .date').datepicker({
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
@@ -655,12 +679,12 @@
 
                     $('#receiveDate').datepicker("setDate", new Date());
                 },
-                renderScrollbar: function(){
+                renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
                 },
-                renderEventTableModal: function() {
+                renderEventTableModal: function () {
                     $("#table-vehicle").find("tbody").on('click', 'tr', function () {
                         $('#vehicle_id').attr('data-vehicleId', $(this).find('td:first')[0].innerText);
                         $('input[id=vehicle_id]').val($(this).find('td:eq(1)')[0].innerText);
@@ -683,7 +707,7 @@
                         transportView.fillVoucher();
                     });
                 },
-                renderCustomToastr: function() {
+                renderCustomToastr: function () {
                     toastr.options = {
                         "closeButton": true,
                         "debug": false,
@@ -1154,7 +1178,7 @@
                         return o.id == id;
                     }), true);
 
-                    if(transportView.current['invoiceCustomer_id'] != null){
+                    if (transportView.current['invoiceCustomer_id'] != null) {
                         $("#modal-warningTransport").modal("show").on("shown.bs.modal", function () {
                             window.setTimeout(function () {
                                 $("#modal-warningTransport").modal("hide");
@@ -1385,14 +1409,14 @@
                         transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                searchFromDateToDate: function() {
+                searchFromDateToDate: function () {
                     var fromDate = $("#dateOnlySearch").find(".start").val();
                     var toDate = $("#dateOnlySearch").find(".end").val();
                     fromDate = moment(fromDate, "DD-MM-YYYY");
                     toDate = moment(toDate, "DD-MM-YYYY");
 
-                    if(fromDate.isValid() && toDate.isValid()){
-                        var found = _.filter(transportView.dataTransport, function(o){
+                    if (fromDate.isValid() && toDate.isValid()) {
+                        var found = _.filter(transportView.dataTransport, function (o) {
                             var find = moment(o.receiveDate, "YYYY-MM-DD");
                             return moment(find).isBetween(fromDate, toDate, null, '[]');
                         });
@@ -1401,15 +1425,15 @@
                         transportView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
                     }
                 },
-                clearSearch: function(){
+                clearSearch: function () {
                     $("#dateOnlySearch").find(".start").datepicker('update', '');
                     $("#dateOnlySearch").find(".end").datepicker('update', '');
                     transportView.table.clear().rows.add(transportView.dataTransport).draw();
                 },
-                showCurrentRows: function() {
-                    $(transportView.table.$('tr', {"filter":"applied"}).each( function () {
+                showCurrentRows: function () {
+                    $(transportView.table.$('tr', {"filter": "applied"}).each(function () {
                         console.log($(this).find("td:eq(1)").text());
-                    } ));
+                    }));
                 }
             };
             transportView.loadData();

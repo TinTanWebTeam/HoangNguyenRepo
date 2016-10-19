@@ -2,7 +2,7 @@
     #divInvoice {
         z-index: 3;
         position: fixed;
-        top: 20%;
+        top: 15%;
         display: none;
         right: 0;
         width: 80%;
@@ -10,7 +10,7 @@
     }
 
     #divInvoice .panel-body {
-        height: 480px;
+        height: 501px;
     }
 
     div.col-lg-12 {
@@ -199,7 +199,7 @@
                         <form role="form" id="frmInvoice">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="invoiceCode"><b>Mã hóa đơn</b></label>
                                             <input type="text" class="form-control"
@@ -207,12 +207,19 @@
                                                    name="invoiceCode">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="totalPay"><b>Tổng tiền</b></label>
                                             <input type="number" class="form-control"
                                                    id="totalPay"
                                                    name="totalPay" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debt-real"><b>Còn nợ</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="debt-real" name="debt-real" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -239,6 +246,31 @@
                                             <input type="number" class="form-control"
                                                    id="hasVAT" name="hasVAT" step="1000" min="0"
                                                    onchange="debtCustomerView.computeVAT(this.value)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="paidAmt"><b>Tiền trả</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="paidAmt" name="paidAmt" step="1000" min="0"
+                                                   onchange="debtCustomerView.computeDebt(this.value)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debt"><b>Còn nợ lại</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="debt" name="debt" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="prePaid"><b>Trả trước</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="prePaid"
+                                                   name="prePaid" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -269,38 +301,10 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="paidAmt"><b>Tiền trả</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="paidAmt" name="paidAmt" step="1000" min="0"
-                                                   onchange="debtCustomerView.computeDebt(this.value)">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="debt"><b>Còn nợ</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="debt" name="debt" readonly
-                                                   debt-real="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="prePaid"><b>Trả trước</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="prePaid"
-                                                   name="prePaid" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group form-md-line-input ">
                                             <label for="note"><b>Ghi chú</b></label>
-                                            <input class="form-control"
-                                                   id="note"
-                                                   name="note">
+                                            <textarea class="form-control" id="note" name="note" rows="2"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -475,8 +479,9 @@
                 $("input[id='invoiceDate]").val('');
                 $("input[id='payDate]").val('');
                 $("input[id='debt']").val('');
+                $("input[id='debt-real']").val('');
                 $("input[id='paidAmt']").val('');
-                $("input[id='note']").val('');
+                $("textarea[id='note']").val('');
             },
 
             renderScrollbar: function () {
@@ -545,6 +550,14 @@
                     var tr = $(this).parent();
                     if(tr.find('td:eq(1)').text() == td.text())
                         $("input[id=custName_transport]").val(td.text());
+                });
+
+                $("#table-invoiceCustomerDetail").find("tbody").on('click', 'tr', function () {
+                    ////////////////////
+                    invoiceCustomerDetailId = $(this).find('td:first')[0].innerText;
+                    invoiceCustomerDetail = _.find(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                        return o.id == invoiceCustomerDetailId;
+                    });
                 });
             },
 
@@ -835,8 +848,9 @@
                 $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
 
                 $("input[id='debt']").val(debtCustomerView.currentInvoiceCustomer["debt"]);
+                $("input[id='debt-real']").val(debtCustomerView.currentInvoiceCustomer["debt"]);
                 $("input[id='paidAmt']").val(debtCustomerView.currentInvoiceCustomer["paidAmt"]);
-                $("input[id='note']").val(debtCustomerView.currentInvoiceCustomer["note"]);
+                $("textarea[id='note']").val(debtCustomerView.currentInvoiceCustomer["note"]);
             },
             fillFormDataToCurrentObject: function () {
                 debtCustomerView.currentInvoiceCustomer = {
@@ -848,10 +862,10 @@
                     exportDate : $("input[id='exportDate']").val(),
                     invoiceDate : $("input[id='invoiceDate']").val(),
                     payDate : $("input[id='payDate']").val(),
-                    note : $("input[id='note']").val(),
+                    note : $("textarea[id='note']").val(),
                     totalPay : $("input[id='totalPay']").val(),
                     prePaid : $("input[id='prePaid']").val(),
-                    debt : $("#debt").attr('debt-real'),
+                    debt : $("input[id=debt-real]").val(),
                     paidAmt : $("input[id='paidAmt']").val()
                 }
             },
@@ -914,7 +928,7 @@
 
                     var debt = totalPay - prePaid;
                     $("input[id=debt]").val(debt);
-                    $("#debt").attr('debt-real', debt);
+                    $("input[id=debt-real]").val(debt);
                     $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
 
                     //set default value
@@ -965,7 +979,7 @@
                     var debt = hasVAT - (totalPaid + prePaid);
                     $("input[id=totalPay]").val(totalPay);
                     $("input[id=debt]").val(debt);
-                    $("#debt").attr('debt-real', debt);
+                    $("input[id=debt-real]").val(debt);
 
                     $("input[id=invoiceCode]").val(rowInvoiceCustomer['invoiceCode']);
                     $("input[id=VAT]").val(rowInvoiceCustomer['VAT']);
@@ -1131,12 +1145,12 @@
 
                                 //clear Input
                                 $("input[id=paidAmt]").val('');
-                                $("input[id=note]").val('');
+                                $("textarea[id=note]").val('');
 
                                 var prePaid = parseInt(sendToServer._invoiceCustomer['paidAmt']);
-                                var debtReal = parseInt($("#debt").attr("debt-real")) - prePaid;
+                                var debtReal = parseInt($("#debt-real").val()) - prePaid;
                                 $("input[id=debt]").val(debtReal);
-                                $("#debt").attr("data-real", debtReal);
+                                $("input[id=debt-real]").val(debtReal);
                                 $("#paidAmt").focus();
 
                                 //Show notification
@@ -1361,28 +1375,28 @@
                 } ));
             },
             computeDebt: function(paidAmt){
-                var debtReal = $("#debt").attr('debt-real');
+                var debtReal = $("input[id=debt-real]").val();
                 $("#debt").val(debtReal - paidAmt);
             },
             computeHasVAT: function(vat){
                 var notVat = parseInt($("#notVAT").val());
-                var hasVat = notVat - (vat/100) * notVat
+                var hasVat = notVat + ((vat/100) * notVat);
                 $("#hasVAT").val(hasVat);
 
                 var prePaid = parseInt($("#prePaid").val());
                 var paidAmt = parseInt($("#paidAmt").val());
-                $("#debt").attr("debt-real", hasVat - prePaid - paidAmt);
-                $("input[id=debt]").val(hasVat - prePaid - paidAmt)
+                $("input[id=debt-real]").val(hasVat - prePaid);
+                $("input[id=debt]").val(hasVat - (prePaid + paidAmt))
             },
             computeVAT: function(hasVat){
                 var notVat = parseInt($("#notVAT").val());
-                var hasVat = (notVat - hasVat) * 100 / notVat
-                $("#VAT").val(hasVat);
+                var vat = ((notVat - hasVat) / notVat) * 100;
+                $("#VAT").val(vat);
 
                 var prePaid = parseInt($("#prePaid").val());
                 var paidAmt = parseInt($("#paidAmt").val());
-                $("#debt").attr("debt-real", hasVat - prePaid - paidAmt);
-                $("input[id=debt]").val(hasVat - prePaid - paidAmt)
+                $("input[id=debt-real]").val(hasVat - prePaid);
+                $("input[id=debt]").val(hasVat - (prePaid + paidAmt))
             }
         };
         debtCustomerView.loadData();
