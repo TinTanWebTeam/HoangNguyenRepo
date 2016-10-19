@@ -28,7 +28,8 @@ class DebtManagementController extends Controller
                 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
                 'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                 'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
-                'statuses_gar.status as status_garage_'
+                'statuses_gar.status as status_garage_',
+                'invoiceCustomers.invoiceCode'
             )
             ->join('costs', 'costs.transport_id', '=', 'transports.id')
             ->join('products', 'products.id', '=', 'transports.product_id')
@@ -39,6 +40,7 @@ class DebtManagementController extends Controller
             ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+            ->leftJoin('invoiceCustomers', 'invoiceCustomers.id', '=', 'transports.invoiceCustomer_id')
 //            ->whereRaw('transports.cashReceive < transports.cashRevenue')
             ->where('transports.active', '=', '1')
             ->get();
@@ -59,7 +61,7 @@ class DebtManagementController extends Controller
             ->select('printHistories.*', 'users.fullName as users_fullName')
             ->get();
 
-        $invoiceCode = $this->generateInvoiceCode();
+        $invoiceCode = $this->generateInvoiceCode('customer');
 
         $response = [
             'msg'        => 'Get list all Transport',
@@ -94,7 +96,8 @@ class DebtManagementController extends Controller
                         'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
                         'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                         'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
-                        'statuses_gar.status as status_garage_'
+                        'statuses_gar.status as status_garage_',
+                        'invoiceCustomers.invoiceCode'
                     )
                     ->join('costs', 'costs.transport_id', '=', 'transports.id')
                     ->join('products', 'products.id', '=', 'transports.product_id')
@@ -105,6 +108,7 @@ class DebtManagementController extends Controller
                     ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                     ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
                     ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                    ->leftJoin('invoiceCustomers', 'invoiceCustomers.id', '=', 'transports.invoiceCustomer_id')
                     ->where('transports.id', '=', $transportUpdate->id)
                     ->first();
 
@@ -132,7 +136,7 @@ class DebtManagementController extends Controller
 
             $invoiceCustomer = new InvoiceCustomer();
 
-            $invoiceCode = $this->generateInvoiceCode();
+            $invoiceCode = $this->generateInvoiceCode('customer');
             if($request->input('_invoiceCustomer')['invoiceCode'] == '')
                 $invoiceCustomer->invoiceCode = $invoiceCode;
             else {
@@ -214,7 +218,7 @@ class DebtManagementController extends Controller
                     'msg' => 'Create Invoice successful!',
                     'invoiceCustomer' => $invoiceCustomer,
                     'invoiceCustomerDetail' => $invoiceCustomerDetail,
-                    'invoiceCode' => $this->generateInvoiceCode()
+                    'invoiceCode' => $this->generateInvoiceCode('customer')
                 ];
                 return response()->json($response, 201);
             }catch (Exception $ex){
@@ -276,7 +280,7 @@ class DebtManagementController extends Controller
                     'msg' => 'Create Invoice successful!',
                     'invoiceCustomer' => $invoiceCustomer,
                     'invoiceCustomerDetail' => $invoiceCustomerDetail,
-                    'invoiceCode' => $this->generateInvoiceCode()
+                    'invoiceCode' => $this->generateInvoiceCode('customer')
                 ];
                 return response()->json($response, 201);
             }catch (Exception $ex){
@@ -293,10 +297,14 @@ class DebtManagementController extends Controller
     }
 
     //Generate invoiceCode
-    public function generateInvoiceCode()
+    public function generateInvoiceCode($type)
     {
-        $invoiceCode = "HD" . date('ymd');
-        $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode.'%')->get()->count();
+        if($type == 'customer')
+            $invoiceCode = "IC" . date('ymd');
+        else
+            $invoiceCode = "IG" . date('ymd');
+
+        $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode.'%')->get()->count() + 1;
         $invoiceCode .= substr("00" . $stt, -3);
         return $invoiceCode;
     }

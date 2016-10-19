@@ -72,7 +72,7 @@
                         <div class="col-md-2">
                             <div class="radio">
                                 <button onclick="debtCustomerView.searchTransport()" id="btnSearchTransport"
-                                        class="btn btn-sm btn-info"><i
+                                        class="btn btn-sm btn-info marginRight"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
                                 </button>
                                 <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('transport')">
@@ -87,8 +87,9 @@
                                 <table class="table table-bordered table-hover" id="table-data">
                                     <thead>
                                     <tr class="active">
-                                        <th>Mã đơn hàng</th>
+                                        <th>Mã</th>
                                         <th>Khách hàng</th>
+                                        <th>Mã HĐ</th>
                                         <th>Số xe</th>
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
@@ -130,7 +131,7 @@
                         <div class="col-md-2">
                             <div class="radio">
                                 <button onclick="debtCustomerView.searchInvoice()" id="btnSearchInvoice"
-                                        class="btn btn-sm btn-info"><i
+                                        class="btn btn-sm btn-info marginRight"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
                                 </button>
                                 <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('invoice')">
@@ -170,6 +171,15 @@
     </div> <!-- end .col-md-12-->
 </div>
 <!-- End Table -->
+
+<!-- Chú thích -->
+<div class="row">
+    <div class="col-md-offset-9 col-md-3">
+        <span class="label label-danger" style="font-size: 1em;">Chưa trả</span>
+        <span class="label label-primary" style="font-size: 1em;">Đã trả trước</span>
+        <span class="label label-success" style="font-size: 1em;">Đã trả đủ</span>
+    </div>
+</div>
 
 <!-- Begin divInvoice -->
 <div class="row">
@@ -358,36 +368,25 @@
 </div>
 <!-- End divInvoice -->
 
-<!-- Modal confirm tra du -->
+<!-- Modal notification -->
 <div class="row">
-    <div id="modal-confirmDelete" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+    <div id="modal-notification" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Có chắc muốn trả đủ cho đơn hàng này?</h5>
+                    <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
-                            <button type="button" class="btn btn-primary marginRight"
-                                    onclick="debtCustomerView.autoEditTransport()">
-                                Đồng ý
-                            </button>
-                            <button type="button" class="btn default"
-                                    onclick="debtCustomerView.transportId = null;debtCustomerView.displayModal('hide','#modal-confirmDelete')">
-                                Huỷ
-                            </button>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- end Modal confirm tra du -->
+<!-- end Modal notification -->
 
 <!-- Modal print review -->
 <div class="row">
@@ -428,7 +427,6 @@
             current: null,
             currentInvoiceCustomer: null,
             array_transportId: [],
-            transportId: null,
             invoiceCustomerId: null,
             action: null,
             invoiceCode: null,
@@ -541,6 +539,14 @@
                     }
                 });
             },
+            renderEventRowClick: function(){
+                $("#table-data").find("tbody").on('click', 'tr td', function () {
+                    var td = $(this);
+                    var tr = $(this).parent();
+                    if(tr.find('td:eq(1)').text() == td.text())
+                        $("input[id=custName_transport]").val(td.text());
+                });
+            },
 
             fillDataToDatatable: function (data) {
                 for (var i = 0; i < data.length; i++) {
@@ -554,6 +560,7 @@
                     columns: [
                         {data: 'id'},
                         {data: 'customers_fullName'},
+                        {data: 'invoiceCode'},
                         {data: 'fullNumber'},
                         {data: 'deliveryPlace'},
                         {data: 'voucherNumber'},
@@ -574,9 +581,17 @@
                         },
                         {
                             render: function (data, type, full, meta) {
+                                color = 'btn-default';
+                                if(full.cashReceive == 0 && full.invoiceCustomer == null)
+                                    color = 'btn-danger';
+                                else if (full.cashReceive == full.cashRevenue)
+                                    color = 'btn-success';
+                                else if (full.cashReceive > 0 && full.invoiceCustomer == null)
+                                    color = 'btn-primary';
+
                                 var tr = '';
                                 tr += '<div class="text-center">';
-                                tr += "<div class='btn btn-success btn-circle' title='Trả đủ' onclick='debtCustomerView.transportId = "+full.id+";debtCustomerView.displayModal(\"show\", \"#modal-confirmDelete\")'>";
+                                tr += "<div class='btn btn-circle "+color+"' title='Trả đủ' onclick='debtCustomerView.autoEditTransportConfirm("+full.id+")'>";
                                 tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
@@ -801,6 +816,7 @@
                 debtCustomerView.renderScrollbar();
                 debtCustomerView.renderEventRadioInput();
                 debtCustomerView.renderEventKeyCode();
+                debtCustomerView.renderEventRowClick();
             },
             fillCurrentObjectToForm: function () {
                 $("input[id='invoiceCode']").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
@@ -840,14 +856,42 @@
                 }
             },
 
-            autoEditTransport: function () {
+            autoEditTransport: function (transportId) {
                 debtCustomerView.current = null;
                 debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
-                    return o.id == debtCustomerView.transportId;
+                    return o.id == transportId;
                 }), true);
                 debtCustomerView.action = 'autoEdit';
                 debtCustomerView.save();
             },
+            autoEditTransportConfirm: function (transportId) {
+                debtCustomerView.current = null;
+                debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
+                    return o.id == transportId;
+                }), true);
+
+                if(debtCustomerView.current['invoiceCustomer_id'] != null){
+                    $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                    $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
+                    debtCustomerView.displayModal('show', '#modal-notification');
+                    return;
+                }
+
+                $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
+                tr = '<div class="row">';
+                tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtCustomerView.autoEditTransport('+ transportId +')">';
+                tr += 'Đồng ý';
+                tr += '</button>';
+                tr += '<button type="button" class="btn default" onclick="debtCustomerView.displayModal(\'hide\', \'#modal-notification\')">';
+                tr += 'Huỷ';
+                tr += '</button>';
+                tr += '</div>';
+                tr += '</div>';
+                $("#modal-notification").find(".modal-body").html(tr);
+                debtCustomerView.displayModal('show', '#modal-notification');
+            },
+
             createInvoiceCustomer: function (flag, invoiceCustomer_id) {
                 debtCustomerView.showControl(flag);
                 if (flag == 0){
@@ -999,7 +1043,7 @@
 
                         //Show notification
                         showNotification("success", "Thanh toán thành công!");
-                        debtCustomerView.displayModal("hide", "#modal-confirmDelete");
+                        debtCustomerView.displayModal("hide", "#modal-notification");
                     } else {
                         showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                     }
@@ -1041,6 +1085,7 @@
                                         return o.id == debtCustomerView.array_transportId[i];
                                     });
                                     Old['invoiceCustomer_id'] = invoiceCustomer['id'];
+                                    Old['invoiceCode'] = invoiceCustomer['invoiceCode'];
                                 }
 
                                 //add InvoiceCustomer
