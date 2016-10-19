@@ -559,8 +559,8 @@ class CustomerManagementController extends Controller
                     $transportUpdate->status_garage = $status_garage;
                     $transportUpdate->product_id = $product_id;
                     $transportUpdate->customer_id = $customer_id;
-                    $transportUpdate->invoiceCustomer_id = $invoiceCustomer_id;
-                    $transportUpdate->invoiceGarage_id = $invoiceGarage_id;
+//                    $transportUpdate->invoiceCustomer_id = $invoiceCustomer_id;
+//                    $transportUpdate->invoiceGarage_id = $invoiceGarage_id;
 
                     if ($transportUpdate->update()) {
                         //Delete VoucherTransport
@@ -608,12 +608,7 @@ class CustomerManagementController extends Controller
                         }
 
                         //Update InvoiceCustomer for Transport
-
-                        if($transportUpdate->invoiceCustomer_id == null){
-
-                        } else {
-                            DB::rollBack();
-                            dd($transportUpdate);
+                        if($transportUpdate->invoiceCustomer_id != null){
                             $invoiceCustomer = InvoiceCustomer::find($transportUpdate->invoiceCustomer_id);
                             $invoiceCustomer->totalPay = $invoiceCustomer->totalPay - $kp_cashRevenue + $transportUpdate->cashRevenue;
                             $invoiceCustomer->prePaid = $invoiceCustomer->prePaid - $kp_cashReceive + $transportUpdate->cashReceive;
