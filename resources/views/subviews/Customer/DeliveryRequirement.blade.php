@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 15%;
+        top: 9%;
         display: none;
         right: 0;
         width: 60%;
@@ -10,7 +10,7 @@
     }
 
     #divControl .panel-body {
-        height: 480px;
+        height: 560px;
     }
 
     div.col-lg-12 {
@@ -113,7 +113,7 @@
                     <div class="form-body">
                         <div class="col-md-12 ">
                             <div class="row ">
-                                <div class="col-md-3 ">
+                                <div class="col-md-4 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="vehicle_id"><b>Xe</b></label>
                                         <input type="text" class="form-control cursor-copy" id="vehicle_id"
@@ -123,7 +123,7 @@
                                                ondblclick="transportView.loadListVehicle()">
                                     </div>
                                 </div>
-                                <div class="col-md-3 ">
+                                <div class="col-md-4 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="customer_id"><b>Khách hàng</b></label>
                                         <input type="text" class="form-control cursor-copy" id="customer_id"
@@ -133,7 +133,7 @@
                                                ondblclick="transportView.loadListCustomer()">
                                     </div>
                                 </div>
-                                <div class="col-md-3 ">
+                                <div class="col-md-4 ">
                                     <div class="form-group form-md-line-input ">
                                         <label for="product_id"><b>Hàng</b></label>
                                         <input type="text" class="form-control cursor-copy" id="product_id"
@@ -143,34 +143,42 @@
                                                ondblclick="transportView.loadListProduct()">
                                     </div>
                                 </div>
-                                <div class="col-md-3 ">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="quantumProduct"><b>Số lượng hàng</b></label>
                                         <input type="number" class="form-control" id="quantumProduct"
                                                name="quantumProduct">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-md-3 ">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="weight"><b>Trọng tải</b></label>
                                         <input type="number" class="form-control" id="weight" name="weight">
                                     </div>
                                 </div>
-                                <div class="col-md-3 ">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
                                         <label for="cashRevenue"><b>Doanh thu</b></label>
                                         <input type="number" class="form-control" id="cashRevenue" name="cashRevenue">
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="cashDelivery"><b>Giao xe</b></label>
                                         <input type="number" class="form-control" id="cashDelivery" name="cashDelivery">
                                     </div>
                                 </div>
-                                <div class="col-md-3 ">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="cashPreDelivery"><b>Giao trước</b></label>
+                                        <input type="number" class="form-control" id="cashPreDelivery" name="cashPreDelivery">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="cashReceive"><b>Nhận</b></label>
                                         <input type="number" class="form-control" id="cashReceive" name="cashReceive">
@@ -520,6 +528,26 @@
     </div>
 </div>
 <!-- end Modal add vehicleTypes -->
+
+<!-- Modal warningTransport -->
+<div class="row">
+    <div id="modal-warningTransport" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Cảnh báo</h5>
+                </div>
+                <div class="modal-body">
+                    <p class="bg-warning" style="padding: 10px">Đơn hàng này đã xuất hóa đơn.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal warningTransport -->
 
 <script>
     $(function () {
@@ -1045,6 +1073,7 @@
                     $("input[id='weight']").val(transportView.current["weight"]);
                     $("input[id='cashRevenue']").val(transportView.current["cashRevenue"]);
                     $("input[id='cashDelivery']").val(transportView.current["cashDelivery"]);
+                    $("input[id='cashPreDelivery']").val(transportView.current["cashPreDelivery"]);
                     $("input[id='cashReceive']").val(transportView.current["cashReceive"]);
                     $("input[id='receiver']").val(transportView.current["receiver"]);
 
@@ -1080,6 +1109,7 @@
                             weight: $("input[id='weight']").val(),
                             cashRevenue: $("input[id='cashRevenue']").val(),
                             cashDelivery: $("input[id='cashDelivery']").val(),
+                            cashPreDelivery: $("input[id='cashPreDelivery']").val(),
                             cashReceive: $("input[id='cashReceive']").val(),
                             receiver: $("input[id='receiver']").val(),
                             receiveDate: $("input[id='receiveDate']").val(),
@@ -1125,7 +1155,11 @@
                     }), true);
 
                     if(transportView.current['invoiceCustomer_id'] != null){
-                        alert('Đơn hàng này đã xuất hóa đơn, có chắc muốn sửa');
+                        $("#modal-warningTransport").modal("show").on("shown.bs.modal", function () {
+                            window.setTimeout(function () {
+                                $("#modal-warningTransport").modal("hide");
+                            }, 3000);
+                        });
                     }
 
                     var arrayVoucherTransport = _.clone(_.filter(transportView.dataVoucherTransport, function (o) {
@@ -1160,6 +1194,7 @@
                             weight: "required",
                             cashRevenue: "required",
                             cashDelivery: "required",
+                            cashPreDelivery: "required",
                             cashReceive: "required",
                             receiver: "required",
                             receivePlace: "required",
@@ -1177,6 +1212,7 @@
                             weight: "Vui lòng nhập trọng lượng",
                             cashRevenue: "Vui lòng nhập doanh thu",
                             cashDelivery: "Vui lòng nhập tiền giao",
+                            cashPreDelivery: "Vui lòng nhập tiền giao trước",
                             cashReceive: "Vui lòng nhập tiền nhận",
                             receiver: "Vui lòng nhập người nhận",
                             receivePlace: "Vui lòng nhập nơi nhận",
