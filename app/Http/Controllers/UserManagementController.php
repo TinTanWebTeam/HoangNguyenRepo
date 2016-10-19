@@ -83,24 +83,23 @@ class UserManagementController extends Controller
             $subRoles = DB::table('subroles')
                 ->where('user_id', $request->get('_object'))
                 ->get();
+
             $password = DB::table('users')
                 ->where('id', $request->get('_object'))
                 ->select('users.password')
                 ->first();
             $password_confirm = decrypt($password->password, Config::get('app.key'));
+
             $response = [
-                'msg'            => 'Get data user success',
+                'msg'      => 'Get data user success',
                 'subRoles' => $subRoles,
                 'password' => $password_confirm
 
             ];
             return response()->json($response, 200);
-
         } catch (\Exception $ex) {
             return $ex;
         }
-
-
     }
 
     public function postModifyUser(Request $request)
@@ -117,7 +116,6 @@ class UserManagementController extends Controller
         $position_id = null;
         $action = $request->get('_action');
 
-
         if ($action != 'delete') {
             $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
             if ($validateUser->fails()) {
@@ -131,12 +129,12 @@ class UserManagementController extends Controller
             $email = $request->get('_object')['email'];
             $address = $request->get('_object')['address'];
             $phone = $request->get('_object')['phone'];
-            $array_roleId = $request->get('_object2');
-            $birthday = Carbon::createFromFormat('d-m-Y', $request->get('_object')['birthday'])->toDateTimeString();
             $position_id = $request->get('_object')['position_id'];
+            $test = $request->get('_object')['birthday'];
+            $birthday = Carbon::createFromFormat('d-m-Y', $test)->toDateTimeString();
+            $array_roleId = $request->get('_object2');
+
         }
-
-
         switch ($action) {
             case "add":
                 try {
@@ -214,37 +212,38 @@ class UserManagementController extends Controller
                                 return response()->json(['msg' => 'update failed'], 404);
                             }
 
-
                         }
                         //insert subrole
-                        for ($i = 0; $i < count($array_roleId); $i++) {
-                            $subRoleUpdate = new SubRole();
-                            $subRoleUpdate->user_id = $userUpdate->id;
-                            $subRoleUpdate->role_id = $array_roleId[$i];
-                            if ($subRoleUpdate->save()) {
-                                $response = [
-                                    'msg'    => 'Created sub row',
-                                    'subRow' => $subRoleUpdate
-                                ];
-                                return response()->json($response, 201);
+                        if (count($array_roleId) > 0) {
+                            for ($i = 0; $i < count($array_roleId); $i++) {
+                                $subRoleUpdate = new SubRole();
+                                $subRoleUpdate->user_id = $userUpdate->id;
+                                $subRoleUpdate->role_id = $array_roleId[$i];
+                                if ($subRoleUpdate->save()) {
+                                    $response = [
+                                        'msg'    => 'Created sub row',
+                                        'subRow' => $subRoleUpdate
+                                    ];
+                                    return response()->json($response, 201);
+                                }
+                                return response()->json(['msg' => 'Create failed'], 404);
                             }
-                            return response()->json(['msg' => 'Create failed'], 404);
-                        };
-
-
-
-
+                        }
+                        $subRoles = \DB::table('subroles')
+                            ->where('user_id', $userUpdate->id)
+                            ->get();
                         $userUpdate = \DB::table('users')
                             ->join('positions', 'users.position_id', '=', 'positions.id')
-                                ->where('users.id', $userUpdate->id)
-                                ->select('users.*', 'positions.name as positions_name')
-                                ->get();
+                            ->where('users.id', $userUpdate->id)
+                            ->select('users.*', 'positions.name as positions_name')
+                            ->get();
                         $response = [
                             'msg'             => 'Updated user',
-                            'tableUserUpdate' => $userUpdate
+                            'tableUserUpdate' => $userUpdate,
+                            'tableRole'       => $subRoles
                         ];
-
                         return response()->json($response, 201);
+
                     }
                     return response()->json(['msg' => 'Update failed'], 404);
                 } catch (Exception $ex) {

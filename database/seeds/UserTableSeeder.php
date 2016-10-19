@@ -33,7 +33,7 @@ class UserTableSeeder extends Seeder
             'phone' => '09876542',
             'email' => 'ntbich@hoangnguyen.com',
             'password' => encrypt('123456',Config::get('app.key')),
-            'position_id' => 2
+            'position_id' => 1
         ]);
         User::create([
             'username' => 'nguyenvanhai',
@@ -42,7 +42,7 @@ class UserTableSeeder extends Seeder
             'phone' => '02312566',
             'email' => 'nvhai@hoangnguyen.com',
             'password' => encrypt('123456',Config::get('app.key')),
-            'position_id' => 1
+            'position_id' => 2
         ]);
         User::create([
             'username' => 'nguyenvannam',
@@ -51,7 +51,7 @@ class UserTableSeeder extends Seeder
             'phone' => '2312324',
             'email' => 'nvnam@hoangnguyen.com',
             'password' => encrypt('123456',Config::get('app.key')),
-            'position_id' => 1
+            'position_id' => 3
         ]);
         User::create([
             'username' => 'nguyenvanvu',
@@ -60,7 +60,7 @@ class UserTableSeeder extends Seeder
             'phone' => '09837744',
             'email' => 'nvvu@hoangnguyen.com',
             'password' => encrypt('123456',Config::get('app.key')),
-            'position_id' => 1
+            'position_id' => 4
         ]);
     }
 }

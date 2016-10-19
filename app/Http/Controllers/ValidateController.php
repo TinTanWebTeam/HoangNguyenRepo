@@ -27,7 +27,7 @@ class ValidateController extends Controller
             'fullName' => 'required|min:6|max:20',
             'username' => 'required|min:6|max:20',
             'email'    => 'required',
-            'password' => 'required|min:6|max:20',
+            'password' => 'required',
 
         ];
         $messages = [
@@ -133,14 +133,14 @@ class ValidateController extends Controller
     public static function ValidateVoucherTransport(array $data)
     {
         $rules = [
-            vehicle_id  => "required",
-            customer_id => "required",
-            product_id  => "required",
+            'vehicle_id'  => "required",
+            'customer_id' => "required",
+            'product_id'  => "required",
         ];
         $messages = [
-            vehicle_id  => "required",
-            customer_id => "required",
-            product_id  => "required",
+            'vehicle_id'  => "required",
+            'customer_id' => "required",
+            'product_id'  => "required",
         ];
 
         return Validator::make($data, $rules, $messages);
@@ -148,6 +148,7 @@ class ValidateController extends Controller
 
     public static function ValidateCost(array $data)
     {
+
         $rules = [
             'vehicle_id'  => 'required',
             'literNumber' => 'required'

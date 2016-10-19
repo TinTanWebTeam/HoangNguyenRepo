@@ -183,7 +183,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Danh sách xe</h4>
+                    <h5 class="modal-title">Danh sách xe</h5>
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
@@ -219,7 +219,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Thêm giá nhiên liệu</h4>
+                    <h5 class="modal-title">Thêm giá nhiên liệu</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formCostPrice">
@@ -227,7 +227,7 @@
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
-                                    <input type="number" class="form-control"
+                                    <input type="number" class="form-control" step="1000"
                                            id="costPrice" name="costPrice">
                                 </div>
                             </div>
@@ -275,7 +275,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Thêm Xe</h4>
+                    <h5 class="modal-title">Thêm Xe</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formVehicle">
@@ -595,6 +595,7 @@
                             vehicle_id: "required",
                             cost: {
                                 required: true,
+                                min:0
 
                             }
 
@@ -603,6 +604,7 @@
                             vehicle_id: "Vui lòng chọn xe",
                             cost: {
                                 required: "Vui lòng nhập số tiền",
+                                min: "Giá tiền không được âm"
                             }
 
                         }
@@ -635,7 +637,6 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-
                                 switch (otherCostView.action) {
                                     case 'add':
                                         data['tableOtherCostNew'][0].fullNumber = data['tableOtherCostNew'][0]['vehicles_code'] + "-" + data['tableOtherCostNew'][0]["vehicles_vehicleNumber"];

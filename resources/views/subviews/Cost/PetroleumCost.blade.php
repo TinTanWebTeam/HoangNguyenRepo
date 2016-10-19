@@ -232,7 +232,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Danh sách xe</h4>
+                    <h5 class="modal-title">Danh sách xe</h5>
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
@@ -269,7 +269,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Thêm giá nhiên liệu</h4>
+                    <h5 class="modal-title">Thêm giá nhiên liệu</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formCostPrice">
@@ -278,7 +278,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
                                     <input type="number" class="form-control"
-                                           id="costPrice"
+                                           id="costPrice" step="1000"
                                            name="costPrice">
                                 </div>
                             </div>
@@ -326,7 +326,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Thêm Xe</h4>
+                    <h5 class="modal-title">Thêm Xe</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formVehicle">
@@ -445,7 +445,6 @@
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
-                    var totalPrice = lit * price;
                     price = price.replace('.', '');
                     var totalPrice = lit * price;
                     $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
@@ -737,7 +736,7 @@
 
                             }
                         ],
-                        order: [[1]],
+                        order: [[1]]
                     })
                 },
 
@@ -770,7 +769,6 @@
                 },
 
                 save: function () {
-
                     petroleumCostView.fillFormDataToCurrentObject();
                     var sendToServer = {
                         _token: _token,
@@ -991,13 +989,17 @@
                         rules: {
                             costPrice: {
                                 required: true,
-                                number: true
+                                number: true,
+                                min:0,
+                                step: 1000
                             }
                         },
                         messages: {
                             costPrice: {
                                 required: "Vui lòng nhập số tiền",
-                                number: "Giá tiền phải là số"
+                                number: "Giá tiền phải là số",
+                                min: "Giá tiền không được âm",
+                                step: "Mệnh giá tiền phải 1000"
                             }
                         }
                     });

@@ -241,7 +241,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Danh sách xe</h4>
+                    <h5 class="modal-title">Danh sách xe</h5>
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
@@ -277,7 +277,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Thêm giá nhiên liệu</h4>
+                    <h5 class="modal-title">Thêm giá nhiên liệu</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formCostPrice">
@@ -285,7 +285,7 @@
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
-                                    <input type="number" class="form-control"
+                                    <input type="number" class="form-control" min="0" step="1000"
                                            id="costPrice" name="costPrice">
                                 </div>
                             </div>
@@ -332,7 +332,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Thêm Xe</h4>
+                    <h5 class="modal-title">Thêm Xe</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formVehicle">
@@ -420,7 +420,6 @@
 <script>
 
     $(function () {
-
 
         if (typeof (fuelCostView) === 'undefined') {
             fuelCostView = {
@@ -587,6 +586,7 @@
                 },
                 fillFormDataToCurrentObject: function () {
                     if (fuelCostView.action == 'add') {
+
                         fuelCostView.current = {
                             vehicle_id: $("#vehicle_id").attr('data-id'),
                             dateFuel: $("input[id='dateFuel']").val(),
@@ -597,7 +597,9 @@
                             prices_id: $("#price").attr('data-priceId'),
                             noted: $("input[id='noted']").val()
                         };
+
                     } else if (fuelCostView.action == 'update') {
+
                         fuelCostView.current.prices_price = $("input[id='price']").val();
                         fuelCostView.current.prices_id = $("#price").attr('data-priceId');
                         fuelCostView.current.literNumber = $("input[id='literNumber']").val();
@@ -637,14 +639,13 @@
                 },
                 addNewFuelCost: function () {
                     fuelCostView.renderDateTimePicker();
-                    fuelCostView.current = null;
                     fuelCostView.action = 'add';
                     fuelCostView.inputPrice();
                     fuelCostView.show();
 
                 },
                 editFuelCost: function (id) {
-                    fuelCostView.current = null;
+
                     fuelCostView.current = _.clone(_.find(fuelCostView.tableCost, function (o) {
                         return o.id == id;
                     }), true);
@@ -729,13 +730,17 @@
                         rules: {
                             costPrice: {
                                 required: true,
-                                number: true
+                                number: true,
+                                min: 0,
+                                step: 1000
                             }
                         },
                         messages: {
                             costPrice: {
                                 required: "Vui lòng nhập số tiền",
-                                number: "Giá tiền phải là số"
+                                number: "Giá tiền phải là số",
+                                min: "Giá tiền không được âm",
+                                step: "Mệnh giá tiền phải 1000"
                             }
                         }
                     });
@@ -767,6 +772,7 @@
                 },
 
                 save: function () {
+
                     var sendToServer = null;
                     if (fuelCostView.action == 'delete') {
                         sendToServer = {
@@ -799,12 +805,13 @@
                     } else {
                         fuelCostView.ValidateCost();
                         if ($("#formFuelCost").valid()) {
+                            fuelCostView.fillFormDataToCurrentObject();
                             sendToServer = {
                                 _token: _token,
                                 _action: fuelCostView.action,
                                 _object: fuelCostView.current
                             };
-                            fuelCostView.fillFormDataToCurrentObject();
+
                             $.ajax({
                                 url: url + 'fuel-cost/modify',
                                 type: "POST",

@@ -122,10 +122,10 @@ class CostManagementController extends Controller
             $totalCost = $literNumber * $prices_price;
             $dateFuel = $request->get('_object')['dateFuel'];
             $timeFuel = $request->get('_object')['timeFuel'];
+
             if (Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel) !== false) {
                 $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
-            }
-            else{
+            } else {
                 return response()->json(['msg' => 'date invalid'], 207);
             }
             $noted = $request->get('_object')['noted'];
@@ -428,11 +428,13 @@ class CostManagementController extends Controller
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
-            $totalCost = $totalCost = $literNumber * $prices_price;
+            $totalCost = $literNumber * $prices_price;
             $dateFuel = $request->get('_object')['dateFuel'];
             $timeFuel = $request->get('_object')['timeFuel'];
             $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
             $noted = $request->get('_object')['noted'];
+
+
 
         }
 
@@ -592,49 +594,18 @@ class CostManagementController extends Controller
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
             $vehicle_id = $request->get('_object')['vehicle_id'];
-            $totalCost = $request->get('_object')['vehicle_id'];
             $note = $request->get('_object')['note'];
             $prices_id = $request->get('_object')['prices_id'];
-
-
-//            $yearIn = substr($checkIn, 0, 4);
-//            $monthIn = substr($checkIn, 5, 2);
-//            $dayIn = substr($checkIn, 8, 2);
-//            $yearOut = substr($checkOut, 0, 4);
-//            $monthOut = substr($checkOut, 5, 2);
-//            $dayOut = substr($checkOut, 8, 2);
-//            $hourIn = substr($checkIn, 11, 2);
-//            $hourOut = substr($checkOut, 11, 2);
-//            $minIn = substr($checkIn, 14, 2);
-//            $minOut = substr($checkOut, 14, 2);
-//            $ymdIn = Carbon::create($yearIn, $monthIn, $dayIn, $hourIn, $minIn);
-//            $ymdOut = Carbon::create($yearOut, $monthOut, $dayOut, $hourOut, $minOut);
-//            $totalMinus = $ymdOut->diffInMinutes($ymdIn);
-//            $checkIn = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetimeCheckIn'])->toDateTimeString();
-//            $checkOut = Carbon::createFromFormat('d/m/Y H:i', $request->get('_object')['datetimeCheckOut'])->toDateTimeString();
-
-
             $dateIn = $request->get('_object')['dateCheckIn'];
             $timeIn = $request->get('_object')['timeCheckIn'];
             $checkIn = Carbon::createFromFormat('d-m-Y H:i', $dateIn . " " . $timeIn)->toDateTimeString();
-
             $dateOut = $request->get('_object')['dateCheckOut'];
             $timeOut = $request->get('_object')['timeCheckOut'];
             $checkOut = Carbon::createFromFormat('d-m-Y H:i', $dateOut . " " . $timeOut)->toDateTimeString();
-
-
-            $yearIn = substr($checkIn, 0, 4);
-            $monthIn = substr($checkIn, 5, 2);
-            $dayIn = substr($checkIn, 8, 2);
-
-            $yearOut = substr($checkOut, 0, 4);
-            $monthOut = substr($checkOut, 5, 2);
-            $dayOut = substr($checkOut, 8, 2);
-
-            $ymdIn = Carbon::create($yearIn, $monthIn, $dayIn);
-            $ymdOut = Carbon::create($yearOut, $monthOut, $dayOut);
-            $totalDate = $ymdOut->diffInMinutes($ymdIn);
-
+            $totalDate = $request->get('_object')['totalDate'];
+            $totalHour = $request->get('_object')['totalTime'];
+            $price =  str_replace('.', '', $request->get('_object')['prices_price']);
+            $totalCost = $price * $totalHour;
 
         }
 
@@ -646,7 +617,7 @@ class CostManagementController extends Controller
                 $parkingCostNew->dateCheckIn = $checkIn;
                 $parkingCostNew->dateCheckOut = $checkOut;
                 $parkingCostNew->totalDate = $totalDate;
-                //$parkingCostNew->totalHour = $totalHour;
+                $parkingCostNew->totalHour = $totalHour;
                 $parkingCostNew->note = $note;
                 $parkingCostNew->price_id = $prices_id;
                 $parkingCostNew->vehicle_id = $vehicle_id;
@@ -684,7 +655,7 @@ class CostManagementController extends Controller
                 $parkingUpdate->dateCheckIn = $checkIn;
                 $parkingUpdate->dateCheckOut = $checkOut;
                 $parkingUpdate->totalDate = $totalDate;
-                //$parkingUpdate->totalHour = $totalHour;
+                $parkingUpdate->totalHour = $totalHour;
                 $parkingUpdate->note = $note;
                 $parkingUpdate->price_id = $prices_id;
                 $parkingUpdate->vehicle_id = $vehicle_id;

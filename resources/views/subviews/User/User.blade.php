@@ -111,13 +111,9 @@
                                         <label for="fullName"><b>Họ và tên</b></label>
                                         <input type="text" class="form-control"
                                                id="fullName"
-                                               name="fullName" onkeyup="userView.validateLength()"
+                                               name="fullName"
                                                placeholder="Nhập họ tên"
                                                autofocus>
-                                        <label class="error" id="fullName" style="display: none; color: red">Vui lòng
-                                            nhập họ tên</label>
-                                        <label class="error" id="fullNameLength" style="display: none; color: red">Vui
-                                            lòng nhập 6 ký tự đến 20 ký tự</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4 ">
@@ -126,14 +122,10 @@
                                         <input type="text" class="form-control"
                                                id="username"
                                                name="username" onblur="userView.validateUser()"
-                                               onkeyup="userView.validateLength()"
                                                placeholder="Tên đăng nhập">
                                         <label id="username" style="display: none; color: red">Tài khoản đã tồn
                                             tại</label>
-                                        <label id="usernameEmpty" style="display: none; color: red">Vui lòng nhập tài
-                                            khoản</label>
-                                        <label id="usernameLength" style="display: none; color: red">Vui lòng nhập 6 ký
-                                            tự đến 20 ký tự</label>
+
 
                                     </div>
                                 </div>
@@ -143,11 +135,7 @@
                                         <input type="email" class="form-control"
                                                id="email"
                                                name="email"
-                                               onkeyup="userView.validateLength()"
                                                placeholder="email@example.com">
-                                        <label id="email" style="display: none; color: red">Vui lòng nhập email</label>
-
-
                                     </div>
                                 </div>
                             </div>
@@ -171,14 +159,13 @@
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
                                         <label for="password_confirmation"><b>Nhập lại mật khẩu</b></label>
-                                        <input type="Password" class="form-control"
+                                        <input type="password" class="form-control"
                                                id="password_confirmation"
                                                name="password_confirmation"
                                                maxlength="20"
                                                minlength="6"
                                                placeholder="Nhập lại mật khẩu">
-                                        <label id="password_confirmation" style="display: none; color: red">Vui lòng xác
-                                            nhận password</label>
+
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -276,7 +263,7 @@
                 current: null,
                 array_roleId: null,
                 user_id: null,
-                tableSubRow: null,
+
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -339,12 +326,12 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    userView.renderDateTimePicker();
                 },
 
                 clearValidation: function () {
                     $('label[class=error]').hide();
                 },
-
                 loadSelectBoxPosition: function (lstPosition) {
                     //reset selectbox
                     $('#position_id')
@@ -360,8 +347,9 @@
                         el.value = lstPosition[i]['id'];
                         select.appendChild(el);
                     }
-//                    $("#position_id").find('option').eq(0)
+
                 },
+
                 renderDateTimePicker: function () {
                     $('#birthday').datepicker({
                         "setDate": new Date(),
@@ -423,14 +411,12 @@
                             subRole.push($(this).attr('value'));
                         }
                     });
-
                     userView.array_roleId = subRole;
                     if (userView.action == 'add') {
                         userView.current = {
                             fullName: $("input[id='fullName']").val(),
                             username: $("input[id='username']").val(),
                             password: $("input[id='password']").val(),
-                            password_confirmation: $("input[id='password_confirmation']").val(),
                             email: $("input[id='email']").val(),
                             address: $("input[id='address']").val(),
                             phone: $("input[id='phone']").val(),
@@ -446,7 +432,7 @@
                         userView.current.phone = $("input[id='phone']").val();
                         userView.current.birthday = $("input[id='birthday']").val();
                         userView.current.position_id = $("select[id='position_id']").val();
-
+                        userView.current.password = $("input[id='password']").val();
                     }
                 },
                 fillCurrentObjectToForm: function () {
@@ -455,15 +441,11 @@
                     $("input[id='fullName']").val(userView.current["fullName"]);
                     $("input[id='username']").val(userView.current["username"]);
                     $("input[id='email']").val(userView.current["email"]);
-                    $("input[id='password']").val(userView.current["password"]);
-                    $("input[id='password_confirmation']").val(userView.current["password_confirmation"]);
                     $("input[id='position_id']").val(userView.current["position_id"]);
                     $("input[id='address']").val(userView.current["address"]);
                     $("input[id='phone']").val(userView.current["phone"]);
-//                    for (var propertyName in userView.current) {
-//                        $("input[id=password]").val(userView.current[propertyName]);
-//                        $("input[id=password_confirmation]").val(userView.current[propertyName]);
-//                    }
+                    $("input[id='password']").val();
+                    $("input[id='password_confirmation']").val();
 
 
                 },
@@ -485,18 +467,16 @@
                             for (var i = 0; i < data['subRoles'].length; i++) {
                                 roles_array.push(data['subRoles'][i]['role_id']);
                             }
-                            pwd = data['password'];
-                            userView.fillRolesToDom(roles_array);
                             userView.current = _.clone(_.find(userView.tableUser, function (o) {
                                 return o.id == id;
                             }), true);
-
+                            pwd = data['password'];
+                            userView.fillRolesToDom(roles_array);
                             userView.fillCurrentObjectToForm();
-                            userView.current.password = pwd;
+                            $("input[id=password]").val(pwd);
                             $("input[id=password_confirmation]").val(pwd);
                             userView.action = 'update';
                             userView.show();
-
                             userView.clearValidation();
 
                             }
@@ -507,10 +487,10 @@
                 },
 
                 addNewUser: function () {
+                    userView.renderDateTimePicker();
+                    userView.current = null;
                     userView.action = 'add';
                     userView.show();
-                    userView.clearInput();
-                    userView.resetRolesInDom();
                 },
                 clearInput: function () {
                     if (userView.current) {
@@ -695,17 +675,18 @@
                                             userView.showNotification("success", "Thêm thành công!");
                                             break;
                                         case 'update':
-                                            var UserOld = _.find(userView.tableUser, function (o) {
+                                            var UpdateUserOld = _.find(userView.tableUser, function (o) {
                                                 return o.id == sendToServer._object.id;
                                             });
-                                            var indexOfUserOld = _.indexOf(userView.tableUser, UserOld);
-                                            userView.tableUser.splice(indexOfUserOld, 1, data['tableUserUpdate']);
+                                            var indexOfUpdateUserOld = _.indexOf(userView.tableUser, UpdateUserOld);
+                                            userView.tableUser.splice(indexOfUpdateUserOld, 1, data['tableUserUpdate'][0]);
+                                            userView.tableSubRow = data['tableRole'][0];
                                             userView.showNotification("success", "Cập nhật thành công!");
-                                            userView.hide();
+                                            userView.hide()
                                             break;
-
                                         default:
                                             break;
+
                                     }
                                     userView.table.clear().rows.add(userView.tableUser).draw();
                                     userView.clearInput();
@@ -714,9 +695,7 @@
                                 }
 
                             }).fail(function (jqXHR, textStatus, errorThrown) {
-
                                 userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-
                             });
                         } else {
                             $("form#formUser").find("label[class=error]").css("color", "red");
