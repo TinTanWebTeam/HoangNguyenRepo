@@ -157,6 +157,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'Report'], function () {
         Route::get('/revenue-report', 'ReportController@getViewRevenueReport');
         Route::get('/history-delivery-report', 'ReportController@getViewHistoryDeliveryReport');
+        //Get data view
+        Route::get('/revenue-report-view', 'ReportController@getDataViewRevenueReport');
     });
 });
 

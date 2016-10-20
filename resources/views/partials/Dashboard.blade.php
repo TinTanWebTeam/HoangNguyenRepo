@@ -16,7 +16,6 @@
             dashboardView = {
                 loadChart1: function(){
                     $('#chart1').highcharts({
-
                         chart: {
                             type: 'column'
                         },

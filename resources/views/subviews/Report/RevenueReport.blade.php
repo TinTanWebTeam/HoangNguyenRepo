@@ -64,29 +64,44 @@
                 <div class="dataTable_wrapper">
                     <p class="lead text-primary text-left"><strong>Doanh thu theo tháng</strong></p>
                     <div class="row">
-                        <div class="col-md-2" id="dateSearch">
-                            <select class="form-control">
-                                <option>2016</option>
-                                <option>2017</option>
-                            </select>
+                        <div class="col-md-2">
+                            <div class="form-group form-md-line-input">
+                                <label for="optionYear"><b>Chọn năm</b></label>
+                                <select class="form-control" id="optionYear"
+                                        name="optionYear">
+                                </select>
+
+                            </div>
                         </div>
+                        {{--<div class="col-md-2" id="dateSearch">--}}
+                            {{--<select class="form-control">--}}
+                                {{--<option>2016</option>--}}
+                                {{--<option>2017</option>--}}
+                            {{--</select>--}}
+                        {{--</div>--}}
                     </div>
                     <br>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="table-data-year">
-                                    <thead>
-                                    <tr class="active">
-                                        <th>Tháng</th>
-                                        <th>Doanh thu</th>
-                                        <th>Lợi nhuận</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-bordered table-hover" id="table-data-year">
+                                        <thead>
+                                        <tr class="active">
+                                            <th>Tháng</th>
+                                            <th>Doanh thu</th>
+                                            <th>Lợi nhuận</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
 
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6 ">
+                                    <div id="container"></div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -95,8 +110,6 @@
         </div> <!-- end table-reposive -->
     </div> <!-- end .col-md-12-->
 </div>
-
-
 <!-- End Table Detail Report -->
 
 
@@ -106,18 +119,190 @@
             revenueReportView = {
                 table: null,
                 tableYear: null,
+                data: null,
+                action: null,
+                tableDetailRevenue: null,
+                tableRevenueMonth: null,
+                tableOptionYear: null,
+                current: null,
                 loadData: function () {
+                    $.ajax({
+                        url: url + 'revenue-report-view',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            revenueReportView.tableDetailRevenue = data['tableReport'];
+                            revenueReportView.fillDataToDataTableDetail(data['tableReport']);
+                            revenueReportView.tableRevenueMonth = data['tableReportMonth'];
+                            revenueReportView.fillDataToDataTableYear(data['tableReportMonth']);
+                            revenueReportView.tableOptionYear = data['year'];
+                            revenueReportView.loadSelectBoxYear(data['year']);
+                        } else {
+                            revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
                     revenueReportView.table = $('#table-data').DataTable({
                         language: languageOptions
                     });
                     revenueReportView.tableYear = $('#table-data-year').DataTable({
                         language: languageOptions
+                    });
+                    revenueReportView.loadChart();
+                },
+                showNotification: function (type, msg) {
+                    switch (type) {
+                        case "info":
+                            toastr.info(msg);
+                            break;
+                        case "success":
+                            toastr.success(msg);
+                            break;
+                        case "warning":
+                            toastr.warning(msg);
+                            break;
+                        case "error":
+                            toastr.error(msg);
+                            break;
+                    }
+                },
+                loadChart: function () {
+                    $('#container').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Doanh thu / lợi nhuận theo tháng'
+                        },
+
+                        xAxis: {
+                            categories: [
+                                'Jan',
+                                'Feb',
+                                'Mar',
+                                'Apr',
+                                'May',
+                                'Jun',
+                                'Jul',
+                                'Aug',
+                                'Sep',
+                                'Oct',
+                                'Nov',
+                                'Dec'
+                            ],
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Đơn vị ( Vnd )'
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                            footerFormat: '</table>',
+                            shared: true,
+                            useHTML: true
+                        },
+                        plotOptions: {
+                            column: {
+                                pointPadding: 0.1,
+                                borderWidth: 0
+                            }
+                        },
+                        series: [{
+                            name: 'Tokyo',
+                            data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+
+                        }, {
+                            name: 'New York',
+                            data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+
+                        }]
+                    });
+
+                },
+                fillDataToDataTableDetail: function (data) {
+                    if (revenueReportView.table != null) {
+                        revenueReportView.table.destroy();
+                    }
+                    revenueReportView.table = $('#table-data').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {
+                                data: 'receiveDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {data: 'fullName'},
+                            {data: 'cashRevenue'},
+                            {data: 'cashProfit'}
+                        ]
+
                     })
+                },
+                fillDataToDataTableYear: function (data) {
+
+                    if (revenueReportView.tableYear != null) {
+                        revenueReportView.tableYear.destroy();
+                    }
+                    revenueReportView.tableYear = $('#table-data-year').DataTable(
+                            {
+                                language: languageOptions,
+                                data: data,
+                                columns: [
+                                    {
+                                        data: 'receiveDate',
+                                        render: function (data, type, full, meta) {
+                                            return moment(data).format("MM/YYYY");
+                                        }
+                                    },
+                                    {
+                                        data: 'total_Revenue'
+                                    },
+                                    {
+                                        data: 'total_Profit'
+                                    }
+
+                                ]
+
+                            })
+                },
+                loadSelectBoxYear: function (lstYear) {
+                    var yearOption = moment(lstYear, "YYYY-MM-DD");
+                    console.log(lstYear);
+//                    $("input[id='dateCheckIn']").datepicker('update', dateCheckIn.format("DD-MM-YYYY"));
+                    //reset selectbox
+                    $('#optionYear')
+                            .find('option')
+                            .remove()
+                            .end();
+                    //fill option to selectbox
+                    var select = document.getElementById("optionYear");
+                    for (var i = 0; i < lstYear.length; i++) {
+                        var opt = lstYear[i]['receiveDate'];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = lstYear[i]['receiveDate'];
+                        select.appendChild(el);
+                    }
                 }
-            };
-            revenueReportView.loadData();
-        } else {
+
+
+            }
+            ;
             revenueReportView.loadData();
         }
-    });
+        else {
+            revenueReportView.loadData();
+        }
+    })
+    ;
 </script>

@@ -583,8 +583,6 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
-
                     $("#table-vehicles").find("tbody").on('click', 'tr', function () {
                         var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
                         $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
