@@ -71,8 +71,11 @@
                                 <th>Khách hàng</th>
                                 <th>Doanh thu</th>
                                 <th>Giao xe</th>
+                                <th>Giao trước</th>
                                 <th>Nhận</th>
+                                <th>Chi phí</th>
                                 <th>Lợi nhuận</th>
+                                <th>Lợi nhuận<br>thực tế</th>
                                 <th>Người nhận</th>
                                 <th>Ngày nhận</th>
                                 <th>Trạng thái</th>
@@ -955,6 +958,7 @@
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                        data[i].cashProfit_real = parseInt(data[i]['cashReceive']) - (parseInt(data[i]['cashPreDelivery']) + parseInt(data[i]['cost']));
                     }
                     transportView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -975,11 +979,23 @@
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {
+                                data: 'cashPreDelivery',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {
                                 data: 'cashReceive',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {
+                                data: 'cost',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {
                                 data: 'cashProfit',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {
+                                data: 'cashProfit_real',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {data: 'receiver'},

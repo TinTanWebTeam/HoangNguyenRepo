@@ -12,7 +12,7 @@ class CostTableSeeder extends Seeder
     public function run()
     {
         \App\Cost::create([
-            'cost' => '400000',
+            'cost' => '500000',
             'createdBy' => '1',
             'updatedBy' => '1',
             'note' => 'Phạt tiền',

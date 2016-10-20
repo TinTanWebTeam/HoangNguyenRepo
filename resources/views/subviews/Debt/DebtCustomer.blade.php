@@ -94,6 +94,7 @@
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
                                         <th>Doanh thu</th>
+                                        <th>Lợi nhuận<br>thực tế</th>
                                         <th>Nợ</th>
                                         <th>Người nhận</th>
                                         <th>Ngày nhận</th>
@@ -565,6 +566,7 @@
                 for (var i = 0; i < data.length; i++) {
                     data[i].fullNumber = data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
                     data[i].debt = data[i]['cashRevenue'] - data[i]['cashReceive'];
+                    data[i].cashProfit_real = parseInt(data[i]['cashReceive']) - (parseInt(data[i]['cashPreDelivery']) + parseInt(data[i]['cost']));
                 }
 
                 debtCustomerView.table = $('#table-data').DataTable({
@@ -579,6 +581,10 @@
                         {data: 'voucherNumber'},
                         {
                             data: 'cashRevenue',
+                            render: $.fn.dataTable.render.number(".", ",", 0)
+                        },
+                        {
+                            data: 'cashProfit_real',
                             render: $.fn.dataTable.render.number(".", ",", 0)
                         },
                         {
