@@ -49,43 +49,63 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <p id="dateOnlySearch">
-                        <input type="text" class="date start"/> đến
-                        <input type="text" class="date end"/>
-                        <button onclick="transportView.searchFromDateToDate()" class="btn btn-sm btn-info"><i
-                                    class="fa fa-search" aria-hidden="true"></i> Tìm
-                        </button>
-                        <button onclick="transportView.clearSearch()" class="btn btn-sm btn-default"><i
-                                    class="fa fa-trash-o" aria-hidden="true"></i> Xóa
-                        </button>
-                    </p>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-striped" id="table-data">
-                            <thead>
-                            <tr class="active">
-                                <th>Mã</th>
-                                <th>Số xe</th>
-                                <th>Tên hàng</th>
-                                <th>Nơi nhận</th>
-                                <th>Nơi giao</th>
-                                <th>Khách hàng</th>
-                                <th>Doanh thu</th>
-                                <th>Giao xe</th>
-                                <th>Giao trước</th>
-                                <th>Nhận</th>
-                                <th>Chi phí</th>
-                                <th>Lợi nhuận</th>
-                                <th>Lợi nhuận<br>thực tế</th>
-                                <th>Người nhận</th>
-                                <th>Ngày nhận</th>
-                                <th>Trạng thái</th>
-                                <th>Sửa/ Xóa</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    <!-- Chú thích -->
+                    <div class="row" style="margin-bottom: 10px">
+                        <div class="col-md-7">
+                            <i class="fa fa-user" aria-hidden="true" style="font-size: 1.2em; margin-right: 30px;"> Khách hàng</i>
+                            <i class="fa fa-truck" aria-hidden="true" style="font-size: 1.2em;"> Nhà xe ngoài</i>
+                        </div>
+                        <div class="col-md-5">
+                            <span class="label label-danger" style="font-size: 1em;">Chưa thanh toán</span>
+                            <span class="label label-primary" style="font-size: 1em;">Đã thanh toán</span>
+                            <span class="label label-success" style="font-size: 1em;">Đã thanh toán & xuất hóa đơn</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p id="dateOnlySearch">
+                                <input type="text" class="date start"/> đến
+                                <input type="text" class="date end"/>
+                                <button onclick="transportView.searchFromDateToDate()" class="btn btn-sm btn-info"><i
+                                            class="fa fa-search" aria-hidden="true"></i> Tìm
+                                </button>
+                                <button onclick="transportView.clearSearch()" class="btn btn-sm btn-default"><i
+                                            class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped" id="table-data">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Mã</th>
+                                        <th>Số xe</th>
+                                        <th>Tên hàng</th>
+                                        <th>Nơi nhận</th>
+                                        <th>Nơi giao</th>
+                                        <th>Khách hàng</th>
+                                        <th>Doanh thu</th>
+                                        <th>Giao xe</th>
+                                        <th>Giao trước</th>
+                                        <th>Nhận</th>
+                                        <th>Chi phí</th>
+                                        <th>Lợi nhuận</th>
+                                        <th>Lợi nhuận<br>thực tế</th>
+                                        <th>Người nhận</th>
+                                        <th>Ngày nhận</th>
+                                        <th>Trạng thái</th>
+                                        <th>Sửa/ Xóa</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,19 +113,6 @@
     </div> <!-- end .col-md-12-->
 </div>
 <!-- End Table Transport -->
-
-<!-- Chú thích -->
-<div class="row">
-    <div class="col-md-6">
-        <i class="fa fa-user" aria-hidden="true" style="font-size: 1.2em; margin-right: 30px;"> Khách hàng</i>
-        <i class="fa fa-truck" aria-hidden="true" style="font-size: 1.2em;"> Nhà xe ngoài</i>
-    </div>
-    <div class="col-md-6">
-        <span class="label label-danger" style="font-size: 1em;">Chưa thanh toán</span>
-        <span class="label label-primary" style="font-size: 1em;">Đã thanh toán</span>
-        <span class="label label-success" style="font-size: 1em;">Đã thanh toán và xuất hóa đơn</span>
-    </div>
-</div>
 
 <!-- Begin divControl -->
 <div class="row">
