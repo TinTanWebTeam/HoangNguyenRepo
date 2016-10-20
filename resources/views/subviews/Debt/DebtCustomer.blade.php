@@ -49,7 +49,18 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <p class="lead text-primary text-left"><strong>Đơn hàng</strong></p>
+                    <!-- Chú thích -->
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p class="lead text-primary text-left"><strong>Đơn hàng</strong></p>
+                        </div>
+                        <div class="col-md-offset-7 col-md-3">
+                            <span class="label label-danger" style="font-size: 1em;">Chưa trả</span>
+                            <span class="label label-primary" style="font-size: 1em;">Đã trả trước</span>
+                            <span class="label label-success" style="font-size: 1em;">Đã trả đủ</span>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6" id="dateSearchTransport">
                             <input type="text" class="date start"/> đến
@@ -192,14 +203,7 @@
 </div>
 <!-- End Table -->
 
-<!-- Chú thích -->
-<div class="row">
-    <div class="col-md-offset-9 col-md-3">
-        <span class="label label-danger" style="font-size: 1em;">Chưa trả</span>
-        <span class="label label-primary" style="font-size: 1em;">Đã trả trước</span>
-        <span class="label label-success" style="font-size: 1em;">Đã trả đủ</span>
-    </div>
-</div>
+
 
 <!-- Begin divInvoice -->
 <div class="row">
