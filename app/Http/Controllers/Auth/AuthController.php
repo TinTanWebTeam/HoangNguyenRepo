@@ -82,28 +82,47 @@ class AuthController extends Controller
 
     public function postLogin(Request $request)
     {
+        $uname = $request->get('_login')['username'];
+        $pword = $request->get('_login')['password'];
+        if($uname == '' || $pword == ''){
+            $response = [
+                'msg' => 'Vui lòng nhập đầy đủ thông tin!',
+                'url' => 'auth/login'
+            ];
+            return response()->json($response, 203);
+        }
+
         try {
-            $user = User::where('username', $request->get('username'))->first();
+            $user = User::where('username', $uname)->first();
             if ($user) {
                 $password = decrypt($user->password, Config::get('app.key'));
-                if ($password == $request->get('password') && $user->active == 1) {
+                if ($password == $pword && $user->active == 1) {
                     Auth::login($user);
-                    return redirect('/');
+                    $response = [
+                        'msg' => 'Đăng nhập thành công!',
+                        'url' => '/'
+                    ];
+                    return response()->json($response, 202);
                 } else {
-                    Session::flash('flash_message', 'Mật khẩu đăng nhập không đúng, vui lòng nhập lại!', 'Thông báo');
-                    return redirect('auth/login');
+                    $response = [
+                        'msg' => 'Mật khẩu đăng nhập không đúng, vui lòng nhập lại!',
+                        'url' => 'auth/login'
+                    ];
+                    return response()->json($response, 203);
                 }
-            } else if ($request->get('username') == '' || $request->get('password') == '') {
-                Session::flash('flash_message', 'Vui lòng nhập đầy đủ thông tin!', 'Thông báo');
-                return redirect('auth/login');
             } else {
-                Session::flash('flash_message', 'Tài khoản không tồn tại, vui lòng nhập lại!', 'Thông báo');
-                return redirect('auth/login');
+                $response = [
+                    'msg' => 'Tài khoản không tồn tại, vui lòng nhập lại!',
+                    'url' => 'auth/login'
+                ];
+                return response()->json($response, 203);
             }
         } catch (Exception $ex) {
-            Session::flash('flash_message', 'Quá trình đăng nhập bị lỗi, vui lòng đăng nhập lại!', 'Thông báo');
-
-            return redirect('auth/login');
+            $response = [
+                'msg' => 'Quá trình đăng nhập bị lỗi, vui lòng đăng nhập lại!',
+                'url' => 'auth/login'
+            ];
+            return response()->json($response, 203);
         }
     }
 

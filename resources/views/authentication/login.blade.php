@@ -4,85 +4,105 @@
     <meta charset="UTF-8">
     <title>Đăng nhập hệ thống</title>
 
-    <!-- Custom Bootstrap Core CSS -->
-    <link href=" {{ URL::to('libs/bootstrap/dist/css/bootstrap.material.min.css') }} " rel="stylesheet">
-
-    <!-- MetisMenu CSS -->
-    <link href=" {{ URL::to('libs/metisMenu/dist/metisMenu.min.css')  }}" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href=" {{ URL::to('src/css/sb-admin-2.css') }} " rel="stylesheet">
-
-    <!-- Custom Fonts -->
-    <link href=" {{ URL::to('libs/font-awesome/css/font-awesome.min.css') }} " rel="stylesheet" type="text/css">
-
-    <link rel="stylesheet" href="{{ URL::to('src/css/custom-bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ URL::to('src/css/components-md.min.css') }}">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{{ URL::to('libs/toastr/toastr.min.css') }}">
+    <!--My Custom-->
+    <link rel="stylesheet" href="{{ URL::to('src/css/login.css') }}">
 </head>
 <body>
-@include('flash::message')
-<div class="container">
-    <div class="mainbox col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3" id="loginbox" style="margin-top:50px;">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    Thông tin đăng nhập
-                </div>
+<div class="wrapper">
+    <!-----start-main---->
+    <div class="main">
+        <div class="login-form">
+            <h1>Thông tin đăng nhập</h1>
+            <div class="head">
+                <img src="{{ URL::to('src/images/user.png') }}" alt=""/>
             </div>
-            <div class="panel-body" style="padding-top:30px">
-                <div class="alert alert-danger col-sm-12" id="login-alert" style="display:none">
+            <div style="padding: 40px">
+                <input type="text" id="username" name="username" placeholder="Tên tài khoản">
+                <input type="password" id="password" name="password" placeholder="Mật khẩu">
+
+                <div class="submit">
+                    <input type="submit" id="btnLogin" value="Đăng nhập" onclick="loginView.save()">
                 </div>
-                <form  class="login-form" action="{{ asset('auth/login') }}" class="form-horizontal" method="post" role="form">
-                    {{ csrf_field() }}
-                    @if(Session::has('flash_message'))
-                    <div class="alert alert-danger fade in">
-                        <span>{{Session::get('flash_message')}} </span>
-                    </div>
-                    @endif
-                    <div class="input-group" style="margin-bottom: 25px">
-                        <span class="input-group-addon">
-                            <i class="glyphicon glyphicon-user" style="font-size:1.5em">
-                            </i>
-                        </span>
-                        <input class="form-control" id="login-username" name="username" placeholder="Tên tài khoản" type="text" value="">
-                        </input>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 25px">
-                        <span class="input-group-addon">
-                            <i class="glyphicon glyphicon-lock" style="font-size:1.5em">
-                            </i>
-                        </span>
-                        <input class="form-control" id="login-password" name="password" placeholder="Mật khẩu" type="password">
-                        </input>
-                    </div>
-                    <div class="form-group" style="margin-top:10px">
-                        <!-- Button -->
-                        <div class="col-sm-12 controls text-center">
-                            <button class="btn btn-primary " type="submit">
-                                Đăng nhập
-                            </button>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
+        <!--//End-login-form-->
     </div>
+    <!-----//end-main---->
 </div>
 
-<script src="{{ URL::to('libs/jquery/dist/jquery.min.js') }}" type="text/javascript"></script>
+<!-- JQuery -->
+<script src="{{ URL::to('libs/jquery/dist/jquery.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ URL::to('libs/toastr/toastr.min.js') }}"></script>
+<!-- Global -->
+<script src=" {{ URL::to('src/js/global.js') }} "></script>
+
 
 <script>
-    (function(){
-        $('div.alert').delay(3000).slideUp(350);
-    })();
+    $(function () {
+        var _url = '{{ URL::to('/') }}/';
+        var _token = '{{ csrf_token() }}';
+        if (typeof loginView === 'undefined') {
+            loginView = {
+                current: null,
+                loadData: function(){
+                    loginView.renderEventKeyCode();
+                },
+                renderEventKeyCode: function(){
+                    $("#username").keyup(function(event){
+                        if(event.keyCode == 13){ //Enter
+                            $("#btnLogin").click();
+                        }
+                    });
+
+                    $("#password").keyup(function(event){
+                        if(event.keyCode == 13){ //Enter
+                            $("#btnLogin").click();
+                        }
+                    });
+                },
+                fillFormDataToCurrent: function(){
+                    loginView.current = {
+                        username: $("input[id=username]").val(),
+                        password: $("input[id=password]").val()
+                    }
+                },
+                save: function(){
+                    loginView.fillFormDataToCurrent();
+                    var sendToServer = {
+                        _token: _token,
+                        _login: loginView.current
+                    };
+
+                    $.ajax({
+                        url: _url + 'auth/login',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 202) {
+                            showNotification("success", data['msg']);
+//                            window.location = 'http://google.com';
+                            window.location.replace(_url);
+                        } else if (jqXHR.status == 203) {
+                            showNotification("error", data['msg']);
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                }
+            };
+            loginView.loadData();
+        } else {
+            loginView.loadData();
+        }
+    });
 </script>
 
 </body>
