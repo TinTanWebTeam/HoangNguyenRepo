@@ -62,22 +62,39 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md-6">
                             <div class="radio" id="invoiceUp">
-                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport" checked
+                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport" value="All" checked>Tất cả</label>
+                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport"
                                                                          value="NotInvoice">Chưa xuất hóa đơn</label>
-                                <label><input type="radio" name="rdoTransport" value="All">Tất cả</label>
+                                <label><input type="radio" name="rdoTransport"
+                                                                         value="Invoice">Đã xuất hóa đơn</label>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="radio">
-                                <button onclick="debtCustomerView.searchTransport()" id="btnSearchTransport"
-                                        class="btn btn-sm btn-info marginRight"><i
-                                            class="fa fa-search" aria-hidden="true"></i> Tìm
-                                </button>
-                                <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('transport')">
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
-                                </button>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="statusMoney" class="form-control">Trạng thái:</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <select class="form-control" id="statusMoney" onchange="debtCustomerView.searchTransport(this)">
+                                        <option value="All">Tất cả</option>
+                                        <option value="NotPay">Chưa trả</option>
+                                        <option value="PrePay">Trả trước</option>
+                                        <option value="FullPay">Trả đủ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="radio">
+                                        <button onclick="debtCustomerView.searchTransport()" id="btnSearchTransport"
+                                                class="btn btn-sm btn-info marginRight"><i
+                                                    class="fa fa-search" aria-hidden="true"></i> Tìm
+                                        </button>
+                                        <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('transport')">
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,8 +142,10 @@
                         <div class="col-md-10">
                             <div class="radio" id="invoiceDown">
                                 <label style="margin-right: 10px"><input type="radio" name="rdoInvoice" checked
-                                                                         value="stillDebt">Còn nợ</label>
-                                <label><input type="radio" name="rdoInvoice" value="fullPay">Trả đủ</label>
+                                                                         value="All">Tất cả</label>
+                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoice"
+                                                                         value="StillDebt">Còn nợ</label>
+                                <label><input type="radio" name="rdoInvoice" value="FullPay">Trả đủ</label>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -148,8 +167,8 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
-                                        <th>Mã HĐ</th>
                                         <th>Khách hàng</th>
+                                        <th>Mã HĐ</th>
                                         <th>Ngày xuất</th>
                                         <th>Ngày HĐ</th>
                                         <th>Tổng tiền</th>
@@ -553,8 +572,15 @@
                         $("input[id=custName_transport]").val(td.text());
                 });
 
+                $("#table-customerInvoice").find("tbody").on('click', 'tr td', function () {
+                    var td = $(this);
+                    var tr = $(this).parent();
+                    if(tr.find('td:eq(1)').text() == td.text())
+                        $("input[id=custName_invoice]").val(td.text());
+                });
+
                 $("#table-invoiceCustomerDetail").find("tbody").on('click', 'tr', function () {
-                    ////////////////////
+                    //Get current object
                     invoiceCustomerDetailId = $(this).find('td:first')[0].innerText;
                     invoiceCustomerDetail = _.find(debtCustomerView.dataInvoiceCustomerDetail, function(o){
                         return o.id == invoiceCustomerDetailId;
@@ -671,8 +697,8 @@
                     data: data,
                     columns: [
                         {data: 'id'},
-                        {data: 'invoiceCode'},
                         {data: 'customers_fullName'},
+                        {data: 'invoiceCode'},
                         {
                             data: 'exportDate',
                             render: function (data, type, full, meta) {
@@ -911,7 +937,6 @@
                 $("#modal-notification").find(".modal-body").html(tr);
                 debtCustomerView.displayModal('show', '#modal-notification');
             },
-
             createInvoiceCustomer: function (flag, invoiceCustomer_id) {
                 debtCustomerView.showControl(flag);
                 if (flag == 0){
@@ -1197,91 +1222,17 @@
                 }
 
             },
-            searchTransport: function () {
-                //Customer Name
-                custName = $("#custName_transport").val();
-                if(custName == '') delete custName;
+            searchTransport: function (money) {
+                found = debtCustomerView.searchExportInvoice(debtCustomerView.dataTransport);
 
-                //Invoice Id
-                invoice = $("#invoiceUp").find("input:checked").val();
-                if (invoice == 'All') delete invoice;
+                if(typeof money === 'undefined')
+                    found = debtCustomerView.searchStatusMoney(found);
+                else
+                    found = debtCustomerView.searchStatusMoney(found, money.value);
 
-                //Date to date
-                fromDate = $("#dateSearchTransport").find(".start").val();
-                toDate = $("#dateSearchTransport").find(".end").val();
+                found = debtCustomerView.searchCustomer(found);
+                found = debtCustomerView.searchDate(found);
 
-                if (fromDate == '' && toDate == ''){
-                    delete fromDate;
-                    delete toDate;
-                } else{
-                    fromDate = moment(fromDate, "DD-MM-YYYY");
-                    toDate = moment(toDate, "DD-MM-YYYY");
-                    if (!fromDate.isValid() && !toDate.isValid()) {
-                        showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
-                        return;
-                    }
-                }
-
-                var data = debtCustomerView.dataSearch;
-                if(data.length == 0)
-                    data = debtCustomerView.dataTransport;
-                var found = _.filter(data, function (o) {
-                    if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
-                            && typeof custName !== 'undefined'
-                            && typeof invoice !== 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                                && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
-                                && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
-                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                            && typeof custName === 'undefined'
-                            && typeof invoice === 'undefined'){
-                        return false;
-                    } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
-                            && typeof custName === 'undefined'
-                            && typeof invoice !== 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
-                    } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
-                            && typeof custName !== 'undefined'
-                            && typeof invoice === 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase())));
-                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                            && typeof custName !== 'undefined'
-                            && typeof invoice !== 'undefined'){
-
-                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
-                                && o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
-                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                            && typeof custName === 'undefined'
-                            && typeof invoice !== 'undefined'){
-                        return false;
-                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                            && typeof custName !== 'undefined'
-                            && typeof invoice === 'undefined'){
-                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase())));
-                    }else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
-                            && typeof custName === 'undefined'
-                            && typeof invoice === 'undefined'){
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]'));
-                    }
-                });
-                //set data for except circumstance
-                if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                        && typeof custName === 'undefined'
-                        && typeof invoice === 'undefined'){
-                    found = debtCustomerView.dataTransport;
-                } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                        && typeof custName === 'undefined'
-                        && typeof invoice !== 'undefined'){
-                    found = _.filter(debtCustomerView.dataTransport, function(o){
-                       return (o.invoiceCustomer_id == null && o.cashReceive < o.cashRevenue);
-                    });
-                }
                 debtCustomerView.dataSearch = found;
                 debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
 
@@ -1292,86 +1243,117 @@
                 debtCustomerView.renderAutoCompleteSearch();
             },
             searchInvoice: function () {
-                //Customer Name
-                custName = $("#custName_invoice").val();
-                if(custName == '') delete custName;
+                found = debtCustomerView.searchStatusMoneyInvoice(debtCustomerView.dataInvoiceCustomer);
 
-                //Money
-                money = $("#invoiceDown").find("input:checked").val();
-                if (money == 'fullPay') delete money;
+                found = debtCustomerView.searchCustomerInvoice(found);
+                found = debtCustomerView.searchDateInvoice(found);
 
-                //Date to date
-                fromDate = $("#dateSearchInvoice").find(".start").val();
-                toDate = $("#dateSearchInvoice").find(".end").val();
-
-                if (fromDate == '' && toDate == ''){
-                    delete fromDate;
-                    delete toDate;
-                } else{
-                    fromDate = moment(fromDate, "DD-MM-YYYY");
-                    toDate = moment(toDate, "DD-MM-YYYY");
-                    if (!fromDate.isValid() && !toDate.isValid()) {
-                        showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
-                        return;
-                    }
-                }
-
-                var data = debtCustomerView.dataSearchInvoiceCustomer;
-                if(data.length == 0)
-                    data = debtCustomerView.dataInvoiceCustomer;
-                var found = _.filter(data, function (o) {
-                    if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
-                            && typeof custName !== 'undefined'
-                            && typeof money !== 'undefined'){
-                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
-                        && (parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid)));
-                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                            && typeof custName === 'undefined'
-                            && typeof money === 'undefined'){
-                        return (parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid));
-                    } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
-                            && typeof custName === 'undefined'
-                            && typeof money !== 'undefined'){
-                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && (parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid)));
-                    } else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
-                            && typeof custName !== 'undefined'
-                            && typeof money === 'undefined'){
-                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
-                        && (parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid)));
-                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                            && typeof custName !== 'undefined'
-                            && typeof money !== 'undefined'){
-                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
-                        && (parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid)));
-                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                            && typeof custName === 'undefined'
-                            && typeof money !== 'undefined'){
-                        return (parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid));
-                    } else if (typeof fromDate === 'undefined' && typeof toDate === 'undefined'
-                            && typeof custName !== 'undefined'
-                            && typeof money === 'undefined'){
-                        return (removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()))
-                        && (parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid)));
-                    }else if (typeof fromDate !== 'undefined' && typeof toDate !== 'undefined'
-                            && typeof custName === 'undefined'
-                            && typeof money === 'undefined'){
-                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
-                        return (moment(dateFind).isBetween(fromDate, toDate, null, '[]')
-                        && (parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid)));
-                    }
-                });
                 debtCustomerView.dataSearchInvoiceCustomer = found;
                 debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataSearchInvoiceCustomer).draw();
 
                 //fill data to listSearch
                 debtCustomerView.tagsCustomerNameInvoice = _.map(debtCustomerView.dataSearchInvoiceCustomer, 'customers_fullName');
                 debtCustomerView.renderAutoCompleteSearch();
+            },
+
+            searchDate: function(data){
+                fromDate = $("#dateSearchTransport").find(".start").val();
+                toDate = $("#dateSearchTransport").find(".end").val();
+                if(fromDate == '' || toDate == '')
+                    return data;
+
+                fromDate = moment(fromDate, "DD-MM-YYYY");
+                toDate = moment(toDate, "DD-MM-YYYY");
+                if (!fromDate.isValid() && !toDate.isValid())
+                    return data;
+
+                found = _.filter(data, function(o){
+                    var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                    return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+                });
+                return found;
+            },
+            searchCustomer: function(data){
+                custName = $("#custName_transport").val();
+                if(custName == '')
+                    return data;
+
+                found = _.filter(data, function(o){
+                    return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                });
+                return found;
+            },
+            searchExportInvoice: function(data){
+                invoice = $("#invoiceUp").find("input:checked").val();
+                found = _.filter(data, function(o){
+                    if (invoice == 'All'){
+                        return true;
+                    } else if (invoice == 'Invoice'){
+                        return o.invoiceCustomer_id != null;
+                    } else {
+                        return o.invoiceCustomer_id == null;
+                    }
+                });
+                return found;
+            },
+            searchStatusMoney: function(data, value){
+                if(typeof value === 'undefined')
+                    money = $("select[id=statusMoney]").val();
+                else
+                    money = value;
+                found = _.filter(data, function(o){
+                    if (money == 'FullPay'){
+                        return o.cashRevenue == o.cashReceive;
+                    } else if (money == 'PrePay'){
+                        return o.cashReceive != 0 && o.cashRevenue > o.cashReceive;
+                    } else if (money == 'NotPay'){
+                        return o.cashReceive == 0;
+                    } else {
+                        return true;
+                    }
+                });
+                return found;
+            },
+
+            searchDateInvoice: function(data){
+                fromDate = $("#dateSearchInvoice").find(".start").val();
+                toDate = $("#dateSearchInvoice").find(".end").val();
+                if(fromDate == '' || toDate == '')
+                    return data;
+
+                fromDate = moment(fromDate, "DD-MM-YYYY");
+                toDate = moment(toDate, "DD-MM-YYYY");
+                if (!fromDate.isValid() && !toDate.isValid())
+                    return data;
+
+                found = _.filter(data, function(o){
+                    var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+                    return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+                });
+                return found;
+            },
+            searchCustomerInvoice: function(data){
+                custName = $("#custName_invoice").val();
+                if(custName == '')
+                    return data;
+
+                found = _.filter(data, function(o){
+                    return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                });
+                return found;
+            },
+            searchStatusMoneyInvoice: function(data){
+                money = $("#invoiceDown").find("input:checked").val();
+                found = _.filter(data, function(o){
+                    if (money == 'All'){
+                        return true;
+                    } else if (money == 'StillDebt'){
+                        return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+                    } else {
+                        return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+                    }
+                });
+                return found;
             },
 
             getListCurrentRowTransport: function() {
