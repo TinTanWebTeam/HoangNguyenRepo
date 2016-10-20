@@ -754,7 +754,7 @@
                             literNumber: {
                                 required: true,
                                 number: true,
-                                maxlength:3
+
                             }
 
                         },
@@ -764,7 +764,6 @@
                             literNumber: {
                                 required: "Vui lòng nhập số lít",
                                 number: "Số lít phải là số",
-                                maxlength: "Ngày tháng không hợp lệ",
                             }
 
                         }

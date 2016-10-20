@@ -514,7 +514,7 @@ class CostManagementController extends Controller
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case "delete":
-                $PetroDelete = Cost::findOrFail($request->get('_object')['id']);
+                $PetroDelete = Cost::findOrFail($request->get('_object'));
                 $PetroDelete->active = 0;
                 if ($PetroDelete->update()) {
                     $response = [
