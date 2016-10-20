@@ -80,7 +80,7 @@ class UserManagementController extends Controller
     {
 
         try {
-            $subRoles = DB::table('subroles')
+            $subRoles = DB::table('subRoles')
                 ->where('user_id', $request->get('_object'))
                 ->get();
 
@@ -229,7 +229,7 @@ class UserManagementController extends Controller
                                 return response()->json(['msg' => 'Create failed'], 404);
                             }
                         }
-                        $subRoles = \DB::table('subroles')
+                        $subRoles = \DB::table('subRoles')
                             ->where('user_id', $userUpdate->id)
                             ->get();
                         $userUpdate = \DB::table('users')

@@ -2,11 +2,15 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 10%;
+        top: 15%;
         display: none;
         right: 0;
         width: 50%;
         height: 100%;
+    }
+
+    #divControl .panel-body {
+        height: 500px;
     }
 
     div.col-lg-12 {
@@ -21,31 +25,10 @@
         }
     }
 
-    #divControl .panel-body {
-        height: 500px;
-    }
+
 </style>
-<div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body"><h5 id="modalContent"></h5></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                        onclick="userView.deleteUser()">Ðồng ý
-                </button>
-                <button type="button" class="btn default" name="modalClose"
-                        onclick="userView.cancelDelete()">Hủy
-                </button>
 
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-{{--End Modal--}}
-
-
+<!-- Table -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -88,8 +71,9 @@
         </div> <!-- end .row -->
     </div>
 </div>
+<!-- end Table -->
 
-
+<!-- frmControl -->
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
@@ -249,8 +233,32 @@
 </div>
 <!-- end #frmControl -->
 
-<script>
+<!-- Modal Confirm -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"><h5 id="modalContent"></h5></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
+                                onclick="userView.deleteUser()">Ðồng ý
+                        </button>
+                        <button type="button" class="btn default" name="modalClose"
+                                onclick="userView.cancelDelete()">Hủy
+                        </button>
 
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+</div>
+<!--End Modal-->
+
+<script>
     $(function () {
         if (typeof (userView) === 'undefined') {
             userView = {
@@ -478,12 +486,8 @@
                             userView.action = 'update';
                             userView.show();
                             userView.clearValidation();
-
                             }
-
                         });
-
-
                 },
 
                 addNewUser: function () {
@@ -620,6 +624,7 @@
                 },
 
                 save: function () {
+                    debugger;
                     var sendToServer = null;
                     if (userView.action == 'delete') {
                         sendToServer = {
@@ -722,8 +727,5 @@
         } else {
             userView.loadData();
         }
-
     });
-
-
 </script>
