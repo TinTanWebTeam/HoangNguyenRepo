@@ -1,34 +1,3 @@
-{{--<div id="page-wrapper">--}}
-    {{--<div class="col-lg-4">--}}
-        {{--<div class="panel panel-primary">--}}
-            {{--<div class="panel-heading">--}}
-                {{--Đổi mật khẩu--}}
-            {{--</div>--}}
-            {{--<div class="panel-body">--}}
-                {{--<div class="col-md-12">--}}
-                    {{--<div class="row">--}}
-                        {{--<div class="col-md-4">--}}
-                            {{--<div class="form-group form-md-line-input ">--}}
-                                {{--<label for="passwordconfirm"><b>Nhập lại mật khẩu</b></label>--}}
-                                {{--<input type="Password" class="form-control"--}}
-                                       {{--id="passwordconfirm"--}}
-                                       {{--name="passwordconfirm"--}}
-                                       {{--maxlength="20"--}}
-                                       {{--minlength="6"--}}
-                                       {{--placeholder="Nhập lại mật khẩu">--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
-
-{{--</div>--}}
-
-{{--End Modal--}}
-
-
 <!-- Navigation -->
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
@@ -74,16 +43,31 @@
                             <li>
                                 <a href="javascript:;" role-name="{{$key}}" data-url="{{ $array_url[$key] }}"
                                    onclick="getContentByUrl(this)">
-                                    <i class="fa {{ $array_icon[$key] }}"></i> {{ \App\Role::where('name', $key)->pluck('description')[0] }}
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <i class="fa {{ $array_icon[$key] }}"></i>
+                                        </div>
+                                        <div class="col-md-10">
+                                            {{ \App\Role::where('name', $key)->pluck('description')[0] }}
+                                        </div>
+                                    </div>
+
                                 </a>
                             </li>
                         @endif
                     @else
                         <li>
-                            <a href="#" role-name="{{$key}}" data-url="{{ $array_url[$key] }}"><i class="
-                               fa {{ $array_icon[$key] }}
-                                        "></i> {{ \App\Role::where('name', $key)->pluck('description')[0]}}
-                                <span class="fa arrow"></span>
+                            <a href="#" role-name="{{$key}}" data-url="{{ $array_url[$key] }}">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <i class="fa {{ $array_icon[$key] }}"></i>
+                                    </div>
+                                    <div class="col-md-10">
+                                        {{ \App\Role::where('name', $key)->pluck('description')[0]}}
+                                        <span class="fa arrow"></span>
+                                    </div>
+                                </div>
+
                             </a>
                             <ul class="nav nav-second-level">
                                 @foreach($value as $key2 => $value2)
@@ -104,16 +88,3 @@
     </div>
     <!-- /.navbar-static-side -->
 </nav>
-{{--<script>--}}
-    {{--$(function () {--}}
-        {{--if (typeof (resetPassword) === 'undefined') {--}}
-            {{--resetPassword = {--}}
-                {{--reset: function () {--}}
-                    {{--$("div#modalConfirm").modal("show");--}}
-{{--//                    $("div#modalContent").empty().append("Bạn có muốn xóa ?");--}}
-                    {{--$("button[name=modalAgree]").show();--}}
-                {{--}--}}
-            {{--}--}}
-        {{--}--}}
-    {{--});--}}
-{{--</script>--}}
