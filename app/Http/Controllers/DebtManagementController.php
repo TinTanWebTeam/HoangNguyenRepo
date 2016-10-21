@@ -64,12 +64,12 @@ class DebtManagementController extends Controller
         $invoiceCode = $this->generateInvoiceCode('customer');
 
         $response = [
-            'msg'        => 'Get list all Transport',
-            'transports' => $transports,
-            'invoiceCustomers' => $invoiceCustomers,
+            'msg'                    => 'Get list all Transport',
+            'transports'             => $transports,
+            'invoiceCustomers'       => $invoiceCustomers,
             'invoiceCustomerDetails' => $invoiceCustomerDetails,
-            'printHistories' => $printHistories,
-            'invoiceCode' => $invoiceCode
+            'printHistories'         => $printHistories,
+            'invoiceCode'            => $invoiceCode
         ];
         return response()->json($response, 200);
     }
@@ -131,17 +131,17 @@ class DebtManagementController extends Controller
     public function postModifyInvoiceCustomer(Request $request)
     {
         $action = $request->input('_action');
-        if($action == 'new'){
+        if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
 
             $invoiceCustomer = new InvoiceCustomer();
 
             $invoiceCode = $this->generateInvoiceCode('customer');
-            if($request->input('_invoiceCustomer')['invoiceCode'] == '')
+            if ($request->input('_invoiceCustomer')['invoiceCode'] == '')
                 $invoiceCustomer->invoiceCode = $invoiceCode;
             else {
                 $invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
-                if(InvoiceCustomer::where('invoiceCode', $invoiceCode)->get()->count() == 0)
+                if (InvoiceCustomer::where('invoiceCode', $invoiceCode)->get()->count() == 0)
                     $invoiceCustomer->invoiceCode = $invoiceCode;
                 else
                     return response()->json(['msg' => 'invoiceCode exists!'], 203);
@@ -167,9 +167,9 @@ class DebtManagementController extends Controller
             $invoiceCustomer->createdBy = \Auth::user()->id;
             $invoiceCustomer->updatedBy = \Auth::user()->id;
 
-            try{
+            try {
                 DB::beginTransaction();
-                if(!$invoiceCustomer->save()){
+                if (!$invoiceCustomer->save()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Create new Invoice fail!'], 404);
                 }
@@ -185,18 +185,18 @@ class DebtManagementController extends Controller
                 $invoiceCustomerDetail->createdBy = \Auth::user()->id;
                 $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
 
-                if(!$invoiceCustomerDetail->save()){
+                if (!$invoiceCustomerDetail->save()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Create InvoiceCustomerDetail fail!'], 404);
                 }
 
-                foreach ($array_transportId as $transport_id){
+                foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
                     $transportUpdate->invoiceCustomer_id = $invoiceCustomer->id;
                     $transportUpdate->status_customer = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
 
-                    if(!$transportUpdate->save()){
+                    if (!$transportUpdate->save()) {
                         DB::rollBack();
                         return response()->json(['msg' => 'Update transport fail!'], 404);
                     }
@@ -215,13 +215,13 @@ class DebtManagementController extends Controller
                     ->first();
 
                 $response = [
-                    'msg' => 'Create Invoice successful!',
-                    'invoiceCustomer' => $invoiceCustomer,
+                    'msg'                   => 'Create Invoice successful!',
+                    'invoiceCustomer'       => $invoiceCustomer,
                     'invoiceCustomerDetail' => $invoiceCustomerDetail,
-                    'invoiceCode' => $this->generateInvoiceCode('customer')
+                    'invoiceCode'           => $this->generateInvoiceCode('customer')
                 ];
                 return response()->json($response, 201);
-            }catch (Exception $ex){
+            } catch (Exception $ex) {
                 DB::rollBack();
                 return response()->json(['msg' => $ex], 404);
             }
@@ -241,9 +241,9 @@ class DebtManagementController extends Controller
             $invoiceCustomer->totalPaid += $request->input('_invoiceCustomer')['paidAmt'];
             $invoiceCustomer->updatedBy = \Auth::user()->id;
 
-            try{
+            try {
                 DB::beginTransaction();
-                if(!$invoiceCustomer->update()){
+                if (!$invoiceCustomer->update()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Update Invoice fail!'], 404);
                 }
@@ -259,7 +259,7 @@ class DebtManagementController extends Controller
                 $invoiceCustomerDetail->createdBy = \Auth::user()->id;
                 $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
 
-                if(!$invoiceCustomerDetail->save()){
+                if (!$invoiceCustomerDetail->save()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Create InvoiceCustomerDetail fail!'], 404);
                 }
@@ -277,16 +277,62 @@ class DebtManagementController extends Controller
                     ->first();
 
                 $response = [
-                    'msg' => 'Create Invoice successful!',
-                    'invoiceCustomer' => $invoiceCustomer,
+                    'msg'                   => 'Create Invoice successful!',
+                    'invoiceCustomer'       => $invoiceCustomer,
                     'invoiceCustomerDetail' => $invoiceCustomerDetail,
-                    'invoiceCode' => $this->generateInvoiceCode('customer')
+                    'invoiceCode'           => $this->generateInvoiceCode('customer')
                 ];
                 return response()->json($response, 201);
-            }catch (Exception $ex){
+            } catch (Exception $ex) {
                 DB::rollBack();
                 return response()->json(['msg' => $ex], 404);
             }
+        }
+    }
+
+    public function postDeleteInvoiceCustomer(Request $request)
+    {
+        $invoiceCustomerId = $request->get('_invoiceCustomer_id');
+        if ($invoiceCustomerId == '') {
+            return response()->json(['msg' => 'Dữ liệu không hợp lệ.'], 404);
+        }
+        try {
+            DB::beginTransaction();
+            //Delete InvoiceCustomerDetail
+            $array_invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomerId)->get();
+            $array_invoiceCustomerDetailId = null;
+            if(count($array_invoiceCustomerDetail) > 0){
+                $array_invoiceCustomerDetailId = collect($array_invoiceCustomerDetail)->pluck('id');
+                foreach ($array_invoiceCustomerDetail as $invoiceCustomerDetail) {
+                    if (!$invoiceCustomerDetail->delete()) {
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Delete InvoiceCustomerDetail fail.'], 404);
+                    }
+                }
+            }
+
+            //Delete InvoiceCustomer
+            $invoiceCustomer = InvoiceCustomer::find($invoiceCustomerId);
+            if(!$invoiceCustomer){
+                DB::rollBack();
+                return response()->json(['msg' => 'InvoiceCustomer does not exists.'], 404);
+            }
+            if (!$invoiceCustomer->delete()) {
+                DB::rollBack();
+                return response()->json(['msg' => 'Delete InvoiceCustomer fail.'], 404);
+            }
+
+            //Response
+            $response = [
+                'msg' => 'Delete InvoiceCustomer successful!',
+                'invoiceCustomer' => $invoiceCustomerId,
+                'invoiceCustomerDetails' => $array_invoiceCustomerDetailId
+            ];
+            DB::commit();
+            return response()->json($response, 201);
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
         }
     }
 
@@ -299,14 +345,99 @@ class DebtManagementController extends Controller
     //Generate invoiceCode
     public function generateInvoiceCode($type)
     {
-        if($type == 'customer')
+        if ($type == 'customer')
             $invoiceCode = "IC" . date('ymd');
         else
             $invoiceCode = "IG" . date('ymd');
 
-        $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode.'%')->get()->count() + 1;
+        $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode . '%')->get()->count() + 1;
         $invoiceCode .= substr("00" . $stt, -3);
         return $invoiceCode;
     }
 
+
+
+    public function postDeleteInvoiceCustomerDetail(Request $request)
+    {
+        $action = $request->get('_action');
+        $invoiceCustomerDetailId = $request->get('_invoiceCustomerDetail_id');
+        if ($invoiceCustomerDetailId == '') {
+            return response()->json(['msg' => 'Dữ liệu không hợp lệ.'], 404);
+        }
+        try {
+            DB::beginTransaction();
+            //Delete InvoiceCustomerDetail
+            $invoiceCustomerDetail = InvoiceCustomerDetail::find($invoiceCustomerDetailId);
+            if(!$invoiceCustomerDetailId){
+                DB::rollBack();
+                return response()->json(['msg' => 'InvoiceCustomerDetail does not exists.'], 404);
+            }
+
+            $invoiceCustomer_id = $invoiceCustomerDetail->invoiceCustomer_id;
+            $paidAmt = $invoiceCustomerDetail->paidAmt;
+
+            if (!$invoiceCustomerDetail->delete()) {
+                DB::rollBack();
+                return response()->json(['msg' => 'Delete InvoiceCustomerDetail fail.'], 404);
+            }
+            if($action == 'delete1'){
+                //Update InvoiceCustomer
+                $invoiceCustomer = InvoiceCustomer::find($invoiceCustomer_id);
+                if(!$invoiceCustomer){
+                    DB::rollBack();
+                    return response()->json(['msg' => 'InvoiceCustomer does not exists.'], 404);
+                }
+
+                $invoiceCustomer->totalPaid = $invoiceCustomer->totalPaid - $paidAmt;
+                $invoiceCustomer->updatedBy = \Auth::user()->id;
+
+                if (!$invoiceCustomer->update()) {
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Update InvoiceCustomer fail.'], 404);
+                }
+
+                //Response
+                $invoiceCustomer = DB::table('invoiceCustomers')
+                    ->select('invoiceCustomers.*', 'customers.fullName')
+                    ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                    ->join('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->where([
+                        ['invoiceCustomers.active', '=', '1'],
+                        ['invoiceCustomers.id', '=', $invoiceCustomer->id]
+                    ])
+                    ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
+                    ->first();
+
+                $response = [
+                    'msg' => 'Delete InvoiceCustomer successful!',
+                    'invoiceCustomer' => $invoiceCustomer,
+                    'invoiceCustomerDetail' => $invoiceCustomerDetailId
+                ];
+            } else {
+                //Delete InvoiceCustomer
+                $invoiceCustomer = InvoiceCustomer::find($invoiceCustomer_id);
+                if(!$invoiceCustomer){
+                    DB::rollBack();
+                    return response()->json(['msg' => 'InvoiceCustomer does not exists.'], 404);
+                }
+                if (!$invoiceCustomer->delete()) {
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Delete InvoiceCustomer fail.'], 404);
+                }
+
+                //Response
+                $response = [
+                    'msg' => 'Delete InvoiceCustomer successful!',
+                    'invoiceCustomer' => $invoiceCustomer_id,
+                    'invoiceCustomerDetail' => $invoiceCustomerDetailId
+                ];
+            }
+
+            DB::commit();
+            return response()->json($response, 201);
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
+        }
+    }
 }

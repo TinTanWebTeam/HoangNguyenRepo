@@ -166,6 +166,10 @@ function showNotification (type, msg) {
     }
 }
 
+function convertStringToNumber(str){
+    return parseInt(str.replace(/\./g,'').replace(/\,/g,''));
+}
+
 
 
 

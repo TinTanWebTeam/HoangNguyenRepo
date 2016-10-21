@@ -28,6 +28,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/index','HomeController@index');
     Route::get('/dashboard', 'HomeController@getDashboard');
     Route::group(['middleware' => 'Admin'], function () {
+        Route::post('/invoice-customer/delete', 'DebtManagementController@postDeleteInvoiceCustomer');
+        Route::post('/invoice-customer-detail/delete', 'DebtManagementController@postDeleteInvoiceCustomerDetail');
     });
     Route::group(['middleware' => 'UserManagement'], function () {
         Route::get('/position','UserManagementController@getViewPosition');

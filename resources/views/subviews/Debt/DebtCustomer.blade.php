@@ -182,7 +182,7 @@
                                         <th>Mã HĐ</th>
                                         <th>Ngày xuất</th>
                                         <th>Ngày HĐ</th>
-                                        <th>Tổng tiền</th>
+                                        <th>Tổng tiền (+VAT)</th>
                                         <th>Trả trước</th>
                                         <th>Trả trên HĐ</th>
                                         <th>Nợ</th>
@@ -202,8 +202,6 @@
     </div> <!-- end .col-md-12-->
 </div>
 <!-- End Table -->
-
-
 
 <!-- Begin divInvoice -->
 <div class="row">
@@ -234,7 +232,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="totalPay"><b>Tổng tiền</b></label>
-                                            <input type="number" class="form-control"
+                                            <input type="text" class="form-control"
                                                    id="totalPay"
                                                    name="totalPay" readonly>
                                         </div>
@@ -242,7 +240,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="debt-real"><b>Còn nợ</b></label>
-                                            <input type="number" class="form-control"
+                                            <input type="text" class="form-control"
                                                    id="debt-real" name="debt-real" readonly>
                                         </div>
                                     </div>
@@ -251,7 +249,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="notVAT"><b>Chưa VAT</b></label>
-                                            <input type="number" class="form-control"
+                                            <input type="text" class="form-control"
                                                    id="notVAT"
                                                    name="notVAT" readonly>
                                         </div>
@@ -267,8 +265,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="hasVAT"><b>Có VAT</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="hasVAT" name="hasVAT" step="1000" min="0"
+                                            <input type="text" class="form-control"
+                                                   id="hasVAT" name="hasVAT"
                                                    onchange="debtCustomerView.computeVAT(this.value)">
                                         </div>
                                     </div>
@@ -277,22 +275,22 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="paidAmt"><b>Tiền trả</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="paidAmt" name="paidAmt" step="1000" min="0"
-                                                   onchange="debtCustomerView.computeDebt(this.value)">
+                                            <input type="text" class="form-control"
+                                                   id="paidAmt" name="paidAmt"
+                                                   onkeyup="debtCustomerView.computeDebt(this.value)">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="debt"><b>Còn nợ lại</b></label>
-                                            <input type="number" class="form-control"
+                                            <input type="text" class="form-control"
                                                    id="debt" name="debt" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="prePaid"><b>Trả trước</b></label>
-                                            <input type="number" class="form-control"
+                                            <input type="text" class="form-control"
                                                    id="prePaid"
                                                    name="prePaid" readonly>
                                         </div>
@@ -452,14 +450,14 @@
             dataSearch: null,
             dataSearchInvoiceCustomer: null,
 
-            current: null,
-            currentInvoiceCustomer: null,
-            array_transportId: [],
-            invoiceCustomerId: null,
-            action: null,
-            invoiceCode: null,
-            tagsCustomerNameTransport: [],
-            tagsCustomerNameInvoice: [],
+            action: null, //new, edit, autoEdit
+            current: null, //for autoEdit
+            currentInvoiceCustomer: null, //for new & edit
+            invoiceCustomerId: null, //for edit
+            array_transportId: [], //array_transportId of InvoiceCustomer current
+            invoiceCode: null, //Get invoiceCode newest form Server
+            tagsCustomerNameTransport: [], //for search
+            tagsCustomerNameInvoice: [], //for search
 
             showControl: function (flag) {
                 if (flag == 0) {
@@ -485,10 +483,14 @@
                 //Clear Validate
             },
             displayButtonExportInvoice: function(){
-                var array_customerId = _.map(debtCustomerView.dataSearch, 'customer_id');
-                var array_customerId_unique = _.uniq(array_customerId);
+                array_customerId = _.map(debtCustomerView.dataSearch, 'customer_id');
+                array_customerId_unique = _.uniq(array_customerId);
                 if(array_customerId_unique.length == 1){
-                    $('.menu-toggle').fadeIn();
+                    invoiceCode = _.map(debtCustomerView.dataSearch, 'invoiceCode');
+                    if(invoiceCode[0] == null)
+                        $('.menu-toggle').fadeIn();
+                    else
+                        $('.menu-toggle').fadeOut();
                 } else {
                     $('.menu-toggle').fadeOut();
                 }
@@ -572,15 +574,19 @@
                 $("#table-data").find("tbody").on('click', 'tr td', function () {
                     var td = $(this);
                     var tr = $(this).parent();
-                    if(tr.find('td:eq(1)').text() == td.text())
+                    if(tr.find('td:eq(1)').text() == td.text()){
                         $("input[id=custName_transport]").val(td.text());
+                        debtCustomerView.searchTransport();
+                    }
                 });
 
                 $("#table-customerInvoice").find("tbody").on('click', 'tr td', function () {
                     var td = $(this);
                     var tr = $(this).parent();
-                    if(tr.find('td:eq(1)').text() == td.text())
+                    if(tr.find('td:eq(1)').text() == td.text()){
                         $("input[id=custName_invoice]").val(td.text());
+                        debtCustomerView.searchInvoice();
+                    }
                 });
 
                 $("#table-invoiceCustomerDetail").find("tbody").on('click', 'tr', function () {
@@ -590,6 +596,18 @@
                         return o.id == invoiceCustomerDetailId;
                     });
                 });
+            },
+            renderPriceFormat: function(){
+                array_id = ['totalPay', 'debt-real', 'notVAT','hasVAT', 'paidAmt', 'debt', 'prePaid'];
+                for(i = 0; i< array_id.length; i++){
+                    $('#'+array_id[i]).priceFormat({
+                        prefix: '',
+                        centsSeparator: ',',
+                        thousandsSeparator: '.',
+                        centsLimit: 0,
+                        suffix: ''
+                    });
+                }
             },
 
             fillDataToDatatable: function (data) {
@@ -694,7 +712,7 @@
             },
             fillDataToDatatableInvoiceCustomer: function (data) {
                 for (var i = 0; i < data.length; i++) {
-                    data[i].debt = data[i]['totalPay'] - data[i]['totalPaid'] - data[i]['prePaid'];
+                    data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'] - data[i]['prePaid'];
                 }
                 debtCustomerView.tableInvoiceCustomer = $('#table-customerInvoice').DataTable({
                     language: languageOptions,
@@ -715,7 +733,7 @@
                                 return moment(data).format("DD/MM/YYYY");
                             }
                         },
-                        {data: 'totalPay', render: $.fn.dataTable.render.number(".", ",", 0)},
+                        {data: 'hasVAT', render: $.fn.dataTable.render.number(".", ",", 0)},
                         {data: 'prePaid', render: $.fn.dataTable.render.number(".", ",", 0)},
                         {data: 'totalPaid', render: $.fn.dataTable.render.number(".", ",", 0)},
                         {data: 'debt', render: $.fn.dataTable.render.number(".", ",", 0)},
@@ -725,6 +743,9 @@
                                 tr += '<div class="text-center">';
                                 tr += '<div class="btn btn-primary btn-circle" title="Xem lịch sử" onclick="debtCustomerView.createInvoiceCustomer(1, '+full.id+')">';
                                 tr += '<i class="fa fa-eye" aria-hidden="true"></i>';
+                                tr += '</div>';
+                                tr += '<div class="btn btn-danger btn-circle" title="Xóa hóa đơn" onclick="debtCustomerView.deleteInvoiceCustomerConfirm('+full.id+')">';
+                                tr += '<i class="fa fa-trash-o" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
                                 return tr;
@@ -801,8 +822,11 @@
                                 tr += '<div class="btn btn-primary btn-circle marginRight" title="In" onclick="debtCustomerView.printReview('+full.id+')">';
                                 tr += '<span class="glyphicon glyphicon-print" aria-hidden="true"></span>';
                                 tr += '</div>';
-                                tr += '<div class="btn btn-default btn-circle" title="Đính kèm tập tin" onclick="debtCustomerView.attachFile('+full.id+')">';
+                                tr += '<div class="btn btn-default btn-circle marginRight" title="Đính kèm tập tin" onclick="debtCustomerView.attachFile('+full.id+')">';
                                 tr += '<i class="fa fa-file" aria-hidden="true"></i>';
+                                tr += '</div>';
+                                tr += '<div class="btn btn-danger btn-circle" title="Xoá" onclick="debtCustomerView.deleteInvoiceCustomerDetailConfirm('+full.id+')">';
+                                tr += '<i class="fa fa-trash-o" aria-hidden="true"></i>';
                                 tr += '</div>';
                                 tr += '</div>';
                                 return tr;
@@ -866,6 +890,7 @@
                 debtCustomerView.renderEventRadioInput();
                 debtCustomerView.renderEventKeyCode();
                 debtCustomerView.renderEventRowClick();
+                debtCustomerView.renderPriceFormat();
             },
             fillCurrentObjectToForm: function () {
                 $("input[id='invoiceCode']").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
@@ -972,6 +997,10 @@
                     $("input[id=hasVAT]").val(totalPay);
                     $("input[id=paidAmt]").val(0);
 
+                    //set default VAT=10%
+                    $("input[id=VAT]").val(10);
+                    debtCustomerView.computeHasVAT(10);
+
                     //remove readly input
                     $("input[id=invoiceCode]").prop('readonly', false);
                     $("input[id=VAT]").prop('readonly', false);
@@ -1031,6 +1060,236 @@
                     $("input[id=hasVAT]").prop('readonly', true);
 
                     $("input[id=paidAmt]").focus();
+                }
+            },
+            deleteInvoiceCustomer: function (invoiceCustomer_id) {
+                sendToServer = {
+                    _token: _token,
+                    _invoiceCustomer_id: invoiceCustomer_id
+                };
+                console.log("CLIENT");
+                console.log(sendToServer._invoiceCustomer_id);
+                $.ajax({
+                    url: url + 'invoice-customer/delete',
+                    type: "POST",
+                    dataType: "json",
+                    data: sendToServer
+                }).done(function (data, textStatus, jqXHR) {
+                    console.log("SERVER");
+                    console.log(data);
+                    if (jqXHR.status == 201) {
+                        invoiceCustomerId = data['invoiceCustomer'];
+                        array_invoiceCustomerDetailId = data['invoiceCustomerDetails'];
+
+                        //Remove invoiceCustomer
+                        Old = _.find(debtCustomerView.dataInvoiceCustomer, function(o){
+                           return o.id == invoiceCustomerId;
+                        });
+                        indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
+                        debtCustomerView.dataInvoiceCustomer.splice(indexOf, 1);
+
+                        //Remove invoiceCustomerDetail
+                        for(var i = 0; i < array_invoiceCustomerDetailId.length; i++){
+                            Old = _.find(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                return o.id == array_invoiceCustomerDetailId[i];
+                            });
+                            indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomerDetail, Old);
+                            debtCustomerView.dataInvoiceCustomerDetail.splice(indexOf, 1);
+                        }
+
+                        //Remove InvoiceCustomer_id in Transport
+                        dataTransport = _.filter(debtCustomerView.dataTransport, function(o){
+                           return o.invoiceCustomer_id == invoiceCustomerId;
+                        });
+                        for(i = 0; i < dataTransport.length; i++){
+                            dataTransport[i]['invoiceCustomer_id'] = null;
+                            dataTransport[i]['invoiceCode'] = null;
+                        }
+                        debtCustomerView.dataSearch = debtCustomerView.dataTransport;
+                        debtCustomerView.searchTransport();
+
+                        //reload table
+                        debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
+
+                        //call search Method
+                        debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
+                        debtCustomerView.searchInvoice();
+
+                        //Show notification
+                        showNotification("success", "Xóa hóa đơn thành công!");
+                        debtCustomerView.displayModal("hide", "#modal-notification");
+                    } else {
+                        showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                });
+            },
+            deleteInvoiceCustomerConfirm: function (invoiceCustomer_id) {
+                $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa hóa đơn này?");
+                tr = '<div class="row">';
+                tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtCustomerView.deleteInvoiceCustomer('+ invoiceCustomer_id +')">';
+                tr += 'Đồng ý';
+                tr += '</button>';
+                tr += '<button type="button" class="btn default" onclick="debtCustomerView.displayModal(\'hide\', \'#modal-notification\')">';
+                tr += 'Huỷ';
+                tr += '</button>';
+                tr += '</div>';
+                tr += '</div>';
+                $("#modal-notification").find(".modal-body").html(tr);
+                debtCustomerView.displayModal('show', '#modal-notification');
+            },
+            deleteInvoiceCustomerDetail: function (invoiceCustomerDetail_id, flag) {
+                action = 'delete1';
+                if(typeof flag !== 'undefined'){
+                    action = 'delete2';
+                }
+                sendToServer = {
+                    _token: _token,
+                    _action: action,
+                    _invoiceCustomerDetail_id: invoiceCustomerDetail_id
+                };
+                console.log("CLIENT");
+                console.log(sendToServer._invoiceCustomerDetail_id);
+                $.ajax({
+                    url: url + 'invoice-customer-detail/delete',
+                    type: "POST",
+                    dataType: "json",
+                    data: sendToServer
+                }).done(function (data, textStatus, jqXHR) {
+                    console.log("SERVER");
+                    console.log(data);
+                    if (jqXHR.status == 201) {
+                        if(action == 'delete1'){
+                            invoiceCustomer = data['invoiceCustomer'];
+                            invoiceCustomer.debt = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
+                            invoiceCustomerDetailId = data['invoiceCustomerDetail'];
+
+                            //Update invoiceCustomer
+                            Old = _.find(debtCustomerView.dataInvoiceCustomer, function(o){
+                                return o.id == invoiceCustomer['id'];
+                            });
+                            indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
+                            debtCustomerView.dataInvoiceCustomer.splice(indexOf, 1, invoiceCustomer);
+
+                            //Remove invoiceCustomerDetail
+                            Old = _.find(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                return o.id == invoiceCustomerDetailId;
+                            });
+                            indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomerDetail, Old);
+                            debtCustomerView.dataInvoiceCustomerDetail.splice(indexOf, 1);
+
+                            //reload table
+                            debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
+
+                            //fill data to table InvoiceCustomerDetail
+                            var data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                return o.invoiceCustomer_id == invoiceCustomer['id'];
+                            });
+                            if(typeof data === 'undefined') return;
+                            debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(data);
+
+                            //call search Method
+                            debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
+                            debtCustomerView.searchInvoice();
+
+                            var debtReal = parseInt(invoiceCustomer['debt']);
+                            $("input[id=debt]").val(debtReal);
+                            $("input[id=debt-real]").val(debtReal);
+
+                            //Show notification
+                            showNotification("success", "Xóa chi tiết đơn hàng thành công!");
+                            debtCustomerView.displayModal("hide", "#modal-notification");
+                        } else {
+                            invoiceCustomerId = data['invoiceCustomer'];
+                            invoiceCustomerDetailId = data['invoiceCustomerDetail'];
+
+                            //Remove invoiceCustomer
+                            Old = _.find(debtCustomerView.dataInvoiceCustomer, function(o){
+                                return o.id == invoiceCustomerId;
+                            });
+                            indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
+                            debtCustomerView.dataInvoiceCustomer.splice(indexOf, 1);
+
+                            //Remove invoiceCustomerDetail
+                            Old = _.find(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                return o.id == invoiceCustomerDetailId;
+                            });
+                            indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomerDetail, Old);
+                            debtCustomerView.dataInvoiceCustomerDetail.splice(indexOf, 1);
+
+                            //Remove InvoiceCustomer_id in Transport
+                            dataTransport = _.filter(debtCustomerView.dataTransport, function(o){
+                                return o.invoiceCustomer_id == invoiceCustomerId;
+                            });
+                            for(i = 0; i < dataTransport.length; i++){
+                                dataTransport[i]['invoiceCustomer_id'] = null;
+                                dataTransport[i]['invoiceCode'] = null;
+                            }
+                            debtCustomerView.dataSearch = debtCustomerView.dataTransport;
+                            debtCustomerView.searchTransport();
+
+                            //reload table
+                            debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
+
+                            //call search Method
+                            debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
+                            debtCustomerView.searchInvoice();
+
+                            //Show notification
+                            showNotification("success", "Xóa chi tiết đơn hàng thành công!");
+                            debtCustomerView.displayModal("hide", "#modal-notification");
+
+                            //Close form
+                            debtCustomerView.clearInput();
+                            debtCustomerView.clearValidation("#frmInvoice");
+                            debtCustomerView.hideControl();
+                        }
+                    } else {
+                        showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                });
+            },
+            deleteInvoiceCustomerDetailConfirm: function (invoiceCustomerDetail_id) {
+                array_invoiceCustomerDetail_of_invoiceCustomer = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                   return o.invoiceCustomer_id == debtCustomerView.invoiceCustomerId;
+                });
+                if(typeof array_invoiceCustomerDetail_of_invoiceCustomer === 'undefined'){
+                    showNotification("error", "Có lỗi xảy ra. Vui lòng làm mới lại trình duyệt.");
+                    return;
+                }
+                if(array_invoiceCustomerDetail_of_invoiceCustomer.length == 1){
+                    //Warning, delete InvoiceCustomerDetail & InvoiceCustomer
+                    $("#modal-notification").find(".modal-title").html("Xóa chi tiết đơn hàng này cũng sẽ xóa hóa đơn.<br>Có chắc muốn xóa chi tiết hóa đơn này?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtCustomerView.deleteInvoiceCustomerDetail('+ invoiceCustomerDetail_id +', 1)">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="debtCustomerView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    debtCustomerView.displayModal('show', '#modal-notification');
+                } else {
+                    $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa chi tiết hóa đơn này?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtCustomerView.deleteInvoiceCustomerDetail('+ invoiceCustomerDetail_id +')">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="debtCustomerView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    debtCustomerView.displayModal('show', '#modal-notification');
                 }
             },
 
@@ -1125,7 +1384,7 @@
                             var invoiceCustomer = data['invoiceCustomer'];
                             var invoiceCustomerDetail = data['invoiceCustomerDetail'];
                             debtCustomerView.invoiceCode = data['invoiceCode'];
-                            invoiceCustomer.debt = invoiceCustomer['totalPay'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
+                            invoiceCustomer.debt = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
 
                             if(debtCustomerView.action == 'new'){
                                 //Update InvoiceCustomer_Id for Transports
@@ -1172,7 +1431,13 @@
 
                                 //reload 2 table
                                 debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
-                                debtCustomerView.tableInvoiceCustomerDetail.clear().rows.add(debtCustomerView.dataInvoiceCustomerDetail).draw();
+
+                                //fill data to table InvoiceCustomerDetail
+                                var data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                    return o.invoiceCustomer_id == sendToServer._invoiceCustomer.id;
+                                });
+                                if(typeof data === 'undefined') return;
+                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(data);
 
                                 //call search Method
                                 debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
@@ -1367,26 +1632,30 @@
                 } ));
             },
             computeDebt: function(paidAmt){
-                var debtReal = $("input[id=debt-real]").val();
+                paidAmt = convertStringToNumber(paidAmt);
+
+                var debtReal = convertStringToNumber($("input[id=debt-real]").val());
                 $("#debt").val(debtReal - paidAmt);
             },
             computeHasVAT: function(vat){
-                var notVat = parseInt($("#notVAT").val());
+                vat = convertStringToNumber(vat);
+                var notVat = convertStringToNumber($("#notVAT").val());
                 var hasVat = notVat + ((vat/100) * notVat);
                 $("#hasVAT").val(hasVat);
 
-                var prePaid = parseInt($("#prePaid").val());
-                var paidAmt = parseInt($("#paidAmt").val());
+                var prePaid = convertStringToNumber($("#prePaid").val());
+                var paidAmt = convertStringToNumber($("#paidAmt").val());
                 $("input[id=debt-real]").val(hasVat - prePaid);
                 $("input[id=debt]").val(hasVat - (prePaid + paidAmt))
             },
             computeVAT: function(hasVat){
-                var notVat = parseInt($("#notVAT").val());
+                hasVat = convertStringToNumber(hasVat);
+                var notVat = convertStringToNumber($("#notVAT").val());
                 var vat = ((notVat - hasVat) / notVat) * 100;
                 $("#VAT").val(vat);
 
-                var prePaid = parseInt($("#prePaid").val());
-                var paidAmt = parseInt($("#paidAmt").val());
+                var prePaid = convertStringToNumber($("#prePaid").val());
+                var paidAmt = convertStringToNumber($("#paidAmt").val());
                 $("input[id=debt-real]").val(hasVat - prePaid);
                 $("input[id=debt]").val(hasVat - (prePaid + paidAmt))
             }
@@ -1395,5 +1664,4 @@
     } else {
         debtCustomerView.loadData();
     }
-
 </script>

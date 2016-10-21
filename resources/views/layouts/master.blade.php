@@ -73,9 +73,6 @@
 <!-- Custom Theme JavaScript -->
 <script src=" {{ URL::to('src/js/sb-admin-2.js') }} "></script>
 
-<!-- Lodash -->
-<script src=" {{ URL::to('libs/lodash/dist/lodash.min.js') }} "></script>
-
 <!-- Moment -->
 <script src=" {{ URL::to('libs/moment/min/moment.min.js') }} "></script>
 <script src=" {{ URL::to('libs/moment/locale/vi.js') }} "></script>
@@ -92,7 +89,6 @@
 <script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/JSZip-2.5.0/jszip.min.js') }}"></script>
 
-
 <!-- Hightcharts -->
 <script src="{{ URL::to('libs/highcharts/highcharts.js') }}"></script>
 
@@ -102,11 +98,6 @@
 
 <!-- Toastr -->
 <script src="{{ URL::to('libs/toastr/toastr.min.js') }}"></script>
-
-
-
-<!-- Global -->
-<script src=" {{ URL::to('src/js/global.js') }} "></script>
 
 <!-- malihu custom scrollbar plugin -->
 <script src="{{ URL::to('libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js') }}"></script>
@@ -119,7 +110,14 @@
 <script src="{{ URL::to('libs/datepair.js/lib/pikaday.js') }}"></script>
 <script src="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.js') }}"></script>
 
+<!-- JQuery Price Format -->
+<script src="{{ URL::to('libs/jquery-price-format/jquery.priceformat.min.js') }}"></script>
 
+<!-- Lodash -->
+<script src=" {{ URL::to('libs/lodash/dist/lodash.min.js') }} "></script>
+
+<!-- Global -->
+<script src=" {{ URL::to('src/js/global.js') }} "></script>
 
 @yield('javascripts')
 
