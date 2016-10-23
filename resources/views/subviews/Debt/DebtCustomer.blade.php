@@ -232,7 +232,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="totalPay"><b>Tổng tiền</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control currency"
                                                    id="totalPay"
                                                    name="totalPay" readonly>
                                         </div>
@@ -240,7 +240,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="debt-real"><b>Còn nợ</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control currency"
                                                    id="debt-real" name="debt-real" readonly>
                                         </div>
                                     </div>
@@ -249,7 +249,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="notVAT"><b>Chưa VAT</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control currency"
                                                    id="notVAT"
                                                    name="notVAT" readonly>
                                         </div>
@@ -265,7 +265,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="hasVAT"><b>Có VAT</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control currency"
                                                    id="hasVAT" name="hasVAT"
                                                    onchange="debtCustomerView.computeVAT(this.value)">
                                         </div>
@@ -275,7 +275,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="paidAmt"><b>Tiền trả</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control currency"
                                                    id="paidAmt" name="paidAmt"
                                                    onkeyup="debtCustomerView.computeDebt(this.value)">
                                         </div>
@@ -283,14 +283,14 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="debt"><b>Còn nợ lại</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control currency"
                                                    id="debt" name="debt" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="prePaid"><b>Trả trước</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control currency"
                                                    id="prePaid"
                                                    name="prePaid" readonly>
                                         </div>
@@ -597,17 +597,9 @@
                     });
                 });
             },
-            renderPriceFormat: function(){
-                array_id = ['totalPay', 'debt-real', 'notVAT','hasVAT', 'paidAmt', 'debt', 'prePaid'];
-                for(i = 0; i< array_id.length; i++){
-                    $('#'+array_id[i]).priceFormat({
-                        prefix: '',
-                        centsSeparator: ',',
-                        thousandsSeparator: '.',
-                        centsLimit: 0,
-                        suffix: ''
-                    });
-                }
+            renderFormatCurrency: function(){
+                array_id1 = ['totalPay', 'debt-real', 'notVAT','hasVAT', 'paidAmt', 'debt', 'prePaid'];
+                array_id2 = ['hasVAT', 'paidAmt'];
             },
 
             fillDataToDatatable: function (data) {
@@ -890,7 +882,8 @@
                 debtCustomerView.renderEventRadioInput();
                 debtCustomerView.renderEventKeyCode();
                 debtCustomerView.renderEventRowClick();
-                debtCustomerView.renderPriceFormat();
+                setEventFormatCurrency(".currency");
+                formatCurrency(".currency");
             },
             fillCurrentObjectToForm: function () {
                 $("input[id='invoiceCode']").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
@@ -1060,6 +1053,8 @@
                     $("input[id=hasVAT]").prop('readonly', true);
 
                     $("input[id=paidAmt]").focus();
+
+                    formatCurrency(".currency");
                 }
             },
             deleteInvoiceCustomer: function (invoiceCustomer_id) {
@@ -1632,32 +1627,36 @@
                 } ));
             },
             computeDebt: function(paidAmt){
-                paidAmt = convertStringToNumber(paidAmt);
-
-                var debtReal = convertStringToNumber($("input[id=debt-real]").val());
-                $("#debt").val(debtReal - paidAmt);
-            },
-            computeHasVAT: function(vat){
-                vat = convertStringToNumber(vat);
-                var notVat = convertStringToNumber($("#notVAT").val());
-                var hasVat = notVat + ((vat/100) * notVat);
-                $("#hasVAT").val(hasVat);
-
-                var prePaid = convertStringToNumber($("#prePaid").val());
-                var paidAmt = convertStringToNumber($("#paidAmt").val());
-                $("input[id=debt-real]").val(hasVat - prePaid);
-                $("input[id=debt]").val(hasVat - (prePaid + paidAmt))
+                console.log(paidAmt);
+//                paidAmt = convertStringToNumber(paidAmt);
+//                console.log(paidAmt);
+//
+//                var debtReal = asNumberFromCurrency("#debt-real");
+//                $("input[id=debt]").val(debtReal - paidAmt);
+                formatCurrency(".currency");
             },
             computeVAT: function(hasVat){
                 hasVat = convertStringToNumber(hasVat);
-                var notVat = convertStringToNumber($("#notVAT").val());
+                var notVat = asNumberFromCurrency("#notVAT");
                 var vat = ((notVat - hasVat) / notVat) * 100;
-                $("#VAT").val(vat);
+                $("input[id=VAT]").val(vat);
 
-                var prePaid = convertStringToNumber($("#prePaid").val());
-                var paidAmt = convertStringToNumber($("#paidAmt").val());
+                var prePaid = asNumberFromCurrency("#prePaid");
+                var paidAmt = asNumberFromCurrency("#paidAmt");
                 $("input[id=debt-real]").val(hasVat - prePaid);
-                $("input[id=debt]").val(hasVat - (prePaid + paidAmt))
+                $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
+                formatCurrency(".currency");
+            },
+            computeHasVAT: function(vat){
+                var notVat = asNumberFromCurrency('#notVAT');
+                var hasVat = notVat + ((vat/100) * notVat);
+                $("input[id=hasVAT]").val(hasVat);
+
+                var prePaid = asNumberFromCurrency('#prePaid');
+                var paidAmt = asNumberFromCurrency('#paidAmt');
+                $("input[id=debt-real]").val(hasVat - prePaid);
+                $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
+                formatCurrency(".currency");
             }
         };
         debtCustomerView.loadData();

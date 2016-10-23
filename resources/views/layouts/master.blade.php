@@ -110,8 +110,9 @@
 <script src="{{ URL::to('libs/datepair.js/lib/pikaday.js') }}"></script>
 <script src="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.js') }}"></script>
 
-<!-- JQuery Price Format -->
-<script src="{{ URL::to('libs/jquery-price-format/jquery.priceformat.min.js') }}"></script>
+<!-- JQuery Format Currency -->
+<script src="{{ URL::to('src/jquery.formatCurrency/jquery.formatCurrency-1.4.0.min.js') }}"></script>
+<script src="{{ URL::to('src/jquery.formatCurrency/i18n/jquery.formatCurrency.all.js') }}"></script>
 
 <!-- Lodash -->
 <script src=" {{ URL::to('libs/lodash/dist/lodash.min.js') }} "></script>
