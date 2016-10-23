@@ -35,12 +35,12 @@
                     <p class="lead text-primary text-left"><strong>Chi tiết doanh Thu</strong></p>
                     <div class="row">
                         <div class="col-md-4" id="dateSearchRevenueReport">
-                            <input type="text" class="date start"/> đến
-                            <input type="text" class="date end"/>
+                            <input id="dateStart" type="text" class="date start"/> đến
+                            <input id="dateEnd" type="text" class="date end"/>
 
                         </div>
                         <div class="col-md-4" style="padding-left: 0">
-                                <button onclick="" id="btnSearchTransport"
+                                <button onclick="revenueReportView.searchDateToDate()" id="btnSearchTransport"
                                         class="btn btn-sm btn-info marginRight"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
                                 </button>
@@ -167,20 +167,17 @@
                     });
                 },
                 loadDetailRespost: function (data) {
-                    var action = "month";
                     var dataYear = data.substr(3, 6);
                     var dataMonth = data.substr(0, 2);
-                    console.log(dataYear);
-                    console.log(dataMonth);
                     var sendToServer = null;
                     sendToServer = {
                         _token: _token,
-                        _action: action,
+                        _action: 'listDays',
                         _objectYear: dataYear,
                         _objectMonth: dataMonth
                     };
                     $.ajax({
-                        url: url + 'revenue-report-month',
+                        url: url + 'revenue-report-list',
                         type: "POST",
                         dataType: "json",
                         data: sendToServer
@@ -218,6 +215,7 @@
                             break;
                     }
                 },
+
                 loadChart: function () {
                     $('#container').highcharts({
                         chart: {
@@ -276,17 +274,47 @@
                     });
 
                 },
+                searchDateToDate: function () {
+                    var dateStart = $('input[id=dateStart]').val();
+                    var dateEnd = $('input[id=dateEnd]').val();
+                    if(dateStart == "" || dateEnd == "" ){
+                        revenueReportView.showNotification("warning", "Vui lòng chọn ngày cần tìm !");
+                    }else {
+                        var sendToServer = null;
+                        sendToServer = {
+                            _token: _token,
+                            _action: 'searchDateToDate',
+                            _dateStart: dateStart,
+                            _dateEnd: dateEnd
+                        };
+                        $.ajax({
+                            url: url + 'revenue-report-list',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                revenueReportView.fillDataDetailReportToDataTable(data['tableDataSearch']);
+                            } else {
+                                revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    }
+
+
+                },
                 listMonthReport: function () {
-                    var action = 'year';
                     var data = $("select[id='optionYear']").val();
                     var sendToServer = null;
                     sendToServer = {
                         _token: _token,
-                        _action: action,
+                        _action: 'listMonths',
                         _object: data
                     };
                     $.ajax({
-                        url: url + 'revenue-report-month',
+                        url: url + 'revenue-report-list',
                         type: "POST",
                         dataType: "json",
                         data: sendToServer
