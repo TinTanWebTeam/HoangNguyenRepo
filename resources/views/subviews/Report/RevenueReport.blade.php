@@ -34,9 +34,20 @@
                 <div class="dataTable_wrapper">
                     <p class="lead text-primary text-left"><strong>Chi tiết doanh Thu</strong></p>
                     <div class="row">
-                        <div class="col-md-6" id="dateSearchRevenueReport">
+                        <div class="col-md-4" id="dateSearchRevenueReport">
                             <input type="text" class="date start"/> đến
                             <input type="text" class="date end"/>
+
+                        </div>
+                        <div class="col-md-4" style="padding-left: 0">
+                                <button onclick="" id="btnSearchTransport"
+                                        class="btn btn-sm btn-info marginRight"><i
+                                            class="fa fa-search" aria-hidden="true"></i> Tìm
+                                </button>
+                                <button class="btn btn-sm btn-default" onclick="">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                </button>
+
                         </div>
                     </div>
                     <br>
@@ -68,17 +79,12 @@
                             <div class="form-group form-md-line-input">
                                 <label for="optionYear"><b>Chọn năm</b></label>
                                 <select class="form-control" id="optionYear"
-                                        name="optionYear">
+                                        name="optionYear"
+                                        onchange="revenueReportView.listMonthReport()">
                                 </select>
 
                             </div>
                         </div>
-                        {{--<div class="col-md-2" id="dateSearch">--}}
-                            {{--<select class="form-control">--}}
-                                {{--<option>2016</option>--}}
-                                {{--<option>2017</option>--}}
-                            {{--</select>--}}
-                        {{--</div>--}}
                     </div>
                     <br>
                     <div class="row">
@@ -132,8 +138,8 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            revenueReportView.tableDetailRevenue = data['tableReport'];
-                            revenueReportView.fillDataToDataTableDetail(data['tableReport']);
+//                            revenueReportView.tableDetailRevenue = data['tableReport'];
+//                            revenueReportView.fillDataToDataTableDetail(data['tableReport']);
                             revenueReportView.tableRevenueMonth = data['tableReportMonth'];
                             revenueReportView.fillDataToDataTableYear(data['tableReportMonth']);
                             revenueReportView.tableOptionYear = data['year'];
@@ -152,7 +158,50 @@
                         language: languageOptions
                     });
                     revenueReportView.loadChart();
+                    revenueReportView.renderDateTimePicker();
+
+                    $("#table-data-year").find("tbody").on('click', 'tr', function () {
+                        var month = $(this).find('td:eq(0)')[0].innerText;
+                        revenueReportView.loadDetailRespost(month);
+
+                    });
                 },
+                loadDetailRespost: function (data) {
+                    var action = "month";
+                    var dataYear = data.substr(3, 6);
+                    var dataMonth = data.substr(0, 2);
+                    console.log(dataYear);
+                    console.log(dataMonth);
+                    var sendToServer = null;
+                    sendToServer = {
+                        _token: _token,
+                        _action: action,
+                        _objectYear: dataYear,
+                        _objectMonth: dataMonth
+                    };
+                    $.ajax({
+                        url: url + 'revenue-report-month',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            revenueReportView.fillDataDetailReportToDataTable(data['tableDetailReport']);
+                        } else {
+                            revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                renderDateTimePicker: function () {
+                    $('#dateSearchRevenueReport .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+
+                },
+
                 showNotification: function (type, msg) {
                     switch (type) {
                         case "info":
@@ -227,7 +276,32 @@
                     });
 
                 },
-                fillDataToDataTableDetail: function (data) {
+                listMonthReport: function () {
+                    var action = 'year';
+                    var data = $("select[id='optionYear']").val();
+                    var sendToServer = null;
+                    sendToServer = {
+                        _token: _token,
+                        _action: action,
+                        _object: data
+                    };
+                    $.ajax({
+                        url: url + 'revenue-report-month',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            revenueReportView.fillDataToDataTableYear(data['tableReportMonth']);
+                            revenueReportView.tableOptionYear = data['year'];
+                        } else {
+                            revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                fillDataDetailReportToDataTable: function (data) {
                     if (revenueReportView.table != null) {
                         revenueReportView.table.destroy();
                     }
@@ -249,7 +323,6 @@
                     })
                 },
                 fillDataToDataTableYear: function (data) {
-
                     if (revenueReportView.tableYear != null) {
                         revenueReportView.tableYear.destroy();
                     }
@@ -265,10 +338,12 @@
                                         }
                                     },
                                     {
-                                        data: 'total_Revenue'
+                                        data: 'total_Revenue',
+                                        render: $.fn.dataTable.render.number(".", ",", 0)
                                     },
                                     {
-                                        data: 'total_Profit'
+                                        data: 'total_Profit',
+                                        render: $.fn.dataTable.render.number(".", ",", 0)
                                     }
 
                                 ]
@@ -276,9 +351,7 @@
                             })
                 },
                 loadSelectBoxYear: function (lstYear) {
-                    var yearOption = moment(lstYear, "YYYY-MM-DD");
-                    console.log(lstYear);
-//                    $("input[id='dateCheckIn']").datepicker('update', dateCheckIn.format("DD-MM-YYYY"));
+
                     //reset selectbox
                     $('#optionYear')
                             .find('option')
@@ -287,22 +360,20 @@
                     //fill option to selectbox
                     var select = document.getElementById("optionYear");
                     for (var i = 0; i < lstYear.length; i++) {
-                        var opt = lstYear[i]['receiveDate'];
+                        var year = moment(lstYear[i]['receiveDate']).format("YYYY");
                         var el = document.createElement("option");
-                        el.textContent = opt;
-                        el.value = lstYear[i]['receiveDate'];
+                        el.textContent = year;
+                        el.value = year;
                         select.appendChild(el);
                     }
+
                 }
 
-
-            }
-            ;
+            };
             revenueReportView.loadData();
         }
         else {
             revenueReportView.loadData();
         }
-    })
-    ;
+    });
 </script>

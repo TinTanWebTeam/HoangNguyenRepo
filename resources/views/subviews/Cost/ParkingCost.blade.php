@@ -938,7 +938,7 @@
                         size: $("input[id='size']").val(),
                         weight: $("input[id='weight']").val(),
                         vehicleType_id: $("select[id='vehicleType_id']").val(),
-                        garage_id: $("select[id='garage_id']").val(),
+                        garage_id: $("select[id='garage_id']").val()
                     };
                     var sendToServer = {
                         _token: _token,
