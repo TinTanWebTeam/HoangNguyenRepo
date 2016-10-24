@@ -39,7 +39,7 @@
                             <input id="dateEnd" type="text" class="date end"/>
 
                         </div>
-                        <div class="col-md-4" style="padding-left: 0">
+                        <div class="col-md-8" style="padding-left: 0">
                                 <button onclick="revenueReportView.searchDateToDate()" id="btnSearchTransport"
                                         class="btn btn-sm btn-info marginRight"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
