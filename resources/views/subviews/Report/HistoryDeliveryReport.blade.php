@@ -128,6 +128,23 @@
                         language: languageOptions
                     });
                     historyDeliveryReportView.loadChart();
+                    historyDeliveryReportView.renderDateTimePicker();
+                },
+                showNotification: function (type, msg) {
+                    switch (type) {
+                        case "info":
+                            toastr.info(msg);
+                            break;
+                        case "success":
+                            toastr.success(msg);
+                            break;
+                        case "warning":
+                            toastr.warning(msg);
+                            break;
+                        case "error":
+                            toastr.error(msg);
+                            break;
+                    }
                 },
                 loadChart: function () {
                     $('#container').highcharts({
@@ -187,6 +204,14 @@
                     });
 
                 },
+                renderDateTimePicker: function () {
+                    $('#dateSearchDetailDelivery .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+
+                },
+
             };
             historyDeliveryReportView.loadData();
         } else {

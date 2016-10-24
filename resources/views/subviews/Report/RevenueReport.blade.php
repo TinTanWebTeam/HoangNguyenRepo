@@ -30,12 +30,12 @@
                 <div class="dataTable_wrapper">
                     <p class="lead text-primary text-left"><strong>Chi tiết doanh thu</strong></p>
                     <div class="row">
-                        <div class="col-md-4" id="dateSearchRevenueReport">
+                        <div class="col-md-6" id="dateSearchRevenueReport">
                             <input id="dateStart" type="text" class="date start"/> đến
                             <input id="dateEnd" type="text" class="date end"/>
 
                         </div>
-                        <div class="col-md-8" style="padding-left: 0">
+                        <div class="col-md-6" style="padding-left: 0">
                                 <button onclick="revenueReportView.searchDateToDate()" id="btnSearchTransport"
                                         class="btn btn-sm btn-info marginRight"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
@@ -57,6 +57,7 @@
                                         <th>Khách hàng</th>
                                         <th>Doanh thu</th>
                                         <th>Lợi nhuận</th>
+                                        <th>Lợi nhuận thực tế</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -91,8 +92,9 @@
                                         <thead>
                                         <tr class="active">
                                             <th>Tháng</th>
-                                            <th>Doanh thu</th>
-                                            <th>Lợi nhuận</th>
+                                            <th>Tổng doanh thu</th>
+                                            <th>Tổng lợi nhuận</th>
+                                            <th>Tổng lợi nhuận thực tế</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -134,8 +136,6 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-//                            revenueReportView.tableDetailRevenue = data['tableReport'];
-//                            revenueReportView.fillDataToDataTableDetail(data['tableReport']);
                             revenueReportView.tableRevenueMonth = data['tableReportMonth'];
                             revenueReportView.fillDataToDataTableYear(data['tableReportMonth']);
                             revenueReportView.tableOptionYear = data['year'];
@@ -356,6 +356,9 @@
                             },
                             {data: 'cashProfit',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
+                            },
+                            {data: 'cashProfit',
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             }
                         ]
 
@@ -378,6 +381,10 @@
                                     },
                                     {
                                         data: 'total_Revenue',
+                                        render: $.fn.dataTable.render.number(",", ",", 0)
+                                    },
+                                    {
+                                        data: 'total_Profit',
                                         render: $.fn.dataTable.render.number(",", ",", 0)
                                     },
                                     {
