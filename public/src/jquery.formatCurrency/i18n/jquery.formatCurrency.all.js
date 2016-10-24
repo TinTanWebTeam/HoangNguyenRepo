@@ -1816,12 +1816,20 @@
 	};
 
 	$.formatCurrency.regions['vi-VN'] = {
-		// symbol: '₫',
-		symbol: '',
+		symbol: '₫',
 		positiveFormat: '%n %s',
 		negativeFormat: '-%n %s',
 		decimalSymbol: ',',
 		digitGroupSymbol: '.',
+		groupDigits: true
+	};
+
+	$.formatCurrency.regions['tt-TT'] = {
+		symbol: '',
+		positiveFormat: '%s%n',
+		negativeFormat: '(%s%n)',
+		decimalSymbol: '.',
+		digitGroupSymbol: ',',
 		groupDigits: true
 	};
 

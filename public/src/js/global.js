@@ -167,16 +167,20 @@ function showNotification (type, msg) {
 }
 
 function convertStringToNumber(str){
-    if(str.includes(' ')){
-        str = str.replace(' ', '');
+    if(str == ''){
+        return 0;
     }
-    return parseInt(str.replace(/\./g,'').replace(/\,/g,''));
+    var num = parseInt(str.replace(/\D+/g, ""));
+    if(isNaN(num)){
+        return 0;
+    }
+    return num;
 }
 
 function formatCurrency(classOrId){
     $(classOrId).formatCurrency({
         roundToDecimalPlace: 0,
-        region: 'vi-VN'
+        region: 'tt-TT'
     });
 }
 
@@ -184,7 +188,7 @@ function setEventFormatCurrency(classOrId){
     $(classOrId).blur(function() {
         $(this).formatCurrency({
             roundToDecimalPlace: 0,
-            region: 'vi-VN'
+            region: 'tt-TT'
         });
     })
     .keyup(function(e) {
@@ -205,19 +209,32 @@ function setEventFormatCurrency(classOrId){
                 case 190: break; // .
                 default: $(this).formatCurrency({
                     roundToDecimalPlace: 0,
-                    region: 'vi-VN'
+                    region: 'tt-TT'
                 });
             }
         }
+    }).change(function() {
+        $(this).formatCurrency({
+            roundToDecimalPlace: 0,
+            region: 'tt-TT'
+        });
     });
 }
 
-function getNumberFromCurrency(inputId){
-    return $(inputId).toNumber({region: 'vi-VN'}).val();
+function asNumberFromCurrency(inputId){
+    return $(inputId).asNumber({region: 'tt-TT', parseType: 'int'});
 }
 
-function asNumberFromCurrency(inputId){
-    return $(inputId).asNumber({region: 'vi-VN', parseType: 'int'});
+function getNumberFromCurrency(inputId){
+    return $(inputId).toNumber({region: 'tt-TT'}).val();
+}
+
+function defaultZero(id){
+    $(id).focusout(function(){
+        if($(this).val() == ''){
+            $(id).val(0);
+        }
+    });
 }
 
 
