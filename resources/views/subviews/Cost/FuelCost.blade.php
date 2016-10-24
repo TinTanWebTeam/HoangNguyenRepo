@@ -529,7 +529,7 @@
 
                 },
                 inputPrice: function () {
-                    $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.tablePrice.price, '.', '.'));
+                    $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.tablePrice.price, '.', ','));
                     $("#price").attr('data-priceId', fuelCostView.tablePrice.id);
                 },
                 cancel: function () {
@@ -568,9 +568,9 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(fuelCostView.formatMoney(totalPrice, '.', '.'));
+                    $("input[id='totalprice']").val(fuelCostView.formatMoney(totalPrice, '.', ','));
                     $("input[id='noted']").val(fuelCostView.current["note"]);
-                    $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.current["prices_price"], '.', '.'));
+                    $("input[id='price']").val(fuelCostView.formatMoney(fuelCostView.current["prices_price"], '.', ','));
                     $("#price").attr('data-priceId', fuelCostView.current["price_id"]);
 
                 },
@@ -672,16 +672,15 @@
                             },
 
                             {
-                                data: 'literNumber',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                data: 'literNumber'
                             },
                             {
                                 data: 'prices_price',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {
                                 data: 'totalCost',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'noteCost'},
                             {
@@ -710,7 +709,7 @@
                     nStr += '';
                     x = nStr.split(decSeperate);
                     x1 = x[0];
-                    x2 = x.length > 1 ? '.' + x[1] : '';
+                    x2 = x.length > 1 ? ',' + x[1] : '';
                     var rgx = /(\d+)(\d{3})/;
                     while (rgx.test(x1)) {
                         x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
@@ -720,9 +719,9 @@
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
-                    price = price.replace('.', '');
+                    price = price.replace(',', '');
                     var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(fuelCostView.formatMoney(totalPrice, '.', '.'));
+                    $("input[id=totalprice]").val(fuelCostView.formatMoney(totalPrice, '.', ','));
 
                 },
                 ValidateCostPrice: function () {

@@ -79,5 +79,5 @@
         } else {
             historyDeliveryReportView.loadData();
         }
-    })();
+    });
 </script>

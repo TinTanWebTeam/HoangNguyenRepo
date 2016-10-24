@@ -458,7 +458,7 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', otherCostView.current["vehicle_id"]);
                     $("textarea[id='note']").val(otherCostView.current["note"]);
-                    $("input[id='cost']").val(otherCostView.formatMoney(otherCostView.current["cost"], '.', '.'))
+                    $("input[id='cost']").val(otherCostView.formatMoney(otherCostView.current["cost"], '.', ','))
 
                 },
                 formatMoney: function (nStr, decSeperate, groupSeperate) {
@@ -538,7 +538,7 @@
                             {data: 'fullNumber'},
                             {
                                 data: 'cost',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'note'},
                             {

@@ -275,14 +275,15 @@
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
+
                 },
                 hide: function () {
                     $('#divControl').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
                     userView.resetRolesInDom();
-                    $('label[class=error]').hide();
                     userView.clearInput();
+                    $('label[class=error]').hide();
                 },
                 cancel: function () {
                     if (userView.action == 'add') {
@@ -303,7 +304,6 @@
                             userView.fillDataToDatatable(data['tableUser']);
                             userView.tablePosition = data['tablePosition'];
                             userView.loadSelectBoxPosition(data['tablePosition']);
-
                         } else {
                             userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -449,7 +449,7 @@
                     $("input[id='fullName']").val(userView.current["fullName"]);
                     $("input[id='username']").val(userView.current["username"]);
                     $("input[id='email']").val(userView.current["email"]);
-                    $("input[id='position_id']").val(userView.current["position_id"]);
+                    $("select[id='position_id']").val(userView.current["position_id"]);
                     $("input[id='address']").val(userView.current["address"]);
                     $("input[id='phone']").val(userView.current["phone"]);
                     $("input[id='password']").val();
@@ -497,13 +497,16 @@
                     userView.show();
                 },
                 clearInput: function () {
+//                    $("input[id='areaCode']").val('');
+//                    $("input[id='vehicleNumber']").val('');
+//                    $("input[id='size']").val('');
+//                    $("input[id='weight']").val('');
                     if (userView.current) {
                         for (var propertyName in userView.current) {
                             if (propertyName != 'position_id')
                                 $("input[id=" + propertyName + "]").val('');
                         }
                     }
-                    $("select[id='position_id' ]").val('');
                     $("input[id='password_confirmation']").val('');
                     //clear input checkbox
                     userView.resetRolesInDom();
@@ -624,7 +627,6 @@
                 },
 
                 save: function () {
-                    debugger;
                     var sendToServer = null;
                     if (userView.action == 'delete') {
                         sendToServer = {
@@ -655,13 +657,13 @@
                     } else {
                         userView.validate();
                         if ($("#formUser").valid()) {
+                            userView.fillFormDataToCurrentObject();
                             sendToServer = {
                                 _token: _token,
                                 _action: userView.action,
                                 _object: userView.current,
                                 _object2: userView.array_roleId
                             };
-                            userView.fillFormDataToCurrentObject();
                             $.ajax({
                                 url: url + 'user/modify',
                                 type: "POST",
@@ -685,7 +687,7 @@
                                             });
                                             var indexOfUpdateUserOld = _.indexOf(userView.tableUser, UpdateUserOld);
                                             userView.tableUser.splice(indexOfUpdateUserOld, 1, data['tableUserUpdate'][0]);
-                                            userView.tableSubRow = data['tableRole'][0];
+                                            userView.tableSubRow = data['subRoles'][0];
                                             userView.showNotification("success", "Cập nhật thành công!");
                                             userView.hide()
                                             break;

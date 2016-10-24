@@ -108,14 +108,13 @@ class CostManagementController extends Controller
         $datetime = null;
         $note = null;
         $action = $request->get('_action');
-
         if ($action != 'delete') {
             $validator = ValidateController::ValidateCost($request->input('_object'));
             if ($validator->fails()) {
                 return $validator->errors();
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
-            $prices_price = str_replace('.', '', $request->get('_object')['prices_price']);
+            $prices_price = str_replace(',', '', $request->get('_object')['prices_price']);
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
@@ -424,7 +423,7 @@ class CostManagementController extends Controller
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
 
-            $prices_price = str_replace('.', '', $request->get('_object')['prices_price']);
+            $prices_price = str_replace(',', '', $request->get('_object')['prices_price']);
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle = $request->get('_object')['vehicle_id'];
@@ -604,7 +603,7 @@ class CostManagementController extends Controller
             $checkOut = Carbon::createFromFormat('d-m-Y H:i', $dateOut . " " . $timeOut)->toDateTimeString();
             $totalDate = $request->get('_object')['totalDate'];
             $totalHour = $request->get('_object')['totalTime'];
-            $price =  str_replace('.', '', $request->get('_object')['prices_price']);
+            $price =  str_replace(',', '', $request->get('_object')['prices_price']);
             $totalCost = $price * $totalHour;
 
         }
@@ -758,7 +757,7 @@ class CostManagementController extends Controller
 
             $vehicle_id = $request->get('_object')['vehicle_id'];
             $note = $request->get('_object')['note'];
-            $cost = str_replace('.', '', $request->get('_object')['cost']);
+            $cost = str_replace(',', '', $request->get('_object')['cost']);
 
         }
 

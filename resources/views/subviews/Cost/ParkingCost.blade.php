@@ -694,8 +694,8 @@
                     $("input[id='vehicle_id']").val(vehicle);
 
                     $("textarea[id='note']").val(parkingCostView.current["note"]);
-                    $("input[id='price']").val(parkingCostView.formatMoney(parkingCostView.current["prices_price"], '.', '.'));
-                    $("input[id='totalCost']").val(parkingCostView.formatMoney(totalCost, '.', '.'));
+                    $("input[id='price']").val(parkingCostView.formatMoney(parkingCostView.current["prices_price"], '.', ','));
+                    $("input[id='totalCost']").val(parkingCostView.formatMoney(totalCost, '.', ','));
 
                     $("#vehicle_id").attr('data-id', parkingCostView.current["vehicle_id"]);
                     $("#price").attr('data-priceId', parkingCostView.current["price_id"]);
@@ -727,7 +727,7 @@
                     var price = $("input[id=price]").val();
                     price = price.replace('.', '');
                     var totalCost = time * price;
-                    $("input[id=totalCost]").val(parkingCostView.formatMoney(totalCost, '.', '.'));
+                    $("input[id=totalCost]").val(parkingCostView.formatMoney(totalCost, '.', ','));
 
 
                 },
@@ -835,11 +835,11 @@
                             {data: 'totalHour'},
                             {
                                 data: 'prices_price',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {
                                 data: 'totalCost',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'note'},
                             {
@@ -1051,7 +1051,7 @@
                     });
                 },
                 inputPrice: function () {
-                    $("input[id='price']").val(parkingCostView.formatMoney(parkingCostView.tablePrice.price, '.', '.'));
+                    $("input[id='price']").val(parkingCostView.formatMoney(parkingCostView.tablePrice.price, '.', ','));
                     $("#price").attr('data-priceId', parkingCostView.tablePrice.id);
                 },
                 ValidateCostPrice: function () {

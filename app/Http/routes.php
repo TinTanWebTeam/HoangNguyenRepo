@@ -163,6 +163,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/revenue-report-view', 'ReportController@getDataViewRevenueReport');
         //Post data view
         Route::post('/revenue-report-list', 'ReportController@getDataReportList');
+//        Route::post('/revenue-report-test', 'ReportController@getDataReportTest');
 
     });
 });

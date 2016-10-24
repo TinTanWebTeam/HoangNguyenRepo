@@ -46,7 +46,6 @@ class ReportController extends Controller
         return response()->json($response, 200);
     }
 
-
     public function getDataReportList(Request $request)
     {
         try {
@@ -93,14 +92,18 @@ class ReportController extends Controller
                     try {
                         $start = $request->get('_dateStart');
                         $end = $request->get('_dateEnd');
-                        $dateStart = Carbon::createFromFormat('d-m-Y', $start)->toDateTimeString();
-                        $dateEnd = Carbon::createFromFormat('d-m-Y', $end)->toDateTimeString();
+                        $dateStart = Carbon::createFromFormat('d-m-Y', $start)->format('Y-m-d');
+                        $dateEnd = Carbon::createFromFormat('d-m-Y', $end)->format('Y-m-d');
                         $tableDataSearch = \DB::table('transports')
                             ->join('customers', 'transports.customer_id', '=', 'customers.id')
                             ->select('transports.*', 'customers.fullName')
-                            ->whereBetween('receiveDate', [$dateStart, $dateEnd])
-                            ->orderBy('receiveDate', 'desc')
+                            ->whereBetween('receiveDate', [$dateStart , $dateEnd])
+//                            ->where(\DB::raw (DATE('receiveDate')),'<=','2016-10-03 00:00:00')
+//                            ->where(\DB::raw('receiveDate'),'>=','2016-10-01 00:00:00')
+//                            ->whereBetween('receiveDate', array('2016-10-01','2016-10-03'))
+                            ->orderBy('receiveDate')
                             ->get();
+
                         $response = [
                             'msg'             => 'Get data detail report success',
                             'tableDataSearch' => $tableDataSearch,
@@ -115,6 +118,7 @@ class ReportController extends Controller
                     break;
 
             }
+
         } catch (\Exception $ex) {
             return $ex;
         }

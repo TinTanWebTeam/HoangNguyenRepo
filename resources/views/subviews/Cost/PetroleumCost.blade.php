@@ -445,9 +445,9 @@
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
-                    price = price.replace('.', '');
+                    price = price.replace(',', '');
                     var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
+                    $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice, '.', ','));
 
 
                 },
@@ -623,6 +623,12 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    $("#table-vehicles").find("tbody").on('click', 'tr', function () {
+                        var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
+                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#vehicle_id').val(vehicle);
+                        petroleumCostView.displayModal("hide", "#modal-searchVehicle");
+                    });
 
                 },
                 renderDateTimePicker: function () {
@@ -670,10 +676,10 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(petroleumCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
+                    $("input[id='totalprice']").val(petroleumCostView.formatMoney(totalPrice, '.', ','));
 
                     $("input[id='noted']").val(petroleumCostView.current["note"]);
-                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.current["prices_price"], '.', '.'));
+                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.current["prices_price"], '.', ','));
                     $("#price").attr('data-priceId', petroleumCostView.current["price_id"]);
 
 
@@ -707,15 +713,14 @@
 
                             {
                                 data: 'literNumber',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {
                                 data: 'prices_price',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {
                                 data: 'totalCost',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'noteCost'},
                             {
@@ -990,7 +995,7 @@
                 },
 
                 inputPrice: function () {
-                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.tablePrice.price, '.', '.'));
+                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.tablePrice.price, '.', ','));
                     $("#price").attr('data-priceId', petroleumCostView.tablePrice.id);
 
                 },
@@ -1056,11 +1061,6 @@
         } else {
             petroleumCostView.loadData();
         }
-        $("#table-vehicles").find("tbody").on('click', 'tr', function () {
-            var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
-            $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
-            $('#vehicle_id').val(vehicle);
-            petroleumCostView.displayModal("hide", "#modal-searchVehicle");
-        });
+
     });
 </script>
