@@ -140,7 +140,7 @@
                             revenueReportView.fillDataToDataTableYear(data['tableReportMonth']);
                             revenueReportView.tableOptionYear = data['year'];
                             revenueReportView.loadSelectBoxYear(data['year']);
-                            revenueReportView.test();
+                            revenueReportView.selectYearNow();
                         } else {
                             revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -302,7 +302,7 @@
 
 
                 },
-                test: function () {
+                selectYearNow: function () {
                     var yearNow = moment().year();
                     yearOption = _.find( revenueReportView.tableOptionYear, function (o) {
                         return  moment(o.receiveDate).format("YYYY") == yearNow;
