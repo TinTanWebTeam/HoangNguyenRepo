@@ -14,6 +14,7 @@ class CreateTransportsTable extends Migration
     {
         Schema::create('transports', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('transportCode')->comment('Mã đơn hàng');
             $table->float('weight')->unsigned()->comment('Trọng tải');
             $table->float('quantumProduct')->unsigned()->comment('Số lượng hàng');
             $table->decimal('cashRevenue',18,0)->default(0)->comment('Doanh thu');

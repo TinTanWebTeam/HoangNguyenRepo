@@ -1,12 +1,16 @@
 <style>
-    #divControl {
+    #divInvoice {
         z-index: 3;
         position: fixed;
         top: 15%;
         display: none;
         right: 0;
-        width: 60%;
+        width: 80%;
         height: 100%;
+    }
+
+    #divInvoice .panel-body {
+        height: 501px;
     }
 
     div.col-lg-12 {
@@ -22,7 +26,7 @@
     }
 </style>
 
-<!-- Begin Table Transport -->
+<!-- Begin Table -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -34,9 +38,9 @@
                         <li><a href="javascript:;">QL công nợ</a></li>
                         <li class="active">Nhà xe ngoài</li>
                     </ol>
-                    <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-warning btn-circle btn-md"
-                             data-toggle="tooltip" data-placement="left" title="Xuất hóa đơn">
+                    <div class="menu-toggle pull-right fixed">
+                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn"
+                             onclick="debtGarageView.createInvoiceGarage(0)">
                             <i class="glyphicon glyphicon-list-alt icon-center"></i>
                         </div>
                     </div>
@@ -45,397 +49,587 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-striped" id="table-data">
-                            <thead>
-                            <tr class="active">
-                                <th>Mã</th>
-                                <th>Khách hàng</th>
-                                <th>Số xe</th>
-                                <th>Nơi nhận</th>
-                                <th>Nơi giao</th>
-                                <th>Doanh thu</th>
-                                <th>Nợ</th>
-                                <th>Người nhận</th>
-                                <th>Ngày nhận</th>
-                                <th>Thanh toán</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    <!-- Chú thích -->
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p class="lead text-primary text-left"><strong>Đơn hàng</strong></p>
+                        </div>
+                        <div class="col-md-offset-7 col-md-3">
+                            <span class="label label-danger" style="font-size: 1em;">Chưa trả</span>
+                            <span class="label label-primary" style="font-size: 1em;">Đã trả trước</span>
+                            <span class="label label-success" style="font-size: 1em;">Đã trả đủ</span>
+                        </div>
+                    </div>
 
-                            </tbody>
-                        </table>
+                    <div class="row">
+                        <div class="col-md-6" id="dateSearchTransport">
+                            <input type="text" class="date start"/> đến
+                            <input type="text" class="date end"/>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="ui-widget">
+                                <input type="text" class="form-control" id="custName_transport" name="custName_transport" placeholder="Nhập tên khách hàng">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="radio" id="invoiceUp">
+                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport" value="All" checked>Tất cả</label>
+                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport"
+                                                                         value="NotInvoice">Chưa xuất hóa đơn</label>
+                                <label><input type="radio" name="rdoTransport"
+                                              value="Invoice">Đã xuất hóa đơn</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="statusMoney" class="form-control">Trạng thái:</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <select class="form-control" id="statusMoney" onchange="debtGarageView.searchTransport(this)">
+                                        <option value="All">Tất cả</option>
+                                        <option value="NotPay">Chưa trả</option>
+                                        <option value="PrePay">Trả trước</option>
+                                        <option value="FullPay">Trả đủ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="radio">
+                                        <button onclick="debtGarageView.searchTransport()" id="btnSearchTransport"
+                                                class="btn btn-sm btn-info marginRight"><i
+                                                    class="fa fa-search" aria-hidden="true"></i> Tìm
+                                        </button>
+                                        <button class="btn btn-sm btn-default" onclick="debtGarageView.clearSearch('transport')">
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="table-data">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Mã</th>
+                                        <th>Nhà xe ngoài</th>
+                                        <th>Mã HĐ</th>
+                                        <th>Số xe</th>
+                                        <th>Nơi giao</th>
+                                        <th>Số chứng từ</th>
+                                        <th>Tiền giao</th>
+                                        <th>Giao trước</th>
+                                        <th>Nợ</th>
+                                        <th>Người nhận</th>
+                                        <th>Ngày nhận</th>
+                                        <th>Thanh toán</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <hr>
+                    <p class="lead text-primary text-left"><strong>Hóa đơn khách hàng</strong></p>
+                    <div class="row">
+                        <div class="col-md-6" id="dateSearchInvoice">
+                            <input type="text" class="date start"/> đến
+                            <input type="text" class="date end"/>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="custName_invoice" name="custName_transport" placeholder="Nhập tên khách hàng">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="radio" id="invoiceDown">
+                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoice" checked
+                                                                         value="All">Tất cả</label>
+                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoice"
+                                                                         value="StillDebt">Còn nợ</label>
+                                <label><input type="radio" name="rdoInvoice" value="FullPay">Trả đủ</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="radio">
+                                <button onclick="debtGarageView.searchInvoice()" id="btnSearchInvoice"
+                                        class="btn btn-sm btn-info marginRight"><i
+                                            class="fa fa-search" aria-hidden="true"></i> Tìm
+                                </button>
+                                <button class="btn btn-sm btn-default" onclick="debtGarageView.clearSearch('invoice')">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="table-customerInvoice">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Mã</th>
+                                        <th>Khách hàng</th>
+                                        <th>Mã HĐ</th>
+                                        <th>Ngày xuất</th>
+                                        <th>Ngày HĐ</th>
+                                        <th>Tổng tiền (+VAT)</th>
+                                        <th>Trả trước</th>
+                                        <th>Trả trên HĐ</th>
+                                        <th>Nợ</th>
+                                        <th>Chi tiết</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div> <!-- end table-reposive -->
     </div> <!-- end .col-md-12-->
 </div>
-<!-- End Table Transport -->
+<!-- End Table -->
 
-<!-- Begin divControl -->
+<!-- Begin divInvoice -->
 <div class="row">
-    <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
+    <div id="divInvoice" class="col-md-offset-2 col-md-10">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thêm mới yêu cầu giao hàng
-                <div class="menu-toggles pull-right" onclick="debtGarageView.hideControl()">
+            <div class="panel-heading">Xuất hóa đơn
+                <div class="menu-toggles pull-right" onclick="
+                                debtGarageView.clearInput();
+                                debtGarageView.clearValidation('#frmInvoice');
+                                debtGarageView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
             <div class="panel-body">
-                <form role="form" id="frmControl">
-                    <div class="form-body">
-                        <div class="col-md-12 ">
-                            <div class="row ">
-                                <div class="col-md-3 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="vehicle_id"><b>Xe</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="vehicle_id" name="vehicle_id"
-                                               readonly placeholder="Nhấp đôi để chọn xe"
-                                               data-vehicleId=""
-                                               ondblclick="debtGarageView.loadListVehicle()">
+                <div class="row">
+                    <div class="col-md-6" id="frm-control">
+                        <form role="form" id="frmInvoice">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="invoiceCode"><b>Mã hóa đơn</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="invoiceCode"
+                                                   name="invoiceCode">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="customer_id"><b>Khách hàng</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="customer_id" name="customer_id"
-                                               readonly placeholder="Nhấp đôi để chọn khách hàng"
-                                               data-customerId=""
-                                               ondblclick="debtGarageView.loadListCustomer()">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="totalPay"><b>Tổng tiền</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="totalPay"
+                                                   name="totalPay" readonly>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="product_id"><b>Hàng</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="product_id" name="product_id"
-                                               readonly placeholder="Nhấp đôi để chọn hàng"
-                                               data-productId=""
-                                               ondblclick="debtGarageView.loadListProduct()">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="quantumProduct"><b>Số lượng hàng</b></label>
-                                        <input type="number" class="form-control" id="quantumProduct"
-                                               name="quantumProduct">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-md-3 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="weight"><b>Trọng tải</b></label>
-                                        <input type="number" class="form-control" id="weight" name="weight">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="cashRevenue"><b>Doanh thu</b></label>
-                                        <input type="number" class="form-control" id="cashRevenue" name="cashRevenue">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="cashDelivery"><b>Giao xe</b></label>
-                                        <input type="number" class="form-control" id="cashDelivery" name="cashDelivery">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="cashReceive"><b>Nhận</b></label>
-                                        <input type="number" class="form-control" id="cashReceive" name="cashReceive">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="receiver"><b>Người nhận</b></label>
-                                        <input type="text" class="form-control" id="receiver" name="receiver">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <div class='input-group date' id='datetimepicker1'>
-                                            <label for="receiveDate"><b>Ngày nhận</b></label>
-                                            <input id="receiveDate" name="receiveDate" type='text' class="form-control" value="<?php echo date('d-m-Y H-i'); ?>">
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debt-real"><b>Còn nợ</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="debt-real" name="debt-real" readonly>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="receivePlace"><b>Nơi nhận</b></label>
-                                        <input type="text" class="form-control" id="receivePlace" name="receivePlace">
+                                <div class="row ">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="notVAT"><b>Chưa VAT</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="notVAT"
+                                                   name="notVAT" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="VAT"><b>VAT (%)</b></label>
+                                            <input type="number" class="form-control defaultZero"
+                                                   id="VAT" name="VAT"
+                                                   onkeyup="debtGarageView.computeHasVAT(this.value, event)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="hasVAT"><b>Có VAT</b></label>
+                                            <input type="text" class="form-control currency defaultZero"
+                                                   id="hasVAT" name="hasVAT"
+                                                   onkeyup="debtGarageView.computeVAT(this.value)">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="deliveryPlace"><b>Nơi giao</b></label>
-                                        <input type="text" class="form-control" id="deliveryPlace" name="deliveryPlace">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="paidAmt"><b>Tiền trả</b></label>
+                                            <input type="text" class="form-control currency defaultZero"
+                                                   id="paidAmt" name="paidAmt"
+                                                   onkeyup="debtGarageView.computeDebt(this.value)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debt"><b>Còn nợ lại</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="debt" name="debt" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="prePaid"><b>Trả trước</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="prePaid"
+                                                   name="prePaid" readonly>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="voucherNumber"><b>Số chứng từ</b></label>
-                                        <input type="text" class="form-control" id="voucherNumber" name="voucherNumber">
+                                <div class="row ">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="exportDate"><b>Ngày xuất</b></label>
+                                            <input type="text" class="date form-control ignore"
+                                                   id="exportDate"
+                                                   name="exportDate">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="invoiceDate"><b>Ngày hóa đơn</b></label>
+                                            <input type="text" class="date form-control ignore"
+                                                   id="invoiceDate"
+                                                   name="invoiceDate">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="payDate"><b>Ngày trả</b></label>
+                                            <input type="text" class="date form-control ignore"
+                                                   id="payDate"
+                                                   name="payDate">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="voucherQuantumProduct"><b>Số hàng trên chứng từ</b></label>
-                                        <input type="number" class="form-control" id="voucherQuantumProduct"
-                                               name="voucherQuantumProduct">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="note"><b>Ghi chú</b></label>
+                                            <textarea class="form-control" id="note" name="note" rows="2"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="note"><b>Ghi chú</b></label>
-                                        <input type="text" class="form-control" id="note" name="note">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="status"><b>Trạng thái</b></label>
-                                        <select id="status" name="status" class="form-control"></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
-                                        <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
-                                                <input type="text" class="form-control cursor-copy"
-                                                       id="voucher_transport" data-id="" readonly
-                                                       name="voucher_transport"
-                                                       placeholder="Nhấp đôi để chọn chứng từ"
-                                                       ondblclick="debtGarageView.loadListVoucher()">
-                                            </div>
-                                            <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle" onclick="debtGarageView.displayModal('show', '#modal-addVoucher')">
-                                                    <i class="glyphicon glyphicon-plus"></i>
-                                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-actions noborder">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-primary marginRight"
+                                                        onclick="debtGarageView.saveInvoiceCustomer()">
+                                                    Hoàn tất
+                                                </button>
+                                                <button type="button" class="btn default" onclick="">Huỷ</button>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6" id="tbl-history">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span class="text text-primary">Lịch sử trả nợ</span>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
+                                        <thead>
+                                        <tr class="active">
+                                            <th>Mã</th>
+                                            <th>Ngày trả</th>
+                                            <th>Tiền trả</th>
+                                            <th>In</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
 
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="price_id"><b>Chi phí</b></label>
-                                        <select name="price_id" id="price_id" class="form-control" disabled>
-                                            <option value="" selected>Khác</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="cost"><b>Số tiền</b></label>
-                                        <input type="number" class="form-control" id="cost" name="cost">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="costs_note"><b>Ghi chú</b></label>
-                                        <input type="text" class="form-control" id="costs_note" name="costs_note">
-                                    </div>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-actions">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.save()">Hoàn
-                                        tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="debtGarageView.clearInput()">Huỷ
-                                    </button>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span class="text text-primary">Lịch sử in</span>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="table-printHistory">
+                                        <thead>
+                                        <tr class="active">
+                                            <th>Mã in</th>
+                                            <th>Ngày in</th>
+                                            <th>Người nhận</th>
+                                            <th>Người in</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<!-- End divControl -->
+<!-- End divInvoice -->
+
+<!-- Modal notification -->
+<div class="row">
+    <div id="modal-notification" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal notification -->
+
+<!-- Modal print review -->
+<div class="row">
+    <div id="modal-printReview" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">In review</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal print review -->
 
 <script>
     $(function () {
         if (typeof debtGarageView === 'undefined') {
             debtGarageView = {
                 table: null,
+                tableInvoiceGarage: null,
+                tableInvoiceGarageDetail: null,
+                tablePrintHistory: null,
 
                 dataTransport: null,
+                dataInvoiceGarage: null,
+                dataInvoiceGarageDetail: null,
+                dataPrintHistory: null,
 
-                current: null,
-                action: null,
-                idDelete: null,
-                showControl: function () {
+                dataSearch: null,
+                dataSearchInvoiceGarage: null,
+
+                action: null, //new, edit, autoEdit
+                current: null, //for autoEdit
+                currentInvoiceGarage: null, //for new & edit
+                invoiceGarageId: null, //for edit
+                array_transportId: [], //array_transportId of InvoiceCustomer current
+                invoiceCode: null, //Get invoiceCode newest form Server
+                tagsCustomerNameTransport: [], //for search
+                tagsCustomerNameInvoice: [], //for search
+
+                showControl: function (flag) {
+                    if (flag == 0) {
+                        $('#divInvoice').css("width", "40%");
+                        $("#tbl-history").hide();
+                        $("#frm-control").removeClass("col-md-6").addClass("col-md-12");
+                    } else {
+                        $('#divInvoice').css("width", "80%");
+                        $("#tbl-history").show();
+                        $("#frm-control").removeClass("col-md-12").addClass("col-md-6");
+                    }
                     $('.menu-toggle').fadeOut();
-                    $('#divControl').fadeIn(300);
+                    $('#divInvoice').fadeIn(300);
                 },
                 hideControl: function () {
-                    $('#divControl').fadeOut(300, function () {
-                        $('.menu-toggle').fadeIn();
+                    $('#divInvoice').fadeOut(300, function () {
+                        debtGarageView.displayButtonExportInvoice()
                     });
-
-                    debtGarageView.clearValidation("#frmControl");
-                    debtGarageView.clearInput();
                 },
                 displayModal: function (type, idModal) {
                     $(idModal).modal(type);
-                    if (debtGarageView.action == 'delete' && type == 'hide') {
-                        debtGarageView.action = null;
-                        debtGarageView.idDelete = null;
-                    }
 
                     //Clear Validate
                 },
-                showNotification: function (type, msg) {
-                    switch (type) {
-                        case "info":
-                            toastr.info(msg);
-                            break;
-                        case "success":
-                            toastr.success(msg);
-                            break;
-                        case "warning":
-                            toastr.warning(msg);
-                            break;
-                        case "error":
-                            toastr.error(msg);
-                            break;
+                displayButtonExportInvoice: function(){
+                    array_customerId = _.map(debtGarageView.dataSearch, 'customer_id');
+                    array_customerId_unique = _.uniq(array_customerId);
+                    if(array_customerId_unique.length == 1){
+                        invoiceCode = _.map(debtGarageView.dataSearch, 'invoiceCode');
+                        if(invoiceCode[0] == null)
+                            $('.menu-toggle').fadeIn();
+                        else
+                            $('.menu-toggle').fadeOut();
+                    } else {
+                        $('.menu-toggle').fadeOut();
                     }
                 },
                 clearInput: function () {
-                    $("input[id='vehicle_id']").val('');
-                    $("#vehicle_id").attr("data-vehicleId", "");
-
-                    $("input[id='customer_id']").val('');
-                    $("#customer_id").attr("data-customerId", "");
-
-                    $("input[id='product_id']").val('');
-                    $("#product_id").attr("data-productId", "");
-
-                    $("input[id='quantumProduct']").val('');
-                    $("input[id='weight']").val('');
-                    $("input[id='cashRevenue']").val('');
-                    $("input[id='cashDelivery']").val('');
-                    $("input[id='cashReceive']").val('');
-                    $("input[id='receiver']").val('');
-//                    $("input[id='receiveDate']").val('');
-                    $("input[id='receivePlace']").val('');
-                    $("input[id='deliveryPlace']").val('');
-                    $("input[id='voucherNumber']").val('');
-                    $("input[id='voucherQuantumProduct']").val('');
-                    $("input[id='note']").val('');
-
-                    $("input[id='voucher_transport']").val('');
-                    $("input[id='voucher_transport']").attr("voucher_transport", "");
-
-                    $("input[id='cost']").val('');
-                    $("input[id='costs_note']").val('');
-
-                    debtGarageView.arrayVoucher = [];
+                    $("input[id='invoiceCode']").val('');
+                    $("input[id='totalPay']").val('');
+                    $("input[id='VAT']").val('');
+                    $("input[id='notVAT']").val('');
+                    $("input[id='hasVAT']").val('');
+                    $("input[id='exportDate]").val('');
+                    $("input[id='invoiceDate]").val('');
+                    $("input[id='payDate]").val('');
+                    $("input[id='debt']").val('');
+                    $("input[id='debt-real']").val('');
+                    $("input[id='paidAmt']").val('');
+                    $("textarea[id='note']").val('');
                 },
 
-                loadData: function () {
-                    $.ajax({
-                        url: url + 'transport/transports',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            debtGarageView.dataTransport = data['transports'];
-                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-
-                            debtGarageView.dataVoucherTransport = data['voucherTransports'];
-                            debtGarageView.dataVoucher = data['vouchers'];
-                            debtGarageView.dataStatus = data['statuses'];
-                            debtGarageView.loadSelectBox(debtGarageView.dataStatus);
-                        } else {
-                            debtGarageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        debtGarageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                renderScrollbar: function () {
+                    $("#divInvoice").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
+                },
+                renderDateTimePicker: function () {
+                    $('#dateSearchTransport .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#dateSearchInvoice .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
                     });
 
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "300",
-                        "hideDuration": "1000",
-                        "timeOut": "2000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
+                    $('#divInvoice').find('.date').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
 
-
-
+                    $('#divInvoice').find('.date').datepicker("setDate", new Date());
                 },
-                loadSelectBox: function (lstStatus) {
-                    //reset selectbox
-                    $('#status')
-                            .find('option')
-                            .remove()
-                            .end();
-                    //fill option to selectbox
-                    var select = document.getElementById("status");
-                    for (var i = 0; i < lstStatus.length; i++) {
-                        var opt = lstStatus[i]['status'];
-                        var el = document.createElement("option");
-                        el.textContent = opt;
-                        el.value = lstStatus[i]['id'];
-                        select.appendChild(el);
-                    }
+                renderEventRadioInput: function() {
+                    $('input[type="radio"][name=rdoTransport]').on('change', function(e) {
+                        debtGarageView.searchTransport(e.currentTarget.defaultValue);
+
+                        //                    if(e.currentTarget.defaultValue == 'All'){
+                        //                        $('.menu-toggle').fadeOut();
+                        //                    } else {
+                        //                        $('.menu-toggle').fadeIn();
+                        //                    }
+                    });
+
+                    $('input[type="radio"][name=rdoInvoice]').on('change', function(e) {
+                        debtGarageView.searchInvoice();
+                    });
+                },
+                renderAutoCompleteSearch: function(){
+                    $( "#custName_transport" ).autocomplete({
+                        source: debtGarageView.tagsCustomerNameTransport
+                    });
+
+                    $( "#custName_invoice" ).autocomplete({
+                        source: debtGarageView.tagsCustomerNameInvoice
+                    });
+                },
+                renderEventKeyCode: function(){
+                    $("#custName_transport").keyup(function(event){
+                        if(event.keyCode == 13){ //Enter
+                            $("#btnSearchTransport").click();
+                        }
+                    });
+
+                    $("#custName_invoice").keyup(function(event){
+                        if(event.keyCode == 13){ //Enter
+                            $("#btnSearchInvoice").click();
+                        }
+                    });
+                },
+                renderEventRowClick: function(){
+                    $("#table-data").find("tbody").on('click', 'tr td', function () {
+                        var td = $(this);
+                        var tr = $(this).parent();
+                        if(tr.find('td:eq(1)').text() == td.text()){
+                            $("input[id=custName_transport]").val(td.text());
+                            debtGarageView.searchTransport();
+                        }
+                    });
+
+                    $("#table-customerInvoice").find("tbody").on('click', 'tr td', function () {
+                        var td = $(this);
+                        var tr = $(this).parent();
+                        if(tr.find('td:eq(1)').text() == td.text()){
+                            $("input[id=custName_invoice]").val(td.text());
+                            debtGarageView.searchInvoice();
+                        }
+                    });
+
+                    $("#table-invoiceCustomerDetail").find("tbody").on('click', 'tr', function () {
+                        //Get current object
+                        invoiceCustomerDetailId = $(this).find('td:first')[0].innerText;
+                        invoiceCustomerDetail = _.find(debtGarageView.dataInvoiceGarageDetail, function(o){
+                            return o.id == invoiceCustomerDetailId;
+                        });
+                    });
+                },
+                renderFormatCurrency: function(){
+                    array_id1 = ['totalPay', 'debt-real', 'notVAT','hasVAT', 'paidAmt', 'debt', 'prePaid'];
+                    array_id2 = ['hasVAT', 'paidAmt'];
                 },
 
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        data[i].fullNumber = data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                        data[i].fullNumber = data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+                        data[i].debt = parseInt(data[i]['cashDelivery']) - parseInt(data[i]['cashPreDelivery']);
                     }
+
                     debtGarageView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
                             {data: 'id'},
+                            {data: 'garages_name'},
+                            {data: 'invoiceCode'},
                             {data: 'fullNumber'},
-                            {data: 'products_name'},
-                            {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
-                            {data: 'customers_fullName'},
-                            {
-                                data: 'cashRevenue',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
-                            },
+                            {data: 'voucherNumber'},
                             {
                                 data: 'cashDelivery',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cashReceive',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                data: 'cashPreDelivery',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cashProfit',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                data: 'debt',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {data: 'receiver'},
                             {
@@ -446,22 +640,24 @@
                             },
                             {
                                 render: function (data, type, full, meta) {
+                                    color = 'btn-default';
+                                    if(full.cashPreDelivery == 0 && full.invoiceGarage == null)
+                                        color = 'btn-danger';
+                                    else if (full.cashPreDelivery == full.cashDelivery)
+                                        color = 'btn-success';
+                                    else if (full.cashPreDelivery > 0 && full.invoiceGarage == null)
+                                        color = 'btn-primary';
+
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle" onclick="debtGarageView.editTransport(' + full.id + ')">';
-                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
-                                    tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-danger btn-circle" onclick="debtGarageView.deleteTransport(' + full.id + ')">';
-                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '<div class="text-center">';
+                                    tr += "<div class='btn btn-circle "+color+"' title='Trả đủ' onclick='debtGarageView.autoEditTransportConfirm("+full.id+")'>";
+                                    tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
                                     return tr;
-                                }, width: "10%"
+                                }
                             }
                         ],
-                        order: [[0, "desc"]],
                         dom: 'Bfrtip',
                         buttons: [
                             {
@@ -506,194 +702,684 @@
                         ]
                     })
                 },
-                fillCurrentObjectToForm: function () {
-                    $("input[id='vehicle_id']").val(debtGarageView.current["vehicles_areaCode"] + '-' + debtGarageView.current["vehicles_vehicleNumber"]);
-                    $("#vehicle_id").attr('data-vehicleId', debtGarageView.current["vehicles_id"]);
-                    $("input[id='customer_id']").val(debtGarageView.current["customers_fullName"]);
-                    $("#customer_id").attr('data-customerId', debtGarageView.current["customers_id"]);
-                    $("input[id='product_id']").val(debtGarageView.current["products_name"]);
-                    $("#product_id").attr('data-productId', debtGarageView.current["products_id"]);
-
-                    $("input[id='quantumProduct']").val(debtGarageView.current["quantumProduct"]);
-                    $("input[id='weight']").val(debtGarageView.current["weight"]);
-                    $("input[id='cashRevenue']").val(debtGarageView.current["cashRevenue"]);
-                    $("input[id='cashDelivery']").val(debtGarageView.current["cashDelivery"]);
-                    $("input[id='cashReceive']").val(debtGarageView.current["cashReceive"]);
-                    $("input[id='receiver']").val(debtGarageView.current["receiver"]);
-
-                    var day = debtGarageView.current["receiveDate"].substr(8,2);
-                    var month = debtGarageView.current["receiveDate"].substr(5,2);
-                    var year = debtGarageView.current["receiveDate"].substr(0,4);
-                    var hourMinus = debtGarageView.current["receiveDate"].substr(11,5);
-                    $("input[id='receiveDate']").val(day + "/" + month + "/" + year + " " + hourMinus);
-
-                    $("input[id='receivePlace']").val(debtGarageView.current["receivePlace"]);
-                    $("input[id='deliveryPlace']").val(debtGarageView.current["deliveryPlace"]);
-                    $("input[id='voucherNumber']").val(debtGarageView.current["voucherNumber"]);
-                    $("input[id='voucherQuantumProduct']").val(debtGarageView.current["voucherQuantumProduct"]);
-                    $("input[id='note']").val(debtGarageView.current["note"]);
-                    $("select[id='status']").val(debtGarageView.current["status_id"]);
-                    $("input[id='cost']").val(debtGarageView.current["cost"]);
-                    $("input[id='costs_note']").val(debtGarageView.current["costs_note"]);
-
-                    var strVoucherName = "";
-                    for (var i = 0; i < debtGarageView.arrayVoucher.length; i++) {
-                        var objVoucher = _.clone(_.find(debtGarageView.dataVoucher, function (o) {
-                            return o.id == debtGarageView.arrayVoucher[i];
-                        }), true);
-                        strVoucherName += objVoucher.name + ", ";
+                fillDataToDatatableInvoiceGarage: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'] - data[i]['prePaid'];
                     }
-                    $("input[id='voucher_transport']").val(strVoucherName);
+                    debtGarageView.tableInvoiceGarage = $('#table-customerInvoice').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'id'},
+                            {data: 'customers_fullName'},
+                            {data: 'invoiceCode'},
+                            {
+                                data: 'exportDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {
+                                data: 'invoiceDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {data: 'hasVAT', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'prePaid', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'totalPaid', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'debt', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div class="btn btn-primary btn-circle" title="Xem lịch sử" onclick="debtGarageView.createInvoiceGarage(1, '+full.id+')">';
+                                    tr += '<i class="fa fa-eye" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn btn-danger btn-circle" title="Xóa hóa đơn" onclick="debtGarageView.deleteInvoiceCustomerConfirm('+full.id+')">';
+                                    tr += '<i class="fa fa-trash-o" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ],
+                        dom: 'Bfrtip',
+                        buttons: [
+                            {
+                                extend: 'copyHtml5',
+                                text: 'Sao chép',
+                                exportOptions: {
+                                    columns: [0, ':visible']
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Xuất Excel',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                customize: function (xlsx) {
+                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                }
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'Xuất PDF',
+                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
+                                customize: function (doc) {
+                                    doc.content.splice(0, 1);
+                                    doc.styles.tableBodyEven.alignment = 'center';
+                                    doc.styles.tableBodyOdd.alignment = 'center';
+                                    doc.content.columnGap = 10;
+                                    doc.pageOrientation = 'landscape';
+                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                            doc.content[1].table.body[i].splice(6, 1);
+                                        }
+                                    }
+                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
+                                }
+                            },
+                            {
+                                extend: 'colvis',
+                                text: 'Ẩn cột'
+                            }
+                        ]
+                    })
+                },
+                fillDataToDatatableInvoiceGarageDetail: function (data) {
+                    if (debtGarageView.tableInvoiceGarageDetail != null) {
+                        debtGarageView.tableInvoiceGarageDetail.destroy();
+                    }
+                    debtGarageView.tableInvoiceGarageDetail = $('#table-invoiceCustomerDetail').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            { data: 'id' },
+                            {
+                                data: 'payDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {
+                                data: 'paidAmt',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div class="btn btn-primary btn-circle marginRight" title="In" onclick="debtGarageView.printReview('+full.id+')">';
+                                    tr += '<span class="glyphicon glyphicon-print" aria-hidden="true"></span>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn btn-default btn-circle marginRight" title="Đính kèm tập tin" onclick="debtGarageView.attachFile('+full.id+')">';
+                                    tr += '<i class="fa fa-file" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn btn-danger btn-circle" title="Xoá" onclick="debtGarageView.deleteInvoiceCustomerDetailConfirm('+full.id+')">';
+                                    tr += '<i class="fa fa-trash-o" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ]
+                    })
+                },
+                fillDataToDatatablePrintHistory: function(data){
+                    if (debtGarageView.tablePrintHistory != null) {
+                        debtGarageView.tablePrintHistory.destroy();
+                    }
+                    debtGarageView.tablePrintHistory = $('#table-printHistory').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            { data: 'id' },
+                            {
+                                data: 'printDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            { data: 'sendToPerson' },
+                            { data: 'users_fullName' }
+                        ]
+                    })
+                },
 
+                loadData: function () {
+                    $.ajax({
+                        url: url + 'debt-garage/transports',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            debtGarageView.dataTransport = data['transports'];
+                            debtGarageView.dataSearch = data['transports'];
+                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+
+                            debtGarageView.dataInvoiceGarage = data['invoiceCustomers'];
+                            debtGarageView.dataSearchInvoiceGarage = data['invoiceCustomers'];
+                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+
+                            debtGarageView.dataInvoiceGarageDetail = data['invoiceCustomerDetails'];
+                            debtGarageView.dataPrintHistory = data['printHistories'];
+
+                            debtGarageView.invoiceCode = data['invoiceCode'];
+
+                            debtGarageView.searchTransport();
+                            debtGarageView.searchInvoice();
+                        } else {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                    debtGarageView.renderDateTimePicker();
+                    debtGarageView.renderScrollbar();
+                    debtGarageView.renderEventRadioInput();
+                    debtGarageView.renderEventKeyCode();
+                    debtGarageView.renderEventRowClick();
+                    setEventFormatCurrency(".currency");
+                    formatCurrency(".currency");
+                    defaultZero("#VAT");
+                    defaultZero("#hasVAT");
+                    defaultZero("#paidAmt");
+                },
+                fillCurrentObjectToForm: function () {
+                    $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
+                    $("input[id='totalPay']").val(debtGarageView.currentInvoiceGarage["totalPay"]);
+                    $("input[id='VAT']").val(debtGarageView.currentInvoiceGarage["VAT"]);
+                    $("input[id='notVAT']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
+                    $("input[id='hasVAT']").val(debtGarageView.currentInvoiceGarage["hasVAT"]);
+
+                    var exportDate = moment(debtGarageView.currentInvoiceGarage["exportDate"], "YYYY-MM-DD");
+                    $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
+
+                    var invoiceDate = moment(debtGarageView.currentInvoiceGarage["invoiceDate"], "YYYY-MM-DD");
+                    $("input[id='invoiceDate']").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
+
+                    var payDate = moment(debtGarageView.currentInvoiceGarage["payDate"], "YYYY-MM-DD");
+                    $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
+
+                    $("input[id='debt']").val(debtGarageView.currentInvoiceGarage["debt"]);
+                    $("input[id='debt-real']").val(debtGarageView.currentInvoiceGarage["debt"]);
+                    $("input[id='paidAmt']").val(debtGarageView.currentInvoiceGarage["paidAmt"]);
+                    $("textarea[id='note']").val(debtGarageView.currentInvoiceGarage["note"]);
                 },
                 fillFormDataToCurrentObject: function () {
-                    if (debtGarageView.action == 'add') {
-                        debtGarageView.current = {
-                            vehicles_id: $("#vehicle_id").attr("data-vehicleId"),
-                            customers_id: $("#customer_id").attr("data-customerId"),
-                            products_id: $("#product_id").attr("data-productId"),
-                            quantumProduct: $("input[id='quantumProduct']").val(),
-                            weight: $("input[id='weight']").val(),
-                            cashRevenue: $("input[id='cashRevenue']").val(),
-                            cashDelivery: $("input[id='cashDelivery']").val(),
-                            cashReceive: $("input[id='cashReceive']").val(),
-                            receiver: $("input[id='receiver']").val(),
-                            receiveDate: $("input[id='receiveDate']").val(),
-                            receivePlace: $("input[id='receivePlace']").val(),
-                            deliveryPlace: $("input[id='deliveryPlace']").val(),
-                            voucherNumber: $("input[id='voucherNumber']").val(),
-                            voucherQuantumProduct: $("input[id='voucherQuantumProduct']").val(),
-                            note: $("input[id='note']").val(),
-                            status_id: $("select[id='status']").val(),
-                            cost: $("input[id='cost']").val(),
-                            costs_note: $("input[id='costs_note']").val(),
-                            voucher_transport: debtGarageView.arrayVoucher
-                        };
-                    } else if (debtGarageView.action == 'update') {
-                        debtGarageView.current.vehicles_id = $("#vehicle_id").attr("data-vehicleId");
-                        debtGarageView.current.customers_id = $("#customer_id").attr("data-customerId");
-                        debtGarageView.current.products_id = $("#product_id").attr("data-productId");
-                        debtGarageView.current.quantumProduct = $("input[id='quantumProduct']").val();
-                        debtGarageView.current.weight = $("input[id='weight']").val();
-                        debtGarageView.current.cashRevenue = $("input[id='cashRevenue']").val();
-                        debtGarageView.current.cashDelivery = $("input[id='cashDelivery']").val();
-                        debtGarageView.current.cashReceive = $("input[id='cashReceive']").val();
-                        debtGarageView.current.receiver = $("input[id='receiver']").val();
-                        debtGarageView.current.receiveDate = $("input[id='receiveDate']").val();
-                        debtGarageView.current.receivePlace = $("input[id='receivePlace']").val();
-                        debtGarageView.current.deliveryPlace = $("input[id='deliveryPlace']").val();
-                        debtGarageView.current.voucherNumber = $("input[id='voucherNumber']").val();
-                        debtGarageView.current.voucherQuantumProduct = $("input[id='voucherQuantumProduct']").val();
-                        debtGarageView.current.note = $("input[id='note']").val();
-                        debtGarageView.current.status_id = $("select[id='status']").val();
-                        debtGarageView.current.cost = $("input[id='cost']").val();
-                        debtGarageView.current.costs_note = $("input[id='costs_note']").val();
-                        debtGarageView.current.voucher_transport = debtGarageView.arrayVoucher;
+                    debtGarageView.currentInvoiceGarage = {
+                        id: debtGarageView.invoiceGarageId,
+                        invoiceCode : $("input[id='invoiceCode']").val(),
+                        VAT : $("input[id='VAT']").val(),
+                        notVAT : $("input[id='notVAT']").val(),
+                        hasVAT : $("input[id='hasVAT']").val(),
+                        exportDate : $("input[id='exportDate']").val(),
+                        invoiceDate : $("input[id='invoiceDate']").val(),
+                        payDate : $("input[id='payDate']").val(),
+                        note : $("textarea[id='note']").val(),
+                        totalPay : $("input[id='totalPay']").val(),
+                        prePaid : $("input[id='prePaid']").val(),
+                        debt : $("input[id=debt-real]").val(),
+                        paidAmt : $("input[id='paidAmt']").val()
                     }
                 },
 
-                editTransport: function (id) {
+                autoEditTransport: function (transportId) {
                     debtGarageView.current = null;
                     debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
-                        return o.id == id;
+                        return o.id == transportId;
                     }), true);
-
-                    var arrayVoucherTransport = _.clone(_.filter(debtGarageView.dataVoucherTransport, function (o) {
-                        return o.transport_id == id;
-                    }), true);
-
-                    debtGarageView.arrayVoucher = _.map(arrayVoucherTransport, 'voucher_id');
-
-                    debtGarageView.fillCurrentObjectToForm();
-                    debtGarageView.action = 'update';
-                    debtGarageView.showControl();
+                    debtGarageView.action = 'autoEdit';
+                    debtGarageView.save();
                 },
-                addTransport: function () {
-                    debtGarageView.arrayVoucher = [];
+                autoEditTransportConfirm: function (transportId) {
                     debtGarageView.current = null;
-                    debtGarageView.action = 'add';
-                    debtGarageView.showControl();
+                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
+                        return o.id == transportId;
+                    }), true);
+
+                    if(debtGarageView.current['invoiceCustomer_id'] != null){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
+                        debtGarageView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
+                    if(parseInt(debtGarageView.current['cashRevenue']) == parseInt(debtGarageView.current['cashReceive'])){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
+                        debtGarageView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
+                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.autoEditTransport('+ transportId +')">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    debtGarageView.displayModal('show', '#modal-notification');
                 },
-                deleteTransport: function (id) {
-                    debtGarageView.action = 'delete';
-                    debtGarageView.idDelete = id;
-                    debtGarageView.displayModal("show", "#modal-confirmDelete");
+                createInvoiceGarage: function (flag, invoiceCustomer_id) {
+                    debtGarageView.showControl(flag);
+                    if (flag == 0){
+                        debtGarageView.action = "new";
+                        var prePaid = 0, totalPay = 0;
+                        debtGarageView.getListCurrentRowTransport();
+                        for(var i = 0; i < debtGarageView.array_transportId.length; i++ ){
+                            var currentRow = _.find(debtGarageView.dataTransport, function(o){
+                                return o.id == debtGarageView.array_transportId[i];
+                            });
+
+                            if(typeof currentRow !== 'undefined'){
+                                totalPay += parseInt(currentRow['cashRevenue']);
+                                prePaid += parseInt(currentRow['cashReceive']);
+                            }
+                        }
+
+                        $("input[id=totalPay]").val(totalPay);
+                        $("input[id=prePaid]").val(prePaid);
+
+                        var debt = totalPay - prePaid;
+                        $("input[id=debt]").val(debt);
+                        $("input[id=debt-real]").val(debt);
+                        $("input[id=invoiceCode]").attr("placeholder", debtGarageView.invoiceCode);
+
+                        //set default value
+                        $("input[id=notVAT]").val(totalPay);
+                        $("input[id=VAT]").val(0);
+                        $("input[id=hasVAT]").val(totalPay);
+                        $("input[id=paidAmt]").val(0);
+
+                        //set default VAT=10%
+                        $("input[id=VAT]").val(10);
+                        debtGarageView.computeHasVAT(10);
+
+                        //remove readly input
+                        $("input[id=invoiceCode]").prop('readonly', false);
+                        $("input[id=VAT]").prop('readonly', false);
+                        $("input[id=hasVAT]").prop('readonly', false);
+
+                        $("input[id=invoiceCode]").focus();
+                    } else {
+                        if(typeof invoiceCustomer_id === 'undefined') return;
+
+                        debtGarageView.action = "edit";
+                        debtGarageView.invoiceGarageId = invoiceCustomer_id;
+                        //fill data to table InvoiceCustomerDetail
+                        var data = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
+                            return o.invoiceCustomer_id == invoiceCustomer_id;
+                        });
+                        if(typeof data === 'undefined') return;
+                        debtGarageView.fillDataToDatatableInvoiceGarageDetail(data);
+
+                        //fill data to table PrintHistory
+                        var data2 = [];
+                        for(var i = 0; i < data.length; i++){
+                            var found = _.find(debtGarageView.dataPrintHistory, function(o){
+                                return o.invoiceCustomerDetail_id == data[i]['id'];
+                            });
+                            if(typeof found !== 'undefined')
+                                data2.push(found);
+                        }
+                        debtGarageView.fillDataToDatatablePrintHistory(data2);
+
+                        //load data to input
+                        var rowInvoiceCustomer = _.find(debtGarageView.dataInvoiceGarage, function(o){
+                            return o.id == invoiceCustomer_id;
+                        });
+                        if(typeof rowInvoiceCustomer === 'undefined') return;
+
+                        var totalPay = parseInt(rowInvoiceCustomer['totalPay']);
+                        var hasVAT = parseInt(rowInvoiceCustomer['hasVAT']);
+                        var totalPaid = parseInt(rowInvoiceCustomer['totalPaid']);
+                        var prePaid = parseInt(rowInvoiceCustomer['prePaid']);
+                        var debt = hasVAT - (totalPaid + prePaid);
+                        $("input[id=totalPay]").val(totalPay);
+                        $("input[id=debt]").val(debt);
+                        $("input[id=debt-real]").val(debt);
+
+                        $("input[id=invoiceCode]").val(rowInvoiceCustomer['invoiceCode']);
+                        $("input[id=VAT]").val(rowInvoiceCustomer['VAT']);
+                        $("input[id=notVAT]").val(rowInvoiceCustomer['notVAT']);
+                        $("input[id=hasVAT]").val(hasVAT);
+                        $("input[id=prePaid]").val(prePaid);
+
+                        //set default value
+                        $("input[id=paidAmt]").val(0);
+
+                        //add readly input
+                        $("input[id=invoiceCode]").prop('readonly', true);
+                        $("input[id=VAT]").prop('readonly', true);
+                        $("input[id=hasVAT]").prop('readonly', true);
+
+                        $("input[id=paidAmt]").focus();
+
+                        formatCurrency(".currency");
+                    }
+                },
+                deleteInvoiceCustomer: function (invoiceCustomer_id) {
+                    sendToServer = {
+                        _token: _token,
+                        _invoiceCustomer_id: invoiceCustomer_id
+                    };
+                    console.log("CLIENT");
+                    console.log(sendToServer._invoiceCustomer_id);
+                    $.ajax({
+                        url: url + 'invoice-garage/delete',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 201) {
+                            invoiceCustomerId = data['invoiceCustomer'];
+                            array_invoiceCustomerDetailId = data['invoiceCustomerDetails'];
+
+                            //Remove invoiceCustomer
+                            Old = _.find(debtGarageView.dataInvoiceGarage, function(o){
+                                return o.id == invoiceCustomerId;
+                            });
+                            indexOf = _.indexOf(debtGarageView.dataInvoiceGarage, Old);
+                            debtGarageView.dataInvoiceGarage.splice(indexOf, 1);
+
+                            //Remove invoiceCustomerDetail
+                            for(var i = 0; i < array_invoiceCustomerDetailId.length; i++){
+                                Old = _.find(debtGarageView.dataInvoiceGarageDetail, function(o){
+                                    return o.id == array_invoiceCustomerDetailId[i];
+                                });
+                                indexOf = _.indexOf(debtGarageView.dataInvoiceGarageDetail, Old);
+                                debtGarageView.dataInvoiceGarageDetail.splice(indexOf, 1);
+                            }
+
+                            //Remove InvoiceCustomer_id in Transport
+                            dataTransport = _.filter(debtGarageView.dataTransport, function(o){
+                                return o.invoiceCustomer_id == invoiceCustomerId;
+                            });
+                            for(i = 0; i < dataTransport.length; i++){
+                                dataTransport[i]['invoiceCustomer_id'] = null;
+                                dataTransport[i]['invoiceCode'] = null;
+                            }
+                            debtGarageView.dataSearch = debtGarageView.dataTransport;
+                            debtGarageView.searchTransport();
+
+                            //reload table
+                            debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataInvoiceGarage).draw();
+
+                            //call search Method
+                            debtGarageView.dataSearchInvoiceGarage = debtGarageView.dataInvoiceGarage;
+                            debtGarageView.searchInvoice();
+
+                            //Show notification
+                            showNotification("success", "Xóa hóa đơn thành công!");
+                            debtGarageView.displayModal("hide", "#modal-notification");
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                deleteInvoiceCustomerConfirm: function (invoiceCustomer_id) {
+                    $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa hóa đơn này?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceCustomer('+ invoiceCustomer_id +')">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    debtGarageView.displayModal('show', '#modal-notification');
+                },
+                deleteInvoiceCustomerDetail: function (invoiceCustomerDetail_id, flag) {
+                    action = 'delete1';
+                    if(typeof flag !== 'undefined'){
+                        action = 'delete2';
+                    }
+                    sendToServer = {
+                        _token: _token,
+                        _action: action,
+                        _invoiceCustomerDetail_id: invoiceCustomerDetail_id
+                    };
+                    console.log("CLIENT");
+                    console.log(sendToServer._invoiceCustomerDetail_id);
+                    $.ajax({
+                        url: url + 'invoice-garage-detail/delete',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 201) {
+                            if(action == 'delete1'){
+                                invoiceCustomer = data['invoiceCustomer'];
+                                invoiceCustomer.debt = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
+                                invoiceCustomerDetailId = data['invoiceCustomerDetail'];
+
+                                //Update invoiceCustomer
+                                Old = _.find(debtGarageView.dataInvoiceGarage, function(o){
+                                    return o.id == invoiceCustomer['id'];
+                                });
+                                indexOf = _.indexOf(debtGarageView.dataInvoiceGarage, Old);
+                                debtGarageView.dataInvoiceGarage.splice(indexOf, 1, invoiceCustomer);
+
+                                //Remove invoiceCustomerDetail
+                                Old = _.find(debtGarageView.dataInvoiceGarageDetail, function(o){
+                                    return o.id == invoiceCustomerDetailId;
+                                });
+                                indexOf = _.indexOf(debtGarageView.dataInvoiceGarageDetail, Old);
+                                debtGarageView.dataInvoiceGarageDetail.splice(indexOf, 1);
+
+                                //reload table
+                                debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataInvoiceGarage).draw();
+
+                                //fill data to table InvoiceCustomerDetail
+                                var data = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
+                                    return o.invoiceCustomer_id == invoiceCustomer['id'];
+                                });
+                                if(typeof data === 'undefined') return;
+                                debtGarageView.fillDataToDatatableInvoiceGarageDetail(data);
+
+                                //call search Method
+                                debtGarageView.dataSearchInvoiceGarage = debtGarageView.dataInvoiceGarage;
+                                debtGarageView.searchInvoice();
+
+                                var debtReal = parseInt(invoiceCustomer['debt']);
+                                $("input[id=debt]").val(debtReal);
+                                $("input[id=debt-real]").val(debtReal);
+
+                                //Show notification
+                                showNotification("success", "Xóa chi tiết đơn hàng thành công!");
+                                debtGarageView.displayModal("hide", "#modal-notification");
+                            } else {
+                                invoiceCustomerId = data['invoiceCustomer'];
+                                invoiceCustomerDetailId = data['invoiceCustomerDetail'];
+
+                                //Remove invoiceCustomer
+                                Old = _.find(debtGarageView.dataInvoiceGarage, function(o){
+                                    return o.id == invoiceCustomerId;
+                                });
+                                indexOf = _.indexOf(debtGarageView.dataInvoiceGarage, Old);
+                                debtGarageView.dataInvoiceGarage.splice(indexOf, 1);
+
+                                //Remove invoiceCustomerDetail
+                                Old = _.find(debtGarageView.dataInvoiceGarageDetail, function(o){
+                                    return o.id == invoiceCustomerDetailId;
+                                });
+                                indexOf = _.indexOf(debtGarageView.dataInvoiceGarageDetail, Old);
+                                debtGarageView.dataInvoiceGarageDetail.splice(indexOf, 1);
+
+                                //Remove InvoiceCustomer_id in Transport
+                                dataTransport = _.filter(debtGarageView.dataTransport, function(o){
+                                    return o.invoiceCustomer_id == invoiceCustomerId;
+                                });
+                                for(i = 0; i < dataTransport.length; i++){
+                                    dataTransport[i]['invoiceCustomer_id'] = null;
+                                    dataTransport[i]['invoiceCode'] = null;
+                                }
+                                debtGarageView.dataSearch = debtGarageView.dataTransport;
+                                debtGarageView.searchTransport();
+
+                                //reload table
+                                debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataInvoiceGarage).draw();
+
+                                //call search Method
+                                debtGarageView.dataSearchInvoiceGarage = debtGarageView.dataInvoiceGarage;
+                                debtGarageView.searchInvoice();
+
+                                //Show notification
+                                showNotification("success", "Xóa chi tiết đơn hàng thành công!");
+                                debtGarageView.displayModal("hide", "#modal-notification");
+
+                                //Close form
+                                debtGarageView.clearInput();
+                                debtGarageView.clearValidation("#frmInvoice");
+                                debtGarageView.hideControl();
+                            }
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                deleteInvoiceCustomerDetailConfirm: function (invoiceCustomerDetail_id) {
+                    array_invoiceCustomerDetail_of_invoiceCustomer = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
+                        return o.invoiceCustomer_id == debtGarageView.invoiceGarageId;
+                    });
+                    if(typeof array_invoiceCustomerDetail_of_invoiceCustomer === 'undefined'){
+                        showNotification("error", "Có lỗi xảy ra. Vui lòng làm mới lại trình duyệt.");
+                        return;
+                    }
+                    if(array_invoiceCustomerDetail_of_invoiceCustomer.length == 1){
+                        //Warning, delete InvoiceCustomerDetail & InvoiceCustomer
+                        $("#modal-notification").find(".modal-title").html("Xóa chi tiết đơn hàng này cũng sẽ xóa hóa đơn.<br>Có chắc muốn xóa chi tiết hóa đơn này?");
+                        tr = '<div class="row">';
+                        tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                        tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceCustomerDetail('+ invoiceCustomerDetail_id +', 1)">';
+                        tr += 'Đồng ý';
+                        tr += '</button>';
+                        tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+                        tr += 'Huỷ';
+                        tr += '</button>';
+                        tr += '</div>';
+                        tr += '</div>';
+                        $("#modal-notification").find(".modal-body").html(tr);
+                        debtGarageView.displayModal('show', '#modal-notification');
+                    } else {
+                        $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa chi tiết hóa đơn này?");
+                        tr = '<div class="row">';
+                        tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                        tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceCustomerDetail('+ invoiceCustomerDetail_id +')">';
+                        tr += 'Đồng ý';
+                        tr += '</button>';
+                        tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+                        tr += 'Huỷ';
+                        tr += '</button>';
+                        tr += '</div>';
+                        tr += '</div>';
+                        $("#modal-notification").find(".modal-body").html(tr);
+                        debtGarageView.displayModal('show', '#modal-notification');
+                    }
                 },
 
                 formValidate: function () {
-                    $("#frmControl").validate({
+                    $("#frmInvoice").validate({
                         rules: {
-                            vehicle_id: "required",
-                            customer_id: "required",
-                            product_id: "required",
-                            quantumProduct: "required",
-                            weight: "required",
-                            cashRevenue: "required",
-                            cashDelivery: "required",
-                            cashReceive: "required",
-                            receiver: "required",
-                            receiveDate: "required",
-                            receivePlace: "required",
-                            deliveryPlace: "required",
-                            voucherNumber: "required",
-                            voucherQuantumProduct: "required"
+                            paidAmt: {
+                                required: true,
+                                min: 1
+                            }
                         },
+                        ignore: ".ignore",
                         messages: {
-                            vehicle_id: "Vui lòng chọn xe",
-                            customer_id: "Vui lòng chọn khách hàng",
-                            product_id: "Vui lòng chọn hàng",
-                            quantumProduct: "Vui lòng nhập số lượng hàng",
-                            weight: "Vui lòng nhập trọng lượng",
-                            cashRevenue: "Vui lòng nhập doanh thu",
-                            cashDelivery: "Vui lòng nhập tiền giao",
-                            cashReceive: "Vui lòng nhập tiền nhận",
-                            receiver: "Vui lòng nhập người nhận",
-                            receiveDate: "Vui lòng nhập ngày nhận",
-                            receivePlace: "Vui lòng nhập nơi nhận",
-                            deliveryPlace: "Vui lòng nhập nơi giao",
-                            voucherNumber: "Vui lòng nhập số chứng từ",
-                            voucherQuantumProduct: "Vui lòng nhập số lượng hàng trên chứng từ"
+                            paidAmt: {
+                                required: "Vui lòng nhập số tiền thanh toán.",
+                                min: "Số tiền trả phải lớn hơn 0"
+                            }
                         }
                     });
                 },
                 clearValidation: function (idForm) {
                     $(idForm).find("label[class=error]").remove();
-//                    var validator = $(idForm).validate();
-//                    validator.resetForm();
                 },
 
                 save: function () {
-                    debtGarageView.formValidate();
-                    if ($("#frmControl").valid()) {
-                        if (debtGarageView.action != 'delete') {
-                            if ($("#vehicle_id").attr('data-vehicleId') == '') {
-                                debtGarageView.showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
-                                return;
-                            }
-                            if ($("#customer_id").attr('data-customerId') == '') {
-                                debtGarageView.showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
-                                return;
-                            }
-                            if ($("#product_id").attr('data-productId') == '') {
-                                debtGarageView.showNotification('warning', 'Vui lòng chọn một hàng có trong danh sách.');
-                                return;
-                            }
-                        }
+                    var sendToServer = {
+                        _token: _token,
+                        _transport: debtGarageView.current.id
+                    };
+                    console.log("CLIENT");
+                    console.log(sendToServer._transport);
+                    $.ajax({
+                        url: url + 'debt-garage/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 201) {
+                            //Remove and Add Transport
+                            var Old = _.find(debtGarageView.dataTransport, function (o) {
+                                return o.id == sendToServer._transport;
+                            });
+                            var indexOfOld = _.indexOf(debtGarageView.dataTransport, Old);
+                            data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + ' ' + data['transport']['vehicles_vehicleNumber'];
+                            data['transport'].debt = data['transport']['cashRevenue'] - data['transport']['cashReceive'];
+                            data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
+                            debtGarageView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
+                            //reload 2 table
+                            debtGarageView.table.clear().rows.add(debtGarageView.dataTransport).draw();
+
+                            //call search Method
+                            debtGarageView.dataSearch = debtGarageView.dataTransport;
+                            debtGarageView.searchTransport();
+
+                            //clear Input
+                            debtGarageView.clearInput();
+
+                            //Show notification
+                            showNotification("success", "Thanh toán thành công!");
+                            debtGarageView.displayModal("hide", "#modal-notification");
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                saveInvoiceCustomer: function () {
+                    debtGarageView.formValidate();
+                    if ($("#frmInvoice").valid()) {
                         debtGarageView.fillFormDataToCurrentObject();
 
                         var sendToServer = {
                             _token: _token,
                             _action: debtGarageView.action,
-                            _transport: debtGarageView.current
+                            _invoiceCustomer: debtGarageView.currentInvoiceGarage,
+                            _array_transportId: debtGarageView.array_transportId
                         };
-                        if (debtGarageView.action == 'delete') {
-                            sendToServer._id = debtGarageView.idDelete;
-                        }
                         console.log("CLIENT");
-                        console.log(sendToServer._transport);
+                        console.log(sendToServer);
                         $.ajax({
-                            url: url + 'transport/modify',
+                            url: url + 'invoice-garage/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer
@@ -701,55 +1387,297 @@
                             console.log("SERVER");
                             console.log(data);
                             if (jqXHR.status == 201) {
-                                switch (debtGarageView.action) {
-                                    case 'add':
-                                        data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
-                                        debtGarageView.dataTransport.push(data['transport'][0]);
+                                var invoiceCustomer = data['invoiceCustomer'];
+                                var invoiceCustomerDetail = data['invoiceCustomerDetail'];
+                                debtGarageView.invoiceCode = data['invoiceCode'];
+                                invoiceCustomer.debt = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
 
-                                        debtGarageView.dataVoucherTransport = _.union(debtGarageView.dataVoucherTransport, data['voucherTransport']);
-
-                                        debtGarageView.showNotification("success", "Thêm thành công!");
-                                        break;
-                                    case 'update':
+                                if(debtGarageView.action == 'new'){
+                                    //Update InvoiceCustomer_Id for Transports
+                                    for(var i = 0; i < debtGarageView.array_transportId.length; i++){
                                         var Old = _.find(debtGarageView.dataTransport, function (o) {
-                                            return o.id == sendToServer._transport.id;
+                                            return o.id == debtGarageView.array_transportId[i];
                                         });
-                                        var indexOfOld = _.indexOf(debtGarageView.dataTransport, Old);
+                                        Old['invoiceCustomer_id'] = invoiceCustomer['id'];
+                                        Old['invoiceCode'] = invoiceCustomer['invoiceCode'];
+                                    }
 
-                                        data['transport'][0].fullNumber = data['transport'][0]['vehicles_areaCode'] + '-' + data['transport'][0]['vehicles_vehicleNumber'];
-                                        debtGarageView.dataTransport.splice(indexOfOld, 1, data['transport'][0]);
+                                    //add InvoiceCustomer
+                                    debtGarageView.dataInvoiceGarage.push(invoiceCustomer);
 
-                                        _.remove(debtGarageView.dataVoucherTransport, function (currentObject) {
-                                            return currentObject.transport_id === sendToServer._transport.id;
-                                        });
-                                        debtGarageView.dataVoucherTransport = debtGarageView.dataVoucherTransport.concat(data['voucherTransport']);
+                                    //add InvoiceCustomerDetails
+                                    debtGarageView.dataInvoiceGarageDetail.push(invoiceCustomerDetail);
 
-                                        debtGarageView.showNotification("success", "Cập nhật thành công!");
-                                        debtGarageView.hideControl();
-                                        break;
-                                    case 'delete':
-                                        var Old = _.find(debtGarageView.dataTransport, function (o) {
-                                            return o.id == sendToServer._id;
-                                        });
-                                        var indexOfOld = _.indexOf(debtGarageView.dataTransport, Old);
-                                        debtGarageView.dataTransport.splice(indexOfOld, 1);
-                                        debtGarageView.showNotification("success", "Xóa thành công!");
-                                        debtGarageView.displayModal("hide", "#modal-confirmDelete");
-                                        break;
-                                    default:
-                                        break;
+                                    //reload 2 table & search
+                                    debtGarageView.dataSearch = [];
+                                    debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
+                                    debtGarageView.tagsCustomerNameTransport = [];
+
+                                    debtGarageView.dataSearchInvoiceGarage = debtGarageView.dataInvoiceGarage;
+                                    debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataSearchInvoiceGarage).draw();
+                                    debtGarageView.searchInvoice();
+
+                                    //clear Input
+                                    debtGarageView.clearInput();
+                                    debtGarageView.clearValidation("#frmInvoice");
+                                    debtGarageView.hideControl();
+
+                                    //Show notification
+                                    showNotification("success", "Thanh toán thành công!");
+                                } else {
+                                    //Remove & Add InvoiceCustomer
+                                    var Old = _.find(debtGarageView.dataInvoiceGarage, function (o) {
+                                        return o.id == sendToServer._invoiceCustomer.id;
+                                    });
+                                    var indexOfOld = _.indexOf(debtGarageView.dataInvoiceGarage, Old);
+                                    debtGarageView.dataInvoiceGarage.splice(indexOfOld, 1, invoiceCustomer);
+
+                                    //add InvoiceCustomerDetails
+                                    debtGarageView.dataInvoiceGarageDetail.push(invoiceCustomerDetail);
+
+                                    //reload 2 table
+                                    debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataInvoiceGarage).draw();
+
+                                    //fill data to table InvoiceCustomerDetail
+                                    var data = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
+                                        return o.invoiceCustomer_id == sendToServer._invoiceCustomer.id;
+                                    });
+                                    if(typeof data === 'undefined') return;
+                                    debtGarageView.fillDataToDatatableInvoiceGarageDetail(data);
+
+                                    //call search Method
+                                    debtGarageView.dataSearchInvoiceGarage = debtGarageView.dataInvoiceGarage;
+                                    debtGarageView.searchInvoice();
+
+                                    //clear Input
+                                    $("input[id=paidAmt]").val('');
+                                    $("textarea[id=note]").val('');
+
+                                    var prePaid = parseInt(sendToServer._invoiceCustomer['paidAmt']);
+                                    var debtReal = parseInt($("#debt-real").val()) - prePaid;
+                                    $("input[id=debt]").val(debtReal);
+                                    $("input[id=debt-real]").val(debtReal);
+                                    $("#paidAmt").focus();
+
+                                    //Show notification
+                                    showNotification("success", "Thanh toán thành công!");
                                 }
-                                debtGarageView.table.clear().rows.add(debtGarageView.dataTransport).draw();
-                                debtGarageView.clearInput();
+                            } else if (jqXHR.status == 203){
+                                showNotification("error", "Tác vụ thất bại! Mã HĐ này đã tồn tại. Vui lòng nhập một mã HĐ khác và thử lại.");
                             } else {
-                                debtGarageView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            debtGarageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#frmControl").find("label[class=error]").css("color", "red");
+                        $("form#frmInvoice").find("label[class=error]").css("color", "red");
                     }
+                },
+
+                printReview: function(invoiceCustomerDetail_id) {
+                    debtGarageView.displayModal('show', '#modal-printReview');
+                    console.log(invoiceCustomerDetail_id);
+                },
+                attachFile: function(invoiceCustomerDetail_id) {
+                    console.log(invoiceCustomerDetail_id);
+                },
+
+                clearSearch: function (tableName) {
+                    if (tableName == "transport") {
+                        $("#dateSearchTransport").find(".start").datepicker('update', '');
+                        $("#dateSearchTransport").find(".end").datepicker('update', '');
+                        $("input[id=custName_transport]").val('');
+                        debtGarageView.searchTransport();
+                    } else {
+                        $("#dateSearchInvoice").find(".start").datepicker('update', '');
+                        $("#dateSearchInvoice").find(".end").datepicker('update', '');
+                        $("input[id=custName_invoice]").val('');
+                        debtGarageView.searchInvoice();
+                    }
+
+                },
+                searchTransport: function (money) {
+                    found = debtGarageView.searchExportInvoice(debtGarageView.dataTransport);
+
+                    if(typeof money === 'undefined')
+                        found = debtGarageView.searchStatusMoney(found);
+                    else
+                        found = debtGarageView.searchStatusMoney(found, money.value);
+
+                    found = debtGarageView.searchCustomer(found);
+                    found = debtGarageView.searchDate(found);
+
+                    debtGarageView.dataSearch = found;
+                    debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
+
+                    debtGarageView.displayButtonExportInvoice();
+
+                    //fill data to listSearch
+                    debtGarageView.tagsCustomerNameTransport = _.map(debtGarageView.dataSearch, 'customers_fullName');
+                    debtGarageView.renderAutoCompleteSearch();
+                },
+                searchInvoice: function () {
+                    found = debtGarageView.searchStatusMoneyInvoice(debtGarageView.dataInvoiceGarage);
+
+                    found = debtGarageView.searchCustomerInvoice(found);
+                    found = debtGarageView.searchDateInvoice(found);
+
+                    debtGarageView.dataSearchInvoiceGarage = found;
+                    debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataSearchInvoiceGarage).draw();
+
+                    //fill data to listSearch
+                    debtGarageView.tagsCustomerNameInvoice = _.map(debtGarageView.dataSearchInvoiceGarage, 'customers_fullName');
+                    debtGarageView.renderAutoCompleteSearch();
+                },
+
+                searchDate: function(data){
+                    fromDate = $("#dateSearchTransport").find(".start").val();
+                    toDate = $("#dateSearchTransport").find(".end").val();
+                    if(fromDate == '' || toDate == '')
+                        return data;
+
+                    fromDate = moment(fromDate, "DD-MM-YYYY");
+                    toDate = moment(toDate, "DD-MM-YYYY");
+                    if (!fromDate.isValid() && !toDate.isValid())
+                        return data;
+
+                    found = _.filter(data, function(o){
+                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+                    });
+                    return found;
+                },
+                searchCustomer: function(data){
+                    custName = $("#custName_transport").val();
+                    if(custName == '')
+                        return data;
+
+                    found = _.filter(data, function(o){
+                        return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                    });
+                    return found;
+                },
+                searchExportInvoice: function(data){
+                    invoice = $("#invoiceUp").find("input:checked").val();
+                    found = _.filter(data, function(o){
+                        if (invoice == 'All'){
+                            return true;
+                        } else if (invoice == 'Invoice'){
+                            return o.invoiceCustomer_id != null;
+                        } else {
+                            return o.invoiceCustomer_id == null;
+                        }
+                    });
+                    return found;
+                },
+                searchStatusMoney: function(data, value){
+                    if(typeof value === 'undefined')
+                        money = $("select[id=statusMoney]").val();
+                    else
+                        money = value;
+                    found = _.filter(data, function(o){
+                        if (money == 'FullPay'){
+                            return o.cashRevenue == o.cashReceive;
+                        } else if (money == 'PrePay'){
+                            return o.cashReceive != 0 && o.cashRevenue > o.cashReceive;
+                        } else if (money == 'NotPay'){
+                            return o.cashReceive == 0;
+                        } else {
+                            return true;
+                        }
+                    });
+                    return found;
+                },
+
+                searchDateInvoice: function(data){
+                    fromDate = $("#dateSearchInvoice").find(".start").val();
+                    toDate = $("#dateSearchInvoice").find(".end").val();
+                    if(fromDate == '' || toDate == '')
+                        return data;
+
+                    fromDate = moment(fromDate, "DD-MM-YYYY");
+                    toDate = moment(toDate, "DD-MM-YYYY");
+                    if (!fromDate.isValid() && !toDate.isValid())
+                        return data;
+
+                    found = _.filter(data, function(o){
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+                    });
+                    return found;
+                },
+                searchCustomerInvoice: function(data){
+                    custName = $("#custName_invoice").val();
+                    if(custName == '')
+                        return data;
+
+                    found = _.filter(data, function(o){
+                        return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                    });
+                    return found;
+                },
+                searchStatusMoneyInvoice: function(data){
+                    money = $("#invoiceDown").find("input:checked").val();
+                    found = _.filter(data, function(o){
+                        if (money == 'All'){
+                            return true;
+                        } else if (money == 'StillDebt'){
+                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+                        } else {
+                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+                        }
+                    });
+                    return found;
+                },
+
+                getListCurrentRowTransport: function() {
+                    debtGarageView.array_transportId = [];
+                    $(debtGarageView.table.$('tr', {"filter":"applied"}).each( function () {
+                        debtGarageView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
+                    } ));
+                },
+                computeDebt: function(paidAmt){
+                    console.log(paidAmt);
+                    paidAmt = convertStringToNumber(paidAmt);
+                    console.log(paidAmt);
+
+                    var debtReal = asNumberFromCurrency("#debt-real");
+                    debt = debtReal - paidAmt;
+                    if(debtReal - paidAmt < 0){
+                        debt = 0;
+                    }
+                    $("input[id=debt]").val(debtReal - paidAmt);
+                    formatCurrency(".currency");
+                },
+                computeVAT: function(hasVat){
+                    console.log(hasVat);
+                    hasVat = convertStringToNumber(hasVat);
+                    console.log(hasVat);
+                    var notVat = asNumberFromCurrency("#notVAT");
+                    var vat = ((hasVat - notVat) / notVat) * 100;
+                    $("input[id=VAT]").val(vat);
+
+                    var prePaid = asNumberFromCurrency("#prePaid");
+                    var paidAmt = asNumberFromCurrency("#paidAmt");
+                    $("input[id=debt-real]").val(hasVat - prePaid);
+                    $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
+                    formatCurrency(".currency");
+                },
+                computeHasVAT: function(vat, e){
+//                    if((e.keyCode == 8 || e.keyCode == 46) && (vat == 0 || vat == '')) return;
+
+                    console.log(vat);
+                    if(vat == '') vat = 0;
+                    var notVat = asNumberFromCurrency('#notVAT');
+                    var hasVat = notVat + ((vat/100) * notVat);
+                    $("input[id=hasVAT]").val(hasVat);
+
+                    var prePaid = asNumberFromCurrency('#prePaid');
+                    var paidAmt = asNumberFromCurrency('#paidAmt');
+                    $("input[id=debt-real]").val(hasVat - prePaid);
+                    $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
+                    formatCurrency(".currency");
                 }
             };
             debtGarageView.loadData();

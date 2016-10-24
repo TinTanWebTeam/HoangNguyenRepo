@@ -52,7 +52,7 @@ class CostTableSeeder extends Seeder
             'active' => '1',
             'transport_id' => '4',
             'price_id' => '1',
-            'vehicle_id' => '1'
+            'vehicle_id' => '4'
         ]);
 
         \App\Cost::create([
@@ -63,7 +63,7 @@ class CostTableSeeder extends Seeder
             'active' => '1',
             'transport_id' => '5',
             'price_id' => '2',
-            'vehicle_id' => '2'
+            'vehicle_id' => '5'
         ]);
 
         \App\Cost::create([

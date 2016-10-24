@@ -440,6 +440,7 @@ class CustomerManagementController extends Controller
             switch ($action) {
                 case 'add':
                     $transportNew = new Transport();
+                    $transportNew->transportCode = $this->generateTransportCode();
                     $transportNew->weight = $weight;
                     $transportNew->quantumProduct = $quantumProduct;
                     $transportNew->cashRevenue = $cashRevenue;
@@ -711,6 +712,15 @@ class CustomerManagementController extends Controller
             DB::rollBack();
             return response()->json(['msg' => $ex], 404);
         }
+    }
+
+    public function generateTransportCode()
+    {
+        $transportCode = "DH" . date('ymd');
+
+        $stt = Transport::where('transportCode', 'like', $transportCode . '%')->get()->count() + 1;
+        $transportCode .= substr("00" . $stt, -3);
+        return $transportCode;
     }
 
     /*

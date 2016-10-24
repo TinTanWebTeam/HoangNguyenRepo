@@ -12,6 +12,7 @@ class TransportTableSeeder extends Seeder
     public function run()
     {
         \App\Transport::create([
+            'transportCode'         => 'DH160915001',
             'weight'                => '8',
             'quantumProduct'        => '80',
             'cashRevenue'           => '5000000',
@@ -36,6 +37,7 @@ class TransportTableSeeder extends Seeder
         ]);
 
         \App\Transport::create([
+            'transportCode'         => 'DH160725001',
             'weight'                => '9',
             'quantumProduct'        => '90',
             'cashRevenue'           => '7000000',
@@ -60,6 +62,7 @@ class TransportTableSeeder extends Seeder
         ]);
 
         \App\Transport::create([
+            'transportCode'         => 'DH161015001',
             'weight'                => '10',
             'quantumProduct'        => '100',
             'cashRevenue'           => '3000000',
@@ -85,6 +88,7 @@ class TransportTableSeeder extends Seeder
 
         //
         \App\Transport::create([
+            'transportCode'         => 'DH160915002',
             'weight'                => '8',
             'quantumProduct'        => '80',
             'cashRevenue'           => '5000000',
@@ -109,6 +113,7 @@ class TransportTableSeeder extends Seeder
         ]);
 
         \App\Transport::create([
+            'transportCode'         => 'DH160725002',
             'weight'                => '9',
             'quantumProduct'        => '90',
             'cashRevenue'           => '7000000',
@@ -133,6 +138,7 @@ class TransportTableSeeder extends Seeder
         ]);
 
         \App\Transport::create([
+            'transportCode'         => 'DH161015002',
             'weight'                => '10',
             'quantumProduct'        => '100',
             'cashRevenue'           => '3000000',

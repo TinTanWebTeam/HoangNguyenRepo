@@ -90,12 +90,15 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'DebtManagement'], function () {
         /*GET VIEW*/
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');
-        Route::get('/debt-vehicle-outside', 'DebtManagementController@getViewDebtVehicleOutside');
+        Route::get('/debt-vehicle-outside', 'DebtManagementController@getViewDebtGarage');
         /*GET DATA*/
         Route::get('/debt-customer/transports','DebtManagementController@getDataDebtCustomer');
+        Route::get('/debt-garage/transports','DebtManagementController@getDataDebtGarage');
         /*POST MODIFY*/
         Route::post('/debt-customer/modify','DebtManagementController@postModifyDebtCustomer');
         Route::post('/invoice-customer/modify','DebtManagementController@postModifyInvoiceCustomer');
+        Route::post('/debt-garage/modify','DebtManagementController@postModifyDebtGarage');
+        Route::post('/invoice-garage/modify','DebtManagementController@postModifyInvoiceGarage');
     });
     //Chi phí
     Route::group(['middleware' => 'CostManagement'], function () {

@@ -851,7 +851,7 @@
 
                 loadData: function () {
                     $.ajax({
-                        url: url + '/debt-customer/transports',
+                        url: url + 'debt-customer/transports',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
@@ -945,6 +945,13 @@
                     if(debtCustomerView.current['invoiceCustomer_id'] != null){
                         $("#modal-notification").find(".modal-title").html("Cảnh báo");
                         $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
+                        debtCustomerView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
+                    if(parseInt(debtCustomerView.current['cashRevenue']) == parseInt(debtCustomerView.current['cashReceive'])){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
                         debtCustomerView.displayModal('show', '#modal-notification');
                         return;
                     }
@@ -1334,8 +1341,9 @@
                                 return o.id == sendToServer._transport;
                             });
                             var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
-                            data['transport'].fullNumber = data['transport']['areaCode'] + ' ' + data['transport']['vehicleNumber'];
+                            data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + ' ' + data['transport']['vehicles_vehicleNumber'];
                             data['transport'].debt = data['transport']['cashRevenue'] - data['transport']['cashReceive'];
+                            data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
                             debtCustomerView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
                             //reload 2 table
@@ -1636,6 +1644,10 @@
                     console.log(paidAmt);
 
                     var debtReal = asNumberFromCurrency("#debt-real");
+                    debt = debtReal - paidAmt;
+                    if(debtReal - paidAmt < 0){
+                        debt = 0;
+                    }
                     $("input[id=debt]").val(debtReal - paidAmt);
                     formatCurrency(".currency");
                 },
