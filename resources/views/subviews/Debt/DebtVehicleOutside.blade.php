@@ -711,7 +711,7 @@
                         data: data,
                         columns: [
                             {data: 'id'},
-                            {data: 'customers_fullName'},
+                            {data: 'garages_name'},
                             {data: 'invoiceCode'},
                             {
                                 data: 'exportDate',
@@ -941,14 +941,14 @@
                         return o.id == transportId;
                     }), true);
 
-                    if(debtGarageView.current['invoiceCustomer_id'] != null){
+                    if(debtGarageView.current['invoiceGarage_id'] != null){
                         $("#modal-notification").find(".modal-title").html("Cảnh báo");
                         $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
                         debtGarageView.displayModal('show', '#modal-notification');
                         return;
                     }
 
-                    if(parseInt(debtGarageView.current['cashRevenue']) == parseInt(debtGarageView.current['cashReceive'])){
+                    if(parseInt(debtGarageView.current['cashDelivery']) == parseInt(debtGarageView.current['cashPreDelivery'])){
                         $("#modal-notification").find(".modal-title").html("Cảnh báo");
                         $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
                         debtGarageView.displayModal('show', '#modal-notification');
@@ -981,8 +981,8 @@
                             });
 
                             if(typeof currentRow !== 'undefined'){
-                                totalPay += parseInt(currentRow['cashRevenue']);
-                                prePaid += parseInt(currentRow['cashReceive']);
+                                totalPay += parseInt(currentRow['cashDelivery']);
+                                prePaid += parseInt(currentRow['cashPreDelivery']);
                             }
                         }
 
@@ -1017,7 +1017,7 @@
                         debtGarageView.invoiceGarageId = invoiceCustomer_id;
                         //fill data to table InvoiceCustomerDetail
                         var data = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
-                            return o.invoiceCustomer_id == invoiceCustomer_id;
+                            return o.invoiceGarage_id == invoiceCustomer_id;
                         });
                         if(typeof data === 'undefined') return;
                         debtGarageView.fillDataToDatatableInvoiceGarageDetail(data);
@@ -1104,10 +1104,10 @@
 
                             //Remove InvoiceCustomer_id in Transport
                             dataTransport = _.filter(debtGarageView.dataTransport, function(o){
-                                return o.invoiceCustomer_id == invoiceCustomerId;
+                                return o.invoiceGarage_id == invoiceCustomerId;
                             });
                             for(i = 0; i < dataTransport.length; i++){
-                                dataTransport[i]['invoiceCustomer_id'] = null;
+                                dataTransport[i]['invoiceGarage_id'] = null;
                                 dataTransport[i]['invoiceCode'] = null;
                             }
                             debtGarageView.dataSearch = debtGarageView.dataTransport;
@@ -1190,7 +1190,7 @@
 
                                 //fill data to table InvoiceCustomerDetail
                                 var data = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
-                                    return o.invoiceCustomer_id == invoiceCustomer['id'];
+                                    return o.invoiceGarage_id == invoiceCustomer['id'];
                                 });
                                 if(typeof data === 'undefined') return;
                                 debtGarageView.fillDataToDatatableInvoiceGarageDetail(data);
@@ -1226,10 +1226,10 @@
 
                                 //Remove InvoiceCustomer_id in Transport
                                 dataTransport = _.filter(debtGarageView.dataTransport, function(o){
-                                    return o.invoiceCustomer_id == invoiceCustomerId;
+                                    return o.invoiceGarage_id == invoiceCustomerId;
                                 });
                                 for(i = 0; i < dataTransport.length; i++){
-                                    dataTransport[i]['invoiceCustomer_id'] = null;
+                                    dataTransport[i]['invoiceGarage_id'] = null;
                                     dataTransport[i]['invoiceCode'] = null;
                                 }
                                 debtGarageView.dataSearch = debtGarageView.dataTransport;
@@ -1260,7 +1260,7 @@
                 },
                 deleteInvoiceCustomerDetailConfirm: function (invoiceCustomerDetail_id) {
                     array_invoiceCustomerDetail_of_invoiceCustomer = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
-                        return o.invoiceCustomer_id == debtGarageView.invoiceGarageId;
+                        return o.invoiceGarage_id == debtGarageView.invoiceGarageId;
                     });
                     if(typeof array_invoiceCustomerDetail_of_invoiceCustomer === 'undefined'){
                         showNotification("error", "Có lỗi xảy ra. Vui lòng làm mới lại trình duyệt.");
@@ -1341,8 +1341,8 @@
                             });
                             var indexOfOld = _.indexOf(debtGarageView.dataTransport, Old);
                             data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + ' ' + data['transport']['vehicles_vehicleNumber'];
-                            data['transport'].debt = data['transport']['cashRevenue'] - data['transport']['cashReceive'];
-                            data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
+                            data['transport'].debt = data['transport']['cashDelivery'] - data['transport']['cashPreDelivery'];
+                            data['transport'].cashProfit_real = parseInt(data['transport']['cashPreDelivery']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
                             debtGarageView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
                             //reload 2 table
@@ -1398,7 +1398,7 @@
                                         var Old = _.find(debtGarageView.dataTransport, function (o) {
                                             return o.id == debtGarageView.array_transportId[i];
                                         });
-                                        Old['invoiceCustomer_id'] = invoiceCustomer['id'];
+                                        Old['invoiceGarage_id'] = invoiceCustomer['id'];
                                         Old['invoiceCode'] = invoiceCustomer['invoiceCode'];
                                     }
 
@@ -1440,7 +1440,7 @@
 
                                     //fill data to table InvoiceCustomerDetail
                                     var data = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
-                                        return o.invoiceCustomer_id == sendToServer._invoiceCustomer.id;
+                                        return o.invoiceGarage_id == sendToServer._invoiceCustomer.id;
                                     });
                                     if(typeof data === 'undefined') return;
                                     debtGarageView.fillDataToDatatableInvoiceGarageDetail(data);
@@ -1564,9 +1564,9 @@
                         if (invoice == 'All'){
                             return true;
                         } else if (invoice == 'Invoice'){
-                            return o.invoiceCustomer_id != null;
+                            return o.invoiceGarage_id != null;
                         } else {
-                            return o.invoiceCustomer_id == null;
+                            return o.invoiceGarage_id == null;
                         }
                     });
                     return found;
@@ -1578,11 +1578,11 @@
                         money = value;
                     found = _.filter(data, function(o){
                         if (money == 'FullPay'){
-                            return o.cashRevenue == o.cashReceive;
+                            return o.cashDelivery == o.cashPreDelivery;
                         } else if (money == 'PrePay'){
-                            return o.cashReceive != 0 && o.cashRevenue > o.cashReceive;
+                            return o.cashPreDelivery != 0 && o.cashDelivery > o.cashPreDelivery;
                         } else if (money == 'NotPay'){
-                            return o.cashReceive == 0;
+                            return o.cashPreDelivery == 0;
                         } else {
                             return true;
                         }
