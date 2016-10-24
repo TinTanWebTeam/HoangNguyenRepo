@@ -100,7 +100,6 @@ class ReportController extends Controller
                             ->whereBetween(\DB::raw('DATE(receiveDate)'), [$dateStart, $dateEnd])
                             ->orderBy('receiveDate')
                             ->get();
-
                         $response = [
                             'msg'             => 'Get data detail report success',
                             'tableDataSearch' => $tableDataSearch,

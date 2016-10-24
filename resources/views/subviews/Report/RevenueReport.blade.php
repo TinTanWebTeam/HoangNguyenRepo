@@ -140,6 +140,7 @@
                             revenueReportView.fillDataToDataTableYear(data['tableReportMonth']);
                             revenueReportView.tableOptionYear = data['year'];
                             revenueReportView.loadSelectBoxYear(data['year']);
+                            revenueReportView.test();
                         } else {
                             revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -301,6 +302,16 @@
 
 
                 },
+                test: function () {
+                    var yearNow = moment().year();
+                    yearOption = _.find( revenueReportView.tableOptionYear, function (o) {
+                        return  moment(o.receiveDate).format("YYYY") == yearNow;
+                            });
+                    if (typeof yearOption === 'undefined')
+                        return;
+                    $("select[id='optionYear']").val(yearNow);
+                    revenueReportView.listMonthReport();
+                },
                 listMonthReport: function () {
                     var data = $("select[id='optionYear']").val();
                     var sendToServer = null;
@@ -379,7 +390,6 @@
                             })
                 },
                 loadSelectBoxYear: function (lstYear) {
-
                     //reset selectbox
                     $('#optionYear')
                             .find('option')
