@@ -88,8 +88,8 @@
                                         <th>Nơi giao</th>
                                         <th>Khách hàng</th>
                                         <th>Doanh thu</th>
-                                        <th>Giao xe</th>
-                                        <th>Giao trước</th>
+                                        <th>Chi phí<br>giao xe</th>
+                                        <th>Giao trước<br>cho xe</th>
                                         <th>Nhận</th>
                                         <th>Chi phí</th>
                                         <th>Lợi nhuận</th>
