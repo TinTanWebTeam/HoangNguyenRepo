@@ -29,36 +29,83 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <table class="table table-bordered table-hover" id="table-data">
-                        <thead>
-                        <tr class="active">
-                            <th>a</th>
-                            <th>a</th>
-                            <th>a</th>
-                            <th>Sửa/ Xóa</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>aaaa</td>
-                            <td>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-success  btn-circle">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </div>
+                    <p class="lead text-primary text-left"><strong>Chi tiết giao hàng</strong></p>
+                    <div class="row">
+                        <div class="col-md-4" id="dateSearchDetailDelivery">
+                            <input id="dateStart" type="text" class="date start"/> đến
+                            <input id="dateEnd" type="text" class="date end"/>
+
+                        </div>
+                        <div class="col-md-8" style="padding-left: 0">
+                            <button onclick="" id="btnSearchTransport"
+                                    class="btn btn-sm btn-info marginRight"><i
+                                        class="fa fa-search" aria-hidden="true"></i> Tìm
+                            </button>
+                            <button class="btn btn-sm btn-default" onclick="">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                            </button>
+
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="table-data">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Khách hàng</th>
+                                        <th>Số chuyến</th>
+                                        <th>Đã thanh toán</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="dataTable_wrapper">
+                    <p class="lead text-primary text-left"><strong>Các chuyến theo tháng</strong></p>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group form-md-line-input">
+                                <label for="optionYear"><b>Chọn năm</b></label>
+                                <select class="form-control" id="optionYear"
+                                        name="optionYear"
+                                        onchange="">
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-bordered table-hover" id="table-data-year">
+                                        <thead>
+                                        <tr class="active">
+                                            <th>Tháng</th>
+                                            <th>Số chuyến</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="btn-del-edit">
-                                    <div class="btn btn-danger btn-circle">
-                                        <i class="glyphicon glyphicon-remove"></i>
-                                    </div>
+                                <div class="col-md-6 ">
+                                    <div id="container"></div>
                                 </div>
 
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div> <!-- end table-reposive -->
@@ -69,11 +116,77 @@
         if (typeof (historyDeliveryReportView) === 'undefined') {
             historyDeliveryReportView = {
                 table: null,
+                tableYear: null,
+                data: null,
+                action: null,
+                tableDetailRevenue: null,
+                tableRevenueMonth: null,
+                tableOptionYear: null,
+                current: null,
                 loadData: function () {
                     historyDeliveryReportView.table = $('#table-data').DataTable({
                         language: languageOptions
-                    })
-                }
+                    });
+                    historyDeliveryReportView.loadChart();
+                },
+                loadChart: function () {
+                    $('#container').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Doanh thu / lợi nhuận theo tháng'
+                        },
+
+                        xAxis: {
+                            categories: [
+                                'Jan',
+                                'Feb',
+                                'Mar',
+                                'Apr',
+                                'May',
+                                'Jun',
+                                'Jul',
+                                'Aug',
+                                'Sep',
+                                'Oct',
+                                'Nov',
+                                'Dec'
+                            ],
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Đơn vị ( Vnd )'
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                            footerFormat: '</table>',
+                            shared: true,
+                            useHTML: true
+                        },
+                        plotOptions: {
+                            column: {
+                                pointPadding: 0.1,
+                                borderWidth: 0
+                            }
+                        },
+                        series: [{
+                            name: 'Tokyo',
+                            data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+
+                        }, {
+                            name: 'New York',
+                            data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+
+                        }]
+                    });
+
+                },
             };
             historyDeliveryReportView.loadData();
         } else {

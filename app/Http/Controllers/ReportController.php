@@ -97,10 +97,7 @@ class ReportController extends Controller
                         $tableDataSearch = \DB::table('transports')
                             ->join('customers', 'transports.customer_id', '=', 'customers.id')
                             ->select('transports.*', 'customers.fullName')
-                            ->whereBetween('receiveDate', [$dateStart , $dateEnd])
-//                            ->where(\DB::raw (DATE('receiveDate')),'<=','2016-10-03 00:00:00')
-//                            ->where(\DB::raw('receiveDate'),'>=','2016-10-01 00:00:00')
-//                            ->whereBetween('receiveDate', array('2016-10-01','2016-10-03'))
+                            ->whereBetween(\DB::raw('DATE(receiveDate)'), [$dateStart, $dateEnd])
                             ->orderBy('receiveDate')
                             ->get();
 

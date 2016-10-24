@@ -1,8 +1,4 @@
 <style>
-    .btn-del-edit {
-        float: left;
-        padding-right: 5px;
-    }
 
     ol.breadcrumb {
         border-bottom: 2px solid #e7e7e7
@@ -32,7 +28,7 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <p class="lead text-primary text-left"><strong>Chi tiết doanh Thu</strong></p>
+                    <p class="lead text-primary text-left"><strong>Chi tiết doanh thu</strong></p>
                     <div class="row">
                         <div class="col-md-4" id="dateSearchRevenueReport">
                             <input id="dateStart" type="text" class="date start"/> đến
