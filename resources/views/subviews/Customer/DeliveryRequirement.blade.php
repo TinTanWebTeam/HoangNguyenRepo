@@ -52,13 +52,15 @@
                     <!-- Chú thích -->
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-md-7">
-                            <i class="fa fa-user" aria-hidden="true" style="font-size: 1.2em; margin-right: 30px;"> Khách hàng</i>
+                            <i class="fa fa-user" aria-hidden="true" style="font-size: 1.2em; margin-right: 30px;">
+                                Khách hàng</i>
                             <i class="fa fa-truck" aria-hidden="true" style="font-size: 1.2em;"> Nhà xe ngoài</i>
                         </div>
                         <div class="col-md-5">
                             <span class="label label-danger" style="font-size: 1em;">Chưa thanh toán</span>
                             <span class="label label-primary" style="font-size: 1em;">Đã thanh toán</span>
-                            <span class="label label-success" style="font-size: 1em;">Đã thanh toán & xuất hóa đơn</span>
+                            <span class="label label-success"
+                                  style="font-size: 1em;">Đã thanh toán & xuất hóa đơn</span>
                         </div>
                     </div>
                     <div class="row">
@@ -134,7 +136,7 @@
                                             <label for="vehicle_id"><b>Xe</b></label>
                                             <input type="text" class="form-control cursor-copy" id="vehicle_id"
                                                    name="vehicle_id"
-                                                   readonly placeholder="Nhấp đôi để chọn xe"
+                                                   readonly placeholder="Nhấp đôi để chọn"
                                                    data-vehicleId=""
                                                    ondblclick="transportView.loadListVehicle()">
                                         </div>
@@ -144,19 +146,19 @@
                                             <label for="customer_id"><b>Khách hàng</b></label>
                                             <input type="text" class="form-control cursor-copy" id="customer_id"
                                                    name="customer_id"
-                                                   readonly placeholder="Nhấp đôi để chọn khách hàng"
+                                                   readonly placeholder="Nhấp đôi để chọn"
                                                    data-customerId=""
                                                    ondblclick="transportView.loadListCustomer()">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="product_id"><b>Hàng</b></label>
-                                            <input type="text" class="form-control cursor-copy" id="product_id"
-                                                   name="product_id"
-                                                   readonly placeholder="Nhấp đôi để chọn hàng"
-                                                   data-productId=""
-                                                   ondblclick="transportView.loadListProduct()">
+                                            <label for="product_name"><b>Hàng</b></label>
+                                            <div class="ui-widget">
+                                                <input type="text" class="form-control" id="product_name"
+                                                       name="product_name"
+                                                       data-productId="" placeholder="Nhập tên hàng">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -209,28 +211,28 @@
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input ">
                                     <label for="cashRevenue"><b>Doanh thu</b></label>
-                                    <input type="number" class="form-control" id="cashRevenue"
+                                    <input type="text" class="form-control currency" id="cashRevenue"
                                            name="cashRevenue">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for="cashDelivery"><b>Giao xe</b></label>
-                                    <input type="number" class="form-control" id="cashDelivery"
+                                    <input type="text" class="form-control currency" id="cashDelivery"
                                            name="cashDelivery">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for="cashPreDelivery"><b>Giao trước</b></label>
-                                    <input type="number" class="form-control" id="cashPreDelivery"
+                                    <input type="text" class="form-control currency" id="cashPreDelivery"
                                            name="cashPreDelivery">
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group form-md-line-input">
                                     <label for="cashReceive"><b>Nhận</b></label>
-                                    <input type="number" class="form-control" id="cashReceive"
+                                    <input type="text" class="form-control currency" id="cashReceive"
                                            name="cashReceive">
                                 </div>
                             </div>
@@ -301,7 +303,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="cost"><b>Số tiền</b></label>
-                                            <input type="number" class="form-control" id="cost" name="cost">
+                                            <input type="text" class="form-control currency" id="cost" name="cost">
                                         </div>
                                     </div>
                                 </div>
@@ -583,6 +585,73 @@
 </div>
 <!-- end Modal warningTransport -->
 
+<!-- Modal add Product -->
+<div class="row">
+    <div id="modal-addProduct" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Thêm hàng</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="frmProduct">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="productName"><b>Tên hàng</b></label>
+                                    <input type="text" class="form-control"
+                                           id="productName"
+                                           name="productName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="description"><b>Mô tả</b></label>
+                                    <textarea name="description" id="description" cols="10" rows="3" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="productType_id"><b>Loại hàng</b></label>
+                                    <select name="productType_id" id="productType_id" class="form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-offset-8 col-md-4">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="transportView.saveProduct()">
+                                            Hoàn tất
+                                        </button>
+                                        <button type="button" class="btn default"
+                                                onclick="
+                                                $('input[id=product_name]').val('');
+                                                $('#product_name').attr('data-productId', '');
+                                                transportView.displayModal('hide','#modal-addProduct')">Huỷ
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end add Product -->
+
 <script>
     $(function () {
         if (typeof transportView === 'undefined') {
@@ -590,7 +659,6 @@
                 table: null,
                 tableVehicle: null,
                 tableCustomer: null,
-                tableProduct: null,
                 tableVoucher: null,
 
                 dataTransport: null,
@@ -598,11 +666,15 @@
                 dataVoucherTransport: null,
                 dataStatus: null,
                 dataCostPrice: null,
+                dataProduct: null,
+                dataProductType: null,
 
                 arrayVoucher: [],
                 current: null,
                 action: null,
                 idDelete: null,
+                tagsProductName: [],
+
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -624,22 +696,6 @@
 
                     //Clear Validate
                 },
-                showNotification: function (type, msg) {
-                    switch (type) {
-                        case "info":
-                            toastr.info(msg);
-                            break;
-                        case "success":
-                            toastr.success(msg);
-                            break;
-                        case "warning":
-                            toastr.warning(msg);
-                            break;
-                        case "error":
-                            toastr.error(msg);
-                            break;
-                    }
-                },
                 clearInput: function () {
                     $("input[id='vehicle_id']").val('');
                     $("#vehicle_id").attr("data-vehicleId", "");
@@ -652,9 +708,10 @@
 
                     $("input[id='quantumProduct']").val('');
                     $("input[id='weight']").val('');
-                    $("input[id='cashRevenue']").val('');
-                    $("input[id='cashDelivery']").val('');
-                    $("input[id='cashReceive']").val('');
+                    $("input[id='cashRevenue']").val(0);
+                    $("input[id='cashDelivery']").val(0);
+                    $("input[id='cashPreDelivery']").val(0);
+                    $("input[id='cashReceive']").val(0);
                     $("input[id='receiver']").val('');
 //                    $("input[id='receiveDate']").val('');
                     $("input[id='receivePlace']").val('');
@@ -666,7 +723,7 @@
                     $("input[id='voucher_transport']").val('');
                     $("input[id='voucher_transport']").attr("voucher_transport", "");
 
-                    $("input[id='cost']").val('');
+                    $("input[id='cost']").val(0);
                     $("input[id='costs_note']").val('');
 
                     transportView.arrayVoucher = [];
@@ -736,6 +793,27 @@
                         "hideMethod": "fadeOut"
                     };
                 },
+                renderAutoCompleteSearch: function () {
+                    $("#product_name").autocomplete({
+                        source: transportView.tagsProductName
+                    });
+                },
+                renderEventFocusOut: function(){
+                    $("#product_name").focusout(function () {
+                        productName = this.value;
+                        if(productName == '') return;
+                        product = _.find(transportView.dataProduct, function (o) {
+                            return o.name == productName;
+                        });
+                        if (typeof product === "undefined") {
+                            transportView.loadSelectBox(transportView.dataProductType, 'productType_id', 'name');
+                            transportView.displayModal("show", "#modal-addProduct");
+                            $("input[id=productName]").val(productName);
+                        } else {
+                            $("#product_name").attr("data-productId", product.id);
+                        }
+                    });
+                },
 
                 loadData: function () {
                     $.ajax({
@@ -754,19 +832,26 @@
                             transportView.dataCostPrice = data['costPrices'];
                             transportView.loadSelectBox(transportView.dataCostPrice, 'costPrices_id', 'name');
                         } else {
-                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
 
                     transportView.renderDateTimePicker();
-
                     transportView.renderScrollbar();
-
                     transportView.renderEventTableModal();
-
                     transportView.renderCustomToastr();
+                    transportView.renderEventFocusOut();
+                    transportView.loadListProductType();
+                    transportView.loadListProduct();
+                    setEventFormatCurrency(".currency");
+                    formatCurrency(".currency");
+                    defaultZero("#cashRevenue");
+                    defaultZero("#cashDelivery");
+                    defaultZero("#cashPreDelivery");
+                    defaultZero("#cashReceive");
+                    defaultZero("#cost");
                 },
                 loadListVehicle: function () {
                     $.ajax({
@@ -797,10 +882,10 @@
                             });
                             transportView.displayModal("show", "#modal-vehicle");
                         } else {
-                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
                 loadListCustomer: function () {
@@ -828,10 +913,10 @@
                             });
                             transportView.displayModal("show", "#modal-customer");
                         } else {
-                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
                 loadListProduct: function () {
@@ -841,25 +926,30 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            if (transportView.tableProduct != null) {
-                                transportView.tableProduct.destroy();
-                            }
-                            transportView.tableProduct = $('#table-product').DataTable({
-                                language: languageOptions,
-                                data: data['products'],
-                                columns: [
-                                    {data: 'id'},
-                                    {data: 'productTypes_name'},
-                                    {data: 'name'},
-                                    {data: 'description'}
-                                ]
-                            });
-                            transportView.displayModal("show", "#modal-product");
+                            transportView.dataProduct = data['products'];
+                            transportView.tagsProductName = _.map(transportView.dataProduct, 'name');
+                            transportView.tagsProductName = _.union(transportView.tagsProductName);
+                            transportView.renderAutoCompleteSearch();
                         } else {
-                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                loadListProductType: function () {
+                    $.ajax({
+                        url: url + 'product-type/product-types',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            transportView.dataProductType = data['productTypes'];
+                        } else {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
                 loadListVoucher: function () {
@@ -897,10 +987,10 @@
 
                             transportView.displayModal("show", "#modal-voucher");
                         } else {
-                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
                 loadSelectBox: function (lstData, strId, propertyName) {
@@ -1113,8 +1203,8 @@
                     $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicles_id"]);
                     $("input[id='customer_id']").val(transportView.current["customers_fullName"]);
                     $("#customer_id").attr('data-customerId', transportView.current["customers_id"]);
-                    $("input[id='product_id']").val(transportView.current["products_name"]);
-                    $("#product_id").attr('data-productId', transportView.current["products_id"]);
+                    $("input[id='product_name']").val(transportView.current["products_name"]);
+                    $("#product_name").attr("data-productId", transportView.current["id"]);
 
                     $("input[id='quantumProduct']").val(transportView.current["quantumProduct"]);
                     $("input[id='weight']").val(transportView.current["weight"]);
@@ -1151,45 +1241,46 @@
                         transportView.current = {
                             vehicles_id: $("#vehicle_id").attr("data-vehicleId"),
                             customers_id: $("#customer_id").attr("data-customerId"),
-                            products_id: $("#product_id").attr("data-productId"),
+                            product_id: $("#product_name").attr("data-productId"),
                             quantumProduct: $("input[id='quantumProduct']").val(),
                             weight: $("input[id='weight']").val(),
-                            cashRevenue: $("input[id='cashRevenue']").val(),
-                            cashDelivery: $("input[id='cashDelivery']").val(),
-                            cashPreDelivery: $("input[id='cashPreDelivery']").val(),
-                            cashReceive: $("input[id='cashReceive']").val(),
+                            cashRevenue: asNumberFromCurrency("#cashRevenue"),
+                            cashDelivery: asNumberFromCurrency("#cashDelivery"),
+                            cashPreDelivery: asNumberFromCurrency("#cashPreDelivery"),
+                            cashReceive: asNumberFromCurrency("#cashReceive"),
                             receiver: $("input[id='receiver']").val(),
                             receiveDate: $("input[id='receiveDate']").val(),
                             receivePlace: $("input[id='receivePlace']").val(),
                             deliveryPlace: $("input[id='deliveryPlace']").val(),
                             voucherNumber: $("input[id='voucherNumber']").val(),
                             voucherQuantumProduct: $("input[id='voucherQuantumProduct']").val(),
-                            note: $("input[id='note']").val(),
+                            note: asNumberFromCurrency("#note"),
                             status_transport: $("select[id='status_transport']").val(),
-                            cost: $("input[id='cost']").val(),
-                            costs_note: $("input[id='costs_note']").val(),
+                            cost: asNumberFromCurrency("#cost"),
+                            costs_note: $("textarea[id='costs_note']").val(),
                             voucher_transport: transportView.arrayVoucher,
                             costPrices_id: $("select[id='costPrices_id']").val()
                         };
                     } else if (transportView.action == 'update') {
                         transportView.current.vehicles_id = $("#vehicle_id").attr("data-vehicleId");
                         transportView.current.customers_id = $("#customer_id").attr("data-customerId");
-                        transportView.current.products_id = $("#product_id").attr("data-productId");
+                        transportView.current.product_id = $("#product_name").attr("data-productId");
                         transportView.current.quantumProduct = $("input[id='quantumProduct']").val();
                         transportView.current.weight = $("input[id='weight']").val();
-                        transportView.current.cashRevenue = $("input[id='cashRevenue']").val();
-                        transportView.current.cashDelivery = $("input[id='cashDelivery']").val();
-                        transportView.current.cashReceive = $("input[id='cashReceive']").val();
+                        transportView.current.cashRevenue = asNumberFromCurrency("#cashRevenue");
+                        transportView.current.cashDelivery = asNumberFromCurrency("#cashDelivery");
+                        transportView.current.cashPreDelivery = asNumberFromCurrency("#cashPreDelivery");
+                        transportView.current.cashReceive = asNumberFromCurrency("#cashReceive");
                         transportView.current.receiver = $("input[id='receiver']").val();
                         transportView.current.receiveDate = $("input[id='receiveDate']").val();
                         transportView.current.receivePlace = $("input[id='receivePlace']").val();
                         transportView.current.deliveryPlace = $("input[id='deliveryPlace']").val();
                         transportView.current.voucherNumber = $("input[id='voucherNumber']").val();
                         transportView.current.voucherQuantumProduct = $("input[id='voucherQuantumProduct']").val();
-                        transportView.current.note = $("input[id='note']").val();
+                        transportView.current.note = $("textarea[id='note']").val();
                         transportView.current.status_transport = $("select[id='status_transport']").val();
-                        transportView.current.cost = $("input[id='cost']").val();
-                        transportView.current.costs_note = $("input[id='costs_note']").val();
+                        transportView.current.cost = asNumberFromCurrency("#cost");
+                        transportView.current.costs_note = $("textarea[id='costs_note']").val();
                         transportView.current.voucher_transport = transportView.arrayVoucher;
                         transportView.current.costPrices_id = $("select[id='costPrices_id']").val();
                     }
@@ -1223,6 +1314,12 @@
                     transportView.arrayVoucher = [];
                     transportView.current = null;
                     transportView.action = 'add';
+
+                    $("input[id=cashRevenue]").val(0);
+                    $("input[id=cashDelivery]").val(0);
+                    $("input[id=cashPreDelivery]").val(0);
+                    $("input[id=cashReceive]").val(0);
+                    $("input[id=cost]").val(0);
                     transportView.showControl();
                 },
                 deleteTransport: function (id) {
@@ -1236,7 +1333,7 @@
                         rules: {
                             vehicle_id: "required",
                             customer_id: "required",
-                            product_id: "required",
+                            product_name: "required",
                             quantumProduct: "required",
                             weight: "required",
                             cashRevenue: "required",
@@ -1254,7 +1351,7 @@
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
                             customer_id: "Vui lòng chọn khách hàng",
-                            product_id: "Vui lòng chọn hàng",
+                            product_name: "Vui lòng nhập hàng",
                             quantumProduct: "Vui lòng nhập số lượng hàng",
                             weight: "Vui lòng nhập trọng lượng",
                             cashRevenue: "Vui lòng nhập doanh thu",
@@ -1285,21 +1382,33 @@
                         }
                     });
                 },
+                validateProduct: function () {
+                    $("#frmProduct").validate({
+                        rules: {
+                            productName: "required",
+                            productType_id: "required"
+                        },
+                        messages: {
+                            productName: "Vui lòng nhập tên hàng",
+                            productType_id: "Vui lòng chọn loại hàng"
+                        }
+                    });
+                },
 
                 save: function () {
                     transportView.formValidate();
                     if ($("#frmControl").valid()) {
                         if (transportView.action != 'delete') {
                             if ($("#vehicle_id").attr('data-vehicleId') == '') {
-                                transportView.showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
+                                showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
                                 return;
                             }
                             if ($("#customer_id").attr('data-customerId') == '') {
-                                transportView.showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
+                                showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
                                 return;
                             }
-                            if ($("#product_id").attr('data-productId') == '') {
-                                transportView.showNotification('warning', 'Vui lòng chọn một hàng có trong danh sách.');
+                            if ($("#product_name").attr('data-productId') == '') {
+                                showNotification('warning', 'Vui lòng nhập hàng.');
                                 return;
                             }
                         }
@@ -1328,11 +1437,12 @@
                                 switch (transportView.action) {
                                     case 'add':
                                         data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                        data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
                                         transportView.dataTransport.push(data['transport']);
 
                                         transportView.dataVoucherTransport = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
 
-                                        transportView.showNotification("success", "Thêm thành công!");
+                                        showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
                                         var Old = _.find(transportView.dataTransport, function (o) {
@@ -1341,6 +1451,7 @@
                                         var indexOfOld = _.indexOf(transportView.dataTransport, Old);
 
                                         data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                        data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
                                         transportView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
                                         _.remove(transportView.dataVoucherTransport, function (currentObject) {
@@ -1348,7 +1459,7 @@
                                         });
                                         transportView.dataVoucherTransport = transportView.dataVoucherTransport.concat(data['voucherTransport']);
 
-                                        transportView.showNotification("success", "Cập nhật thành công!");
+                                        showNotification("success", "Cập nhật thành công!");
                                         transportView.hideControl();
                                         break;
                                     case 'delete':
@@ -1357,7 +1468,7 @@
                                         });
                                         var indexOfOld = _.indexOf(transportView.dataTransport, Old);
                                         transportView.dataTransport.splice(indexOfOld, 1);
-                                        transportView.showNotification("success", "Xóa thành công!");
+                                        showNotification("success", "Xóa thành công!");
                                         transportView.displayModal("hide", "#modal-confirmDelete");
                                         break;
                                     default:
@@ -1366,10 +1477,10 @@
                                 transportView.table.clear().rows.add(transportView.dataTransport).draw();
                                 transportView.clearInput();
                             } else {
-                                transportView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
                         $("form#frmControl").find("label[class=error]").css("color", "red");
@@ -1394,19 +1505,56 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                transportView.showNotification("success", "Thêm thành công!");
+                                showNotification("success", "Thêm thành công!");
                                 transportView.displayModal("hide", "#modal-addVoucher");
                                 transportView.clearInput();
                                 //
                                 transportView.dataVoucher.push(data['voucher']);
                             } else {
-                                transportView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
                         $("form#frmVoucher").find("label[class=error]").css("color", "red");
+                    }
+                },
+                saveProduct: function () {
+                    transportView.validateProduct();
+                    if ($("#frmProduct").valid()) {
+                        var product = {
+                            name: $("input[id='productName']").val(),
+                            description: $("textarea[id='description']").val(),
+                            productType_id: $("select[id='productType_id']").val()
+                        };
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'add',
+                            _product: product
+                        };
+                        $.ajax({
+                            url: url + 'product/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                transportView.dataProduct.push(data['product']);
+                                transportView.tagsProductName = _.map(transportView.dataProduct, 'name');
+                                transportView.tagsProductName = _.union(transportView.tagsProductName);
+                                transportView.renderAutoCompleteSearch();
+                                $("input[id=product_name]").val(data['product']['name']);
+                                $("#product_name").attr("data-productId", data['product']['id']);
+                                transportView.displayModal("hide", "#modal-addProduct");
+                            } else {
+                                showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        $("form#frmProduct").find("label[class=error]").css("color", "red");
                     }
                 },
 
@@ -1426,10 +1574,10 @@
                         if (jqXHR.status == 201) {
                             $("input[id='cashDelivery']").val(data['postage']);
                         } else {
-                            transportView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        transportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
                 searchFromDateToDate: function () {
@@ -1445,7 +1593,7 @@
                         });
                         transportView.table.clear().rows.add(found).draw();
                     } else {
-                        transportView.showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                        showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
                     }
                 },
                 clearSearch: function () {

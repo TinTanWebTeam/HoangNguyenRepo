@@ -10,6 +10,7 @@ use App\InvoiceCustomer;
 use App\InvoiceCustomerDetail;
 use App\Postage;
 use App\Price;
+use App\Product;
 use App\Status;
 use App\Transport;
 use App\Voucher;
@@ -234,6 +235,90 @@ class CustomerManagementController extends Controller
         return response()->json($response, 200);
     }
 
+    public function postModifyProduct(Request $request)
+    {
+        if (!\Auth::check()) {
+            return response()->json(['msg' => 'Not Authorize'], 404);
+        }
+
+        $name = null;
+        $description = null;
+        $productType_id = null;
+
+        $action = $request->input('_action');
+        if ($action != 'delete') {
+            $validator = ValidateController::ValidateCustomerType($request->input('_product'));
+            if ($validator->fails()) {
+                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $name = $request->input('_product')['name'];
+            $description = $request->input('_product')['description'];
+            $productType_id = $request->input('_product')['productType_id'];
+        }
+
+        switch ($action) {
+            case 'add':
+                $productNew = new Product();
+                $productNew->name = $name;
+                $productNew->description = $description;
+                $productNew->productType_id = $productType_id;
+                if ($productNew->save()) {
+                    $response = [
+                        'msg'          => 'Created Product',
+                        'product' => $productNew
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case 'update':
+                $productUpdate = Product::findOrFail($request->input('_product')['id']);
+                $productUpdate->name = $name;
+                $productUpdate->description = $description;
+                $productUpdate->productType_id = $productType_id;
+                if ($productUpdate->update()) {
+                    $response = [
+                        'msg'          => 'Updated Product',
+                        'product' => $productUpdate
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+            case 'delete':
+                $productDelete = CustomerType::findOrFail($request->input('_id'));
+                $productDelete->active = 0;
+
+                if ($productDelete->update()) {
+                    $response = [
+                        'msg' => 'Deleted Product'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
+    }
+
+    /*
+     * Product Type
+     * */
+    public function getDataProductType()
+    {
+        $productTypes = DB::table('productTypes')
+            ->select('productTypes.*')
+            ->get();
+        $response = [
+            'msg'      => 'Get list all Product',
+            'productTypes' => $productTypes,
+        ];
+        return response()->json($response, 200);
+    }
+
     /*
      * Voucher
      * */
@@ -425,7 +510,7 @@ class CustomerManagementController extends Controller
             $status_customer = ($cashRevenue == $cashReceive) ? 6 : 5;
             $status_garage = 8;
             $vehicle_id = $request->input('_transport')['vehicles_id'];
-            $product_id = $request->input('_transport')['products_id'];
+            $product_id = $request->input('_transport')['product_id'];
             $customer_id = $request->input('_transport')['customers_id'];
             $costPrice_id = $request->input('_transport')['costPrices_id'];
             $price_id = Price::where('costPrice_id', $costPrice_id)->orderBy('created_at', 'desc')->pluck('id')->first();

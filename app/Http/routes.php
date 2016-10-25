@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/delivery-requirement', 'CustomerManagementController@getViewTransport');
         //get Data
         Route::get('/customer/customers','CustomerManagementController@getDataCustomer');
+        Route::get('/product-type/product-types','CustomerManagementController@getDataProductType');
         Route::get('/product/products','CustomerManagementController@getDataProduct');
         Route::get('/voucher/vouchers','CustomerManagementController@getDataVoucher');
         Route::get('/transport/transports', 'CustomerManagementController@getDataTransport');
@@ -70,6 +71,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/customer-type/modify','CustomerManagementController@postModifyCustomerType');
         Route::post('/transport/modify','CustomerManagementController@postModifyTransport');
         Route::post('/voucher/modify','CustomerManagementController@postModifyVoucher');
+        Route::post('/product/modify','CustomerManagementController@postModifyProduct');
 
         //post to get Data
         Route::post('/customer/postage','CustomerManagementController@postDataPostageOfCustomer');
