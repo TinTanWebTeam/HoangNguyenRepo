@@ -19,7 +19,7 @@
                 <img src="{{ URL::to('src/images/user.png') }}" alt=""/>
             </div>
             <div style="padding: 40px">
-                <input type="text" id="username" name="username" placeholder="Tên tài khoản">
+                <input type="text" id="username" name="username" placeholder="Tên tài khoản" autofocus>
                 <input type="password" id="password" name="password" placeholder="Mật khẩu">
 
                 <div class="submit">

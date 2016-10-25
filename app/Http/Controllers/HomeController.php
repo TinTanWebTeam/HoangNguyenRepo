@@ -43,16 +43,27 @@ class HomeController extends Controller
             'HistoryDeliveryReport' => 'history-delivery-report'
         ];
 
+//        $array_icon = [
+//            'Admin'               => "fa-user-secret",
+//            'UserManagement'      => "fa-users",
+//            'CustomerManagement'  => "fa-male",
+//            'VehicleManagement'   => "fa-car",
+//            'DebtManagement'      => "fa-money",
+//            'CostManagement'      => "fa-usd",
+//            'PostageManagement'   => "fa-dollar",
+//            'DivisiveDriver'      => "fa-hand-o-right",
+//            'Report'              => "fa-file-text",
+//        ];
         $array_icon = [
-            'Admin'               => "fa-user-secret",
-            'UserManagement'      => "fa-users",
-            'CustomerManagement'  => "fa-male",
-            'VehicleManagement'   => "fa-car",
-            'DebtManagement'      => "fa-money",
-            'CostManagement'      => "fa-usd",
-            'PostageManagement'   => "fa-dollar",
-            'DivisiveDriver'      => "fa-hand-o-right",
-            'Report'              => "fa-file-text",
+            'Admin'               => "user.png",
+            'UserManagement'      => "NguoiDung.png",
+            'CustomerManagement'  => "KhachHang.png",
+            'VehicleManagement'   => "Xe.png",
+            'DebtManagement'      => "CongNo.png",
+            'CostManagement'      => "CuocPhi.png",
+            'PostageManagement'   => "ChiPhi.png",
+            'DivisiveDriver'      => "PhanTai.png",
+            'Report'              => "BaoCao.png",
         ];
 
         $array_auth = [
