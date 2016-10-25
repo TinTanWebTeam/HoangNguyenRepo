@@ -40,7 +40,7 @@
                                         class="btn btn-sm btn-info marginRight"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
                                 </button>
-                                <button class="btn btn-sm btn-default" onclick="">
+                                <button class="btn btn-sm btn-default" onclick="revenueReportView.clearInput()">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
                                 </button>
 
@@ -129,6 +129,10 @@
                 tableRevenueMonth: null,
                 tableOptionYear: null,
                 current: null,
+                clearInput:function () {
+                    $('input[id=dateStart]').val('');
+                    $('input[id=dateEnd]').val('');
+                },
                 loadData: function () {
                     $.ajax({
                         url: url + 'revenue-report-view',
