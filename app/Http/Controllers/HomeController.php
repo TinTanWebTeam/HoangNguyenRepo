@@ -55,15 +55,15 @@ class HomeController extends Controller
 //            'Report'              => "fa-file-text",
 //        ];
         $array_icon = [
-            'Admin'               => "user.png",
-            'UserManagement'      => "NguoiDung.png",
-            'CustomerManagement'  => "KhachHang.png",
-            'VehicleManagement'   => "Xe.png",
-            'DebtManagement'      => "CongNo.png",
-            'CostManagement'      => "CuocPhi.png",
-            'PostageManagement'   => "ChiPhi.png",
-            'DivisiveDriver'      => "PhanTai.png",
-            'Report'              => "BaoCao.png",
+            'Admin'               => "Admin.png",
+            'UserManagement'      => "User.png",
+            'CustomerManagement'  => "Customer.png",
+            'VehicleManagement'   => "Vehicle.png",
+            'DebtManagement'      => "Debt.png",
+            'CostManagement'      => "Cost.png",
+            'PostageManagement'   => "Postage.png",
+            'DivisiveDriver'      => "DivisiveDriver.png",
+            'Report'              => "Report.png",
         ];
 
         $array_auth = [

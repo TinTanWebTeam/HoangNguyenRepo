@@ -16,7 +16,7 @@
         <div class="login-form">
             <h1>Thông tin đăng nhập</h1>
             <div class="head">
-                <img src="{{ URL::to('src/images/user.png') }}" alt=""/>
+                <img src="{{ URL::to('src/images/login/user.png') }}" alt=""/>
             </div>
             <div style="padding: 40px">
                 <input type="text" id="username" name="username" placeholder="Tên tài khoản" autofocus>

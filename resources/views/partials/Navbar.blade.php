@@ -45,7 +45,7 @@
                                    onclick="getContentByUrl(this)">
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <img src="{{ URL::to('/src/images/' . $array_icon[$key]) }}" alt="" width="25" height="25">
+                                            <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="25" height="25">
                                         </div>
                                         <div class="col-md-10">
                                             {{ \App\Role::where('name', $key)->pluck('description')[0] }}
@@ -60,7 +60,7 @@
                             <a href="#" role-name="{{$key}}" data-url="{{ $array_url[$key] }}">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img src="{{ URL::to('/src/images/' . $array_icon[$key]) }}" alt="" width="25" height="25">
+                                        <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="25" height="25">
                                     </div>
                                     <div class="col-md-10">
                                         {{ \App\Role::where('name', $key)->pluck('description')[0]}}

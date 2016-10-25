@@ -1516,6 +1516,7 @@
 
                     //fill data to listSearch
                     debtCustomerView.tagsCustomerNameTransport = _.map(debtCustomerView.dataSearch, 'customers_fullName');
+                    debtCustomerView.tagsCustomerNameTransport = _.union(debtCustomerView.tagsCustomerNameTransport);
                     debtCustomerView.renderAutoCompleteSearch();
                 },
                 searchInvoice: function () {
@@ -1529,6 +1530,7 @@
 
                     //fill data to listSearch
                     debtCustomerView.tagsCustomerNameInvoice = _.map(debtCustomerView.dataSearchInvoiceCustomer, 'customers_fullName');
+                    debtCustomerView.tagsCustomerNameInvoice = _.union(debtCustomerView.tagsCustomerNameInvoice);
                     debtCustomerView.renderAutoCompleteSearch();
                 },
 

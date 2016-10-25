@@ -68,7 +68,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="ui-widget">
-                                <input type="text" class="form-control" id="custName_transport" name="custName_transport" placeholder="Nhập tên khách hàng">
+                                <input type="text" class="form-control" id="garaName_transport" name="garaName_transport" placeholder="Nhập tên khách hàng">
                             </div>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
                             <input type="text" class="date end"/>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="custName_invoice" name="custName_transport" placeholder="Nhập tên khách hàng">
+                            <input type="text" class="form-control" id="garaName_invoice" name="garaName_transport" placeholder="Nhập tên khách hàng">
                         </div>
                     </div>
                     <div class="row">
@@ -550,22 +550,22 @@
                     });
                 },
                 renderAutoCompleteSearch: function(){
-                    $( "#custName_transport" ).autocomplete({
+                    $( "#garaName_transport" ).autocomplete({
                         source: debtGarageView.tagsGarageNameTransport
                     });
 
-                    $( "#custName_invoice" ).autocomplete({
+                    $( "#garaName_invoice" ).autocomplete({
                         source: debtGarageView.tagsGarageNameInvoice
                     });
                 },
                 renderEventKeyCode: function(){
-                    $("#custName_transport").keyup(function(event){
+                    $("#garaName_transport").keyup(function(event){
                         if(event.keyCode == 13){ //Enter
                             $("#btnSearchTransport").click();
                         }
                     });
 
-                    $("#custName_invoice").keyup(function(event){
+                    $("#garaName_invoice").keyup(function(event){
                         if(event.keyCode == 13){ //Enter
                             $("#btnSearchInvoice").click();
                         }
@@ -576,7 +576,7 @@
                         var td = $(this);
                         var tr = $(this).parent();
                         if(tr.find('td:eq(1)').text() == td.text()){
-                            $("input[id=custName_transport]").val(td.text());
+                            $("input[id=garaName_transport]").val(td.text());
                             debtGarageView.searchTransport();
                         }
                     });
@@ -585,7 +585,7 @@
                         var td = $(this);
                         var tr = $(this).parent();
                         if(tr.find('td:eq(1)').text() == td.text()){
-                            $("input[id=custName_invoice]").val(td.text());
+                            $("input[id=garaName_invoice]").val(td.text());
                             debtGarageView.searchInvoice();
                         }
                     });
@@ -1487,12 +1487,12 @@
                     if (tableName == "transport") {
                         $("#dateSearchTransport").find(".start").datepicker('update', '');
                         $("#dateSearchTransport").find(".end").datepicker('update', '');
-                        $("input[id=custName_transport]").val('');
+                        $("input[id=garaName_transport]").val('');
                         debtGarageView.searchTransport();
                     } else {
                         $("#dateSearchInvoice").find(".start").datepicker('update', '');
                         $("#dateSearchInvoice").find(".end").datepicker('update', '');
-                        $("input[id=custName_invoice]").val('');
+                        $("input[id=garaName_invoice]").val('');
                         debtGarageView.searchInvoice();
                     }
 
@@ -1515,6 +1515,7 @@
 
                     //fill data to listSearch
                     debtGarageView.tagsGarageNameTransport = _.map(debtGarageView.dataSearch, 'garages_name');
+                    debtGarageView.tagsGarageNameTransport = _.union(debtGarageView.tagsGarageNameTransport);
                     debtGarageView.renderAutoCompleteSearch();
                 },
                 searchInvoice: function () {
@@ -1528,6 +1529,7 @@
 
                     //fill data to listSearch
                     debtGarageView.tagsGarageNameInvoice = _.map(debtGarageView.dataSearchInvoiceGarage, 'garages_name');
+                    debtGarageView.tagsGarageNameInvoice = _.union(debtGarageView.tagsGarageNameInvoice);
                     debtGarageView.renderAutoCompleteSearch();
                 },
 
@@ -1549,12 +1551,12 @@
                     return found;
                 },
                 searchGarage: function(data){
-                    custName = $("#custName_transport").val();
-                    if(custName == '')
+                    garaName = $("#garaName_transport").val();
+                    if(garaName == '')
                         return data;
 
                     found = _.filter(data, function(o){
-                        return removeDiacritics(o.garages_name.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                        return removeDiacritics(o.garages_name.toLowerCase()).includes(removeDiacritics(garaName.toLowerCase()));
                     });
                     return found;
                 },
@@ -1608,12 +1610,12 @@
                     return found;
                 },
                 searchGarageInvoice: function(data){
-                    custName = $("#custName_invoice").val();
-                    if(custName == '')
+                    garaName = $("#garaName_invoice").val();
+                    if(garaName == '')
                         return data;
 
                     found = _.filter(data, function(o){
-                        return removeDiacritics(o.garages_name.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                        return removeDiacritics(o.garages_name.toLowerCase()).includes(removeDiacritics(garaName.toLowerCase()));
                     });
                     return found;
                 },
