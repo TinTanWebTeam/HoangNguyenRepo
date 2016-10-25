@@ -197,13 +197,13 @@
                             {data: 'fullName'},
                             {data: 'total_delivery'},
                             {data: 'total_Revenue',
-                                render: $.fn.dataTable.render.number(",", ",", 0)
+                                render: $.fn.dataTable.render.number(".", ".", 0)
                             },
                             {data: 'total_Receive',
-                                render: $.fn.dataTable.render.number(",", ",", 0)
+                                render: $.fn.dataTable.render.number(".", ".", 0)
                             },
                             {data: 'no',
-                                render: $.fn.dataTable.render.number(",", ",", 0)
+                                render: $.fn.dataTable.render.number(".", ".", 0)
                             }
 
                         ]

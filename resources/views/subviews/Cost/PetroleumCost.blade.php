@@ -445,9 +445,9 @@
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
-                    price = price.replace(',', '');
+                    price = price.replace('.', '');
                     var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice, '.', ','));
+                    $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
 
 
                 },
@@ -676,10 +676,10 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(petroleumCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(petroleumCostView.formatMoney(totalPrice, '.', ','));
+                    $("input[id='totalprice']").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
 
                     $("input[id='noted']").val(petroleumCostView.current["note"]);
-                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.current["prices_price"], '.', ','));
+                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.current["prices_price"], '.', '.'));
                     $("#price").attr('data-priceId', petroleumCostView.current["price_id"]);
 
 
@@ -712,15 +712,15 @@
                             },
 
                             {
-                                data: 'literNumber',
+                                data: 'literNumber'
                             },
                             {
                                 data: 'prices_price',
-                                render: $.fn.dataTable.render.number(",", ",", 0)
+                                render: $.fn.dataTable.render.number(".", ".", 0)
                             },
                             {
                                 data: 'totalCost',
-                                render: $.fn.dataTable.render.number(",", ",", 0)
+                                render: $.fn.dataTable.render.number(".", ".", 0)
                             },
                             {data: 'noteCost'},
                             {
@@ -760,7 +760,7 @@
                             vehicle_id: "Vui lòng chọn xe",
                             literNumber: {
                                 required: "Vui lòng nhập số lít",
-                                number: "Số lít phải là số",
+                                number: "Số lít phải là số"
 
                             }
 
@@ -929,7 +929,7 @@
                         size: $("input[id='size']").val(),
                         weight: $("input[id='weight']").val(),
                         vehicleType_id: $("select[id='vehicleType_id']").val(),
-                        garage_id: $("select[id='garage_id']").val(),
+                        garage_id: $("select[id='garage_id']").val()
                     };
                     var sendToServer = {
                         _token: _token,

@@ -458,7 +458,7 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', otherCostView.current["vehicle_id"]);
                     $("textarea[id='note']").val(otherCostView.current["note"]);
-                    $("input[id='cost']").val(otherCostView.formatMoney(otherCostView.current["cost"], '.', ','))
+                    $("input[id='cost']").val(otherCostView.formatMoney(otherCostView.current["cost"], '.', '.'))
 
                 },
                 formatMoney: function (nStr, decSeperate, groupSeperate) {
@@ -538,7 +538,7 @@
                             {data: 'fullNumber'},
                             {
                                 data: 'cost',
-                                render: $.fn.dataTable.render.number(",", ",", 0)
+                                render: $.fn.dataTable.render.number(".", ".", 0)
                             },
                             {data: 'note'},
                             {
@@ -662,7 +662,7 @@
                                         var indexOfcostOld = _.indexOf(otherCostView.tableOtherCost, costOld);
                                         otherCostView.tableOtherCost.splice(indexOfcostOld, 1);
                                         otherCostView.showNotification("success", "Xóa thành công!");
-                                        otherCostView.displayModal("hide", "#modal-confirmDelete")
+                                        otherCostView.displayModal("hide", "#modal-confirmDelete");
                                         break;
                                     default:
                                         break;
@@ -779,7 +779,7 @@
                                     {data: 'weight'},
                                     {data: 'vehicleType'}
                                 ],
-                                order: [[0, "desc"]],
+                                order: [[0, "desc"]]
                             })
                         } else {
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
