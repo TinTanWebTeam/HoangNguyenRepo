@@ -164,9 +164,10 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/history-delivery-report', 'ReportController@getViewHistoryDeliveryReport');
         //Get data view
         Route::get('/revenue-report-view', 'ReportController@getDataViewRevenueReport');
+        Route::get('/delivery-report-view', 'ReportController@getDataViewDeliveryReport');
         //Post data view
         Route::post('/revenue-report-list', 'ReportController@getDataReportList');
-//        Route::post('/revenue-report-test', 'ReportController@getDataReportTest');
+        Route::post('/delivery-report-list', 'ReportController@getDataDeliveryList');
 
     });
 });

@@ -18,11 +18,6 @@ class ReportController extends Controller
 
     public function getDataViewRevenueReport()
     {
-//        $tableReport = \DB::table('transports')
-//            ->join('customers', 'transports.customer_id', '=', 'customers.id')
-//            ->select('transports.*', 'customers.fullName')
-//            ->where('transports.active', 1)
-//            ->get();
         $tableReportYear = \DB::table('transports')
             ->select('receiveDate',
                 \DB::raw('SUM(cashRevenue) as total_Revenue'),
@@ -38,7 +33,6 @@ class ReportController extends Controller
 
         $response = [
             'msg'              => 'Get data report success',
-//            'tableReport'      => $tableReport,
             'tableReportMonth' => $tableReportYear,
             'year'             => $year
         ];
@@ -126,5 +120,106 @@ class ReportController extends Controller
     public function getViewHistoryDeliveryReport()
     {
         return view('subviews.Report.HistoryDeliveryReport');
+    }
+
+    public function getDataViewDeliveryReport()
+    {
+        $tableReportDelivery = \DB::table('transports')
+            ->join('customers', 'transports.customer_id', '=', 'customers.id')
+            ->select('transports.*', 'customers.fullName',
+                \DB::raw('COUNT(*) as total_delivery')
+            )
+            ->where(\DB::raw('YEAR(receiveDate)'), '=', \DB::raw('YEAR(NOW())'))
+            ->groupBy(\DB::raw('MONTH(receiveDate)'))
+            ->get();
+        $year = DB::table('transports')
+            ->select('receiveDate')
+            ->groupBy(\DB::raw('YEAR(receiveDate)'))
+            ->get();
+
+        $response = [
+            'msg'           => 'Get data delivery success',
+            'tableDelivery' => $tableReportDelivery,
+            'year'          => $year
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function getDataDeliveryList(Request $request)
+    {
+        $action = $request->get('_action');
+        switch ($action) {
+            case "listDeliveryMonths":
+                try {
+                    $tableDeliveryYear = \DB::table('transports')
+                        ->join('customers', 'transports.customer_id', '=', 'customers.id')
+                        ->select('transports.*', 'customers.fullName',
+                            \DB::raw('COUNT(*) as total_delivery'))
+                        ->where(\DB::raw('YEAR(receiveDate)'), '=', $request->get('_object'))
+                        ->groupBy(\DB::raw('MONTH(receiveDate)'))
+                        ->get();
+                    $response = [
+                        'msg'              => 'Get data delivery success',
+                        'tableDeliveryMonth' => $tableDeliveryYear,
+                    ];
+                    return response()->json($response, 200);
+                } catch (\Exception $ex) {
+                    return $ex;
+                }
+
+
+                break;
+            case "listDeliveryDays":
+                try {
+                    $tableDeliveryDays = \DB::table('transports')
+                        ->join('customers', 'transports.customer_id', '=', 'customers.id')
+                        ->select('transports.*', 'customers.fullName',
+                            \DB::raw('SUM(cashRevenue) as total_Revenue'),
+                            \DB::raw('SUM(cashReceive) as total_Receive'),
+                            \DB::raw('COUNT(customer_id) as total_delivery'))
+                        ->where(\DB::raw('YEAR(receiveDate)'), '=', $request->get('_objectYear'))
+                        ->where(\DB::raw('MONTH(receiveDate)'), '=', $request->get('_objectMonth'))
+                        ->groupBy(\DB::raw('customers.fullName'))
+                        ->get();
+                    $response = [
+                        'msg'              => 'Get data delivery success',
+                        'tableDeliveryDays' => $tableDeliveryDays,
+                    ];
+                    return response()->json($response, 200);
+                } catch (\Exception $ex) {
+                    return $ex;
+                }
+
+                break;
+            case "searchDateToDate":
+                try {
+                    $start = $request->get('_dateStart');
+                    $end = $request->get('_dateEnd');
+                    $dateStart = Carbon::createFromFormat('d-m-Y', $start)->format('Y-m-d');
+                    $dateEnd = Carbon::createFromFormat('d-m-Y', $end)->format('Y-m-d');
+                    $tableDataSearch = \DB::table('transports')
+                        ->join('customers', 'transports.customer_id', '=', 'customers.id')
+                        ->select('transports.*', 'customers.fullName',
+                            \DB::raw('SUM(cashRevenue) as total_Revenue'),
+                            \DB::raw('SUM(cashReceive) as total_Receive'),
+                            \DB::raw('COUNT(customer_id) as total_delivery'))
+                        ->whereBetween(\DB::raw('DATE(receiveDate)'), [$dateStart, $dateEnd])
+                        ->groupBy(\DB::raw('customers.fullName'))
+                        ->get();
+                    $response = [
+                        'msg'             => 'Get data detail report success',
+                        'tableDataSearch' => $tableDataSearch,
+                    ];
+                    return response()->json($response, 200);
+                } catch (\Exception $ex) {
+                    return $ex;
+                }
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+
+        }
     }
 }

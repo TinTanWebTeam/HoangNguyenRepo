@@ -31,20 +31,19 @@
                 <div class="dataTable_wrapper">
                     <p class="lead text-primary text-left"><strong>Chi tiết giao hàng</strong></p>
                     <div class="row">
-                        <div class="col-md-4" id="dateSearchDetailDelivery">
+                        <div class="col-md-6" id="dateSearchDetailDelivery">
                             <input id="dateStart" type="text" class="date start"/> đến
                             <input id="dateEnd" type="text" class="date end"/>
 
                         </div>
-                        <div class="col-md-8" style="padding-left: 0">
-                            <button onclick="" id="btnSearchTransport"
+                        <div class="col-md-6" style="padding-left: 0">
+                            <button onclick="historyDeliveryReportView.searchDateToDate()" id="btnSearchDelivery"
                                     class="btn btn-sm btn-info marginRight"><i
                                         class="fa fa-search" aria-hidden="true"></i> Tìm
                             </button>
-                            <button class="btn btn-sm btn-default" onclick="">
+                            <button class="btn btn-sm btn-default" onclick="historyDeliveryReportView.clearInput()">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
                             </button>
-
                         </div>
                     </div>
                     <br>
@@ -56,7 +55,9 @@
                                     <tr class="active">
                                         <th>Khách hàng</th>
                                         <th>Số chuyến</th>
+                                        <th>Doanh thu</th>
                                         <th>Đã thanh toán</th>
+                                        <th>Còn nợ</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -76,7 +77,7 @@
                                 <label for="optionYear"><b>Chọn năm</b></label>
                                 <select class="form-control" id="optionYear"
                                         name="optionYear"
-                                        onchange="">
+                                        onchange="historyDeliveryReportView.listDeliveryMonth()">
                                 </select>
 
                             </div>
@@ -95,7 +96,6 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -119,16 +119,96 @@
                 tableYear: null,
                 data: null,
                 action: null,
-                tableDetailRevenue: null,
-                tableRevenueMonth: null,
+                tableDeliveryMonth: null,
                 tableOptionYear: null,
                 current: null,
+                clearInput:function () {
+                     $('input[id=dateStart]').val('');
+                     $('input[id=dateEnd]').val('');
+                },
                 loadData: function () {
+                    $.ajax({
+                        url: url + 'delivery-report-view',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            historyDeliveryReportView.tableDeliveryMonth = data['tableDelivery'];
+                            historyDeliveryReportView.fillDataToDataTableYear(data['tableDelivery']);
+                            historyDeliveryReportView.tableOptionYear = data['year'];
+                            historyDeliveryReportView.loadSelectBoxYear(data['year']);
+                            historyDeliveryReportView.selectYearNow();
+                        } else {
+                            historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
                     historyDeliveryReportView.table = $('#table-data').DataTable({
                         language: languageOptions
                     });
+
                     historyDeliveryReportView.loadChart();
                     historyDeliveryReportView.renderDateTimePicker();
+
+                    $("#table-data-year").find("tbody").on('click', 'tr', function () {
+                        var month = $(this).find('td:eq(0)')[0].innerText;
+                        historyDeliveryReportView.loadDetailDelivery(month);
+
+                    });
+                },
+                loadDetailDelivery: function (data) {
+                    var dataYear = data.substr(3, 6);
+                    var dataMonth = data.substr(0, 2);
+                    var sendToServer = null;
+                    sendToServer = {
+                        _token: _token,
+                        _action: 'listDeliveryDays',
+                        _objectYear: dataYear,
+                        _objectMonth: dataMonth
+                    };
+                    $.ajax({
+                        url: url + 'delivery-report-list',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            historyDeliveryReportView.fillDataDetailReportToDataTable(data['tableDeliveryDays']);
+                        } else {
+                            historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                fillDataDetailReportToDataTable: function (data) {
+                    if (historyDeliveryReportView.table != null) {
+                        historyDeliveryReportView.table.destroy();
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].no = data[i]['total_Revenue'] - data[i]['total_Receive'];
+                    }
+                    historyDeliveryReportView.table = $('#table-data').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'fullName'},
+                            {data: 'total_delivery'},
+                            {data: 'total_Revenue',
+                                render: $.fn.dataTable.render.number(",", ",", 0)
+                            },
+                            {data: 'total_Receive',
+                                render: $.fn.dataTable.render.number(",", ",", 0)
+                            },
+                            {data: 'no',
+                                render: $.fn.dataTable.render.number(",", ",", 0)
+                            }
+
+                        ]
+
+                    })
                 },
                 showNotification: function (type, msg) {
                     switch (type) {
@@ -211,6 +291,111 @@
                     });
 
                 },
+                selectYearNow: function () {
+                    var yearNow = moment().year();
+                    yearOption = _.find( historyDeliveryReportView.tableOptionYear, function (o) {
+                        return  moment(o.receiveDate).format("YYYY") == yearNow;
+                    });
+                    if (typeof yearOption === 'undefined')
+                        return;
+                    $("select[id='optionYear']").val(yearNow);
+                    historyDeliveryReportView.listDeliveryMonth();
+                },
+                listDeliveryMonth: function () {
+                    var data = $("select[id='optionYear']").val();
+                    var sendToServer = null;
+                    sendToServer = {
+                        _token: _token,
+                        _action: 'listDeliveryMonths',
+                        _object: data
+                    };
+                    $.ajax({
+                        url: url + 'delivery-report-list',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            historyDeliveryReportView.fillDataToDataTableYear(data['tableDeliveryMonth']);
+                            historyDeliveryReportView.tableOptionYear = data['year'];
+                        } else {
+                            historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                fillDataToDataTableYear: function (data) {
+                    if (historyDeliveryReportView.tableYear != null) {
+                        historyDeliveryReportView.tableYear.destroy();
+                    }
+                    historyDeliveryReportView.tableYear = $('#table-data-year').DataTable(
+                            {
+                                language: languageOptions,
+                                data: data,
+                                columns: [
+                                    {
+                                        data: 'receiveDate',
+                                        render: function (data, type, full, meta) {
+                                            return moment(data).format("MM/YYYY");
+                                        }
+                                    },
+                                    {
+                                        data: 'total_delivery'
+                                    }
+
+                                ]
+
+                            })
+                },
+                searchDateToDate: function () {
+                    var dateStart = $('input[id=dateStart]').val();
+                    var dateEnd = $('input[id=dateEnd]').val();
+                    if(dateStart == "" || dateEnd == "" ){
+                        historyDeliveryReportView.showNotification("warning", "Vui lòng chọn ngày cần tìm !");
+                    }else {
+                        var sendToServer = null;
+                        sendToServer = {
+                            _token: _token,
+                            _action: 'searchDateToDate',
+                            _dateStart: dateStart,
+                            _dateEnd: dateEnd
+                        };
+                        $.ajax({
+                            url: url + 'delivery-report-list',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                historyDeliveryReportView.fillDataDetailReportToDataTable(data['tableDataSearch']);
+                            } else {
+                                historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    }
+
+
+                },
+                loadSelectBoxYear: function (lstYear) {
+                    //reset selectbox
+                    $('#optionYear')
+                            .find('option')
+                            .remove()
+                            .end();
+                    //fill option to selectbox
+                    var select = document.getElementById("optionYear");
+                    for (var i = 0; i < lstYear.length; i++) {
+                        var year = moment(lstYear[i]['receiveDate']).format("YYYY");
+                        var el = document.createElement("option");
+                        el.textContent = year;
+                        el.value = year;
+                        select.appendChild(el);
+                    }
+
+                }
 
             };
             historyDeliveryReportView.loadData();
