@@ -44,10 +44,10 @@
                                 <a href="javascript:;" role-name="{{$key}}" data-url="{{ $array_url[$key] }}"
                                    onclick="getContentByUrl(this)">
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                             <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="25" height="25">
                                         </div>
-                                        <div class="col-md-10">
+                                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                                             {{ \App\Role::where('name', $key)->pluck('description')[0] }}
                                         </div>
                                     </div>
@@ -59,10 +59,10 @@
                         <li>
                             <a href="#" role-name="{{$key}}" data-url="{{ $array_url[$key] }}">
                                 <div class="row">
-                                    <div class="col-md-2">
+                                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                         <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="25" height="25">
                                     </div>
-                                    <div class="col-md-10">
+                                    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                                         {{ \App\Role::where('name', $key)->pluck('description')[0]}}
                                         <span class="fa arrow"></span>
                                     </div>
@@ -74,7 +74,7 @@
                                     <li>
                                         <a href="javascript:;" role-name="{{ $value2 }}"
                                            data-url="{{ $array_url[$value2] }}"
-                                           onclick="getContentByUrl(this)"> {{ \App\Role::where('name', $value2)->pluck('description')[0] }}</a>
+                                           onclick="getContentByUrl(this)"><i>{{ \App\Role::where('name', $value2)->pluck('description')[0] }}</i></a>
                                     </li>
                                 @endforeach
                             </ul>

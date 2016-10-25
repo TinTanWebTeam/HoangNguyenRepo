@@ -43,17 +43,6 @@ class HomeController extends Controller
             'HistoryDeliveryReport' => 'history-delivery-report'
         ];
 
-//        $array_icon = [
-//            'Admin'               => "fa-user-secret",
-//            'UserManagement'      => "fa-users",
-//            'CustomerManagement'  => "fa-male",
-//            'VehicleManagement'   => "fa-car",
-//            'DebtManagement'      => "fa-money",
-//            'CostManagement'      => "fa-usd",
-//            'PostageManagement'   => "fa-dollar",
-//            'DivisiveDriver'      => "fa-hand-o-right",
-//            'Report'              => "fa-file-text",
-//        ];
         $array_icon = [
             'Admin'               => "Admin.png",
             'UserManagement'      => "User.png",
