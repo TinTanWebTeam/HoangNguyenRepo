@@ -7,7 +7,9 @@
     </div>
 </div>
 <div class="row">
-    <div id="chart3"></div>
+    <div class="col-sm-12">
+        <div id="chart3"></div>
+    </div>
 </div>
 
 <script>
