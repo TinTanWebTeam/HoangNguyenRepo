@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 40%;
+        top: 50%;
         display: none;
         right: 0px;
         width: 50%;
@@ -164,7 +164,7 @@
                                         <label for="price"><b>Đơn giá</b></label>
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
-                                                <input type="text" class="form-control"
+                                                <input type="text" class="form-control currency"
                                                        id="price" readonly
                                                        name="price" data-priceId=""
                                                 >
@@ -185,7 +185,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group form-md-line-input ">
                                         <label for="totalprice"><b>Tổng chi phí</b></label>
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control currency"
                                                id="totalprice" readonly
                                                name="totalprice"
                                                placeholder="Tổng chi phí">
@@ -277,8 +277,8 @@
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
-                                    <input type="number" class="form-control"
-                                           id="costPrice" step="1000"
+                                    <input type="text" class="form-control currency"
+                                           id="costPrice"
                                            name="costPrice">
                                 </div>
                             </div>
@@ -445,10 +445,10 @@
                 totalPrice: function () {
                     var lit = $("input[id=literNumber]").val();
                     var price = $("input[id=price]").val();
-                    price = price.replace('.', '');
+                    price = price.replace(',', '');
                     var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
-
+                    $("input[id=totalprice]").val(totalPrice);
+                    formatCurrency(".currency");
 
                 },
                 clearInput: function () {
@@ -472,10 +472,8 @@
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
                     $("input[id='vehicleNumber']").val('');
-                    $("input[id='areaCode']").val('');
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
-
                 },
                 displayModal: function (type, idModal) {
                     $(idModal).modal(type);
@@ -556,7 +554,7 @@
                                     {data: 'weight'},
                                     {data: 'vehicleType'}
                                 ],
-                                order: [[0, "desc"]],
+                                order: [[0, "desc"]]
                             })
                         } else {
                             petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -629,6 +627,11 @@
                         $('#vehicle_id').val(vehicle);
                         petroleumCostView.displayModal("hide", "#modal-searchVehicle");
                     });
+                    petroleumCostView.renderDateTimePicker();
+                    setEventFormatCurrency(".currency");
+                    formatCurrency(".currency");
+                    defaultZero("#costPrice");
+
 
                 },
                 renderDateTimePicker: function () {
@@ -651,6 +654,7 @@
                             prices_price: $("input[id='price']").val(),
                             prices_id: $("#price").attr('data-priceId'),
                             noted: $("input[id='noted']").val()
+
                         };
                     } else if (petroleumCostView.action == 'update') {
                         petroleumCostView.current.prices_price = $("input[id='price']").val();
@@ -668,32 +672,17 @@
                     var timeFuel = moment(petroleumCostView.current["dateRefuel"], "YYYY-MM-DD HH:mm:ss");
                     $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
                     $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
-
-
                     var vehicle = petroleumCostView.current["vehicles_code"] + "-" + petroleumCostView.current["vehicles_vehicleNumber"];
                     var totalPrice = petroleumCostView.current["literNumber"] * petroleumCostView.current["prices_price"];
-
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(petroleumCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(petroleumCostView.formatMoney(totalPrice, '.', '.'));
-
+                    $("input[id='totalprice']").val(totalPrice);
                     $("input[id='noted']").val(petroleumCostView.current["note"]);
-                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.current["prices_price"], '.', '.'));
+                    $("input[id='price']").val(petroleumCostView.current["prices_price"]);
                     $("#price").attr('data-priceId', petroleumCostView.current["price_id"]);
+                    formatCurrency(".currency");
 
-
-                },
-                formatMoney: function (nStr, decSeperate, groupSeperate) {
-                    nStr += '';
-                    x = nStr.split(decSeperate);
-                    x1 = x[0];
-                    x2 = x.length > 1 ? '.' + x[1] : '';
-                    var rgx = /(\d+)(\d{3})/;
-                    while (rgx.test(x1)) {
-                        x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
-                    }
-                    return x1 + x2;
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -716,11 +705,11 @@
                             },
                             {
                                 data: 'prices_price',
-                                render: $.fn.dataTable.render.number(".", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {
                                 data: 'totalCost',
-                                render: $.fn.dataTable.render.number(".", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'noteCost'},
                             {
@@ -751,7 +740,7 @@
                             vehicle_id: "required",
                             literNumber: {
                                 required: true,
-                                number: true,
+                                number: true
                             }
 
                         },
@@ -995,26 +984,23 @@
                 },
 
                 inputPrice: function () {
-                    $("input[id='price']").val(petroleumCostView.formatMoney(petroleumCostView.tablePrice.price, '.', ','));
+                    $("input[id='price']").val(petroleumCostView.tablePrice.price);
                     $("#price").attr('data-priceId', petroleumCostView.tablePrice.id);
-
+                    formatCurrency(".currency");
                 },
                 ValidateCostPrice: function () {
                     $("#formCostPrice").validate({
                         rules: {
                             costPrice: {
                                 required: true,
-                                number: true,
-                                min:0,
-                                step: 1000
+                                number: true
                             }
                         },
                         messages: {
                             costPrice: {
                                 required: "Vui lòng nhập số tiền",
-                                number: "Giá tiền phải là số",
-                                min: "Giá tiền không được âm",
-                                step: "Mệnh giá tiền phải 1000"
+                                number: "Giá tiền phải là số"
+
                             }
                         }
                     });
@@ -1023,7 +1009,7 @@
                 savePriceType: function () {
                     petroleumCostView.ValidateCostPrice();
                     var priceType = {
-                        price: $("input[id='costPrice']").val(),
+                        price: asNumberFromCurrency('#costPrice'),
                         note: $("textarea[id='description']").val()
                     };
                     var sendToServer = {

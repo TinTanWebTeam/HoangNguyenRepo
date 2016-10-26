@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 25%;
+        top: 35%;
         display: none;
         right: 0px;
         width: 50%;
@@ -127,7 +127,7 @@
                                         <label for="price"><b>Đơn giá</b></label>
                                         <div class="row">
                                             <div class="col-sm-9 col-xs-9">
-                                                <input type="text" class="form-control"
+                                                <input type="text" class="form-control currency"
                                                        id="price" readonly
                                                        name="price" data-priceId="">
                                             </div>
@@ -207,7 +207,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group form-md-line-input ">
                                         <label for="totalCost"><b>Tổng chi phí</b></label>
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control currency"
                                                id="totalCost" readonly
                                                name="totalCost">
                                     </div>
@@ -261,8 +261,8 @@
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
-                                    <input type="number" class="form-control"
-                                           id="costPrice" step="1000"
+                                    <input type="number" class="form-control currency"
+                                           id="costPrice"
                                            name="costPrice">
                                 </div>
                             </div>
@@ -473,17 +473,7 @@
                     parkingCostView.idDelete = null;
                     $("#modalConfirm").modal('hide');
                 },
-                formatMoney: function (nStr, decSeperate, groupSeperate) {
-                    nStr += '';
-                    x = nStr.split(decSeperate);
-                    x1 = x[0];
-                    x2 = x.length > 1 ? '.' + x[1] : '';
-                    var rgx = /(\d+)(\d{3})/;
-                    while (rgx.test(x1)) {
-                        x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
-                    }
-                    return x1 + x2;
-                },
+
                 showNotification: function (type, msg) {
                     switch (type) {
                         case "info":
@@ -574,8 +564,6 @@
                             parkingCostView.fillDataToDatatable(data['tableParkingCost']);
                             parkingCostView.tablePrice = data['tablePrice'];
                             parkingCostView.inputPrice(data['tablePrice']);
-
-
                         } else {
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -627,6 +615,10 @@
                         'autoClose': true
                     });
                     parkingCostView.renderDateTimePicker();
+                    setEventFormatCurrency(".currency");
+                    formatCurrency(".currency");
+                    defaultZero("#costPrice");
+
                 },
                 renderDateTimePicker: function () {
                     $('#dateCheckOut').datepicker({
@@ -693,12 +685,12 @@
                     $("input[id='vehicle_id']").val(vehicle);
 
                     $("textarea[id='note']").val(parkingCostView.current["note"]);
-                    $("input[id='price']").val(parkingCostView.formatMoney(parkingCostView.current["prices_price"], '.', '.'));
-                    $("input[id='totalCost']").val(parkingCostView.formatMoney(totalCost, '.', '.'));
+                    $("input[id='price']").val(parkingCostView.current["prices_price"]);
+                    $("input[id='totalCost']").val(totalCost);
 
                     $("#vehicle_id").attr('data-id', parkingCostView.current["vehicle_id"]);
                     $("#price").attr('data-priceId', parkingCostView.current["price_id"]);
-
+                    formatCurrency(".currency");
                 },
                 totalDay: function () {
                     if ($('input[id=dateCheckIn]').val() == ""
@@ -724,10 +716,10 @@
                 totalCost: function () {
                     var time = $("input[id=totalTime]").val();
                     var price = $("input[id=price]").val();
-                    price = price.replace('.', '');
+                    price = price.replace(',', '');
                     var totalCost = time * price;
-                    $("input[id=totalCost]").val(parkingCostView.formatMoney(totalCost, '.', '.'));
-
+                    $("input[id=totalCost]").val(totalCost);
+                    formatCurrency(".currency");
 
                 },
                 save: function () {
@@ -834,11 +826,11 @@
                             {data: 'totalHour'},
                             {
                                 data: 'prices_price',
-                                render: $.fn.dataTable.render.number(".", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {
                                 data: 'totalCost',
-                                render: $.fn.dataTable.render.number(".", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'note'},
                             {
@@ -988,7 +980,7 @@
                                     {data: 'weight'},
                                     {data: 'vehicleType'}
                                 ],
-                                order: [[0, "desc"]],
+                                order: [[0, "desc"]]
                             })
                         } else {
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -1050,25 +1042,22 @@
                     });
                 },
                 inputPrice: function () {
-                    $("input[id='price']").val(parkingCostView.formatMoney(parkingCostView.tablePrice.price, '.', ','));
+                    $("input[id='price']").val(parkingCostView.tablePrice.price);
                     $("#price").attr('data-priceId', parkingCostView.tablePrice.id);
+                    formatCurrency(".currency");
                 },
                 ValidateCostPrice: function () {
                     $("#formCostPrice").validate({
                         rules: {
                             costPrice: {
                                 required: true,
-                                number: true,
-                                min: 0,
-                                step: 1000
+                                number: true
                             }
                         },
                         messages: {
                             costPrice: {
                                 required: "Vui lòng nhập số tiền",
-                                number: "Giá tiền phải là số",
-                                min: "Giá tiền không được âm",
-                                step: "Mệnh giá tiền phải 1000"
+                                number: "Giá tiền phải là số"
                             }
                         }
                     });
@@ -1077,7 +1066,7 @@
                 savePriceType: function () {
                     parkingCostView.ValidateCostPrice();
                     var priceType = {
-                        price: $("input[id='costPrice']").val(),
+                        price: asNumberFromCurrency('#costPrice'),
                         note: $("textarea[id='description']").val()
                     };
                     var sendToServer = {

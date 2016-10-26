@@ -356,13 +356,13 @@
                             },
                             {data: 'fullName'},
                             {data: 'cashRevenue',
-                                render: $.fn.dataTable.render.number(".", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'cashProfit',
-                                render: $.fn.dataTable.render.number(".", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'cashProfit',
-                                render: $.fn.dataTable.render.number(".", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             }
                         ]
 
@@ -385,15 +385,15 @@
                                     },
                                     {
                                         data: 'total_Revenue',
-                                        render: $.fn.dataTable.render.number(".", ".", 0)
+                                        render: $.fn.dataTable.render.number(",", ",", 0)
                                     },
                                     {
                                         data: 'total_Profit',
-                                        render: $.fn.dataTable.render.number(".", ".", 0)
+                                        render: $.fn.dataTable.render.number(",", ",", 0)
                                     },
                                     {
                                         data: 'total_Profit',
-                                        render: $.fn.dataTable.render.number(".", ".", 0)
+                                        render: $.fn.dataTable.render.number(",", ",", 0)
                                     }
 
                                 ]

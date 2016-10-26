@@ -2,9 +2,9 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 35%;
+        top: 45%;
         display: none;
-        right: 0px;
+        right: 0;
         width: 40%;
         height: 100%;
     }
@@ -129,7 +129,7 @@
                                         <label for="cost"><b>Đơn giá</b></label>
                                         <div class="row">
                                             <div class="col-sm-12 col-xs-12">
-                                                <input type="text" class="form-control"
+                                                <input type="text" class="form-control currency" value="0"
                                                        id="cost"
                                                        name="cost" data-priceId=""
                                                 >
@@ -210,60 +210,6 @@
 </div>
 <!-- end Modal list garages -->
 
-<!-- Modal add CostPrice -->
-<div class="row">
-    <div id="modal-addCostPrice" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h5 class="modal-title">Thêm giá nhiên liệu</h5>
-                </div>
-                <div class="modal-body">
-                    <form id="formCostPrice">
-                        <div class="row ">
-                            <div class="col-md-12">
-                                <div class="form-group form-md-line-input">
-                                    <label for="costPrice"><b>Giá tiền</b></label>
-                                    <input type="number" class="form-control" step="1000"
-                                           id="costPrice" name="costPrice">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-md-12">
-                                <div class="form-group form-md-line-input">
-                                    <label for="description"><b>Mô tả</b></label>
-                                    <textarea name="description" id="description" cols="10" rows="3"
-                                              class="form-control">
-                                </textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
-                                <div class="form-actions noborder">
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight"
-                                                onclick="otherCostView.savePriceType()">
-                                            Hoàn tất
-                                        </button>
-                                        <button type="button" class="btn default"
-                                                onclick="otherCostView.displayModal('hide','#modal-addCostPrice')">Huỷ
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal add CostPrice -->
 
 
 <!-- Modal add Vehicle -->
@@ -458,20 +404,10 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', otherCostView.current["vehicle_id"]);
                     $("textarea[id='note']").val(otherCostView.current["note"]);
-                    $("input[id='cost']").val(otherCostView.formatMoney(otherCostView.current["cost"], '.', '.'))
+                    $("input[id='cost']").val(otherCostView.current["cost"])
 
                 },
-                formatMoney: function (nStr, decSeperate, groupSeperate) {
-                    nStr += '';
-                    x = nStr.split(decSeperate);
-                    x1 = x[0];
-                    x2 = x.length > 1 ? '.' + x[1] : '';
-                    var rgx = /(\d+)(\d{3})/;
-                    while (rgx.test(x1)) {
-                        x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
-                    }
-                    return x1 + x2;
-                },
+
                 editOtherCost: function (id) {
                     otherCostView.current = null;
                     otherCostView.current = _.clone(_.find(otherCostView.tableOtherCost, function (o) {
@@ -525,6 +461,9 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme:"dark"
                     });
+                    setEventFormatCurrency(".currency");
+                    formatCurrency(".currency");
+                    defaultZero("#costPrice");
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -538,7 +477,7 @@
                             {data: 'fullNumber'},
                             {
                                 data: 'cost',
-                                render: $.fn.dataTable.render.number(".", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {data: 'note'},
                             {
@@ -594,19 +533,15 @@
                         rules: {
                             vehicle_id: "required",
                             cost: {
-                                required: true,
-                                min:0
-
+                                required: true
                             }
 
                         },
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
                             cost: {
-                                required: "Vui lòng nhập số tiền",
-                                min: "Giá tiền không được âm"
+                                required: "Vui lòng nhập số tiền"
                             }
-
                         }
                     });
                 },
@@ -627,7 +562,7 @@
                         } else {
                             sendToServer._object = {
                                 id: otherCostView.idDelete,
-                                vehicle_id: "delete",
+                                vehicle_id: "delete"
                             };
                         }
                         $.ajax({
@@ -727,7 +662,7 @@
                         size: $("input[id='size']").val(),
                         weight: $("input[id='weight']").val(),
                         vehicleType_id: $("select[id='vehicleType_id']").val(),
-                        garage_id: $("select[id='garage_id']").val(),
+                        garage_id: $("select[id='garage_id']").val()
                     };
                     var sendToServer = {
                         _token: _token,
