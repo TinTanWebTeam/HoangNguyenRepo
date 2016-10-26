@@ -909,22 +909,23 @@
                     $("input[id='debt-real']").val(debtCustomerView.currentInvoiceCustomer["debt"]);
                     $("input[id='paidAmt']").val(debtCustomerView.currentInvoiceCustomer["paidAmt"]);
                     $("textarea[id='note']").val(debtCustomerView.currentInvoiceCustomer["note"]);
+                    formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
                     debtCustomerView.currentInvoiceCustomer = {
                         id: debtCustomerView.invoiceCustomerId,
                         invoiceCode : $("input[id='invoiceCode']").val(),
                         VAT : $("input[id='VAT']").val(),
-                        notVAT : asNumberFromCurrency("#notVAT")$("input[id='notVAT']").val(),
-                        hasVAT : $("input[id='hasVAT']").val(),
+                        notVAT : asNumberFromCurrency("#notVAT"),
+                        hasVAT : asNumberFromCurrency("#hasVAT"),
                         exportDate : $("input[id='exportDate']").val(),
                         invoiceDate : $("input[id='invoiceDate']").val(),
                         payDate : $("input[id='payDate']").val(),
                         note : $("textarea[id='note']").val(),
-                        totalPay : $("input[id='totalPay']").val(),
-                        prePaid : $("input[id='prePaid']").val(),
-                        debt : $("input[id=debt-real]").val(),
-                        paidAmt : $("input[id='paidAmt']").val()
+                        totalPay : asNumberFromCurrency("#totalPay"),
+                        prePaid : asNumberFromCurrency("#prePaid"),
+                        debt : asNumberFromCurrency("#debt-real"),
+                        paidAmt : asNumberFromCurrency("#paidAmt")
                     }
                 },
 
@@ -974,10 +975,10 @@
                     debtCustomerView.showControl(flag);
                     if (flag == 0){
                         debtCustomerView.action = "new";
-                        var prePaid = 0, totalPay = 0;
+                        prePaid = 0; totalPay = 0;
                         debtCustomerView.getListCurrentRowTransport();
-                        for(var i = 0; i < debtCustomerView.array_transportId.length; i++ ){
-                            var currentRow = _.find(debtCustomerView.dataTransport, function(o){
+                        for(i = 0; i < debtCustomerView.array_transportId.length; i++ ){
+                            currentRow = _.find(debtCustomerView.dataTransport, function(o){
                                 return o.id == debtCustomerView.array_transportId[i];
                             });
 
@@ -990,7 +991,7 @@
                         $("input[id=totalPay]").val(totalPay);
                         $("input[id=prePaid]").val(prePaid);
 
-                        var debt = totalPay - prePaid;
+                        debt = totalPay - prePaid;
                         $("input[id=debt]").val(debt);
                         $("input[id=debt-real]").val(debt);
                         $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
@@ -1064,9 +1065,8 @@
                         $("input[id=hasVAT]").prop('readonly', true);
 
                         $("input[id=paidAmt]").focus();
-
-                        formatCurrency(".currency");
                     }
+                    formatCurrency(".currency");
                 },
                 deleteInvoiceCustomer: function (invoiceCustomer_id) {
                     sendToServer = {
@@ -1190,7 +1190,7 @@
                                 debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
 
                                 //fill data to table InvoiceCustomerDetail
-                                var data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
                                     return o.invoiceCustomer_id == invoiceCustomer['id'];
                                 });
                                 if(typeof data === 'undefined') return;
@@ -1252,6 +1252,7 @@
                                 debtCustomerView.clearValidation("#frmInvoice");
                                 debtCustomerView.hideControl();
                             }
+                            formatCurrency(".currency");
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1319,7 +1320,7 @@
                 },
 
                 save: function () {
-                    var sendToServer = {
+                    sendToServer = {
                         _token: _token,
                         _transport: debtCustomerView.current.id
                     };
@@ -1369,7 +1370,7 @@
                     if ($("#frmInvoice").valid()) {
                         debtCustomerView.fillFormDataToCurrentObject();
 
-                        var sendToServer = {
+                        sendToServer = {
                             _token: _token,
                             _action: debtCustomerView.action,
                             _invoiceCustomer: debtCustomerView.currentInvoiceCustomer,
@@ -1389,12 +1390,12 @@
                                 var invoiceCustomer = data['invoiceCustomer'];
                                 var invoiceCustomerDetail = data['invoiceCustomerDetail'];
                                 debtCustomerView.invoiceCode = data['invoiceCode'];
-                                invoiceCustomer.debt = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
+                                invoiceCustomer.debt = parseInt(invoiceCustomer['hasVAT']) - parseInt(invoiceCustomer['totalPaid']) - parseInt(invoiceCustomer['prePaid']);
 
                                 if(debtCustomerView.action == 'new'){
                                     //Update InvoiceCustomer_Id for Transports
                                     for(var i = 0; i < debtCustomerView.array_transportId.length; i++){
-                                        var Old = _.find(debtCustomerView.dataTransport, function (o) {
+                                        Old = _.find(debtCustomerView.dataTransport, function (o) {
                                             return o.id == debtCustomerView.array_transportId[i];
                                         });
                                         Old['invoiceCustomer_id'] = invoiceCustomer['id'];
@@ -1438,7 +1439,7 @@
                                     debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
 
                                     //fill data to table InvoiceCustomerDetail
-                                    var data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                    data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
                                         return o.invoiceCustomer_id == sendToServer._invoiceCustomer.id;
                                     });
                                     if(typeof data === 'undefined') return;
@@ -1453,7 +1454,7 @@
                                     $("textarea[id=note]").val('');
 
                                     var prePaid = parseInt(sendToServer._invoiceCustomer['paidAmt']);
-                                    var debtReal = parseInt($("#debt-real").val()) - prePaid;
+                                    var debtReal = asNumberFromCurrency("#debt-real") - prePaid;
                                     $("input[id=debt]").val(debtReal);
                                     $("input[id=debt-real]").val(debtReal);
                                     $("#paidAmt").focus();
@@ -1461,6 +1462,7 @@
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 }
+                                formatCurrency(".currency");
                             } else if (jqXHR.status == 203){
                                 showNotification("error", "Tác vụ thất bại! Mã HĐ này đã tồn tại. Vui lòng nhập một mã HĐ khác và thử lại.");
                             } else {

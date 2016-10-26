@@ -908,22 +908,23 @@
                     $("input[id='debt-real']").val(debtGarageView.currentInvoiceGarage["debt"]);
                     $("input[id='paidAmt']").val(debtGarageView.currentInvoiceGarage["paidAmt"]);
                     $("textarea[id='note']").val(debtGarageView.currentInvoiceGarage["note"]);
+                    formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
                     debtGarageView.currentInvoiceGarage = {
                         id: debtGarageView.invoiceGarageId,
                         invoiceCode : $("input[id='invoiceCode']").val(),
                         VAT : $("input[id='VAT']").val(),
-                        notVAT : $("input[id='notVAT']").val(),
-                        hasVAT : $("input[id='hasVAT']").val(),
+                        notVAT : asNumberFromCurrency("#notVAT"),
+                        hasVAT : asNumberFromCurrency("#hasVAT"),
                         exportDate : $("input[id='exportDate']").val(),
                         invoiceDate : $("input[id='invoiceDate']").val(),
                         payDate : $("input[id='payDate']").val(),
                         note : $("textarea[id='note']").val(),
-                        totalPay : $("input[id='totalPay']").val(),
-                        prePaid : $("input[id='prePaid']").val(),
-                        debt : $("input[id=debt-real]").val(),
-                        paidAmt : $("input[id='paidAmt']").val()
+                        totalPay : asNumberFromCurrency("#totalPay"),
+                        prePaid : asNumberFromCurrency("#prePaid"),
+                        debt : asNumberFromCurrency("#debt-real"),
+                        paidAmt : asNumberFromCurrency("#paidAmt")
                     }
                 },
 
@@ -1063,9 +1064,8 @@
                         $("input[id=hasVAT]").prop('readonly', true);
 
                         $("input[id=paidAmt]").focus();
-
-                        formatCurrency(".currency");
                     }
+                    formatCurrency(".currency");
                 },
                 deleteInvoiceGarage: function (invoiceGarage_id) {
                     sendToServer = {
@@ -1251,6 +1251,7 @@
                                 debtGarageView.clearValidation("#frmInvoice");
                                 debtGarageView.hideControl();
                             }
+                            formatCurrency(".currency");
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1302,15 +1303,13 @@
                     $("#frmInvoice").validate({
                         rules: {
                             paidAmt: {
-                                required: true,
-                                min: 1
+                                required: true
                             }
                         },
                         ignore: ".ignore",
                         messages: {
                             paidAmt: {
-                                required: "Vui lòng nhập số tiền thanh toán.",
-                                min: "Số tiền trả phải lớn hơn 0"
+                                required: "Vui lòng nhập số tiền thanh toán."
                             }
                         }
                     });
@@ -1390,7 +1389,7 @@
                                 var invoiceGarage = data['invoiceGarage'];
                                 var invoiceGarageDetail = data['invoiceGarageDetail'];
                                 debtGarageView.invoiceCode = data['invoiceCode'];
-                                invoiceGarage.debt = invoiceGarage['hasVAT'] - invoiceGarage['totalPaid'] - invoiceGarage['prePaid'];
+                                invoiceGarage.debt = parseInt(invoiceGarage['hasVAT']) - parseInt(invoiceGarage['totalPaid']) - parseInt(invoiceGarage['prePaid']);
 
                                 if(debtGarageView.action == 'new'){
                                     //Update InvoiceGarage_Id for Transports
@@ -1454,7 +1453,7 @@
                                     $("textarea[id=note]").val('');
 
                                     var prePaid = parseInt(sendToServer._invoiceGarage['paidAmt']);
-                                    var debtReal = parseInt($("#debt-real").val()) - prePaid;
+                                    var debtReal = asNumberFromCurrency("#debt-real") - prePaid;
                                     $("input[id=debt]").val(debtReal);
                                     $("input[id=debt-real]").val(debtReal);
                                     $("#paidAmt").focus();
@@ -1462,6 +1461,7 @@
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 }
+                                formatCurrency(".currency");
                             } else if (jqXHR.status == 203){
                                 showNotification("error", "Tác vụ thất bại! Mã HĐ này đã tồn tại. Vui lòng nhập một mã HĐ khác và thử lại.");
                             } else {

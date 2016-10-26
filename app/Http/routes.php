@@ -30,6 +30,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'Admin'], function () {
         Route::post('/invoice-customer/delete', 'DebtManagementController@postDeleteInvoiceCustomer');
         Route::post('/invoice-customer-detail/delete', 'DebtManagementController@postDeleteInvoiceCustomerDetail');
+        Route::post('/invoice-garage/delete', 'DebtManagementController@postDeleteInvoiceGarage');
+        Route::post('/invoice-garage-detail/delete', 'DebtManagementController@postDeleteInvoiceGarageDetail');
     });
     Route::group(['middleware' => 'UserManagement'], function () {
         Route::get('/position','UserManagementController@getViewPosition');
