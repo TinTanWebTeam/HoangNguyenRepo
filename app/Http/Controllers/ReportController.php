@@ -42,15 +42,20 @@ class ReportController extends Controller
 
     public function getDataReportList(Request $request)
     {
+
         try {
             $action = $request->get('_action');
             switch ($action) {
                 case "listMonths":
                     try {
                         $tableReportYear = \DB::table('transports')
-                            ->select('receiveDate',
+                            ->join('costs','transports.id','=','costs.transport_id')
+                            ->select('receiveDate','costs.cost',
                                 \DB::raw('SUM(cashRevenue) as total_Revenue'),
-                                \DB::raw('SUM(cashProfit) as total_Profit'))
+                                \DB::raw('SUM(cashReceive) as total_Receive'),
+                                \DB::raw('SUM(cashProfit) as total_Profit'),
+                                \DB::raw('SUM(cashPreDelivery) as total_PreDelivery'),
+                                \DB::raw('SUM(costs.cost) as total_Cost'))
                             ->where(\DB::raw('YEAR(receiveDate)'), '=', $request->get('_object'))
                             ->groupBy(\DB::raw('MONTH(receiveDate)'))
                             ->get();
@@ -68,7 +73,8 @@ class ReportController extends Controller
                     try {
                         $tableDetail = \DB::table('transports')
                             ->join('customers', 'transports.customer_id', '=', 'customers.id')
-                            ->select('transports.*', 'customers.fullName')
+                            ->join('costs','transports.id','=','costs.transport_id')
+                            ->select('transports.*','costs.cost','customers.fullName')
                             ->where(\DB::raw('YEAR(receiveDate)'), '=', $request->get('_objectYear'))
                             ->where(\DB::raw('MONTH(receiveDate)'), '=', $request->get('_objectMonth'))
                             ->get();

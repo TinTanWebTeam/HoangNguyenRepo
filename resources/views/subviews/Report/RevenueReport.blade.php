@@ -56,7 +56,7 @@
                                         <th>Ngày</th>
                                         <th>Khách hàng</th>
                                         <th>Doanh thu</th>
-                                        <th>Lợi nhuận</th>
+                                        <th>Lợi nhuận ước tính</th>
                                         <th>Lợi nhuận thực tế</th>
                                     </tr>
                                     </thead>
@@ -93,7 +93,7 @@
                                         <tr class="active">
                                             <th>Tháng</th>
                                             <th>Tổng doanh thu</th>
-                                            <th>Tổng lợi nhuận</th>
+                                            <th>Tổng lợi nhuận ước tính</th>
                                             <th>Tổng lợi nhuận thực tế</th>
                                         </tr>
                                         </thead>
@@ -344,6 +344,10 @@
                     if (revenueReportView.table != null) {
                         revenueReportView.table.destroy();
                     }
+                    for (var i = 0; i < data.length; i++) {
+                          data[i].Profit_actual = data[i]['cashReceive'] - (data[i]['cashPreDelivery'] +data[i]['cost']);
+
+                    }
                     revenueReportView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -361,7 +365,7 @@
                             {data: 'cashProfit',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
-                            {data: 'cashProfit',
+                            {data: 'Profit_actual',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             }
                         ]
@@ -371,6 +375,9 @@
                 fillDataToDataTableYear: function (data) {
                     if (revenueReportView.tableYear != null) {
                         revenueReportView.tableYear.destroy();
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].total_Profit_actual = data[i]['total_Receive'] - (data[i]['total_PreDelivery'] + data[i]['total_Cost']);
                     }
                     revenueReportView.tableYear = $('#table-data-year').DataTable(
                             {
@@ -392,7 +399,7 @@
                                         render: $.fn.dataTable.render.number(",", ",", 0)
                                     },
                                     {
-                                        data: 'total_Profit',
+                                        data: 'total_Profit_actual',
                                         render: $.fn.dataTable.render.number(",", ",", 0)
                                     }
 
