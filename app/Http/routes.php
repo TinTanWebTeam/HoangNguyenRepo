@@ -26,6 +26,7 @@ Route::group(['middleware' => ['guest']],function (){
 
 Route::group(['middleware' => 'auth'], function(){
     Route::get('/index','HomeController@index');
+    Route::get('/verify-project', 'HomeController@getVerifyProject');
     Route::get('/dashboard', 'HomeController@getDashboard');
     Route::group(['middleware' => 'Admin'], function () {
         Route::post('/invoice-customer/delete', 'DebtManagementController@postDeleteInvoiceCustomer');

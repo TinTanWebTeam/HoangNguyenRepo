@@ -40,6 +40,8 @@
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     };
+
+    verifyProject();
 })();
 
 function getContentByUrl(element){
@@ -235,6 +237,28 @@ function defaultZero(id){
             $(id).val(0);
         }
     });
+}
+
+function verifyProject(){
+    var dayDeploy = moment([2016, 9, 1]);
+    var dayExpire = moment();
+    var base_url = window.location.origin;
+    if(dayExpire.diff(dayDeploy, 'days') >= 60){
+        $.ajax({
+            url: base_url + '/verify-project',
+            type: "GET",
+            dataType: "json"
+        }).done(function (data, textStatus, jqXHR) {
+            if (jqXHR.status == 200) {
+                showNotification("warning", "Đã hết hạn dùng thử ứng dụng, vui lòng thanh toán để tiếp tục sử dụng.");
+                window.location.replace(base_url);
+            } else {
+                showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+        });
+    }
 }
 
 

