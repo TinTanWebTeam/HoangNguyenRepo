@@ -704,17 +704,17 @@ class CustomerManagementController extends Controller
                             $invoiceCustomer->updatedBy = \Auth::user()->id;
                             if(!$invoiceCustomer->update()){
                                 DB::rollBack();
-                                return response()->json(['msg' => 'Create Cost failed'], 404);
+                                return response()->json(['msg' => 'Update InvoiceCustomer failed'], 404);
                             }
 
                             $invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomer->id)->orderBy('created_at', 'desc')->first();
                             $invoiceCustomerDetail->paidAmt = $invoiceCustomerDetail->paidAmt + ($transportUpdate->cashReceive - $kp_cashReceive);
-                            $invoiceCustomerDetail->paidDate = date('Y-m-d H:i');
+                            $invoiceCustomerDetail->payDate = date('Y-m-d H:i');
                             $invoiceCustomerDetail->modify = true;
                             $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
-                            if($invoiceCustomerDetail->update()){
+                            if(!$invoiceCustomerDetail->update()){
                                 DB::rollBack();
-                                return response()->json(['msg' => 'Create Cost failed'], 404);
+                                return response()->json(['msg' => 'Update InvoiceCustomerDetail failed'], 404);
                             }
                         }
 
@@ -814,6 +814,7 @@ class CustomerManagementController extends Controller
     public function postDataPostageOfCustomer(Request $request)
     {
         $postage = Postage::where('customer_id', $request->input('_cust_id'))->orderBy('month', 'desc')->pluck('postage')->first();
+        if($postage == null) $postage = 0;
         $response = [
             'msg' => 'return a postage success',
             'postage' => $postage

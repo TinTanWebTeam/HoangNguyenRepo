@@ -718,13 +718,13 @@
                     $("input[id='deliveryPlace']").val('');
                     $("input[id='voucherNumber']").val('');
                     $("input[id='voucherQuantumProduct']").val('');
-                    $("input[id='note']").val('');
+                    $("textarea[id='note']").val('');
 
                     $("input[id='voucher_transport']").val('');
                     $("input[id='voucher_transport']").attr("voucher_transport", "");
 
                     $("input[id='cost']").val(0);
-                    $("input[id='costs_note']").val('');
+                    $("textarea[id='costs_note']").val('');
 
                     transportView.arrayVoucher = [];
                 },
@@ -1069,31 +1069,31 @@
                             {data: 'customers_fullName', width: "15%"},
                             {
                                 data: 'cashRevenue',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
                                 data: 'cashDelivery',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
                                 data: 'cashPreDelivery',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
                                 data: 'cashReceive',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
                                 data: 'cost',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
                                 data: 'cashProfit',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
                                 data: 'cashProfit_real',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {data: 'receiver'},
                             {
@@ -1221,10 +1221,10 @@
                     $("input[id='deliveryPlace']").val(transportView.current["deliveryPlace"]);
                     $("input[id='voucherNumber']").val(transportView.current["voucherNumber"]);
                     $("input[id='voucherQuantumProduct']").val(transportView.current["voucherQuantumProduct"]);
-                    $("input[id='note']").val(transportView.current["note"]);
+                    $("textarea[id='note']").val(transportView.current["note"]);
                     $("select[id='status_transport']").val(transportView.current["status_transport"]);
                     $("input[id='cost']").val(transportView.current["cost"]);
-                    $("input[id='costs_note']").val(transportView.current["costs_note"]);
+                    $("textarea[id='costs_note']").val(transportView.current["costs_note"]);
 
                     var strVoucherName = "";
                     for (var i = 0; i < transportView.arrayVoucher.length; i++) {
@@ -1235,6 +1235,7 @@
                     }
                     $("input[id='voucher_transport']").val(strVoucherName);
                     $("select[id='costPrices_id']").val(transportView.current["costPrices_id"]);
+                    formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
                     if (transportView.action == 'add') {
@@ -1254,7 +1255,7 @@
                             deliveryPlace: $("input[id='deliveryPlace']").val(),
                             voucherNumber: $("input[id='voucherNumber']").val(),
                             voucherQuantumProduct: $("input[id='voucherQuantumProduct']").val(),
-                            note: asNumberFromCurrency("#note"),
+                            note: $("textarea[id='note']").val(),
                             status_transport: $("select[id='status_transport']").val(),
                             cost: asNumberFromCurrency("#cost"),
                             costs_note: $("textarea[id='costs_note']").val(),
@@ -1573,6 +1574,7 @@
                         console.log(data);
                         if (jqXHR.status == 201) {
                             $("input[id='cashDelivery']").val(data['postage']);
+                            formatCurrency(".currency");
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }

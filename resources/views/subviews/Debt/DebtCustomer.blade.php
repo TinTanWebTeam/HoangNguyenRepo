@@ -915,7 +915,7 @@
                         id: debtCustomerView.invoiceCustomerId,
                         invoiceCode : $("input[id='invoiceCode']").val(),
                         VAT : $("input[id='VAT']").val(),
-                        notVAT : $("input[id='notVAT']").val(),
+                        notVAT : asNumberFromCurrency("#notVAT")$("input[id='notVAT']").val(),
                         hasVAT : $("input[id='hasVAT']").val(),
                         exportDate : $("input[id='exportDate']").val(),
                         invoiceDate : $("input[id='invoiceDate']").val(),
@@ -1303,15 +1303,13 @@
                     $("#frmInvoice").validate({
                         rules: {
                             paidAmt: {
-                                required: true,
-                                min: 1
+                                required: true
                             }
                         },
                         ignore: ".ignore",
                         messages: {
                             paidAmt: {
-                                required: "Vui lòng nhập số tiền thanh toán.",
-                                min: "Số tiền trả phải lớn hơn 0"
+                                required: "Vui lòng nhập số tiền thanh toán."
                             }
                         }
                     });
