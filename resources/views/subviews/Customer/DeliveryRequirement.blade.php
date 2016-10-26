@@ -612,7 +612,8 @@
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="description"><b>Mô tả</b></label>
-                                    <textarea name="description" id="description" cols="10" rows="3" class="form-control"></textarea>
+                                    <textarea name="description" id="description" cols="10" rows="3"
+                                              class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -703,8 +704,8 @@
                     $("input[id='customer_id']").val('');
                     $("#customer_id").attr("data-customerId", "");
 
-                    $("input[id='product_id']").val('');
-                    $("#product_id").attr("data-productId", "");
+                    $("input[id='product_name']").val('');
+                    $("#product_name").attr("data-productId", "");
 
                     $("input[id='quantumProduct']").val('');
                     $("input[id='weight']").val('');
@@ -798,10 +799,10 @@
                         source: transportView.tagsProductName
                     });
                 },
-                renderEventFocusOut: function(){
+                renderEventFocusOut: function () {
                     $("#product_name").focusout(function () {
                         productName = this.value;
-                        if(productName == '') return;
+                        if (productName == '') return;
                         product = _.find(transportView.dataProduct, function (o) {
                             return o.name == productName;
                         });
@@ -1397,9 +1398,15 @@
                 },
 
                 save: function () {
-                    transportView.formValidate();
-                    if ($("#frmControl").valid()) {
-                        if (transportView.action != 'delete') {
+                    if (transportView.action == 'delete') {
+                        sendToServer = {
+                            _token: _token,
+                            _action: transportView.action,
+                            _id: transportView.idDelete
+                        };
+                    } else {
+                        transportView.formValidate();
+                        if ($("#frmControl").valid()) {
                             if ($("#vehicle_id").attr('data-vehicleId') == '') {
                                 showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
                                 return;
@@ -1412,80 +1419,76 @@
                                 showNotification('warning', 'Vui lòng nhập hàng.');
                                 return;
                             }
+                            transportView.fillFormDataToCurrentObject();
+                            sendToServer = {
+                                _token: _token,
+                                _action: transportView.action,
+                                _transport: transportView.current
+                            };
+                        } else {
+                            $("form#frmControl").find("label[class=error]").css("color", "red");
+                            return;
                         }
-
-                        transportView.fillFormDataToCurrentObject();
-
-                        var sendToServer = {
-                            _token: _token,
-                            _action: transportView.action,
-                            _transport: transportView.current
-                        };
-                        if (transportView.action == 'delete') {
-                            sendToServer._id = transportView.idDelete;
-                        }
-                        console.log("CLIENT");
-                        console.log(sendToServer._transport);
-                        $.ajax({
-                            url: url + 'transport/modify',
-                            type: "POST",
-                            dataType: "json",
-                            data: sendToServer
-                        }).done(function (data, textStatus, jqXHR) {
-                            console.log("SERVER");
-                            console.log(data);
-                            if (jqXHR.status == 201) {
-                                switch (transportView.action) {
-                                    case 'add':
-                                        data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
-                                        data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
-                                        transportView.dataTransport.push(data['transport']);
-
-                                        transportView.dataVoucherTransport = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
-
-                                        showNotification("success", "Thêm thành công!");
-                                        break;
-                                    case 'update':
-                                        var Old = _.find(transportView.dataTransport, function (o) {
-                                            return o.id == sendToServer._transport.id;
-                                        });
-                                        var indexOfOld = _.indexOf(transportView.dataTransport, Old);
-
-                                        data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
-                                        data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
-                                        transportView.dataTransport.splice(indexOfOld, 1, data['transport']);
-
-                                        _.remove(transportView.dataVoucherTransport, function (currentObject) {
-                                            return currentObject.transport_id === sendToServer._transport.id;
-                                        });
-                                        transportView.dataVoucherTransport = transportView.dataVoucherTransport.concat(data['voucherTransport']);
-
-                                        showNotification("success", "Cập nhật thành công!");
-                                        transportView.hideControl();
-                                        break;
-                                    case 'delete':
-                                        var Old = _.find(transportView.dataTransport, function (o) {
-                                            return o.id == sendToServer._id;
-                                        });
-                                        var indexOfOld = _.indexOf(transportView.dataTransport, Old);
-                                        transportView.dataTransport.splice(indexOfOld, 1);
-                                        showNotification("success", "Xóa thành công!");
-                                        transportView.displayModal("hide", "#modal-confirmDelete");
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                transportView.table.clear().rows.add(transportView.dataTransport).draw();
-                                transportView.clearInput();
-                            } else {
-                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                            }
-                        }).fail(function (jqXHR, textStatus, errorThrown) {
-                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        });
-                    } else {
-                        $("form#frmControl").find("label[class=error]").css("color", "red");
                     }
+                    console.log("CLIENT");
+                    console.log(sendToServer._transport);
+                    $.ajax({
+                        url: url + 'transport/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 201) {
+                            switch (transportView.action) {
+                                case 'add':
+                                    data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                    data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
+                                    transportView.dataTransport.push(data['transport']);
+
+                                    transportView.dataVoucherTransport = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
+
+                                    showNotification("success", "Thêm thành công!");
+                                    break;
+                                case 'update':
+                                    var Old = _.find(transportView.dataTransport, function (o) {
+                                        return o.id == sendToServer._transport.id;
+                                    });
+                                    var indexOfOld = _.indexOf(transportView.dataTransport, Old);
+
+                                    data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                    data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
+                                    transportView.dataTransport.splice(indexOfOld, 1, data['transport']);
+
+                                    _.remove(transportView.dataVoucherTransport, function (currentObject) {
+                                        return currentObject.transport_id === sendToServer._transport.id;
+                                    });
+                                    transportView.dataVoucherTransport = transportView.dataVoucherTransport.concat(data['voucherTransport']);
+
+                                    showNotification("success", "Cập nhật thành công!");
+                                    transportView.hideControl();
+                                    break;
+                                case 'delete':
+                                    var Old = _.find(transportView.dataTransport, function (o) {
+                                        return o.id == sendToServer._id;
+                                    });
+                                    var indexOfOld = _.indexOf(transportView.dataTransport, Old);
+                                    transportView.dataTransport.splice(indexOfOld, 1);
+                                    showNotification("success", "Xóa thành công!");
+                                    transportView.displayModal("hide", "#modal-confirmDelete");
+                                    break;
+                                default:
+                                    break;
+                            }
+                            transportView.table.clear().rows.add(transportView.dataTransport).draw();
+                            transportView.clearInput();
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
                 },
                 saveVoucher: function () {
                     transportView.validateVoucher();
