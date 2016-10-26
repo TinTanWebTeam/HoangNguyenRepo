@@ -57,7 +57,6 @@ class UserManagementController extends Controller
     {
 
         $user = DB::table('users')
-            ->where('users.active', 1)
             ->where('users.username', '=', $request->get('_object'))
             ->first();
         if ($user == null) {

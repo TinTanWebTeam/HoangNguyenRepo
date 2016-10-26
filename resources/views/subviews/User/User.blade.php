@@ -496,13 +496,13 @@
                     userView.show();
                 },
                 clearInput: function () {
-                    if (userView.current) {
-                        for (var propertyName in userView.current) {
-                            if (propertyName != 'position_id')
-                                $("input[id=" + propertyName + "]").val('');
-                        }
-                    }
+                    $("input[id='fullName']").val('');
+                    $("input[id='username']").val('');
+                    $("input[id='email']").val('');
+                    $("input[id='password']").val('');
                     $("input[id='password_confirmation']").val('');
+                    $("input[id='address']").val('');
+                    $("input[id='phone']").val('');
                     //clear input checkbox
                     userView.resetRolesInDom();
                 },
