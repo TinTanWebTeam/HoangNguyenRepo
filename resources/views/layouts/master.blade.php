@@ -93,7 +93,7 @@
 <script src="{{ URL::to('libs/highcharts/highcharts.js') }}"></script>
 
 <!-- Validate -->
-<script src="{{ URL::to('libs/jquery-validation/dist/jquery.validate.min.js') }}"></script>
+<script src="{{ URL::to('libs/jquery-validation/dist/jquery.validate.js') }}"></script>
 <script src="{{ URL::to('libs/jquery-validation/dist/additional-methods.min.js') }}"></script>
 
 <!-- Toastr -->
