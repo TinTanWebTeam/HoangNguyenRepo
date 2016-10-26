@@ -38,8 +38,9 @@ class UserManagementController extends Controller
             $position = Position::all();
             $users = DB::table('users')
                 ->where('users.active', 1)
-                ->join('positions', 'users.position_id', '=', 'positions.id')
+                ->join('positions','users.position_id', '=', 'positions.id')
                 ->select('users.*', 'positions.name as positions_name')
+                ->orderBy('users.id','DESC')
                 ->get();
             $response = [
                 'msg'           => 'Get data User success',
@@ -152,22 +153,24 @@ class UserManagementController extends Controller
                     $addNewRoles = collect($array_roleId)->toArray();
                     foreach ($addNewRoles as $item) {
                         $subRoleNew = new SubRole();
-                        $subRoleNew->user_id = $request->get('_object')['id'];
+                        $subRoleNew->user_id = $userNew->id;
                         $subRoleNew->role_id = $item;
                         if (!$subRoleNew->save()) {
                             return response()->json(['msg' => 'Create failed'], 404);
                         }
                     }
 
-                    $userAdd = \DB::table('user')
+                    $userAdd = \DB::table('users')
                         ->where('users.active', 1)
+                        ->where('users.id', $userNew->id)
                         ->join('positions', 'users.position_id', '=', 'positions.id')
                         ->select('users.*', 'positions.name as positions_name')
+                        ->orderBy('users.id','DESC')
                         ->get();
                     $response = [
                         'msg'          => 'Created user',
                         'tableUserAdd' => $userAdd,
-                        'subRoleNew'   => $subRoleNew
+//                        'subRoleNew'   => $subRoleNew
                     ];
                     return response()->json($response, 201);
 
@@ -213,6 +216,7 @@ class UserManagementController extends Controller
                         ->join('positions', 'users.position_id', '=', 'positions.id')
                         ->where('users.id', $userUpdate->id)
                         ->select('users.*', 'positions.name as positions_name')
+                        ->orderBy('users.id','DESC')
                         ->get();
                     $response = [
                         'msg'             => 'Updated user',

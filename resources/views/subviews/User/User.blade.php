@@ -275,7 +275,6 @@
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
-
                 },
                 hide: function () {
                     $('#divControl').fadeOut(300, function () {
@@ -497,10 +496,6 @@
                     userView.show();
                 },
                 clearInput: function () {
-//                    $("input[id='areaCode']").val('');
-//                    $("input[id='vehicleNumber']").val('');
-//                    $("input[id='size']").val('');
-//                    $("input[id='weight']").val('');
                     if (userView.current) {
                         for (var propertyName in userView.current) {
                             if (propertyName != 'position_id')
@@ -673,11 +668,7 @@
                                 if (jqXHR.status == 201) {
                                     switch (userView.action) {
                                         case 'add':
-                                            var UserOld = _.find(userView.tableUser, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var indexOfUserOld = _.indexOf(  userView.tableUser, UserOld);
-                                            userView.tableUser.splice(indexOfUserOld, 1, data['tableUserAdd'][0]);
+                                            console.log(data['tableUserAdd'][0]);
                                             userView.tableUser.push(data['tableUserAdd'][0]);
                                             userView.showNotification("success", "Thêm thành công!");
                                             break;
@@ -689,7 +680,7 @@
                                             userView.tableUser.splice(indexOfUpdateUserOld, 1, data['tableUserUpdate'][0]);
                                             userView.tableSubRow = data['subRoles'][0];
                                             userView.showNotification("success", "Cập nhật thành công!");
-                                            userView.hide()
+                                            userView.hide();
                                             break;
                                         default:
                                             break;
