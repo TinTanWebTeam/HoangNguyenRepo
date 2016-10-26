@@ -1,6 +1,6 @@
 <!-- Navigation -->
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-    <div class="navbar-header">
+    <div class="navbar-header" style="background-color: #F5F5F5">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -33,7 +33,7 @@
         <!-- /.navbar-top-links -->
     </div>
     <!-- /.navbar-header -->
-    <div class="navbar-default sidebar" role="navigation">
+    <div class="navbar-default sidebar" role="navigation" style="background-color: #F5F5F5">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 @foreach($filtered as $key => $value)
@@ -45,7 +45,7 @@
                                    onclick="getContentByUrl(this)">
                                     <div class="row">
                                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                            <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="25" height="25">
+                                            <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="22" height="22">
                                         </div>
                                         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                                             {{ \App\Role::where('name', $key)->pluck('description')[0] }}
@@ -60,7 +60,7 @@
                             <a href="#" role-name="{{$key}}" data-url="{{ $array_url[$key] }}">
                                 <div class="row">
                                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                        <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="25" height="25">
+                                        <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="22" height="22">
                                     </div>
                                     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                                         {{ \App\Role::where('name', $key)->pluck('description')[0]}}

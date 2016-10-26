@@ -55,7 +55,7 @@
 
 <body>
 
-<div id="wrapper">
+<div id="wrapper" style="background-color: #F5F5F5">
     @include('partials.Navbar')
     <div id="page-wrapper">
         @yield('content')
