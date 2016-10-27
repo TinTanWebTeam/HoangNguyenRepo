@@ -14,8 +14,8 @@
         "paginate": {
             "first": "Đầu",
             "last": "Cuối",
-            "next": "Tiếp",
-            "previous": "Lùi"
+            "next": "Sau",
+            "previous": "Trước"
         },
         "aria": {
             "sortAscending": ": Nhấp vào để xếp cột tăng dần",
