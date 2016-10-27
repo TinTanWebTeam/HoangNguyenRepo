@@ -2957,7 +2957,7 @@ TableTools.BUTTONS = {
 	} ),
 
 	"select_all": $.extend( {}, TableTools.buttonBase, {
-		"sButtonText": "Select all",
+		"sButtonText": "Chọn tất cả",
 		"fnClick": function( nButton, oConfig ) {
 			this.fnSelectAll();
 		},
@@ -2971,7 +2971,7 @@ TableTools.BUTTONS = {
 	} ),
 
 	"select_none": $.extend( {}, TableTools.buttonBase, {
-		"sButtonText": "Deselect all",
+		"sButtonText": "Bỏ chọn",
 		"fnClick": function( nButton, oConfig ) {
 			this.fnSelectNone();
 		},

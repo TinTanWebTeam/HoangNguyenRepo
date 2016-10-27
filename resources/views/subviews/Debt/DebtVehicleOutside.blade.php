@@ -25,7 +25,6 @@
         }
     }
 </style>
-
 <!-- Begin Table -->
 <div class="row">
     <div class="col-md-12">
@@ -68,7 +67,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="ui-widget">
-                                <input type="text" class="form-control" id="garaName_transport" name="garaName_transport" placeholder="Nhập tên khách hàng">
+                                <input type="text" class="form-control" id="garaName_transport" name="garaName_transport" placeholder="Nhập tên nhà xe ngoài">
                             </div>
                         </div>
                     </div>
@@ -97,11 +96,11 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="radio">
-                                        <button onclick="debtGarageView.searchTransport()" id="btnSearchTransport"
-                                                class="btn btn-sm btn-info marginRight"><i
-                                                    class="fa fa-search" aria-hidden="true"></i> Tìm
+                                        <button id="btnSearchTransport" class="btn btn-sm btn-info marginRight"
+                                                onclick="debtGarageView.searchTransport();$('#ToolTables_table-data_0').click()">
+                                            <i class="fa fa-search" aria-hidden="true"></i> Tìm
                                         </button>
-                                        <button class="btn btn-sm btn-default" onclick="debtGarageView.clearSearch('transport')">
+                                        <button class="btn btn-sm btn-default" onclick="debtGarageView.clearSearch('transport');$('#ToolTables_table-data_1').click()">
                                             <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
                                         </button>
                                     </div>
@@ -139,14 +138,14 @@
 
 
                     <hr>
-                    <p class="lead text-primary text-left"><strong>Hóa đơn khách hàng</strong></p>
+                    <p class="lead text-primary text-left"><strong>Hóa đơn nhà xe ngoài</strong></p>
                     <div class="row">
                         <div class="col-md-6" id="dateSearchInvoice">
                             <input type="text" class="date start"/> đến
                             <input type="text" class="date end"/>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="garaName_invoice" name="garaName_transport" placeholder="Nhập tên khách hàng">
+                            <input type="text" class="form-control" id="garaName_invoice" name="garaName_transport" placeholder="Nhập tên nhà xe ngoài">
                         </div>
                     </div>
                     <div class="row">
@@ -178,7 +177,7 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
-                                        <th>Khách hàng</th>
+                                        <th>Nhà xe ngoài</th>
                                         <th>Mã HĐ</th>
                                         <th>Ngày xuất</th>
                                         <th>Ngày HĐ</th>
@@ -578,6 +577,7 @@
                         if(tr.find('td:eq(1)').text() == td.text()){
                             $("input[id=garaName_transport]").val(td.text());
                             debtGarageView.searchTransport();
+                            $('#ToolTables_table-data_0').click();
                         }
                     });
 
@@ -658,7 +658,11 @@
                                 }
                             }
                         ],
-                        dom: 'Bfrtip',
+                        dom: 'T<"clear">Bfrtip',
+                        tableTools: {
+                            "sRowSelect": "multi",
+                            "aButtons": [ "select_all", "select_none" ]
+                        },
                         buttons: [
                             {
                                 extend: 'copyHtml5',
@@ -700,7 +704,8 @@
                                 text: 'Ẩn cột'
                             }
                         ]
-                    })
+                    });
+                    $("#table-data").css("width", "100%");
                 },
                 fillDataToDatatableInvoiceGarage: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -1635,9 +1640,13 @@
 
                 getListCurrentRowTransport: function() {
                     debtGarageView.array_transportId = [];
-                    $(debtGarageView.table.$('tr', {"filter":"applied"}).each( function () {
-                        debtGarageView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
-                    } ));
+//                    $(debtGarageView.table.$('tr', {"filter":"applied"}).each( function () {
+//                        debtGarageView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
+//                    } ));
+                    array = $.map(debtGarageView.table.rows('.selected').data(), function(value, index) {
+                        return [value];
+                    });
+                    debtGarageView.array_transportId = _.map(array, 'id');
                 },
                 computeDebt: function(paidAmt){
                     console.log(paidAmt);

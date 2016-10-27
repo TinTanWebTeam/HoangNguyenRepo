@@ -97,11 +97,10 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="radio">
-                                        <button onclick="debtCustomerView.searchTransport()" id="btnSearchTransport"
-                                                class="btn btn-sm btn-info marginRight"><i
-                                                    class="fa fa-search" aria-hidden="true"></i> Tìm
+                                        <button id="btnSearchTransport" class="btn btn-sm btn-info marginRight" onclick="debtCustomerView.searchTransport();$('#ToolTables_table-data_0').click()">
+                                            <i class="fa fa-search" aria-hidden="true"></i> Tìm
                                         </button>
-                                        <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('transport')">
+                                        <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('transport');$('#ToolTables_table-data_1').click()">
                                             <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
                                         </button>
                                     </div>
@@ -578,6 +577,7 @@
                         if(tr.find('td:eq(1)').text() == td.text()){
                             $("input[id=custName_transport]").val(td.text());
                             debtCustomerView.searchTransport();
+                            $('#ToolTables_table-data_0').click();
                         }
                     });
 
@@ -659,7 +659,11 @@
                                 }
                             }
                         ],
-                        dom: 'Bfrtip',
+                        dom: 'T<"clear">Bfrtip',
+                        tableTools: {
+                            "sRowSelect": "multi",
+                            "aButtons": [ "select_all", "select_none" ]
+                        },
                         buttons: [
                             {
                                 extend: 'copyHtml5',
@@ -1636,9 +1640,13 @@
 
                 getListCurrentRowTransport: function() {
                     debtCustomerView.array_transportId = [];
-                    $(debtCustomerView.table.$('tr', {"filter":"applied"}).each( function () {
-                        debtCustomerView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
-                    } ));
+//                    $(debtCustomerView.table.$('tr', {"filter":"applied"}).each( function () {
+//                        debtCustomerView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
+//                    } ));
+                    array = $.map(debtCustomerView.table.rows('.selected').data(), function(value, index) {
+                        return [value];
+                    });
+                    debtCustomerView.array_transportId = _.map(array, 'id');
                 },
                 computeDebt: function(paidAmt){
                     console.log(paidAmt);

@@ -11,21 +11,23 @@
     <title>@yield('title')</title>
 
     <!-- Custom Bootstrap Core CSS -->
-    <link href=" {{ URL::to('libs/bootstrap/dist/css/bootstrap.material.min.css') }} " rel="stylesheet">
+    <link rel="stylesheet" href="{{ URL::to('libs/bootstrap/dist/css/bootstrap.material.min.css') }}">
 
     <!-- MetisMenu CSS -->
-    <link href=" {{ URL::to('libs/metisMenu/dist/metisMenu.min.css')  }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ URL::to('libs/metisMenu/dist/metisMenu.min.css') }}">
 
     <!-- Custom CSS -->
-    <link href=" {{ URL::to('src/css/sb-admin-2.css') }} " rel="stylesheet">
+    <link rel="stylesheet" href="{{ URL::to('src/css/sb-admin-2.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('src/css/custom-bootstrap.css') }}">
 
     <!-- Custom Fonts -->
     <link href=" {{ URL::to('libs/font-awesome/css/font-awesome.min.css') }} " rel="stylesheet" type="text/css">
 
     <!-- DataTable.net -->
-    <link rel="stylesheet" href="{{ URL::to('src/css/custom-bootstrap.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('libs/datatables.net-dt/css/jquery.dataTables.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/Buttons-1.2.2/css/buttons.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/TableTools/css/dataTables.tableTools.css') }}">
 
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ URL::to('libs/toastr/toastr.min.css') }}">
@@ -39,18 +41,10 @@
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/pikaday.css') }}">
 
-
-
-
-
-@yield('styles')
+    @yield('styles')
 
     <!-- jQuery 2.2 -->
     <script src=" {{ URL::to('libs/jquery/dist/jquery.min.js') }}"></script>
-    <!-- jQuery UI -->
-    <script src=" {{ URL::to('libs/jquery-ui/jquery-ui.min.js') }}"></script>
-    <!-- jQuery 2.1 -->
-    {{--<script   src="https://code.jquery.com/jquery-2.1.4.min.js"   integrity="sha256-8WqyJLuWKRBVhxXIL1jBDD7SDxU936oZkCnxQbWwJVw="   crossorigin="anonymous"></script>--}}
 </head>
 
 <body>
@@ -63,6 +57,9 @@
     <!-- /#page-wrapper -->
 </div>
 <!-- /#wrapper -->
+
+<!-- jQuery UI -->
+<script src=" {{ URL::to('libs/jquery-ui/jquery-ui.min.js') }}"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src=" {{ URL::to('libs/bootstrap/dist/js/bootstrap.min.js') }}"></script>
@@ -80,7 +77,8 @@
 <!-- Datatables.net -->
 <script src="{{ URL::to('libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ URL::to('libs/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ URL::to('libs/datatables.net/js/dataTables.tableTools.js') }}"></script>
+<script src="{{ URL::to('src/dataTableFull/TableTools/js/dataTables.tableTools.js') }}"></script>
+
 
 <script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/pdfmake-0.1.18/build/pdfmake.min.js') }}"></script>
@@ -109,6 +107,7 @@
 
 <script src="{{ URL::to('libs/datepair.js/lib/pikaday.js') }}"></script>
 <script src="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.js') }}"></script>
+<script src="{{ URL::to('libs/bootstrap-datepicker/dist/locales/bootstrap-datepicker.vi.min.js') }}"></script>
 
 <!-- JQuery Format Currency -->
 <script src="{{ URL::to('src/jquery.formatCurrency/jquery.formatCurrency-1.4.0.min.js') }}"></script>
