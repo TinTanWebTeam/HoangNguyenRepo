@@ -108,7 +108,7 @@
                                                        class="form-control"
                                                        id="vehicle_id" readonly
                                                        name="vehicle_id"
-                                                       placeholder="click 2 lần để chọn xe">
+                                                       placeholder="Nhấp đôi để chọn">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
@@ -147,8 +147,7 @@
                                         <label for="note"><b>Ghi chú</b></label>
                                         <textarea type="text" class="form-control"
                                                   id="note"
-                                                  name="note"
-                                                  placeholder="ghi chú"></textarea>
+                                                  name="note"></textarea>
                                     </div>
                                 </div>
                             </div>

@@ -116,7 +116,7 @@
                                                        ondblclick="fuelCostView.loadListVehicles()" class="form-control"
                                                        id="vehicle_id" readonly
                                                        name="vehicle_id"
-                                                       placeholder="click 2 lần để chọn xe">
+                                                       placeholder="Nhấp đôi để chọn">
 
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
@@ -159,8 +159,7 @@
                                         <input type="number" class="form-control"
                                                id="literNumber"
                                                name="literNumber"
-                                               onkeyup="fuelCostView.totalPrice(this)"
-                                               placeholder="Số lít">
+                                               onkeyup="fuelCostView.totalPrice(this)">
 
                                     </div>
 
@@ -193,8 +192,7 @@
                                         <label for="totalprice"><b>Tổng chi phí</b></label>
                                         <input type="text" class="form-control currency"
                                                id="totalprice" readonly
-                                               name="totalprice"
-                                               placeholder="Tổng chi phí">
+                                               name="totalprice">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -202,8 +200,7 @@
                                         <label for="noted"><b>Ghi chú</b></label>
                                         <input type="text" class="form-control"
                                                id="noted"
-                                               name="noted"
-                                               placeholder="ghi chú">
+                                               name="noted">
                                     </div>
                                 </div>
                             </div>
@@ -297,7 +294,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="description"><b>Mô tả</b></label>
                                     <textarea name="description" id="description" cols="10" rows="3"
-                                              class="form-control" placeholder="Mô tả"></textarea>
+                                              class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>

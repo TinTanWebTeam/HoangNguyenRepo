@@ -101,7 +101,7 @@
                                                        id="vehicle_id"
                                                        name="vehicle_id"
                                                        data-vehicleId=""
-                                                       placeholder="Nhấp đôi để chọn xe"
+                                                       placeholder="Nhấp đôi để chọn"
                                                        autofocus readonly
                                                        ondblclick="divisiveDriverView.loadListVehicle()">
                                             </div>
@@ -123,7 +123,7 @@
                                                        id="user_id"
                                                        name="user_id"
                                                        data-userId=""
-                                                       placeholder="Nhấp đôi để chọn tài xế"
+                                                       placeholder="Nhấp đôi để chọn"
                                                        readonly ondblclick="divisiveDriverView.loadListDriver()">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">

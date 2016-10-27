@@ -106,7 +106,7 @@
                                                 <input type="text" class="form-control"
                                                        id="garages_name" data-id="" readonly
                                                        name="garages_name"
-                                                       placeholder="" ondblclick="vehicleInsideView.loadListGarage()">
+                                                       placeholder="Nhấp đôi để chọn" ondblclick="vehicleInsideView.loadListGarage()">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
