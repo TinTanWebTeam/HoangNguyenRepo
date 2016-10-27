@@ -97,10 +97,10 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="radio">
-                                        <button id="btnSearchTransport" class="btn btn-sm btn-info marginRight" onclick="debtCustomerView.searchTransport();$('#ToolTables_table-data_0').click()">
+                                        <button id="btnSearchTransport" class="btn btn-sm btn-info marginRight" onclick="debtCustomerView.searchTransport()">
                                             <i class="fa fa-search" aria-hidden="true"></i> Tìm
                                         </button>
-                                        <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('transport');$('#ToolTables_table-data_1').click()">
+                                        <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('transport')">
                                             <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
                                         </button>
                                     </div>
@@ -454,7 +454,8 @@
                 current: null, //for autoEdit
                 currentInvoiceCustomer: null, //for new & edit
                 invoiceCustomerId: null, //for edit
-                array_transportId: [], //array_transportId of InvoiceCustomer current
+                array_transportId: [], //of InvoiceCustomer current
+                array_customerId: [], //of InvoiceCustomer current
                 invoiceCode: null, //Get invoiceCode newest form Server
                 tagsCustomerNameTransport: [], //for search
                 tagsCustomerNameInvoice: [], //for search
@@ -483,9 +484,7 @@
                     //Clear Validate
                 },
                 displayButtonExportInvoice: function(){
-                    array_customerId = _.map(debtCustomerView.dataSearch, 'customer_id');
-                    array_customerId_unique = _.uniq(array_customerId);
-                    if(array_customerId_unique.length == 1){
+                    if(debtCustomerView.array_customerId.length == 1 && debtCustomerView.array_transportId.length > 0 ){
                         invoiceCode = _.map(debtCustomerView.dataSearch, 'invoiceCode');
                         if(invoiceCode[0] == null)
                             $('.menu-toggle').fadeIn();
@@ -874,6 +873,7 @@
                             debtCustomerView.invoiceCode = data['invoiceCode'];
 
                             debtCustomerView.searchTransport();
+                            debtCustomerView.selectAll();
                             debtCustomerView.searchInvoice();
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -980,7 +980,7 @@
                     if (flag == 0){
                         debtCustomerView.action = "new";
                         prePaid = 0; totalPay = 0;
-                        debtCustomerView.getListCurrentRowTransport();
+//                        debtCustomerView.getListCurrentRowTransport();
                         for(i = 0; i < debtCustomerView.array_transportId.length; i++ ){
                             currentRow = _.find(debtCustomerView.dataTransport, function(o){
                                 return o.id == debtCustomerView.array_transportId[i];
@@ -1500,7 +1500,7 @@
                         $("input[id=custName_invoice]").val('');
                         debtCustomerView.searchInvoice();
                     }
-
+                    debtCustomerView.deselectAll();
                 },
                 searchTransport: function (money) {
                     found = debtCustomerView.searchExportInvoice(debtCustomerView.dataTransport);
@@ -1516,6 +1516,8 @@
                     debtCustomerView.dataSearch = found;
                     debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
 
+                    debtCustomerView.selectAll();
+                    debtCustomerView.getListCurrentRowTransport();
                     debtCustomerView.displayButtonExportInvoice();
 
                     //fill data to listSearch
@@ -1647,6 +1649,8 @@
                         return [value];
                     });
                     debtCustomerView.array_transportId = _.map(array, 'id');
+                    debtCustomerView.array_customerId = _.map(array, 'customer_id');
+                    debtCustomerView.array_customerId = _.uniq(debtCustomerView.array_customerId);
                 },
                 computeDebt: function(paidAmt){
                     console.log(paidAmt);
@@ -1687,6 +1691,13 @@
                     $("input[id=debt-real]").val(hasVat - prePaid);
                     $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
                     formatCurrency(".currency");
+                },
+
+                selectAll: function(){
+                    $('#ToolTables_table-data_0').click();
+                },
+                deselectAll: function(){
+                    $('#ToolTables_table-data_1').click();
                 }
             };
             debtCustomerView.loadData();
@@ -1694,4 +1705,5 @@
             debtCustomerView.loadData();
         }
     });
+
 </script>
