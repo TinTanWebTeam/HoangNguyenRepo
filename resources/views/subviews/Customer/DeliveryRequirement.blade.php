@@ -51,16 +51,14 @@
                 <div class="dataTable_wrapper">
                     <!-- Chú thích -->
                     <div class="row" style="margin-bottom: 10px">
-                        <div class="col-md-7">
-                            <i class="fa fa-user" aria-hidden="true" style="font-size: 1.2em; margin-right: 30px;">
-                                Khách hàng</i>
-                            <i class="fa fa-truck" aria-hidden="true" style="font-size: 1.2em;"> Nhà xe ngoài</i>
+                        <div class="col-md-7" style="font-size: 1.2em">
+                            <i class="fa fa-user" aria-hidden="true"></i> Khách hàng
+                            <i class="fa fa-truck" aria-hidden="true"></i> Nhà xe ngoài
                         </div>
                         <div class="col-md-5">
-                            <span class="label label-danger" style="font-size: 1em;">Chưa thanh toán</span>
-                            <span class="label label-primary" style="font-size: 1em;">Đã thanh toán</span>
-                            <span class="label label-success"
-                                  style="font-size: 1em;">Đã thanh toán & xuất hóa đơn</span>
+                            <span class="label label-danger" style="font-size: 1em">Chưa thanh toán</span>
+                            <span class="label label-primary" style="font-size: 1em">Đã thanh toán</span>
+                            <span class="label label-success" style="font-size: 1em">Đã thanh toán & xuất hóa đơn</span>
                         </div>
                     </div>
                     <div class="row">

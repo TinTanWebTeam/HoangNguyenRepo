@@ -14,16 +14,16 @@
         <ul class="nav navbar-top-links navbar-right pull-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i>&nbsp;&nbsp;{{ Auth::user()->username }}&nbsp;&nbsp;&nbsp;&nbsp;<i
+                    <i class="fa fa-user-circle-o fa-fw"></i>&nbsp;&nbsp;{{ Auth::user()->username }}&nbsp;&nbsp;&nbsp;&nbsp;<i
                             class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i>Thông tin tài khoản</a>
+                    <li><a href="#"><i class="fa fa-user fa-fw"></i> Thông tin tài khoản</a>
                     </li>
                     <li class="divider"></li>
                     {{--<li><a href="#" onclick="resetPassword.reset()"><i class=" fa fa-refresh fa-fw"></i>Đổi mật khẩu</a>--}}
                     {{--</li>--}}
-                    <li><a href="{{ route('logout') }}"><i class="fa fa-sign-out fa-fw"></i>Đăng xuất</a>
+                    <li><a href="{{ route('logout') }}"><i class="fa fa-sign-out fa-fw"></i> Đăng xuất</a>
                     </li>
                 </ul>
                 <!-- /.dropdown-user -->
