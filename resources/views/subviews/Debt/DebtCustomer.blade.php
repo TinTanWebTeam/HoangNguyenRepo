@@ -455,7 +455,6 @@
                 currentInvoiceCustomer: null, //for new & edit
                 invoiceCustomerId: null, //for edit
                 array_transportId: [], //of InvoiceCustomer current
-                array_customerId: [], //of InvoiceCustomer current
                 invoiceCode: null, //Get invoiceCode newest form Server
                 tagsCustomerNameTransport: [], //for search
                 tagsCustomerNameInvoice: [], //for search
@@ -484,12 +483,17 @@
                     //Clear Validate
                 },
                 displayButtonExportInvoice: function(){
-                    if(debtCustomerView.array_customerId.length == 1 && debtCustomerView.array_transportId.length > 0 ){
-                        invoiceCode = _.map(debtCustomerView.dataSearch, 'invoiceCode');
-                        if(invoiceCode[0] == null)
-                            $('.menu-toggle').fadeIn();
-                        else
-                            $('.menu-toggle').fadeOut();
+                    debtCustomerView.getListCurrentRowTransport();
+                    array = $.map(debtCustomerView.table.rows('.selected').data(), function(value, index) {
+                        return [value];
+                    });
+                    array_customerId = _.map(array, 'customer_id');
+                    array_customerId = _.uniq(array_customerId);
+                    array_invoiceCode = _.map(array, 'invoiceCode');
+
+                    if(array_customerId.length == 1 && debtCustomerView.array_transportId.length > 0 && array_invoiceCode.length == 0){
+                        $('.menu-toggle').fadeIn();
+
                     } else {
                         $('.menu-toggle').fadeOut();
                     }
@@ -1517,7 +1521,6 @@
                     debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
 
                     debtCustomerView.selectAll();
-                    debtCustomerView.getListCurrentRowTransport();
                     debtCustomerView.displayButtonExportInvoice();
 
                     //fill data to listSearch
@@ -1649,8 +1652,6 @@
                         return [value];
                     });
                     debtCustomerView.array_transportId = _.map(array, 'id');
-                    debtCustomerView.array_customerId = _.map(array, 'customer_id');
-                    debtCustomerView.array_customerId = _.uniq(debtCustomerView.array_customerId);
                 },
                 computeDebt: function(paidAmt){
                     console.log(paidAmt);
