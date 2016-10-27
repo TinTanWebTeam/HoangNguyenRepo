@@ -1647,10 +1647,8 @@
 
                     var debtReal = asNumberFromCurrency("#debt-real");
                     debt = debtReal - paidAmt;
-                    if(debtReal - paidAmt < 0){
-                        debt = 0;
-                    }
-                    $("input[id=debt]").val(debtReal - paidAmt);
+                    debt = (debt < 0) ? 0 : debt;
+                    $("input[id=debt]").val(debt);
                     formatCurrency(".currency");
                 },
                 computeVAT: function(hasVat){

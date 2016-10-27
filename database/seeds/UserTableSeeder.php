@@ -20,13 +20,6 @@ class UserTableSeeder extends Seeder
             'position_id' => 0
         ]);
         User::create([
-            'username' => 'tts_hoangnguyen',
-            'fullname' => 'Công ty phần mềm Tin Tấn',
-            'email' => 'info@tintansoft.com',
-            'password' => encrypt('4h0n9c0p@55.comA1',Config::get('app.key')),
-            'position_id' => 0
-        ]);
-        User::create([
         	'username' => 'user',
             'fullname' => 'user',
         	'email' => 'user@gmail.com',

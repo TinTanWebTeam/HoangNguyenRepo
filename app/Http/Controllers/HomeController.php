@@ -27,8 +27,6 @@ class HomeController extends Controller
             'Report'                => 'report',
             'Customer'              => 'customer',
             'DeliveryRequirement'   => 'delivery-requirement',
-            'Unit'                  => 'unit',
-            'City'                  => 'city',
             'VehicleInside'         => 'vehicle-inside',
             'VehicleOutside'        => 'vehicle-outside',
             'DebtCustomer'          => 'debt-customer',
