@@ -35,7 +35,7 @@ class UserManagementController extends Controller
     public function getDataUser()
     {
         try {
-            $position = Position::all();
+            $position = Position::where('active',1)->get();
             $users = DB::table('users')
                 ->where('users.active', 1)
                 ->join('positions','users.position_id', '=', 'positions.id')
@@ -258,59 +258,106 @@ class UserManagementController extends Controller
         return $position;
     }
 
-    public function postModifyPosition(Request $request)
+    public function postDataPositionValidate(Request $request)
     {
-        try {
-            $validateResult = ValidateController::ValidatePositionUpdate($request->get('_object'));
-            if ($validateResult->fails()) {
-                return ['status' => 'Fail'];
-            } else {
-                switch ($request->get('_action')) {
-                    case "add":
-                        try {
-                            $positionNew = new Position();
-                            $positionNew->name = $request->get('_object')['name'];
-                            $positionNew->description = $request->get('_object')['description'];
-                            if ($positionNew->save())
-                                return ['status' => 'Ok',
-                                        'obj'    => $positionNew
-                                ];
-                            else
-                                return ['status' => 'Fail'];
-                        } catch (Exception $ex) {
-                            return ['status' => 'Fail'];
-                        }
-                        break;
-                    case "update":
-                        try {
-                            $result = Position::findOrFail($request->get('_object')['id']);
-                            $result->name = $request->get('_object')['name'];
-                            $result->description = $request->get('_object')['description'];
-                            if ($result->save())
-                                return [
-                                    'status' => 'Ok',
-                                    'obj'    => $result
-                                ];
-                            else
-                                return ['status' => 'Fail'];
-                        } catch (Exception $ex) {
-                            return ['status' => 'Fail'];
-                        }
-                        break;
-                    case "delete":
-                        $positionDelete = Position::findOrFail($request->get('_object')['id']);
-                        $positionDelete->active = 0;
-                        if ($positionDelete->save())
-                            return ['status' => 'Ok'];
-                        return ['status' => 'Fail'];
-                        break;
-                    default:
-                        break;
-                }
-            }
-        } catch (\Exception $ex) {
-            return $ex;
+        $position = DB::table('positions')
+            ->where('positions.name', '=', $request->get('_object'))
+            ->first();
+        if ($position == null) {
+            $response = [
+                'msg' => "Position khong ton tai"
+            ];
+            return response()->json($response, 200);
         }
+        $response = [
+            'msg' => "Position đa ton tai"
+        ];
+        return response()->json($response, 201);
 
     }
+    public function postModifyPosition(Request $request)
+    {
+        $name = null;
+        $description = null;
+        $action = $request->get('_action');
+
+        if ($action != 'delete') {
+            $validateResult = ValidateController::ValidatePosition($request->get('_object'));
+            if ($validateResult->fails()) {
+                return $validateResult->errors();
+//                return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $name = $request->get('_object')['name'];
+            $description = $request->get('_object')['description'];
+
+        }
+        switch ($action) {
+            case "add":
+                try {
+                    $positionNew = new Position();
+                    $positionNew->name = $name;
+                    $positionNew->description = $description;
+                    if (!$positionNew->save()) {
+                        return response()->json(['msg' => 'Create failed'], 404);
+                    }
+                    $positionNew = \DB::table('positions')
+                        ->where('positions.active', 1)
+                        ->where('positions.id', $positionNew->id)
+                        ->select('positions.*')
+                        ->orderBy('positions.id','DESC')
+                        ->get();
+                    $response = [
+                        'msg'          => 'Created Position',
+                        'tablePositionAdd' => $positionNew,
+                    ];
+                    return response()->json($response, 201);
+
+                } catch (Exception $ex) {
+                    return $ex;
+                }
+                break;
+            case "update":
+                try {
+                    $positionUpdate = Position::findOrFail($request->get('_object')['id']);
+                    $positionUpdate->name = $name;
+                    $positionUpdate->description = $description;
+                    if (!$positionUpdate->save()) {
+                        return response()->json(['msg' => 'Update failed'], 404);
+                    }
+                    $positionUpdate = \DB::table('positions')
+                        ->where('positions.active', 1)
+                        ->where('positions.id', $positionUpdate->id)
+                        ->select('positions.*')
+                        ->orderBy('positions.id','DESC')
+                        ->get();
+                    $response = [
+                        'msg'             => 'Updated Position',
+                        'tablePositionUpdate' => $positionUpdate,
+                    ];
+                    return response()->json($response, 201);
+
+                } catch (Exception $ex) {
+                    return $ex;
+                }
+                break;
+            case "delete":
+                $positionDelete = Position::findOrFail($request->get('_object'));
+                $positionDelete->active = 0;
+                if ($positionDelete->update()) {
+                    $response = [
+                        'msg' => 'Deleted user'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
+
+
+    }
+
 }

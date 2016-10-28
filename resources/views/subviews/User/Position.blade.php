@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 50%;
+        top: 55%;
         display: none;
         right: 0;
         width: 40%;
@@ -112,6 +112,8 @@
                                                id="name"
                                                name="name"
                                                placeholder="Chức vụ">
+                                        <label id="name" style="display: none; color: red">Chức vụ đã tồn
+                                            tại</label>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +132,7 @@
                             <div class="form-actions noborder">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="PositionView.save()">
+                                            onclick="PositionView.validatePosition()">
                                         Hoàn tất
                                     </button>
                                     <button type="button" class="btn default" onclick="PositionView.cancel()">Hủy
@@ -184,10 +186,8 @@
                     }
                 },
                 clearInput: function () {
-                    if (PositionView.current)
-                        for (var propertyName in PositionView.current) {
-                            $("input[id=" + propertyName + "]").val('');
-                        }
+                    $("input[id=name]").val('');
+                    $("input[id=description]").val('');
                 },
                 editPosition: function (id) {
                     PositionView.current = _.clone(_.find(PositionView.data, function (o) {
@@ -234,7 +234,32 @@
                         }
                     });
                 },
+                validatePosition: function () {
+                    var sendToServer = {
+                        _token: _token,
+                        _object: $("input[id=name]").val()
+                    };
+                    $.ajax({
+                        url: url + 'validate-position',
+                        type: "post",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            PositionView.save();
+                            $("form#formPosition").find("label[id=name]").css("display", "none");
 
+                        } else if (jqXHR.status == 201) {
+                            $("form#formPosition").find("label[id=name]").css("display", "block");
+
+                        } else {
+                            PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                },
                 fillDataToDatatable: function (data) {
                     PositionView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -271,7 +296,7 @@
                     if (PositionView.action == 'add') {
                         PositionView.current = {
                             name: $("input[id='name']").val(),
-                            description: $("input[id='description']").val(),
+                            description: $("input[id='description']").val()
                         }
                     } else if (PositionView.action == 'update') {
                         for (var propertyName in PositionView.current) {
@@ -323,61 +348,136 @@
                             break;
                     }
                 },
-
                 save: function () {
-                    PositionView.validate();
-                    PositionView.fillFormDataToCurrentObject();
-                    var sendToServer = {
-                        _token: _token,
-                        _action: PositionView.action,
-                        _object: PositionView.current
-                    };
+                    var sendToServer = null;
                     if (PositionView.action == 'delete') {
-                        sendToServer._object = {
-                            id: PositionView.idDelete,
-                            name: "delete"
+                        sendToServer = {
+                            _token: _token,
+                            _action: PositionView.action,
+                            _object: PositionView.idDelete
                         };
-                    }
-                    if ($("#formPosition").valid()) {
-                        $.post(
-                                url + 'position/modify',
-                                sendToServer
-                                , function (data) {
-                                    if (data['status'] == 'Ok') {
-                                        switch (PositionView.action) {
-                                            case'add' :
-                                                PositionView.data.push(data['obj']);
-                                                PositionView.showNotification("success", "Thêm thành công!");
-                                                break;
+                        $.ajax({
+                            url: url + 'position/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                var obj = _.find(PositionView.data, function (o) {
+                                    return o.id == sendToServer._object;
+                                });
+                                var index = _.indexOf(PositionView.data, obj);
+                                PositionView.data.splice(index, 1);
+                                PositionView.showNotification("success", "Xóa thành công!");
+                            }
+                            PositionView.table.clear().rows.add(PositionView.data).draw();
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        PositionView.validate();
+                        if ($("#formPosition").valid()) {
+                            PositionView.fillFormDataToCurrentObject();
+                            sendToServer = {
+                                _token: _token,
+                                _action: PositionView.action,
+                                _object: PositionView.current
+                            };
+                            $.ajax({
+                                url: url + 'position/modify',
+                                type: "POST",
+                                dataType: "json",
+                                data: sendToServer
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    switch (PositionView.action) {
+                                        case'add' :
+                                            PositionView.data.push(data['tablePositionAdd'][0]);
+                                            PositionView.showNotification("success", "Thêm thành công!");
+                                            break;
+                                        case 'update':
+                                            var obj = _.find(PositionView.data, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var index = _.indexOf(PositionView.data, obj);
+                                            PositionView.data.splice(index, 1, data['tablePositionUpdate'][0]);
+                                            PositionView.hide();
+                                            PositionView.showNotification("success", "Cập nhật thành công!");
+                                            break;
+                                        default:
+                                            break;
 
-                                            case 'update':
-                                                var obj = _.find(PositionView.data, function (o) {
-                                                    return o.id == sendToServer._object.id;
-                                                });
-                                                var index = _.indexOf(PositionView.data, obj);
-                                                PositionView.data.splice(index, 1, data['obj']);
-                                                PositionView.hide();
-                                                PositionView.showNotification("success", "Cập nhật thành công!");
-                                                break;
-                                            case 'delete':
-                                                var obj = _.find(PositionView.data, function (o) {
-                                                    return o.id == sendToServer._object.id;
-                                                });
-                                                var index = _.indexOf(PositionView.data, obj);
-                                                PositionView.data.splice(index, 1);
-                                                PositionView.showNotification("success", "Xóa thành công!");
-                                                break;
-                                            default:
-                                                break;
-                                        }
                                     }
                                     PositionView.table.clear().rows.add(PositionView.data).draw();
-                                });
-                        PositionView.clearInput();
-                    } else {
-                        $("form#formPosition").find("label[class=error]").css("color", "red");
+                                    PositionView.clearInput();
+                                } else {
+                                    PositionView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                }
+
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            });
+                        } else {
+                            $("form#formPosition").find("label[class=error]").css("color", "red");
+                        }
                     }
                 }
+
+
+
+//                save: function () {
+//                    PositionView.validate();
+//                    PositionView.fillFormDataToCurrentObject();
+//                    var sendToServer = {
+//                        _token: _token,
+//                        _action: PositionView.action,
+//                        _object: PositionView.current
+//                    };
+//                    if (PositionView.action == 'delete') {
+//                        sendToServer._object = {
+//                            id: PositionView.idDelete,
+//                            name: "delete"
+//                        };
+//                    }
+//                    if ($("#formPosition").valid()) {
+//                        $.post(
+//                                url + 'position/modify',
+//                                sendToServer
+//                                , function (data) {
+//                                    if (data['status'] == 'Ok') {
+//                                        switch (PositionView.action) {
+//                                            case'add' :
+//                                                PositionView.data.push(data['obj']);
+//                                                PositionView.showNotification("success", "Thêm thành công!");
+//                                                break;
+//                                            case 'update':
+//                                                var obj = _.find(PositionView.data, function (o) {
+//                                                    return o.id == sendToServer._object.id;
+//                                                });
+//                                                var index = _.indexOf(PositionView.data, obj);
+//                                                PositionView.data.splice(index, 1, data['obj']);
+//                                                PositionView.hide();
+//                                                PositionView.showNotification("success", "Cập nhật thành công!");
+//                                                break;
+//                                            case 'delete':
+//                                                var obj = _.find(PositionView.data, function (o) {
+//                                                    return o.id == sendToServer._object.id;
+//                                                });
+//                                                var index = _.indexOf(PositionView.data, obj);
+//                                                PositionView.data.splice(index, 1);
+//                                                PositionView.showNotification("success", "Xóa thành công!");
+//                                                break;
+//                                            default:
+//                                                break;
+//                                        }
+//                                    }
+//                                    PositionView.table.clear().rows.add(PositionView.data).draw();
+//                                });
+//                        PositionView.clearInput();
+//                    } else {
+//                        $("form#formPosition").find("label[class=error]").css("color", "red");
+//                    }
+//                }
             }
             ;
             PositionView.loadData();

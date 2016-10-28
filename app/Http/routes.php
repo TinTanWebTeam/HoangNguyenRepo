@@ -52,6 +52,7 @@ Route::group(['middleware' => 'auth'], function(){
 
 
         Route::post('/validate-user','UserManagementController@postDataUserValidate');
+        Route::post('/validate-position','UserManagementController@postDataPositionValidate');
 
 
 

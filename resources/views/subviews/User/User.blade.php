@@ -133,10 +133,7 @@
                                                maxlength="20"
                                                minlength="6"
                                                placeholder="password">
-                                        <label id="password" style="display: none; color: red">Vui lòng nhập
-                                            password</label>
-                                        <label id="passwordLength" style="display: none; color: red">Vui lòng nhập 6 ký
-                                            tự đến 20 ký tự</label>
+
 
                                     </div>
                                 </div>

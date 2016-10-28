@@ -10,7 +10,7 @@ use Validator;
 
 class ValidateController extends Controller
 {
-    public static function ValidatePositionUpdate(array $data)
+    public static function ValidatePosition(array $data)
     {
         $rules = [
             'name' => 'required'
