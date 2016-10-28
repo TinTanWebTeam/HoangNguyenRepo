@@ -112,8 +112,7 @@
                                         <label for="vehicleType_id"><b>Loại xe</b></label>
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
-                                                <select class="form-control" id="vehicleTypes_name"
-                                                        name="vehicleTypes_name">
+                                                <select class="form-control" id="vehicleTypes_name" name="vehicleTypes_name">
                                                 </select>
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
@@ -130,17 +129,13 @@
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group form-md-line-input">
                                         <label for="areaCode"><b>Mã vùng</b></label>
-                                        <input type="text" class="form-control"
-                                               id="areaCode" name="areaCode"
-                                               placeholder="">
+                                        <input type="text" class="form-control uppercase" id="areaCode" name="areaCode">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group form-md-line-input">
                                         <label for="vehicleNumber"><b>Số xe</b></label>
-                                        <input type="number" class="form-control"
-                                               id="vehicleNumber" name="vehicleNumber"
-                                               placeholder="">
+                                        <input type="number" class="form-control" id="vehicleNumber" name="vehicleNumber">
                                     </div>
                                 </div>
                             </div>
@@ -148,17 +143,13 @@
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group form-md-line-input ">
                                         <label for="size"><b>Kích thước</b></label>
-                                        <input type="number" class="form-control"
-                                               id="size" name="size"
-                                               placeholder="">
+                                        <input type="number" class="form-control" id="size" name="size">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group form-md-line-input">
                                         <label for="weight"><b>Trọng tải</b></label>
-                                        <input type="number" class="form-control"
-                                               id="weight" name="weight"
-                                               placeholder="">
+                                        <input type="number" class="form-control" id="weight" name="weight">
                                     </div>
                                 </div>
                             </div>
@@ -447,6 +438,19 @@
                     $("textarea[id='description']").val('');
                 },
 
+                renderEventClickTableModal: function() {
+                    $("#table-garage").find("tbody").on('click', 'tr', function () {
+                        $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
+                        vehicleInsideView.displayModal("hide", "#modal-garage");
+                    });
+                },
+                renderScrollbar: function(){
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
+                },
+
                 loadData: function () {
                     $.ajax({
                         url: url + 'vehicle-inside/vehicles',
@@ -466,33 +470,8 @@
                         vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
 
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "300",
-                        "hideDuration": "1000",
-                        "timeOut": "2000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
-
-                    $("#table-garage").find("tbody").on('click', 'tr', function () {
-                        $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
-                        $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
-                        vehicleInsideView.displayModal("hide", "#modal-garage");
-                    });
-
-                    $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme:"dark"
-                    });
+                    vehicleInsideView.renderEventClickTableModal();
+                    vehicleInsideView.renderScrollbar();
                 },
                 localSearch: function () {
                     var dataSearch = _.filter(vehicleInsideView.tableVehicle, function (o) {
@@ -845,7 +824,6 @@
                             dataType: "json",
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
-                            console.log(data);
                             if (jqXHR.status == 201) {
                                 vehicleInsideView.showNotification("success", "Thêm thành công!");
                                 vehicleInsideView.displayModal("hide", "#modal-addVehicleType");

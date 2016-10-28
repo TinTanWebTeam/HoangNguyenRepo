@@ -450,22 +450,6 @@
                     divisiveDriverView.clearInputDriver();
                     divisiveDriverView.clearValidation('frmVehicle');
                 },
-                showNotification: function (type, msg) {
-                    switch (type) {
-                        case "info":
-                            toastr.info(msg);
-                            break;
-                        case "success":
-                            toastr.success(msg);
-                            break;
-                        case "warning":
-                            toastr.warning(msg);
-                            break;
-                        case "error":
-                            toastr.error(msg);
-                            break;
-                    }
-                },
 
                 clearInput: function () {
                     $("input[id='vehicle_id']").val('');
@@ -487,40 +471,7 @@
                     $("input[id='note']").val('');
                 },
 
-                loadData: function () {
-                    $.ajax({
-                        url: url + 'divisive-driver/vehicle-user',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            divisiveDriverView.dataVehicleUser = data['vehicleUser'];
-                            divisiveDriverView.fillDataToDatatable(divisiveDriverView.dataVehicleUser);
-                        } else {
-                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "300",
-                        "hideDuration": "1000",
-                        "timeOut": "2000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
-
+                renderEventClickTableModal: function() {
                     $("#table-vehicle").find("tbody").on('click', 'tr', function () {
                         $('#vehicle_id').attr('data-vehicleId', $(this).find('td:first')[0].innerText);
                         $('#vehicle_id').val($(this).find('td:eq(1)')[0].innerText);
@@ -531,6 +482,25 @@
                         $('#user_id').val($(this).find('td:eq(1)')[0].innerText);
                         divisiveDriverView.displayModal("hide", "#modal-user");
                     });
+                },
+
+                loadData: function () {
+                    $.ajax({
+                        url: url + 'divisive-driver/vehicle-user',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            divisiveDriverView.dataVehicleUser = data['vehicleUser'];
+                            divisiveDriverView.fillDataToDatatable(divisiveDriverView.dataVehicleUser);
+                        } else {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                    divisiveDriverView.renderEventClickTableModal();
                 },
                 loadListVehicle: function () {
                     $.ajax({
@@ -561,10 +531,10 @@
                                 order: [[0, "desc"]]
                             })
                         } else {
-                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                     divisiveDriverView.displayModal("show", "#modal-vehicle")
                 },
@@ -591,10 +561,10 @@
                                 order: [[0, "desc"]]
                             })
                         } else {
-                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                     divisiveDriverView.displayModal("show", "#modal-user")
                 },
@@ -787,11 +757,11 @@
                     if ($("#frmControl").valid()) {
                         if (divisiveDriverView.action != 'delete') {
                             if ($("#user_id").attr('data-userId') == '') {
-                                divisiveDriverView.showNotification('warning', 'Vui lòng chọn một tài xế có trong danh sách.');
+                                showNotification('warning', 'Vui lòng chọn một tài xế có trong danh sách.');
                                 return;
                             }
                             if ($("#vehicle_id").attr('data-vehicleId') == '') {
-                                divisiveDriverView.showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
+                                showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
                                 return;
                             }
                         }
@@ -812,7 +782,6 @@
                             dataType: "json",
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
-                            console.log(data);
                             if (jqXHR.status == 201) {
                                 var vehicleUserOld = null;
                                 var indexOfVehicleUserOld = null;
@@ -820,7 +789,7 @@
                                     case 'add':
                                         data['vehicleUser'].fullNumber = data['vehicleUser']['vehicles_areaCode'] + '-' + data['vehicleUser']['vehicles_vehicleNumber'];
                                         divisiveDriverView.dataVehicleUser.push(data['vehicleUser']);
-                                        divisiveDriverView.showNotification("success", "Thêm thành công!");
+                                        showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
                                         vehicleUserOld = _.find(divisiveDriverView.dataVehicleUser, function (o) {
@@ -829,7 +798,7 @@
                                         indexOfVehicleUserOld = _.indexOf(divisiveDriverView.dataVehicleUser, vehicleUserOld);
                                         data['vehicleUser'].fullNumber = data['vehicleUser']['vehicles_areaCode'] + '-' + data['vehicleUser']['vehicles_vehicleNumber'];
                                         divisiveDriverView.dataVehicleUser.splice(indexOfVehicleUserOld, 1, data['vehicleUser']);
-                                        divisiveDriverView.showNotification("success", "Cập nhật thành công!");
+                                        showNotification("success", "Cập nhật thành công!");
                                         divisiveDriverView.hideControl();
                                         break;
                                     case 'delete':
@@ -838,7 +807,7 @@
                                         });
                                         indexOfVehicleUserOld = _.indexOf(divisiveDriverView.dataVehicleUser, vehicleUserOld);
                                         divisiveDriverView.dataVehicleUser.splice(indexOfVehicleUserOld, 1);
-                                        divisiveDriverView.showNotification("success", "Xóa thành công!");
+                                        showNotification("success", "Xóa thành công!");
                                         divisiveDriverView.displayModal("hide", "#modal-confirmDelete")
                                         break;
                                     default:
@@ -847,10 +816,10 @@
                                 divisiveDriverView.table.clear().rows.add(divisiveDriverView.dataVehicleUser).draw();
                                 divisiveDriverView.clearInput();
                             } else {
-                                divisiveDriverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
                         $("form#frmControl").find("label[class=error]").css("color", "red");
@@ -868,10 +837,10 @@
                                 divisiveDriverView.dataVehicleType = data['vehicleTypes'];
                                 divisiveDriverView.loadSelectBox(divisiveDriverView.dataVehicleType, "vehicleType_id", "name");
                             } else {
-                                divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     }
 
@@ -885,10 +854,10 @@
                                 divisiveDriverView.dataGarage = data['garages'];
                                 divisiveDriverView.loadSelectBox(divisiveDriverView.dataGarage, "garage_id", "name");
                             } else {
-                                divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     }
 
@@ -918,7 +887,7 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                divisiveDriverView.showNotification("success", "Thêm thành công!");
+                                showNotification("success", "Thêm thành công!");
                                 divisiveDriverView.displayModal("hide", "#modal-addVehicle");
 
                                 $("#vehicle_id").attr('data-vehicleId', data['vehicle']['id']);
@@ -926,10 +895,10 @@
 
                                 divisiveDriverView.clearInputVehicle();
                             } else {
-                                divisiveDriverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
                         $("form#frmVehicle").find("label[class=error]").css("color", "red");
@@ -957,7 +926,7 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                divisiveDriverView.showNotification("success", "Thêm thành công!");
+                                showNotification("success", "Thêm thành công!");
                                 divisiveDriverView.displayModal("hide", "#modal-addDriver");
 
                                 $("#user_id").attr('data-userId', data['driver']['id']);
@@ -965,10 +934,10 @@
 
                                 divisiveDriverView.clearInputDriver();
                             } else {
-                                divisiveDriverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            divisiveDriverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
                         $("form#frmDriver").find("label[class=error]").css("color", "red");

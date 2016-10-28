@@ -224,6 +224,19 @@
                     garageView.current = null;
                 },
 
+                renderEventClickTableModal: function(){
+                    $("#table-garage").find("tbody").on('click', 'tr', function () {
+                        $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
+                        garageView.displayModal("hide", "#modal-garage");
+                    });
+                },
+                renderScrollbar: function(){
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
+                },
+
                 loadData: function () {
                     $.ajax({
                         url: url + 'vehicle-outside/garages',
@@ -240,26 +253,7 @@
                         garageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
 
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "300",
-                        "hideDuration": "1000",
-                        "timeOut": "2000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
-                    $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme:"dark"
-                    });
+                    garageView.renderEventClickTableModal();
                 },
 
                 fillDataToDatatable: function (data) {
@@ -425,7 +419,6 @@
                             dataType: "json",
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
-                            console.log(data);
                             if (jqXHR.status == 201) {
                                 switch (garageView.action) {
                                     case 'add':
@@ -470,11 +463,5 @@
         } else {
             garageView.loadData();
         }
-
-        $("#table-garage").find("tbody").on('click', 'tr', function () {
-            $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
-            $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
-            garageView.displayModal("hide", "#modal-garage");
-        });
     });
 </script>

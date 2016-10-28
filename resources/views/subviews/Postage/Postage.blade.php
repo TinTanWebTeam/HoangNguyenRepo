@@ -230,22 +230,6 @@
 
                     //Clear Validate
                 },
-                showNotification: function (type, msg) {
-                    switch (type) {
-                        case "info":
-                            toastr.info(msg);
-                            break;
-                        case "success":
-                            toastr.success(msg);
-                            break;
-                        case "warning":
-                            toastr.warning(msg);
-                            break;
-                        case "error":
-                            toastr.error(msg);
-                            break;
-                    }
-                },
                 clearInput: function () {
                     $("input[id='customer_id']").val('');
                     $("#customer_id").attr("data-customerId", "");
@@ -257,6 +241,14 @@
                 retype: function () {
                     $("input[id='postage']").val('');
                     $("input[id='note']").val('');
+                },
+                
+                renderEventClickTableModal: function() {
+                    $("#table-customer").find("tbody").on('click', 'tr', function () {
+                        $('#customer_id').attr('data-customerId', $(this).find('td:first')[0].innerText);
+                        $('input[id=customer_id]').val($(this).find('td:eq(2)')[0].innerText);
+                        postageView.displayModal("hide", "#modal-customer");
+                    });
                 },
 
                 loadData: function () {
@@ -271,36 +263,13 @@
 
                             postageView.dataCustomer = data['customers'];
                         } else {
-                            postageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        postageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "300",
-                        "hideDuration": "1000",
-                        "timeOut": "2000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
-
-                    //Event click for table modal
-                    $("#table-customer").find("tbody").on('click', 'tr', function () {
-                        $('#customer_id').attr('data-customerId', $(this).find('td:first')[0].innerText);
-                        $('input[id=customer_id]').val($(this).find('td:eq(2)')[0].innerText);
-                        postageView.displayModal("hide", "#modal-customer");
-                    });
+                    
+                    postageView.renderEventClickTableModal();
                 },
                 loadListCustomer: function () {
                     $.ajax({
@@ -327,10 +296,10 @@
                             });
                             postageView.displayModal("show", "#modal-customer");
                         } else {
-                            postageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        postageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
 
@@ -480,7 +449,7 @@
                     if ($("#frmControl").valid()) {
                         if (postageView.action != 'delete') {
                             if ($("#customer_id").attr('data-customerId') == '') {
-                                postageView.showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
+                                showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
                                 return;
                             }
                         }
@@ -495,22 +464,18 @@
                         if (postageView.action == 'delete') {
                             sendToServer._id = postageView.idDelete;
                         }
-                        console.log("CLIENT");
-                        console.log(sendToServer._postage);
                         $.ajax({
                             url: url + 'postage/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
-                            console.log("SERVER");
-                            console.log(data);
                             if (jqXHR.status == 201) {
                                 switch (postageView.action) {
                                     case 'add':
                                         postageView.dataPostage.push(data['postage']);
 
-                                        postageView.showNotification("success", "Thêm thành công!");
+                                        showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
                                         var Old = _.find(postageView.dataPostage, function (o) {
@@ -520,7 +485,7 @@
 
                                         postageView.dataPostage.splice(indexOfOld, 1, data['postage']);
 
-                                        postageView.showNotification("success", "Cập nhật thành công!");
+                                        showNotification("success", "Cập nhật thành công!");
                                         postageView.hideControl();
                                         break;
                                     case 'delete':
@@ -529,7 +494,7 @@
                                         });
                                         var indexOfOld = _.indexOf(postageView.dataPostage, Old);
                                         postageView.dataPostage.splice(indexOfOld, 1);
-                                        postageView.showNotification("success", "Xóa thành công!");
+                                        showNotification("success", "Xóa thành công!");
                                         postageView.displayModal("hide", "#modal-confirmDelete");
                                         break;
                                     default:
@@ -538,10 +503,10 @@
                                 postageView.table.clear().rows.add(postageView.dataPostage).draw();
                                 postageView.clearInput();
                             } else {
-                                postageView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            postageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
                         $("form#frmControl").find("label[class=error]").css("color", "red");

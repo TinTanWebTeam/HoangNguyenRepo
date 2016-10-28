@@ -79,5 +79,9 @@ tr:hover {
     /*transform: scale(1.01);*/
 }
 
+.uppercase {
+    text-transform: uppercase;
+}
+
 
 

@@ -144,7 +144,7 @@
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group form-md-line-input">
                                         <label for="phone"><b>Số điện thoại</b></label>
-                                        <input type="text" class="form-control"
+                                        <input type="number" class="form-control"
                                                id="phone"
                                                name="phone">
                                     </div>
@@ -316,6 +316,12 @@
                     $("textarea[id='description']").val('');
                 },
 
+                renderScrollbar: function(){
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme:"dark"
+                    });
+                },
+
                 loadData: function () {
                     $.ajax({
                         url: url + 'customer/customers',
@@ -335,26 +341,7 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
 
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "300",
-                        "hideDuration": "1000",
-                        "timeOut": "2000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
-                    $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme:"dark"
-                    });
+                    customerView.renderScrollbar();
                 },
                 loadSelectBox: function (lstCustomerType) {
                     //reset selectbox
