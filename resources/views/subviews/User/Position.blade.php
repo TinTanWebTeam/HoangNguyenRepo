@@ -45,7 +45,40 @@
 </div>
 {{--End Modal--}}
 
+<div class="modal fade" id="modalPositionRestore" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body"><h5 id="modalPositionRestore"></h5></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
+                        onclick="PositionView.restorePosition()">Tạo lại
+                </button>
+                <button type="button" class="btn default" name="modalClose"
+                        onclick="PositionView.cancelPositionRestore()">Hủy
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+{{--End Modal--}}
 
+<div class="modal fade" id="modalPosition" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body"><h5 id="modalPosition"></h5></div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" name="modalClose"
+                        onclick="PositionView.cancelValidatePosition()">Hủy
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+{{--End Modal--}}
 <!-- start View list -->
 <div class="row">
     <div class="col-md-12">
@@ -112,8 +145,7 @@
                                                id="name"
                                                name="name"
                                                placeholder="Chức vụ">
-                                        <label id="name" style="display: none; color: red">Chức vụ đã tồn
-                                            tại</label>
+
                                     </div>
                                 </div>
                             </div>
@@ -122,8 +154,7 @@
                                     <div class="form-group form-md-line-input ">
                                         <label for="description"><b>Mô tả</b></label>
                                         <input type="text" class="form-control"
-                                               id="description"
-                                               placeholder="Mô tả">
+                                               id="description">
                                     </div>
                                 </div>
                             </div>
@@ -157,6 +188,8 @@
                 data: null,
                 action: null,
                 idDelete: null,
+                tablePosition: null,
+                TableRestorePosition: null,
                 current: null,
                 show: function () {
                     $('.menu-toggle').fadeOut();
@@ -166,17 +199,11 @@
                     $('#divControl').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
-                    var myForm = document.getElementById("formPosition");
-                    PositionView.clearValidation(myForm);
+                    PositionView.clearValidation();
+                    PositionView.clearInput();
                 },
-                clearValidation: function (formElement) {
-                    var validator = $(formElement).validate();
-                    $('[name]', formElement).each(function () {
-                        validator.successList.push(this);//mark as error free
-                        validator.showErrors();//remove error messages if present
-                    });
-                    validator.resetForm();//remove error class on name elements and clear history
-                    validator.reset();//remove all error and success data
+                clearValidation: function () {
+                    $("form#formPosition").find("label[class=error]").css("display", "none");
                 },
                 cancel: function () {
                     if (PositionView.action == 'add') {
@@ -235,30 +262,40 @@
                     });
                 },
                 validatePosition: function () {
-                    var sendToServer = {
-                        _token: _token,
-                        _object: $("input[id=name]").val()
-                    };
-                    $.ajax({
-                        url: url + 'validate-position',
-                        type: "post",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            PositionView.save();
-                            $("form#formPosition").find("label[id=name]").css("display", "none");
+                    if (PositionView.action == "update") {
+                        PositionView.save();
+                    } else {
+                        var sendToServer = {
+                            _token: _token,
+                            _object: $("input[id=name]").val()
+                        };
+                        $.ajax({
+                            url: url + 'validate-position',
+                            type: "post",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                PositionView.save();
+                            } else if (jqXHR.status == 201) {
+                                if (data['dataPosition']['active'] == 1) {
+                                    PositionView.msgValidatePosition();
+                                }else {
+                                    PositionView.msgPositionRestore(data['dataPosition']['id']);
+                                }
 
-                        } else if (jqXHR.status == 201) {
-                            $("form#formPosition").find("label[id=name]").css("display", "block");
-
-                        } else {
+                            } else {
+                                PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
                             PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-
+                        });
+                    }
+                },
+                restorePosition: function () {
+                    PositionView.action = 'restorePosition';
+                    PositionView.save();
+                    $("#modalConfirm").modal('hide');
                 },
                 fillDataToDatatable: function (data) {
                     PositionView.table = $('#table-data').DataTable({
@@ -316,9 +353,30 @@
                         $("button[name=modalAgree]").show();
                     }
                 },
+                msgPositionRestore: function (id) {
+                    if(id){
+                        PositionView.idRestore = id;
+                        $("div#modalPositionRestore").modal("show");
+                        $("h5#modalPositionRestore").empty().append("Chức vụ này đã bị xóa. Bạn có muốn tạo lại ?");
+                        $("button[name=modalAgree]").show();
+                    }
+
+                },
+                msgValidatePosition: function () {
+                    $("div#modalPosition").modal("show");
+                    $("h5#modalPosition").empty().append("Chức vụ này đã tồn tại");
+                    $("button[name=modalAgree]").show();
+                },
                 cancelDelete: function () {
                     PositionView.idDelete = null;
                     $("#modalConfirm").modal('hide');
+                },
+
+                cancelValidatePosition: function () {
+                    $("#modalPosition").modal('hide');
+                },
+                cancelPositionRestore: function () {
+                    $("#modalPositionRestore").modal('hide');
                 },
                 deletePosition: function () {
                     PositionView.action = 'delete';
@@ -374,7 +432,36 @@
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
-                    } else {
+                    }
+                    else if (PositionView.action == 'restorePosition'){
+                        sendToServer = {
+                            _token: _token,
+                            _action: PositionView.action,
+                            _object: PositionView.idRestore
+                        };
+                        $.ajax({
+                            url: url + 'position/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                var obj = _.find(PositionView.data, function (o) {
+                                    return o.id == sendToServer._object;
+                                });
+                                var index = _.indexOf(PositionView.data, obj);
+                                PositionView.data.splice(index, 0);
+
+                                PositionView.showNotification("success", "Đã khôi phục thành công!");
+                                $("#modalPositionRestore").modal('hide');
+                           }
+                            PositionView.table.clear().rows.add(PositionView.data).draw();
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    }
+
+                    else {
                         PositionView.validate();
                         if ($("#formPosition").valid()) {
                             PositionView.fillFormDataToCurrentObject();
@@ -423,61 +510,6 @@
                     }
                 }
 
-
-
-//                save: function () {
-//                    PositionView.validate();
-//                    PositionView.fillFormDataToCurrentObject();
-//                    var sendToServer = {
-//                        _token: _token,
-//                        _action: PositionView.action,
-//                        _object: PositionView.current
-//                    };
-//                    if (PositionView.action == 'delete') {
-//                        sendToServer._object = {
-//                            id: PositionView.idDelete,
-//                            name: "delete"
-//                        };
-//                    }
-//                    if ($("#formPosition").valid()) {
-//                        $.post(
-//                                url + 'position/modify',
-//                                sendToServer
-//                                , function (data) {
-//                                    if (data['status'] == 'Ok') {
-//                                        switch (PositionView.action) {
-//                                            case'add' :
-//                                                PositionView.data.push(data['obj']);
-//                                                PositionView.showNotification("success", "Thêm thành công!");
-//                                                break;
-//                                            case 'update':
-//                                                var obj = _.find(PositionView.data, function (o) {
-//                                                    return o.id == sendToServer._object.id;
-//                                                });
-//                                                var index = _.indexOf(PositionView.data, obj);
-//                                                PositionView.data.splice(index, 1, data['obj']);
-//                                                PositionView.hide();
-//                                                PositionView.showNotification("success", "Cập nhật thành công!");
-//                                                break;
-//                                            case 'delete':
-//                                                var obj = _.find(PositionView.data, function (o) {
-//                                                    return o.id == sendToServer._object.id;
-//                                                });
-//                                                var index = _.indexOf(PositionView.data, obj);
-//                                                PositionView.data.splice(index, 1);
-//                                                PositionView.showNotification("success", "Xóa thành công!");
-//                                                break;
-//                                            default:
-//                                                break;
-//                                        }
-//                                    }
-//                                    PositionView.table.clear().rows.add(PositionView.data).draw();
-//                                });
-//                        PositionView.clearInput();
-//                    } else {
-//                        $("form#formPosition").find("label[class=error]").css("color", "red");
-//                    }
-//                }
             }
             ;
             PositionView.loadData();

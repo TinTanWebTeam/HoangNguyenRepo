@@ -40,16 +40,9 @@ Route::group(['middleware' => 'auth'], function(){
         /*Post view*/
         Route::post('/position','UserManagementController@getDataPosition');
         Route::get('/user/users','UserManagementController@getDataUser');
-
-
-
-
-
-
         Route::post('/position/modify','UserManagementController@postModifyPosition');
         Route::post('/user/edit','UserManagementController@postEditUser');
         Route::post('/user/modify','UserManagementController@postModifyUser');
-
 
         Route::post('/validate-user','UserManagementController@postDataUserValidate');
         Route::post('/validate-position','UserManagementController@postDataPositionValidate');

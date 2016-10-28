@@ -107,7 +107,7 @@
                                                id="username"
                                                name="username" onblur="userView.validateUser()"
                                                placeholder="Tên đăng nhập">
-                                        <label id="username" style="display: none; color: red">Tài khoản đã tồn
+                                        <label id="username" class="error" style="display: none; color: red">Tài khoản đã tồn
                                             tại</label>
 
 
@@ -217,6 +217,10 @@
                                     <button type="button" class="btn btn-primary"
                                             onclick="userView.save()">
                                         Hoàn tất
+                                    </button>
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="userView.validateUser()">
+                                       test
                                     </button>
                                     <button type="button" class="btn default" onclick="userView.cancel()">Huỷ</button>
                                 </div>
@@ -597,7 +601,9 @@
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
+                            console.log(data[]);
                             $("form#formUser").find("label[id=username]").css("display", "none");
+                            userView.save();
                         } else if (jqXHR.status == 201) {
                             $("form#formUser").find("label[id=username]").css("display", "block");
                         } else {
@@ -617,7 +623,6 @@
 
 
                 },
-
                 save: function () {
                     var sendToServer = null;
                     if (userView.action == 'delete') {
@@ -697,8 +702,6 @@
                         }
                     }
                 },
-
-
                 resetRolesInDom: function () {
                     $("input[id=array_roleId]").each(function () {
                         $(this).prop('checked', false);

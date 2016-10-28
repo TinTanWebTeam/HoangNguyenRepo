@@ -265,12 +265,14 @@ class UserManagementController extends Controller
             ->first();
         if ($position == null) {
             $response = [
-                'msg' => "Position khong ton tai"
+                'msg' => "Position khong ton tai",
+                'dataPosition' =>$position
             ];
             return response()->json($response, 200);
         }
         $response = [
-            'msg' => "Position đa ton tai"
+            'msg' => "Position đa ton tai",
+            'dataPosition' =>$position
         ];
         return response()->json($response, 201);
 
@@ -281,16 +283,14 @@ class UserManagementController extends Controller
         $description = null;
         $action = $request->get('_action');
 
-        if ($action != 'delete') {
+        if ($action != 'delete' && $action != 'restorePosition' ) {
             $validateResult = ValidateController::ValidatePosition($request->get('_object'));
             if ($validateResult->fails()) {
                 return $validateResult->errors();
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
-
             $name = $request->get('_object')['name'];
             $description = $request->get('_object')['description'];
-
         }
         switch ($action) {
             case "add":
@@ -346,7 +346,19 @@ class UserManagementController extends Controller
                 $positionDelete->active = 0;
                 if ($positionDelete->update()) {
                     $response = [
-                        'msg' => 'Deleted user'
+                        'msg' => 'Deleted Position'
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            case "restorePosition":
+                $positionRestore = Position::findOrFail($request->get('_object'));
+                $positionRestore->active = 1;
+                if ($positionRestore->update()) {
+                    $response = [
+                        'msg' => 'Restore Position',
+                        'TableRestorePosition' =>$positionRestore
                     ];
                     return response()->json($response, 201);
                 }
