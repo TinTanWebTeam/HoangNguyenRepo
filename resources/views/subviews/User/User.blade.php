@@ -419,7 +419,7 @@
                     if (id) {
                         userView.idRestore = id;
                         $("div#modalRestoreUser").modal("show");
-                        $("h5#modalRestoreUser").empty().append("Tài khoản chùng với tài khoản đã xóa.");
+                        $("h5#modalRestoreUser").empty().append("Tài khoản trùng với tài khoản đã xóa.");
                         $("button[name=modalAgree]").show();
 
                     }
@@ -658,13 +658,11 @@
                 },
 
                 restoreUser:function () {
-                    var sendToServer = null;
                     sendToServer = {
                         _token: _token,
                         _action: "restoreUser",
                         _object: userView.idRestore
-                    }
-                    ;
+                    };
                     $.ajax({
                         url: url + 'user/modify',
                         type: "POST",

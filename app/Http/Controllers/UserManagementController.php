@@ -241,45 +241,27 @@ class UserManagementController extends Controller
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             case "restoreUser":
-//                $userRestore = User::findOrFail($request->get('_object'));
-//                $userRestore->active = 1;
-//                if ($userRestore->update()) {
-//                    dd($userRestore);
-//                    $response = [
-//                        'msg' => 'Restore User',
-//                        'TableRestoreUser' =>$userRestore
-//                    ];
-//                    return response()->json($response, 201);
-//                }
-
-
-
-
-
                 $userRestore = User::findOrFail($request->get('_object'));
                 $userRestore->active = 1;
                 if (!$userRestore->update()) {
                     return response()->json(['msg' => 'Restore failed'], 404);
                 }
-                    $restore = \DB::table('users')
-                        ->join('positions', 'users.position_id', '=', 'positions.id')
-                        ->select('users.username', 'positions.name as positions_name')
-                        ->get();
+                $restore = \DB::table('users')
+                    ->join('positions', 'users.position_id', '=', 'positions.id')
+                    ->select('users.*', 'positions.name as positions_name')
+                    ->where('users.id', $userRestore->id)
+                    ->first();
 
-                    $response = [
-                        'msg' => 'Restore User',
-                        'TableRestoreUser' =>$restore
-                    ];
+                $response = [
+                    'msg' => 'Restore User',
+                    'TableRestoreUser' =>$restore
+                ];
                 return response()->json($response, 201);
-
-
                 break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;
         }
-
-
     }
 
     public function getViewPosition()
