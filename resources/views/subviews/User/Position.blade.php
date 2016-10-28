@@ -262,9 +262,7 @@
                     });
                 },
                 validatePosition: function () {
-                    if (PositionView.action == "update") {
-                        PositionView.save();
-                    } else {
+
                         var sendToServer = {
                             _token: _token,
                             _object: $("input[id=name]").val()
@@ -280,7 +278,7 @@
                             } else if (jqXHR.status == 201) {
                                 if (data['dataPosition']['active'] == 1) {
                                     PositionView.msgValidatePosition();
-                                }else {
+                                } else {
                                     PositionView.msgPositionRestore(data['dataPosition']['id']);
                                 }
 
@@ -290,12 +288,36 @@
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
-                    }
                 },
                 restorePosition: function () {
-                    PositionView.action = 'restorePosition';
-                    PositionView.save();
-                    $("#modalConfirm").modal('hide');
+//                    PositionView.action = 'restorePosition';
+//                    PositionView.save();
+//                    $("#modalConfirm").modal('hide');
+                    var sendToServer = null;
+                    sendToServer = {
+                        _token: _token,
+                        _action: "restorePosition",
+                        _object: PositionView.idRestore
+                    }
+                    ;
+                    $.ajax({
+                        url: url + 'position/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            PositionView.data.push(data['TableRestorePosition']);
+                            PositionView.table.clear().rows.add(PositionView.data).draw();
+                            PositionView.showNotification("success", "Đã khôi phục thành công!");
+                            $("#modalPositionRestore").modal('hide');
+                            PositionView.clearInput();
+                        } else {
+                            PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
                 },
                 fillDataToDatatable: function (data) {
                     PositionView.table = $('#table-data').DataTable({
@@ -354,7 +376,7 @@
                     }
                 },
                 msgPositionRestore: function (id) {
-                    if(id){
+                    if (id) {
                         PositionView.idRestore = id;
                         $("div#modalPositionRestore").modal("show");
                         $("h5#modalPositionRestore").empty().append("Chức vụ này đã bị xóa. Bạn có muốn tạo lại ?");
@@ -432,33 +454,7 @@
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
-                    }
-                    else if (PositionView.action == 'restorePosition'){
-                        sendToServer = {
-                            _token: _token,
-                            _action: PositionView.action,
-                            _object: PositionView.idRestore
-                        };
-                        $.ajax({
-                            url: url + 'position/modify',
-                            type: "POST",
-                            dataType: "json",
-                            data: sendToServer
-                        }).done(function (data, textStatus, jqXHR) {
-                            if (jqXHR.status == 201) {
-                                PositionView.data.push(data['TableRestorePosition']);
-                                PositionView.table.clear().rows.add(PositionView.data).draw();
-                                PositionView.showNotification("success", "Đã khôi phục thành công!");
-                                $("#modalPositionRestore").modal('hide');
-                           } else {
-                                PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                            }
-                        }).fail(function (jqXHR, textStatus, errorThrown) {
-                            PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        });
-                    }
-
-                    else {
+                    }else {
                         PositionView.validate();
                         if ($("#formPosition").valid()) {
                             PositionView.fillFormDataToCurrentObject();
@@ -490,14 +486,12 @@
                                             break;
                                         default:
                                             break;
-
                                     }
                                     PositionView.table.clear().rows.add(PositionView.data).draw();
                                     PositionView.clearInput();
                                 } else {
                                     PositionView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                 }
-
                             }).fail(function (jqXHR, textStatus, errorThrown) {
                                 PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                             });

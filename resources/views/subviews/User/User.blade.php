@@ -601,7 +601,6 @@
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            console.log(data[]);
                             $("form#formUser").find("label[id=username]").css("display", "none");
                             userView.save();
                         } else if (jqXHR.status == 201) {

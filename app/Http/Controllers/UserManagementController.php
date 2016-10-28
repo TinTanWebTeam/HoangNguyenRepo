@@ -282,7 +282,6 @@ class UserManagementController extends Controller
         $name = null;
         $description = null;
         $action = $request->get('_action');
-
         if ($action != 'delete' && $action != 'restorePosition' ) {
             $validateResult = ValidateController::ValidatePosition($request->get('_object'));
             if ($validateResult->fails()) {
