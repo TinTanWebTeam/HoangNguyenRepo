@@ -46,12 +46,6 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::post('/validate-user','UserManagementController@postDataUserValidate');
         Route::post('/validate-position','UserManagementController@postDataPositionValidate');
-
-
-
-
-
-
     });
     Route::group(['middleware' => 'CustomerManagement'], function () {
         //get View
@@ -106,7 +100,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/parking-cost', 'CostManagementController@getViewParkingCost');
         Route::get('/other-cost', 'CostManagementController@getViewOtherCost');
         /*post view*/
-          Route::post('/other-cost', 'CostManagementController@getDataOtherCost');
+        Route::post('/other-cost', 'CostManagementController@getDataOtherCost');
 
         /*Get List Vehicle*/
         Route::get('/get-list-vehicle/getVehicle', 'CostManagementController@getListDataVehicle');
