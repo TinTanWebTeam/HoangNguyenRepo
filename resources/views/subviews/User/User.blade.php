@@ -27,7 +27,78 @@
 
 
 </style>
+<!-- Modal Confirm -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"><h5 id="modalContent"></h5></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
+                                onclick="userView.deleteUser()">Ðồng ý
+                        </button>
+                        <button type="button" class="btn default" name="modalClose"
+                                onclick="userView.cancelDelete()">Hủy
+                        </button>
 
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+</div>
+<!--End Modal-->
+<!-- Modal Confirm -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="modal fade" id="modalUser" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"><h5 id="modalUser"></h5></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn default" name="modalClose"
+                                onclick="userView.cancelUser()">Hủy
+                        </button>
+
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+</div>
+<!--End Modal-->
+<!-- Modal Confirm -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="modal fade" id="modalRestoreUser" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"><h5 id="modalRestoreUser"></h5></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
+                                onclick="userView.createUser()">Tạo tài khoản mới
+                        </button>
+                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
+                                onclick="userView.restoreUser()">Khôi phục tài khoản củ
+                        </button>
+                        <button type="button" class="btn default" name="modalClose"
+                                onclick="userView.cancelRestoreUser()">Hủy
+                        </button>
+
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+</div>
+<!--End Modal-->
 <!-- Table -->
 <div class="row">
     <div class="col-md-12">
@@ -105,12 +176,8 @@
                                         <label for="username"><b>Tên đăng nhập</b></label>
                                         <input type="text" class="form-control"
                                                id="username"
-                                               name="username" onblur="userView.validateUser()"
+                                               name="username"
                                                placeholder="Tên đăng nhập">
-                                        <label id="username" class="error" style="display: none; color: red">Tài khoản đã tồn
-                                            tại</label>
-
-
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -215,14 +282,10 @@
                             <div class="form-actions noborder">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="userView.save()">
+                                            onclick="userView.validateUser()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn btn-primary"
-                                            onclick="userView.validateUser()">
-                                       test
-                                    </button>
-                                    <button type="button" class="btn default" onclick="userView.cancel()">Huỷ</button>
+                                    <button type="button" class="btn default" onclick="userView.cancel()">Nhập lại</button>
                                 </div>
                             </div>
                         </div>
@@ -234,30 +297,7 @@
 </div>
 <!-- end #frmControl -->
 
-<!-- Modal Confirm -->
-<div class="row">
-    <div class="col-md-12">
-        <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body"><h5 id="modalContent"></h5></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                                onclick="userView.deleteUser()">Ðồng ý
-                        </button>
-                        <button type="button" class="btn default" name="modalClose"
-                                onclick="userView.cancelDelete()">Hủy
-                        </button>
 
-                    </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-    </div>
-</div>
-<!--End Modal-->
 
 <script>
     $(function () {
@@ -375,6 +415,27 @@
 
                     }
                 },
+                msgRestoreUser: function (id) {
+                    if (id) {
+                        userView.idRestore = id;
+                        $("div#modalRestoreUser").modal("show");
+                        $("h5#modalRestoreUser").empty().append("Tài khoản chùng với tài khoản đã xóa.");
+                        $("button[name=modalAgree]").show();
+
+                    }
+                },
+                msgUser: function () {
+                    $("div#modalUser").modal("show");
+                    $("h5#modalUser").empty().append("Tài khoản đã tồn tại.");
+                    $("button[name=modalAgree]").show();
+
+                },
+                cancelUser: function () {
+                    $("#modalUser").modal('hide');
+                },
+                cancelRestoreUser: function () {
+                    $("#modalRestoreUser").modal('hide');
+                },
                 cancelDelete: function () {
                     userView.idDelete = null;
                     $("#modalConfirm").modal('hide');
@@ -457,10 +518,14 @@
 
 
                 },
-                editUser: function(id){
+                editUser: function (id) {
+                    if (userView.action = 'update') {
+                        $("input[id=username]").prop("readOnly", true);
+                        $("input[id=username]").prop("onblur", false);
+                    }
                     userView.current = null;
                     var pwd = null;
-                    var  sendToServer = {
+                    var sendToServer = {
                         _token: _token,
                         _object: id
                     };
@@ -483,16 +548,18 @@
                             userView.fillCurrentObjectToForm();
                             $("input[id=password]").val(pwd);
                             $("input[id=password_confirmation]").val(pwd);
+                            $("input[id=username]").prop("readOnly", true);
                             userView.action = 'update';
                             userView.show();
                             userView.clearValidation();
-                            }
-                        });
+                        }
+                    });
                 },
 
                 addNewUser: function () {
                     userView.renderDateTimePicker();
                     userView.current = null;
+                    $("input[id=username]").prop("readOnly", false);
                     userView.action = 'add';
                     userView.show();
                 },
@@ -589,28 +656,71 @@
                             break;
                     }
                 },
-                validateUser: function () {
-                    var sendToServer = {
+
+                restoreUser:function () {
+                    var sendToServer = null;
+                    sendToServer = {
                         _token: _token,
-                        _object: $("input[id=username]").val()
-                    };
+                        _action: "restoreUser",
+                        _object: userView.idRestore
+                    }
+                    ;
                     $.ajax({
-                        url: url + 'validate-user',
-                        type: "post",
+                        url: url + 'user/modify',
+                        type: "POST",
                         dataType: "json",
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            $("form#formUser").find("label[id=username]").css("display", "none");
-                            userView.save();
-                        } else if (jqXHR.status == 201) {
-                            $("form#formUser").find("label[id=username]").css("display", "block");
+                        if (jqXHR.status == 201) {
+                            userView.tableUser.push(data['TableRestoreUser']);
+                            userView.table.clear().rows.add(userView.tableUser).draw();
+                            userView.showNotification("success", "Đã khôi phục tài khoản thành công!");
+                            $("#modalRestoreUser").modal('hide');
+                            userView.clearInput();
+                            userView.hide();
                         } else {
                             userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                },
+                createUser: function () {
+                    $("#modalRestoreUser").modal('hide');
+                    $('input[id=username]').val('');
+                    $('input[id=username]').focus();
+                },
+                validateUser: function () {
+                    if(userView.action== "update"){
+                        userView.save();
+                    }
+                    else {
+                        var sendToServer = {
+                            _token: _token,
+                            _object: $("input[id=username]").val()
+                        };
+                        $.ajax({
+                            url: url + 'validate-user',
+                            type: "post",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                userView.save();
+                            } else if (jqXHR.status == 201) {
+                                if (data['dataUser']['active'] == 1) {
+                                    userView.msgUser();
+                                } else {
+                                    userView.msgRestoreUser(data['dataUser']['id']);
+                                }
+                            } else {
+                                userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    }
+
 
                 },
                 displayModal: function (type, idModal) {
@@ -669,7 +779,6 @@
                                 if (jqXHR.status == 201) {
                                     switch (userView.action) {
                                         case 'add':
-                                            console.log(data['tableUserAdd'][0]);
                                             userView.tableUser.push(data['tableUserAdd'][0]);
                                             userView.showNotification("success", "Thêm thành công!");
                                             break;

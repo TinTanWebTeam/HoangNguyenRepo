@@ -61,12 +61,14 @@ class UserManagementController extends Controller
             ->first();
         if ($user == null) {
             $response = [
-                'msg' => "User khong ton tai"
+                'msg' => "User khong ton tai",
+                'dataUser' =>$user
             ];
             return response()->json($response, 200);
         }
         $response = [
-            'msg' => "User đa ton tai"
+            'msg' => "User đa ton tai",
+            'dataUser' =>$user
         ];
         return response()->json($response, 201);
 
@@ -113,7 +115,7 @@ class UserManagementController extends Controller
         $position_id = null;
         $action = $request->get('_action');
 
-        if ($action != 'delete') {
+        if ($action != 'delete' && $action != 'restoreUser' ) {
             $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
             if ($validateUser->fails()) {
                 return $validateUser->errors();
@@ -169,7 +171,6 @@ class UserManagementController extends Controller
                     $response = [
                         'msg'          => 'Created user',
                         'tableUserAdd' => $userAdd,
-//                        'subRoleNew'   => $subRoleNew
                     ];
                     return response()->json($response, 201);
 
@@ -238,6 +239,40 @@ class UserManagementController extends Controller
                     return response()->json($response, 201);
                 }
                 return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            case "restoreUser":
+//                $userRestore = User::findOrFail($request->get('_object'));
+//                $userRestore->active = 1;
+//                if ($userRestore->update()) {
+//                    dd($userRestore);
+//                    $response = [
+//                        'msg' => 'Restore User',
+//                        'TableRestoreUser' =>$userRestore
+//                    ];
+//                    return response()->json($response, 201);
+//                }
+
+
+
+
+
+                $userRestore = User::findOrFail($request->get('_object'));
+                $userRestore->active = 1;
+                if (!$userRestore->update()) {
+                    return response()->json(['msg' => 'Restore failed'], 404);
+                }
+                    $restore = \DB::table('users')
+                        ->join('positions', 'users.position_id', '=', 'positions.id')
+                        ->select('users.username', 'positions.name as positions_name')
+                        ->get();
+
+                    $response = [
+                        'msg' => 'Restore User',
+                        'TableRestoreUser' =>$restore
+                    ];
+                return response()->json($response, 201);
+
+
                 break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
@@ -361,7 +396,7 @@ class UserManagementController extends Controller
                     ];
                     return response()->json($response, 201);
                 }
-                return response()->json(['msg' => 'Deletion failed'], 404);
+                return response()->json(['msg' => 'Restore failed'], 404);
                 break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);

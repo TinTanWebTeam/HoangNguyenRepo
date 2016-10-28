@@ -262,7 +262,9 @@
                     });
                 },
                 validatePosition: function () {
-
+                    if(PositionView.action == "update"){
+                        PositionView.save();
+                    }else {
                         var sendToServer = {
                             _token: _token,
                             _object: $("input[id=name]").val()
@@ -288,11 +290,10 @@
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
+                    }
+
                 },
                 restorePosition: function () {
-//                    PositionView.action = 'restorePosition';
-//                    PositionView.save();
-//                    $("#modalConfirm").modal('hide');
                     var sendToServer = null;
                     sendToServer = {
                         _token: _token,
@@ -312,6 +313,7 @@
                             PositionView.showNotification("success", "Đã khôi phục thành công!");
                             $("#modalPositionRestore").modal('hide');
                             PositionView.clearInput();
+                            PositionView.hide();
                         } else {
                             PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -449,12 +451,13 @@
                                 var index = _.indexOf(PositionView.data, obj);
                                 PositionView.data.splice(index, 1);
                                 PositionView.showNotification("success", "Xóa thành công!");
+                                PositionView.hide();
                             }
                             PositionView.table.clear().rows.add(PositionView.data).draw();
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
-                    }else {
+                    } else {
                         PositionView.validate();
                         if ($("#formPosition").valid()) {
                             PositionView.fillFormDataToCurrentObject();
