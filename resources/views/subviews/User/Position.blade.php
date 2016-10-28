@@ -446,16 +446,13 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                var obj = _.find(PositionView.data, function (o) {
-                                    return o.id == sendToServer._object;
-                                });
-                                var index = _.indexOf(PositionView.data, obj);
-                                PositionView.data.splice(index, 0);
-
+                                PositionView.data.push(data['TableRestorePosition']);
+                                PositionView.table.clear().rows.add(PositionView.data).draw();
                                 PositionView.showNotification("success", "Đã khôi phục thành công!");
                                 $("#modalPositionRestore").modal('hide');
-                           }
-                            PositionView.table.clear().rows.add(PositionView.data).draw();
+                           } else {
+                                PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             PositionView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
@@ -510,8 +507,7 @@
                     }
                 }
 
-            }
-            ;
+            };
             PositionView.loadData();
         }
         else {
