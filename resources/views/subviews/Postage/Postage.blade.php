@@ -74,51 +74,48 @@
             <div class="panel-body">
                 <form role="form" id="frmControl">
                     <div class="form-body">
-                        <div class="col-md-12 ">
-                            <div class="row ">
-                                <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="customer_id"><b>Khách hàng</b></label>
-                                        <input type="text" class="form-control cursor-copy" id="customer_id" name="customer_id"
-                                               readonly placeholder="Nhấp đôi để chọn khách hàng"
-                                               data-customerId="">
-                                               <!--ondblclick="postageView.loadListCustomer()"-->
-                                    </div>
-                                </div>
-                                <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="month"><b>Tháng</b></label>
-                                        <select class="form-control" id="month" name="month" disabled>
-                                            @for($i = 1; $i < 13; $i++)
-                                                <option value="{{$i}}">{{$i}}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input">
+                                    <label for="customer_id"><b>Khách hàng</b></label>
+                                    <input type="text" class="form-control cursor-copy" id="customer_id" name="customer_id"
+                                           readonly placeholder="Nhấp đôi để chọn khách hàng"
+                                           data-customerId="">
+                                    <!--ondblclick="postageView.loadListCustomer()"-->
                                 </div>
                             </div>
-                            <div class="row ">
-                                <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="postage"><b>Cước phí</b></label>
-                                        <input type="number" class="form-control" id="postage" name="postage">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 ">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="note"><b>Ghi chú</b></label>
-                                        <input type="text" class="form-control" name="note" id="note">
-                                    </div>
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="month"><b>Tháng</b></label>
+                                    <select class="form-control" id="month" name="month" disabled>
+                                        @for($i = 1; $i < 13; $i++)
+                                            <option value="{{$i}}">{{$i}}</option>
+                                        @endfor
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-actions">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight" onclick="postageView.save()">Hoàn
-                                        tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="postageView.clearInput()">Huỷ
-                                    </button>
+                        <div class="row">
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input">
+                                    <label for="postage"><b>Cước phí</b></label>
+                                    <input type="number" class="form-control" id="postage" name="postage">
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="form-group form-md-line-input">
+                                    <label for="note"><b>Ghi chú</b></label>
+                                    <input type="text" class="form-control" name="note" id="note">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-actions">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight" onclick="postageView.save()">Hoàn tất</button>
+                                        <button type="button" class="btn default" onclick="postageView.retype()">Nhập lại</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -254,6 +251,11 @@
 
                     $("input[id='postage']").val('');
                     $("select[id='month']").val('');
+                    $("input[id='note']").val('');
+                },
+                retype: function () {
+                    $("input[id='postage']").val('');
+                    $("input[id='note']").val('');
                 },
 
                 loadData: function () {

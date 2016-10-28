@@ -180,7 +180,7 @@
                                             onclick="vehicleInsideView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="vehicleInsideView.clearInput()">Huỷ</button>
+                                    <button type="button" class="btn default" onclick="vehicleInsideView.clearInput()">Nhập lại</button>
                                 </div>
                             </div>
                         </div>
@@ -309,14 +309,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight"
-                                                onclick="vehicleInsideView.saveGarage()">
-                                            Hoàn tất
-                                        </button>
-                                        <button type="button" class="btn default" onclick="vehicleInsideView.displayModal('hide','#modal-addGarage')">Huỷ</button>
+                                        <button class="btn btn-primary marginRight" onclick="vehicleInsideView.saveGarage()">Hoàn tất</button>
+                                        <button class="btn default" onclick="vehicleInsideView.clearInputFormGarage()">Nhập lại</button>
                                     </div>
                                 </div>
                             </div>
@@ -363,14 +360,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight"
-                                                onclick="vehicleInsideView.saveVehicleType()">
-                                            Hoàn tất
-                                        </button>
-                                        <button type="button" class="btn default" onclick="vehicleInsideView.displayModal('hide','#modal-addVehicleType')">Huỷ</button>
+                                        <button class="btn btn-primary marginRight" onclick="vehicleInsideView.saveVehicleType()">Hoàn tất</button>
+                                        <button class="btn default" onclick="vehicleInsideView.clearInputFormVehicleType()">Nhập lại</button>
                                     </div>
                                 </div>
                             </div>
@@ -448,6 +442,19 @@
                     $("input[id='contactor']").val('');
                     $("input[id='phone']").val('');
                     $("input[id='address']").val('');
+                },
+                clearInputFormGarage: function () {
+                    $("input[id='VehicleType_name']").val('');
+                    $("textarea[id='description']").val('');
+
+                    $("input[id='Garage_name']").val('');
+                    $("input[id='contactor']").val('');
+                    $("input[id='phone']").val('');
+                    $("input[id='address']").val('');
+                },
+                clearInputFormVehicleType: function () {
+                    $("input[id='VehicleType_name']").val('');
+                    $("textarea[id='description']").val('');
                 },
 
                 loadData: function () {

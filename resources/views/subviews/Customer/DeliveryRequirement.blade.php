@@ -118,7 +118,7 @@
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thêm mới yêu cầu giao hàng
+            <div class="panel-heading">Thêm mới đơn hàng
                 <div class="menu-toggles pull-right" onclick="transportView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -319,13 +319,8 @@
                             <div class="col-md-12">
                                 <div class="form-actions">
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight"
-                                                onclick="transportView.save()">Hoàn
-                                            tất
-                                        </button>
-                                        <button type="button" class="btn default"
-                                                onclick="transportView.clearInput()">Huỷ
-                                        </button>
+                                        <button type="button" class="btn btn-primary marginRight" onclick="transportView.save()">Hoàn tất</button>
+                                        <button type="button" class="btn default" onclick="transportView.clearInput()">Nhập lại</button>
                                     </div>
                                 </div>
                             </div>
@@ -712,7 +707,6 @@
                     $("input[id='cashPreDelivery']").val(0);
                     $("input[id='cashReceive']").val(0);
                     $("input[id='receiver']").val('');
-//                    $("input[id='receiveDate']").val('');
                     $("input[id='receivePlace']").val('');
                     $("input[id='deliveryPlace']").val('');
                     $("input[id='voucherNumber']").val('');

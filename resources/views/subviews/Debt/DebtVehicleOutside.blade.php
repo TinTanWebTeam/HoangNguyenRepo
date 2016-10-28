@@ -337,7 +337,7 @@
                                                         onclick="debtGarageView.saveInvoiceGarage()">
                                                     Hoàn tất
                                                 </button>
-                                                <button type="button" class="btn default" onclick="">Huỷ</button>
+                                                <button type="button" class="btn default" onclick="debtCustomerView.retype()">Nhập lại</button>
                                             </div>
                                         </div>
                                     </div>
@@ -494,6 +494,10 @@
                     $("input[id='debt']").val('');
                     $("input[id='debt-real']").val('');
                     $("input[id='paidAmt']").val('');
+                    $("textarea[id='note']").val('');
+                },
+                retype: function(){
+                    $("input[id='invoiceCode']").val('');
                     $("textarea[id='note']").val('');
                 },
                 selectAll: function(){

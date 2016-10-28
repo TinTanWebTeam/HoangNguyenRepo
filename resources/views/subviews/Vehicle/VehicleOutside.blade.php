@@ -90,56 +90,52 @@
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
-
             <div class="panel-body">
                 <form role="form" id="frmControl">
                     <div class="form-body">
-                        <div class="col-sm-12">
-                            <div class="row ">
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="name"><b>Tên nhà xe</b></label>
-                                        <input type="text" class="form-control"
-                                               id="name"
-                                               name="name">
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="contactor"><b>Người liên hệ</b></label>
-                                        <input type="text" class="form-control"
-                                               id="contactor"
-                                               name="contactor">
-                                    </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group form-md-line-input">
+                                    <label for="name"><b>Tên nhà xe</b></label>
+                                    <input type="text" class="form-control"
+                                           id="name"
+                                           name="name">
                                 </div>
                             </div>
-                            <div class="row ">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="phone"><b>Số điện thoại</b></label>
-                                        <input type="number" class="form-control"
-                                               id="phone"
-                                               name="phone">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="address"><b>Địa chỉ</b></label>
-                                        <textarea type="text" class="form-control"
-                                               id="address"
-                                               name="address" rows="1"></textarea>
-                                    </div>
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group form-md-line-input">
+                                    <label for="contactor"><b>Người liên hệ</b></label>
+                                    <input type="text" class="form-control"
+                                           id="contactor"
+                                           name="contactor">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12">
-                            <div class="form-actions noborder">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight"
-                                            onclick="garageView.save()">
-                                        Hoàn tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="garageView.clearInput()">Huỷ</button>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="phone"><b>Số điện thoại</b></label>
+                                    <input type="number" class="form-control"
+                                           id="phone"
+                                           name="phone">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group form-md-line-input">
+                                    <label for="address"><b>Địa chỉ</b></label>
+                                    <textarea type="text" class="form-control"
+                                           id="address"
+                                           name="address" rows="1"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-actions">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight" onclick="garageView.save()">Hoàn tất</button>
+                                        <button type="button" class="btn default" onclick="garageView.clearInput()">Nhập lại</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

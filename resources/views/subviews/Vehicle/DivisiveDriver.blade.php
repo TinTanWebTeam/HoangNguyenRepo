@@ -90,63 +90,58 @@
             <div class="panel-body">
                 <form role="form" id="frmControl">
                     <div class="form-body">
-                        <div class="col-sm-12">
-                            <div class="row ">
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="vehicle_id"><b>Xe</b></label>
-                                        <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
-                                                <input type="text" class="form-control"
-                                                       id="vehicle_id"
-                                                       name="vehicle_id"
-                                                       data-vehicleId=""
-                                                       placeholder="Nhấp đôi để chọn"
-                                                       autofocus readonly
-                                                       ondblclick="divisiveDriverView.loadListVehicle()">
-                                            </div>
-                                            <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
-                                                     onclick="divisiveDriverView.addVehicle()">
-                                                    <i class="glyphicon glyphicon-plus"></i>
-                                                </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="vehicle_id"><b>Xe</b></label>
+                                    <div class="row">
+                                        <div class="col-sm-10 col-xs-10">
+                                            <input type="text" class="form-control"
+                                                   id="vehicle_id"
+                                                   name="vehicle_id"
+                                                   data-vehicleId=""
+                                                   placeholder="Nhấp đôi để chọn"
+                                                   autofocus readonly
+                                                   ondblclick="divisiveDriverView.loadListVehicle()">
+                                        </div>
+                                        <div class="col-sm-2 col-xs-2">
+                                            <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
+                                                 onclick="divisiveDriverView.addVehicle()">
+                                                <i class="glyphicon glyphicon-plus"></i>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="user_id"><b>Tài xế</b></label>
-                                        <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
-                                                <input type="text" class="form-control"
-                                                       id="user_id"
-                                                       name="user_id"
-                                                       data-userId=""
-                                                       placeholder="Nhấp đôi để chọn"
-                                                       readonly ondblclick="divisiveDriverView.loadListDriver()">
-                                            </div>
-                                            <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm mới tài xế"
-                                                     onclick="divisiveDriverView.displayModal('show', '#modal-addDriver')">
-                                                    <i class="glyphicon glyphicon-plus"></i>
-                                                </div>
+                            </div>
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="user_id"><b>Tài xế</b></label>
+                                    <div class="row">
+                                        <div class="col-sm-10 col-xs-10">
+                                            <input type="text" class="form-control"
+                                                   id="user_id"
+                                                   name="user_id"
+                                                   data-userId=""
+                                                   placeholder="Nhấp đôi để chọn"
+                                                   readonly ondblclick="divisiveDriverView.loadListDriver()">
+                                        </div>
+                                        <div class="col-sm-2 col-xs-2">
+                                            <div class="btn btn-primary btn-sm btn-circle" title="Thêm mới tài xế"
+                                                 onclick="divisiveDriverView.displayModal('show', '#modal-addDriver')">
+                                                <i class="glyphicon glyphicon-plus"></i>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12">
-                            <div class="form-actions noborder">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight"
-                                            onclick="divisiveDriverView.save()">
-                                        Hoàn tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="divisiveDriverView.clearInput()">
-                                        Huỷ
-                                    </button>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight" onclick="divisiveDriverView.save()">Hoàn tất</button>
+                                        <button type="button" class="btn default" onclick="divisiveDriverView.clearInput()">Nhập lại</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
