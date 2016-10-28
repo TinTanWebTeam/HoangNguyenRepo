@@ -1655,16 +1655,6 @@
                     return found;
                 },
 
-                getListCurrentRowTransport: function() {
-                    debtGarageView.array_transportId = [];
-//                    $(debtGarageView.table.$('tr', {"filter":"applied"}).each( function () {
-//                        debtGarageView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
-//                    } ));
-                    array = $.map(debtGarageView.table.rows('.selected').data(), function(value, index) {
-                        return [value];
-                    });
-                    debtGarageView.array_transportId = _.map(array, 'id');
-                },
                 computeDebt: function(paidAmt){
                     console.log(paidAmt);
                     paidAmt = convertStringToNumber(paidAmt);

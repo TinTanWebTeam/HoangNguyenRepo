@@ -173,7 +173,7 @@
                                             onclick="customerView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="customerView.clearInput()">Huỷ</button>
+                                    <button type="button" class="btn default" onclick="customerView.clearInput()">Nhập lại</button>
                                 </div>
                             </div>
                         </div>
@@ -519,12 +519,14 @@
                         rules: {
                             customerType_id: "required",
                             fullName: "required",
-                            taxCode: "required"
+                            taxCode: "required",
+                            email: "email"
                         },
                         messages: {
                             customerType_id: "Vui lòng chọn loại khách hàng",
                             fullName: "Vui lòng nhập tên khách hàng",
-                            taxCode: "Vui lòng nhập mã số thuế"
+                            taxCode: "Vui lòng nhập mã số thuế",
+                            email: "Vui lòng nhập một email hợp lệ"
                         }
                     });
                 },
