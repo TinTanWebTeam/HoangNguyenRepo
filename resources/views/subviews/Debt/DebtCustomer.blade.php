@@ -206,7 +206,8 @@
 <div class="row">
     <div id="divInvoice" class="col-md-offset-2 col-md-10">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Xuất hóa đơn
+            <div class="panel-heading">
+                <span class="titleControl">Xuất hóa đơn</span>
                 <div class="menu-toggles pull-right" onclick="
                                 debtCustomerView.clearInput();
                                 debtCustomerView.clearValidation('#frmInvoice');
@@ -928,15 +929,15 @@
                 },
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
-                    if(!debtCustomerView.validateListTransport()){
-                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                        $("#modal-notification").find(".modal-body").html("Những đơn hàng đã chọn không hợp lệ!");
-                        debtCustomerView.displayModal('show', '#modal-notification');
-                        return;
-                    }
-
-                    debtCustomerView.showControl(flag);
                     if (flag == 0){
+                        if(!debtCustomerView.validateListTransport()){
+                            $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                            $("#modal-notification").find(".modal-body").html("Những đơn hàng đã chọn không hợp lệ!");
+                            debtCustomerView.displayModal('show', '#modal-notification');
+                            return;
+                        }
+                        $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
+                        debtCustomerView.showControl(flag);
                         debtCustomerView.action = "new";
                         prePaid = 0; totalPay = 0;
                         for(i = 0; i < debtCustomerView.array_transportId.length; i++ ){
@@ -976,6 +977,8 @@
                         $("input[id=invoiceCode]").focus();
                     } else {
                         if(typeof invoiceCustomer_id === 'undefined') return;
+                        $("#divInvoice").find(".titleControl").html("Chi tiết hóa đơn");
+                        debtCustomerView.showControl(flag);
 
                         debtCustomerView.action = "edit";
                         debtCustomerView.invoiceCustomerId = invoiceCustomer_id;

@@ -66,7 +66,8 @@
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thêm mới cước phí
+            <div class="panel-heading">
+                <span>Cập nhật cước phí</span>
                 <div class="menu-toggles pull-right" onclick="postageView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>

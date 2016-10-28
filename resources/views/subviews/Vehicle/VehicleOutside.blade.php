@@ -13,10 +13,6 @@
         height: 40px;
     }
 
-    .marginRight{
-        margin-right: 5px;
-    }
-
     @media (max-height: 500px) {
         #divControl {
             top: 53px;
@@ -25,11 +21,6 @@
         }
     }
 
-    #boxShadow {
-        -webkit-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
-        -moz-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
-        box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
-    }
     #divControl .panel-body {
         height: 260px;
     }
@@ -84,8 +75,9 @@
 <!-- Control -->
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
-        <div class="panel panel-primary" id="boxShadow">
-            <div class="panel-heading">Thêm mới nhà xe
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">
+                <span class="titleControl">Thêm mới nhà xe</span>
                 <div class="menu-toggles pull-right" onclick="garageView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -371,11 +363,13 @@
                     }), true);
                     garageView.fillCurrentObjectToForm();
                     garageView.action = 'update';
+                    $("#divControl").find(".titleControl").html("Cập nhật nhà xe");
                     garageView.showControl();
                 },
                 addGarage: function () {
                     garageView.current = null;
                     garageView.action = 'add';
+                    $("#divControl").find(".titleControl").html("Thêm mới nhà xe");
                     garageView.showControl();
                 },
                 deleteGarage: function (id) {

@@ -6,15 +6,11 @@
         display: none;
         right: 0;
         height: 60vh;
-        width: 40%;
+        width: 50%;
     }
 
     div.col-lg-12 {
         height: 40px;
-    }
-
-    .marginRight {
-        margin-right: 5px;
     }
 
     @media (max-height: 500px) {
@@ -23,12 +19,6 @@
             overflow: auto;
             height: 80vh;
         }
-    }
-
-    #boxShadow {
-        -webkit-box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
-        -moz-box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
-        box-shadow: 0px 0px 88px 5px rgba(0, 0, 0, 0.75);
     }
 </style>
 
@@ -80,8 +70,9 @@
 <!-- Control -->
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
-        <div class="panel panel-primary" id="boxShadow">
-            <div class="panel-heading">Phân tài vào xe
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">
+                <span class="titleControl">Thêm mới phân tài</span>
                 <div class="menu-toggles pull-right" onclick="divisiveDriverView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -726,11 +717,13 @@
                     }), true);
                     divisiveDriverView.fillCurrentObjectToForm();
                     divisiveDriverView.action = 'update';
+                    $("#divControl").find(".titleControl").html("Cập nhật phân tài");
                     divisiveDriverView.showControl();
                 },
                 addVehicleUser: function () {
                     divisiveDriverView.current = null;
                     divisiveDriverView.action = 'add';
+                    $("#divControl").find(".titleControl").html("Thêm mới phân tài");
                     divisiveDriverView.showControl();
                 },
                 deleteVehicleUser: function (id) {

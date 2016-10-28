@@ -80,8 +80,9 @@
 <!-- Control -->
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
-        <div class="panel panel-primary" id="boxShadow">
-            <div class="panel-heading">Thêm mới khách hàng
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">
+                <span class="titleControl">Thêm mới khách hàng</span>
                 <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="customerView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -501,11 +502,13 @@
                     }), true);
                     customerView.fillCurrentObjectToForm();
                     customerView.action = 'update';
+                    $("#divControl").find(".titleControl").html("Cập nhật khách hàng");
                     customerView.showControl();
                 },
                 addCustomer: function () {
                     customerView.current = null;
                     customerView.action = 'add';
+                    $("#divControl").find(".titleControl").html("Thêm mới khách hàng");
                     customerView.showControl();
                 },
                 deleteCustomer: function (id) {

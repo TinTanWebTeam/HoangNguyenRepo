@@ -206,7 +206,8 @@
 <div class="row">
     <div id="divInvoice" class="col-md-offset-2 col-md-10">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Xuất hóa đơn
+            <div class="panel-heading">
+                <span class="titleControl">Tạo mới hóa đơn</span>
                 <div class="menu-toggles pull-right" onclick="
                                 debtGarageView.clearInput();
                                 debtGarageView.clearValidation('#frmInvoice');
@@ -928,15 +929,15 @@
                 },
 
                 createInvoiceGarage: function (flag, invoiceGarage_id) {
-                    if(!debtGarageView.validateListTransport()){
-                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                        $("#modal-notification").find(".modal-body").html("Những đơn hàng đã chọn không hợp lệ!");
-                        debtGarageView.displayModal('show', '#modal-notification');
-                        return;
-                    }
-
-                    debtGarageView.showControl(flag);
                     if (flag == 0){
+                        if(!debtGarageView.validateListTransport()){
+                            $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                            $("#modal-notification").find(".modal-body").html("Những đơn hàng đã chọn không hợp lệ!");
+                            debtGarageView.displayModal('show', '#modal-notification');
+                            return;
+                        }
+                        $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
+                        debtGarageView.showControl(flag);
                         debtGarageView.action = "new";
                         prePaid = 0; totalPay = 0;
                         for(var i = 0; i < debtGarageView.array_transportId.length; i++ ){
@@ -976,6 +977,8 @@
                         $("input[id=invoiceCode]").focus();
                     } else {
                         if(typeof invoiceGarage_id === 'undefined') return;
+                        $("#divInvoice").find(".titleControl").html("Chi tiết hóa đơn");
+                        debtGarageView.showControl(flag);
 
                         debtGarageView.action = "edit";
                         debtGarageView.invoiceGarageId = invoiceGarage_id;

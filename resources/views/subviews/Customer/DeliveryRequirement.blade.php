@@ -118,7 +118,8 @@
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thêm mới đơn hàng
+            <div class="panel-heading">
+                <span class="titleControl">Thêm mới đơn hàng</span>
                 <div class="menu-toggles pull-right" onclick="transportView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -1302,6 +1303,7 @@
 
                     transportView.fillCurrentObjectToForm();
                     transportView.action = 'update';
+                    $("#divControl").find(".titleControl").html("Cập nhật đơn hàng");
                     transportView.showControl();
                 },
                 addTransport: function () {
@@ -1314,6 +1316,7 @@
                     $("input[id=cashPreDelivery]").val(0);
                     $("input[id=cashReceive]").val(0);
                     $("input[id=cost]").val(0);
+                    $("#divControl").find(".titleControl").html("Thêm mới đơn hàng");
                     transportView.showControl();
                 },
                 deleteTransport: function (id) {

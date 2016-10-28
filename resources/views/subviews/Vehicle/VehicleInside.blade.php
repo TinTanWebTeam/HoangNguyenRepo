@@ -12,10 +12,6 @@
         height: 40px;
     }
 
-    .marginRight{
-        margin-right: 5px;
-    }
-
     @media (max-height: 500px) {
         #divControl {
             top: 53px;
@@ -23,13 +19,6 @@
             height: 80vh;
         }
     }
-
-    #boxShadow {
-        -webkit-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
-        -moz-box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
-        box-shadow: 0px 0px 88px 5px rgba(0,0,0,0.75);
-    }
-
 
     #divControl .panel-body {
         height: 320px;
@@ -86,8 +75,9 @@
 <!-- Control -->
 <div class="row">
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
-        <div class="panel panel-primary" id="boxShadow">
-            <div class="panel-heading">Thêm mới xe
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">
+                <span class="titleControl">Thêm mới xe</span>
                 <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="vehicleInsideView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -669,11 +659,13 @@
                     }), true);
                     vehicleInsideView.fillCurrentObjectToForm();
                     vehicleInsideView.action = 'update';
+                    $("#divControl").find(".titleControl").html("Cập nhật xe");
                     vehicleInsideView.showControl();
                 },
                 addVehicle: function () {
                     vehicleInsideView.current = null;
                     vehicleInsideView.action = 'add';
+                    $("#divControl").find(".titleControl").html("Thêm mới xe");
                     vehicleInsideView.showControl();
                 },
                 deleteVehicle: function (id) {
