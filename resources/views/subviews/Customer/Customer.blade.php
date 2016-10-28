@@ -303,22 +303,6 @@
                     customerView.clearValidation("#frmCustomerType");
                     customerView.clearInput();
                 },
-                showNotification: function (type ,msg) {
-                    switch (type){
-                        case "info":
-                            toastr.info(msg);
-                            break;
-                        case "success":
-                            toastr.success(msg);
-                            break;
-                        case "warning":
-                            toastr.warning(msg);
-                            break;
-                        case "error":
-                            toastr.error(msg);
-                            break;
-                    }
-                },
                 clearInput: function () {
                     $("input[id='fullName']").val('');
                     $("input[id='address']").val('');
@@ -345,10 +329,10 @@
                             customerView.tableCustomerType = data['customerTypes'];
                             customerView.loadSelectBox(data['customerTypes']);
                         } else {
-                            customerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        customerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
 
                     toastr.options = {
@@ -562,7 +546,7 @@
                                 switch (customerView.action) {
                                     case 'add':
                                         customerView.tableCustomer.push(data['customer'][0]);
-                                        customerView.showNotification("success", "Thêm thành công!");
+                                        showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
                                         var customerOld = _.find(customerView.tableCustomer, function (o) {
@@ -570,7 +554,7 @@
                                         });
                                         var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
                                         customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
-                                        customerView.showNotification("success", "Cập nhật thành công!");
+                                        showNotification("success", "Cập nhật thành công!");
                                         customerView.hideControl();
                                         break;
                                     case 'delete':
@@ -579,7 +563,7 @@
                                         });
                                         var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
                                         customerView.tableCustomer.splice(indexOfCustomerOld, 1);
-                                        customerView.showNotification("success", "Xóa thành công!");
+                                        showNotification("success", "Xóa thành công!");
                                         customerView.displayModal("hide", "#modal-confirmDelete");
                                         break;
                                     default:
@@ -587,11 +571,13 @@
                                 }
                                 customerView.table.clear().rows.add(customerView.tableCustomer).draw();
                                 customerView.clearInput();
+                            } else if (jqXHR.status == 203) {
+                                showNotification("error", "Tên khách hàng đã tồn tại!");
                             } else {
-                                customerView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            customerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
                         $("form#frmControl").find("label[class=error]").css("color", "red");
@@ -626,7 +612,7 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                customerView.showNotification("success", "Thêm thành công!");
+                                showNotification("success", "Thêm thành công!");
                                 customerView.displayModal("hide", "#modal-addCustomerType");
                                 customerView.clearInput();
                                 //
@@ -634,10 +620,10 @@
                                 customerView.loadSelectBox(customerView.tableCustomerType);
                                 $("select[id='customerType_id']").val(data['customerType']['id']);
                             } else {
-                                customerView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            customerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
                         $("form#frmControl").find("label[class=error]").css("color", "red");

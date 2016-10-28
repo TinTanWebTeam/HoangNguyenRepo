@@ -84,6 +84,11 @@ class CustomerManagementController extends Controller
 
         switch ($action) {
             case 'add':
+                $customerNew = Customer::where('fullName', $fullName)->first();
+                if($customerNew != null){
+                    return response()->json(['msg' => 'fullName exists'], 203);
+                }
+
                 $customerNew = new Customer();
                 $customerNew->customerType_id = $customerType_id;
                 $customerNew->fullName = $fullName;
