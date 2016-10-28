@@ -188,7 +188,7 @@
                         historyDeliveryReportView.table.destroy();
                     }
                     for (var i = 0; i < data.length; i++) {
-                        data[i].no = data[i]['total_Revenue'] - data[i]['total_Receive'];
+                        data[i].total_debt = parseInt(data[i]['total_Revenue']) - parseInt(data[i]['total_Receive']);
                     }
                     historyDeliveryReportView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -202,7 +202,7 @@
                             {data: 'total_Receive',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
-                            {data: 'no',
+                            {data: 'total_debt',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             }
 

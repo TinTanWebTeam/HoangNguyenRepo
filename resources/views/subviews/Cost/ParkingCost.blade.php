@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 35%;
+        top: 25%;
         display: none;
         right: 0px;
         width: 50%;
@@ -89,7 +89,8 @@
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thêm mới chi phí đậu bãi
+            <div class="panel-heading">
+                <span class="titleControl"></span>
                 <div class="menu-toggles pull-right" onclick="parkingCostView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -252,7 +253,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Chi phí đậu bãi</h5>
+                    <h5 class="modal-title">Thêm mới đơn giá</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formCostPrice">
@@ -261,7 +262,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
                                     <input type="number" class="form-control currency"
-                                           id="costPrice"
+                                           id="costPrice" value="0"
                                            name="costPrice">
                                 </div>
                             </div>
@@ -277,7 +278,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
@@ -285,8 +286,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="parkingCostView.displayModal('hide','#modal-addCostPrice')">Huỷ
-                                        </button>
+                                                onclick="parkingCostView.cancelPriceType()">Nhập lại</button>
                                     </div>
                                 </div>
                             </div>
@@ -345,7 +345,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Thêm Xe</h5>
+                    <h5 class="modal-title">Thêm xe mới</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formVehicle">
@@ -407,7 +407,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
@@ -415,7 +415,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="parkingCostView.displayModal('hide','#modal-addVehicle')">Huỷ
+                                                onclick="parkingCostView.cancelVehicle()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -505,6 +505,7 @@
                     }
                 },
                 addParkingCost: function () {
+                    $("#divControl").find(".titleControl").html("Thêm mới phí đậu bãi");
                     parkingCostView.renderDateTimePicker();
                     parkingCostView.current = null;
                     parkingCostView.action = 'add';
@@ -514,6 +515,7 @@
 
                 },
                 editParkingCost: function (id) {
+                    $("#divControl").find(".titleControl").html("Cập nhập phí đậu bãi");
                     parkingCostView.current = null;
                     parkingCostView.current = _.clone(_.find(parkingCostView.tableParkingCost, function (o) {
                         return o.id == id;
@@ -875,6 +877,15 @@
                     });
 
                 },
+                cancelVehicle: function () {
+                    /* Form addVehicle*/
+                    $("input[id='areaCode']").val('');
+                    $("input[id='vehicleNumber']").val('');
+                    $("input[id='size']").val('');
+                    $("input[id='weight']").val('');
+                    parkingCostView.clearValidation();
+                },
+
                 ValidateVehicle: function () {
                     $("#formVehicle").validate({
                         rules: {
@@ -1061,6 +1072,9 @@
                         }
                     });
 
+                },
+                cancelPriceType: function () {
+                    $("input[id='costPrice']").val(0);
                 },
                 savePriceType: function () {
                     parkingCostView.ValidateCostPrice();

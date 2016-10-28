@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 15%;
+        top: 13%;
         display: none;
         right: 0;
         width: 50%;
@@ -148,7 +148,8 @@
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Đăng ký người dùng
+            <div class="panel-heading">
+                <span class="titleControl"></span>
                 <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="userView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -549,6 +550,7 @@
                             $("input[id=password]").val(pwd);
                             $("input[id=password_confirmation]").val(pwd);
                             $("input[id=username]").prop("readOnly", true);
+                            $("#divControl").find(".titleControl").html("Cập nhật tài khoản");
                             userView.action = 'update';
                             userView.show();
                             userView.clearValidation();
@@ -560,6 +562,7 @@
                     userView.renderDateTimePicker();
                     userView.current = null;
                     $("input[id=username]").prop("readOnly", false);
+                    $("#divControl").find(".titleControl").html("Thêm mới tài khoản");
                     userView.action = 'add';
                     userView.show();
                 },

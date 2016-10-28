@@ -345,7 +345,7 @@
                         revenueReportView.table.destroy();
                     }
                     for (var i = 0; i < data.length; i++) {
-                          data[i].Profit_actual = data[i]['cashReceive'] - (data[i]['cashPreDelivery'] +data[i]['cost']);
+                        data[i].Profit_actual = parseInt(data[i]['cashReceive']) - (parseInt(data[i]['cashPreDelivery']) + parseInt(data[i]['cost']));
 
                     }
                     revenueReportView.table = $('#table-data').DataTable({
@@ -373,11 +373,12 @@
                     })
                 },
                 fillDataToDataTableYear: function (data) {
+
                     if (revenueReportView.tableYear != null) {
                         revenueReportView.tableYear.destroy();
                     }
                     for (var i = 0; i < data.length; i++) {
-                        data[i].total_Profit_actual = data[i]['total_Receive'] - (data[i]['total_PreDelivery'] + data[i]['total_Cost']);
+                        data[i].total_Profit_actual = parseInt(data[i]['total_Receive']) - (parseInt(data[i]['total_PreDelivery']) + parseInt(data[i]['total_Cost']));
                     }
                     revenueReportView.tableYear = $('#table-data-year').DataTable(
                             {

@@ -59,11 +59,13 @@ class ReportController extends Controller
                             ->where(\DB::raw('YEAR(receiveDate)'), '=', $request->get('_object'))
                             ->groupBy(\DB::raw('MONTH(receiveDate)'))
                             ->get();
+
                         $response = [
                             'msg'              => 'Get data report success',
                             'tableReportMonth' => $tableReportYear,
 
                         ];
+
                         return response()->json($response, 200);
                     } catch (\Exception $ex) {
                         return $ex;

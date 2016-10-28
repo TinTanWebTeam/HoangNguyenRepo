@@ -2,9 +2,9 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 50%;
+        top: 40%;
         display: none;
-        right: 0px;
+        right: 0;
         width: 50%;
         height: 100%;
     }
@@ -87,7 +87,8 @@
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thêm mới chi phí thay nhớt
+            <div class="panel-heading">
+                <span class="titleControl"></span>
                 <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="petroleumCostView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -206,7 +207,7 @@
                                             onclick="petroleumCostView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="petroleumCostView.cancel()">Huỷ
+                                    <button type="button" class="btn default" onclick="petroleumCostView.cancel()">Nhập lại
                                     </button>
                                 </div>
                             </div>
@@ -266,7 +267,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Thêm giá nhiên liệu</h5>
+                    <h5 class="modal-title">Thêm mới đơn giá</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formCostPrice">
@@ -275,7 +276,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
                                     <input type="text" class="form-control currency"
-                                           id="costPrice"
+                                           id="costPrice" value="0"
                                            name="costPrice">
                                 </div>
                             </div>
@@ -291,7 +292,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
@@ -299,8 +300,8 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="petroleumCostView.displayModal('hide','#modal-addCostPrice')">
-                                            Huỷ
+                                                onclick="petroleumCostView.cancelPriceType()">
+                                            Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -323,7 +324,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Thêm Xe</h5>
+                    <h5 class="modal-title">Thêm xe mới</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formVehicle">
@@ -385,7 +386,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
@@ -393,7 +394,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="petroleumCostView.displayModal('hide','#modal-addVehicle')">Huỷ
+                                                onclick="petroleumCostView.cancelVehicle()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -521,6 +522,7 @@
                     $("#modalConfirm").modal('hide');
                 },
                 editPetroleum: function (id) {
+                    $("#divControl").find(".titleControl").html("Cập nhật phí thay nhớt");
                     petroleumCostView.current = null;
                     petroleumCostView.current = _.clone(_.find(petroleumCostView.tablePetroleumCost, function (o) {
                         return o.id == id;
@@ -563,6 +565,7 @@
                 },
 
                 addPetroleum: function () {
+                    $("#divControl").find(".titleControl").html("Thêm mới phí thay nhớt");
                     petroleumCostView.renderDateTimePicker();
                     petroleumCostView.current = null;
                     petroleumCostView.action = 'add';
@@ -1037,6 +1040,17 @@
                     } else {
                         $("form#formCostPrice").find("label[class=error]").css("color", "red");
                     }
+                },
+                cancelVehicle: function () {
+                    /* Form addVehicle*/
+                    $("input[id='areaCode']").val('');
+                    $("input[id='vehicleNumber']").val('');
+                    $("input[id='size']").val('');
+                    $("input[id='weight']").val('');
+                    petroleumCostView.clearValidation();
+                },
+                cancelPriceType: function () {
+                    $("input[id='costPrice']").val(0);
                 }
 
             };

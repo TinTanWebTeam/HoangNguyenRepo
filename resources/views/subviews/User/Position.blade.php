@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 55%;
+        top: 50%;
         display: none;
         right: 0;
         width: 40%;
@@ -54,7 +54,7 @@
                         onclick="PositionView.restorePosition()">Tạo lại
                 </button>
                 <button type="button" class="btn default" name="modalClose"
-                        onclick="PositionView.cancelPositionRestore()">Hủy
+                        onclick="PositionView.cancelPositionRestore()">Nhập lại
                 </button>
             </div>
         </div>
@@ -125,7 +125,8 @@
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thêm mới chức vụ
+            <div class="panel-heading">
+                <span class="titleControl"></span>
                 <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="PositionView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -221,6 +222,7 @@
                         return o.id == id;
                     }), true);
                     PositionView.action = "update";
+                    $("#divControl").find(".titleControl").html("Cập nhật chức vụ");
                     PositionView.fillCurrentObjectToForm();
                     PositionView.show();
                 },
@@ -366,6 +368,7 @@
                     }
                 },
                 addNewPosition: function () {
+                    $("#divControl").find(".titleControl").html("Thêm mới chức vụ");
                     PositionView.action = 'add';
                     PositionView.show();
                 },

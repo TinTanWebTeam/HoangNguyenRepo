@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 50%;
+        top: 40%;
         display: none;
         right: 0;
         width: 50%;
@@ -95,7 +95,8 @@
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
-            <div class="panel-heading">Thêm mới chi phí nhiên liệu
+            <div class="panel-heading">
+                <span class="titleControl"></span>
                 <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="fuelCostView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -212,7 +213,7 @@
                                             onclick="fuelCostView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="fuelCostView.cancel()">Huỷ
+                                    <button type="button" class="btn default" onclick="fuelCostView.cancel()">Nhập lại
                                     </button>
                                 </div>
                             </div>
@@ -274,7 +275,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Thêm giá nhiên liệu</h5>
+                    <h5 class="modal-title">Thêm mới đơn giá</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formCostPrice">
@@ -299,7 +300,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
@@ -307,7 +308,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="fuelCostView.displayModal('hide','#modal-addCostPrice')">Huỷ
+                                                onclick="fuelCostView.cancelPriceType()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -331,7 +332,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Thêm Xe</h5>
+                    <h5 class="modal-title">Thêm mới xe</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formVehicle">
@@ -394,15 +395,15 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
-                                                onclick="fuelCostView.addVehicles()">
+                                                               onclick="fuelCostView.addVehicles()">
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="fuelCostView.displayModal('hide','#modal-addVehicle')">Huỷ
+                                                onclick="fuelCostView.cancelVehicle()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -631,12 +632,14 @@
                 },
                 addNewFuelCost: function () {
                     fuelCostView.renderDateTimePicker();
+                    $("#divControl").find(".titleControl").html("Thêm mới chi phi");
                     fuelCostView.action = 'add';
                     fuelCostView.inputPrice();
                     fuelCostView.show();
 
                 },
                 editFuelCost: function (id) {
+                    $("#divControl").find(".titleControl").html("Cập nhật chi phi");
                     fuelCostView.current = _.clone(_.find(fuelCostView.tableCost, function (o) {
                         return o.id == id;
                     }), true);
@@ -949,6 +952,15 @@
                     }
 
                 },
+                cancelVehicle: function () {
+                    /* Form addVehicle*/
+                    $("input[id='areaCode']").val('');
+                    $("input[id='vehicleNumber']").val('');
+                    $("input[id='size']").val('');
+                    $("input[id='weight']").val('');
+                    fuelCostView.clearValidation();
+                },
+
                 loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
@@ -1025,6 +1037,9 @@
                         }
                     }
 
+                },
+                cancelPriceType: function () {
+                    $("input[id='costPrice']").val(0);
                 }
             };
             fuelCostView.loadData();

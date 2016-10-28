@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 45%;
+        top: 35%;
         display: none;
         right: 0;
         width: 40%;
@@ -87,8 +87,9 @@
 
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
-        <div class="panel panel-primary">
-            <div class="panel-heading">Thêm mới chi phí khác
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">
+                <span class="titleControl"></span>
                 <div class="menu-toggles pull-right" onclick="otherCostView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -220,7 +221,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Thêm Xe</h5>
+                    <h5 class="modal-title">Thêm xe mới</h5>
                 </div>
                 <div class="modal-body">
                     <form id="formVehicle">
@@ -290,7 +291,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="otherCostView.displayModal('hide','#modal-addVehicle')">Huỷ
+                                                onclick="otherCostView.cancelVehicle()">Huỷ
                                         </button>
                                     </div>
                                 </div>
@@ -408,6 +409,7 @@
                 },
 
                 editOtherCost: function (id) {
+                    $("#divControl").find(".titleControl").html("Cập nhật chi phí khác");
                     otherCostView.current = null;
                     otherCostView.current = _.clone(_.find(otherCostView.tableOtherCost, function (o) {
                         return o.id == id;
@@ -418,6 +420,7 @@
 
                 },
                 addNewOtherCost: function () {
+                    $("#divControl").find(".titleControl").html("Thêm mới chi phí khác");
                     otherCostView.current = null;
                     otherCostView.action = 'add';
                     otherCostView.show();
@@ -513,7 +516,14 @@
                     $("textarea[id='note']").val('');
                     $("input[id='cost']").val('');
                 },
-
+                cancelVehicle:function () {
+                    $("input[id='areaCode']").val('');
+                    $("input[id='vehicleNumber']").val('');
+                    $("input[id='areaCode']").val('');
+                    $("input[id='size']").val('');
+                    $("input[id='weight']").val('');
+                    otherCostView.clearValidation();
+                },
                 clearInputVehicle: function () {
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
