@@ -474,26 +474,13 @@
                 },
                 hideControl: function () {
                     $('#divInvoice').fadeOut(300, function () {
-                        debtGarageView.displayButtonExportInvoice()
+                        $('.menu-toggle').fadeIn();
                     });
                 },
                 displayModal: function (type, idModal) {
                     $(idModal).modal(type);
 
                     //Clear Validate
-                },
-                displayButtonExportInvoice: function(){
-                    array_garageId = _.map(debtGarageView.dataSearch, 'garages_id');
-                    array_garageId_unique = _.uniq(array_garageId);
-                    if(array_garageId_unique.length == 1){
-                        invoiceCode = _.map(debtGarageView.dataSearch, 'invoiceCode');
-                        if(invoiceCode[0] == null)
-                            $('.menu-toggle').fadeIn();
-                        else
-                            $('.menu-toggle').fadeOut();
-                    } else {
-                        $('.menu-toggle').fadeOut();
-                    }
                 },
                 clearInput: function () {
                     $("input[id='invoiceCode']").val('');
@@ -508,6 +495,12 @@
                     $("input[id='debt-real']").val('');
                     $("input[id='paidAmt']").val('');
                     $("textarea[id='note']").val('');
+                },
+                selectAll: function(){
+                    $('#ToolTables_table-data_0').click();
+                },
+                deselectAll: function(){
+                    $('#ToolTables_table-data_1').click();
                 },
 
                 renderScrollbar: function () {
@@ -597,10 +590,6 @@
                             return o.id == invoiceGarageDetailId;
                         });
                     });
-                },
-                renderFormatCurrency: function(){
-                    array_id1 = ['totalPay', 'debt-real', 'notVAT','hasVAT', 'paidAmt', 'debt', 'prePaid'];
-                    array_id2 = ['hasVAT', 'paidAmt'];
                 },
 
                 fillDataToDatatable: function (data) {
@@ -874,6 +863,7 @@
                             debtGarageView.invoiceCode = data['invoiceCode'];
 
                             debtGarageView.searchTransport();
+                            debtGarageView.deselectAll();
                             debtGarageView.searchInvoice();
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -933,54 +923,18 @@
                     }
                 },
 
-                autoEditTransport: function (transportId) {
-                    debtGarageView.current = null;
-                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
-                        return o.id == transportId;
-                    }), true);
-                    debtGarageView.action = 'autoEdit';
-                    debtGarageView.save();
-                },
-                autoEditTransportConfirm: function (transportId) {
-                    debtGarageView.current = null;
-                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
-                        return o.id == transportId;
-                    }), true);
-
-                    if(debtGarageView.current['invoiceGarage_id'] != null){
-                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
-                        debtGarageView.displayModal('show', '#modal-notification');
-                        return;
-                    }
-
-                    if(parseInt(debtGarageView.current['cashDelivery']) == parseInt(debtGarageView.current['cashPreDelivery'])){
-                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
-                        debtGarageView.displayModal('show', '#modal-notification');
-                        return;
-                    }
-
-                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
-                    tr = '<div class="row">';
-                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
-                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.autoEditTransport('+ transportId +')">';
-                    tr += 'Đồng ý';
-                    tr += '</button>';
-                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
-                    tr += 'Huỷ';
-                    tr += '</button>';
-                    tr += '</div>';
-                    tr += '</div>';
-                    $("#modal-notification").find(".modal-body").html(tr);
-                    debtGarageView.displayModal('show', '#modal-notification');
-                },
                 createInvoiceGarage: function (flag, invoiceGarage_id) {
+                    if(!debtGarageView.validateListTransport()){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Những đơn hàng đã chọn không hợp lệ!");
+                        debtGarageView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
                     debtGarageView.showControl(flag);
                     if (flag == 0){
                         debtGarageView.action = "new";
-                        var prePaid = 0, totalPay = 0;
-                        debtGarageView.getListCurrentRowTransport();
+                        prePaid = 0; totalPay = 0;
                         for(var i = 0; i < debtGarageView.array_transportId.length; i++ ){
                             var currentRow = _.find(debtGarageView.dataTransport, function(o){
                                 return o.id == debtGarageView.array_transportId[i];
@@ -1071,6 +1025,48 @@
                         $("input[id=paidAmt]").focus();
                     }
                     formatCurrency(".currency");
+                },
+                autoEditTransport: function (transportId) {
+                    debtGarageView.current = null;
+                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
+                        return o.id == transportId;
+                    }), true);
+                    debtGarageView.action = 'autoEdit';
+                    debtGarageView.save();
+                },
+                autoEditTransportConfirm: function (transportId) {
+                    debtGarageView.current = null;
+                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
+                        return o.id == transportId;
+                    }), true);
+
+                    if(debtGarageView.current['invoiceGarage_id'] != null){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
+                        debtGarageView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
+                    if(parseInt(debtGarageView.current['cashDelivery']) == parseInt(debtGarageView.current['cashPreDelivery'])){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
+                        debtGarageView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
+                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.autoEditTransport('+ transportId +')">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    debtGarageView.displayModal('show', '#modal-notification');
                 },
                 deleteInvoiceGarage: function (invoiceGarage_id) {
                     sendToServer = {
@@ -1304,7 +1300,28 @@
                     }
                 },
 
-                formValidate: function () {
+                validateListTransport: function(){
+                    array = $.map(debtGarageView.table.rows('.selected').data(), function(value, index) {
+                        return [value];
+                    });
+                    debtGarageView.array_transportId = [];
+                    debtGarageView.array_transportId = _.map(array, 'id');
+
+                    array_garageId = _.map(array, 'garages_id');
+                    array_garageId = _.uniq(array_garageId);
+
+                    array_invoiceCode = _.map(array, 'invoiceCode');
+                    array_invoiceCode = _.without(array_invoiceCode, null);
+
+                    if(array_garageId.length == 1
+                            && debtGarageView.array_transportId.length > 0
+                            && array_invoiceCode.length == 0){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                validateForm: function () {
                     $("#frmInvoice").validate({
                         rules: {
                             paidAmt: {
@@ -1370,7 +1387,7 @@
                     });
                 },
                 saveInvoiceGarage: function () {
-                    debtGarageView.formValidate();
+                    debtGarageView.validateForm();
                     if ($("#frmInvoice").valid()) {
                         debtGarageView.fillFormDataToCurrentObject();
 
@@ -1516,7 +1533,7 @@
                     debtGarageView.dataSearch = found;
                     debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
 
-                    debtGarageView.displayButtonExportInvoice();
+                    debtGarageView.selectAll();
 
                     //fill data to listSearch
                     debtGarageView.tagsGarageNameTransport = _.map(debtGarageView.dataSearch, 'garages_name');

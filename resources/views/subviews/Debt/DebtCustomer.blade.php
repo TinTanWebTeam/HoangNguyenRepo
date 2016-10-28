@@ -474,29 +474,13 @@
                 },
                 hideControl: function () {
                     $('#divInvoice').fadeOut(300, function () {
-                        debtCustomerView.displayButtonExportInvoice()
+                        $('.menu-toggle').fadeIn();
                     });
                 },
                 displayModal: function (type, idModal) {
                     $(idModal).modal(type);
 
                     //Clear Validate
-                },
-                displayButtonExportInvoice: function(){
-                    debtCustomerView.getListCurrentRowTransport();
-                    array = $.map(debtCustomerView.table.rows('.selected').data(), function(value, index) {
-                        return [value];
-                    });
-                    array_customerId = _.map(array, 'customer_id');
-                    array_customerId = _.uniq(array_customerId);
-                    array_invoiceCode = _.map(array, 'invoiceCode');
-
-                    if(array_customerId.length == 1 && debtCustomerView.array_transportId.length > 0 && array_invoiceCode.length == 0){
-                        $('.menu-toggle').fadeIn();
-
-                    } else {
-                        $('.menu-toggle').fadeOut();
-                    }
                 },
                 clearInput: function () {
                     $("input[id='invoiceCode']").val('');
@@ -511,6 +495,12 @@
                     $("input[id='debt-real']").val('');
                     $("input[id='paidAmt']").val('');
                     $("textarea[id='note']").val('');
+                },
+                selectAll: function(){
+                    $('#ToolTables_table-data_0').click();
+                },
+                deselectAll: function(){
+                    $('#ToolTables_table-data_1').click();
                 },
 
                 renderScrollbar: function () {
@@ -600,10 +590,6 @@
                             return o.id == invoiceCustomerDetailId;
                         });
                     });
-                },
-                renderFormatCurrency: function(){
-                    array_id1 = ['totalPay', 'debt-real', 'notVAT','hasVAT', 'paidAmt', 'debt', 'prePaid'];
-                    array_id2 = ['hasVAT', 'paidAmt'];
                 },
 
                 fillDataToDatatable: function (data) {
@@ -877,7 +863,7 @@
                             debtCustomerView.invoiceCode = data['invoiceCode'];
 
                             debtCustomerView.searchTransport();
-                            debtCustomerView.selectAll();
+                            debtCustomerView.deselectAll();
                             debtCustomerView.searchInvoice();
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -937,54 +923,18 @@
                     }
                 },
 
-                autoEditTransport: function (transportId) {
-                    debtCustomerView.current = null;
-                    debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
-                        return o.id == transportId;
-                    }), true);
-                    debtCustomerView.action = 'autoEdit';
-                    debtCustomerView.save();
-                },
-                autoEditTransportConfirm: function (transportId) {
-                    debtCustomerView.current = null;
-                    debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
-                        return o.id == transportId;
-                    }), true);
-
-                    if(debtCustomerView.current['invoiceCustomer_id'] != null){
-                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
-                        debtCustomerView.displayModal('show', '#modal-notification');
-                        return;
-                    }
-
-                    if(parseInt(debtCustomerView.current['cashRevenue']) == parseInt(debtCustomerView.current['cashReceive'])){
-                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
-                        debtCustomerView.displayModal('show', '#modal-notification');
-                        return;
-                    }
-
-                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
-                    tr = '<div class="row">';
-                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
-                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtCustomerView.autoEditTransport('+ transportId +')">';
-                    tr += 'Đồng ý';
-                    tr += '</button>';
-                    tr += '<button type="button" class="btn default" onclick="debtCustomerView.displayModal(\'hide\', \'#modal-notification\')">';
-                    tr += 'Huỷ';
-                    tr += '</button>';
-                    tr += '</div>';
-                    tr += '</div>';
-                    $("#modal-notification").find(".modal-body").html(tr);
-                    debtCustomerView.displayModal('show', '#modal-notification');
-                },
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
+                    if(!debtCustomerView.validateListTransport()){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Những đơn hàng đã chọn không hợp lệ!");
+                        debtCustomerView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
                     debtCustomerView.showControl(flag);
                     if (flag == 0){
                         debtCustomerView.action = "new";
                         prePaid = 0; totalPay = 0;
-//                        debtCustomerView.getListCurrentRowTransport();
                         for(i = 0; i < debtCustomerView.array_transportId.length; i++ ){
                             currentRow = _.find(debtCustomerView.dataTransport, function(o){
                                 return o.id == debtCustomerView.array_transportId[i];
@@ -1027,7 +977,7 @@
                         debtCustomerView.invoiceCustomerId = invoiceCustomer_id;
                         //fill data to table InvoiceCustomerDetail
                         var data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
-                           return o.invoiceCustomer_id == invoiceCustomer_id;
+                            return o.invoiceCustomer_id == invoiceCustomer_id;
                         });
                         if(typeof data === 'undefined') return;
                         debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(data);
@@ -1075,6 +1025,48 @@
                         $("input[id=paidAmt]").focus();
                     }
                     formatCurrency(".currency");
+                },
+                autoEditTransport: function (transportId) {
+                    debtCustomerView.current = null;
+                    debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
+                        return o.id == transportId;
+                    }), true);
+                    debtCustomerView.action = 'autoEdit';
+                    debtCustomerView.save();
+                },
+                autoEditTransportConfirm: function (transportId) {
+                    debtCustomerView.current = null;
+                    debtCustomerView.current = _.clone(_.find(debtCustomerView.dataTransport, function (o) {
+                        return o.id == transportId;
+                    }), true);
+
+                    if(debtCustomerView.current['invoiceCustomer_id'] != null){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
+                        debtCustomerView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
+                    if(parseInt(debtCustomerView.current['cashRevenue']) == parseInt(debtCustomerView.current['cashReceive'])){
+                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
+                        debtCustomerView.displayModal('show', '#modal-notification');
+                        return;
+                    }
+
+                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtCustomerView.autoEditTransport('+ transportId +')">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="debtCustomerView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    debtCustomerView.displayModal('show', '#modal-notification');
                 },
                 deleteInvoiceCustomer: function (invoiceCustomer_id) {
                     sendToServer = {
@@ -1308,7 +1300,28 @@
                     }
                 },
 
-                formValidate: function () {
+                validateListTransport: function(){
+                    array = $.map(debtCustomerView.table.rows('.selected').data(), function(value, index) {
+                        return [value];
+                    });
+                    debtCustomerView.array_transportId = [];
+                    debtCustomerView.array_transportId = _.map(array, 'id');
+
+                    array_customerId = _.map(array, 'customer_id');
+                    array_customerId = _.uniq(array_customerId);
+
+                    array_invoiceCode = _.map(array, 'invoiceCode');
+                    array_invoiceCode = _.without(array_invoiceCode, null);
+
+                    if(array_customerId.length == 1
+                            && debtCustomerView.array_transportId.length > 0
+                            && array_invoiceCode.length == 0){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                validateForm: function () {
                     $("#frmInvoice").validate({
                         rules: {
                             paidAmt: {
@@ -1374,7 +1387,7 @@
                     });
                 },
                 saveInvoiceCustomer: function () {
-                    debtCustomerView.formValidate();
+                    debtCustomerView.validateForm();
                     if ($("#frmInvoice").valid()) {
                         debtCustomerView.fillFormDataToCurrentObject();
 
@@ -1521,7 +1534,6 @@
                     debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
 
                     debtCustomerView.selectAll();
-                    debtCustomerView.displayButtonExportInvoice();
 
                     //fill data to listSearch
                     debtCustomerView.tagsCustomerNameTransport = _.map(debtCustomerView.dataSearch, 'customers_fullName');
@@ -1643,16 +1655,6 @@
                     return found;
                 },
 
-                getListCurrentRowTransport: function() {
-                    debtCustomerView.array_transportId = [];
-//                    $(debtCustomerView.table.$('tr', {"filter":"applied"}).each( function () {
-//                        debtCustomerView.array_transportId.push(parseInt($(this).find("td:eq(0)").text()));
-//                    } ));
-                    array = $.map(debtCustomerView.table.rows('.selected').data(), function(value, index) {
-                        return [value];
-                    });
-                    debtCustomerView.array_transportId = _.map(array, 'id');
-                },
                 computeDebt: function(paidAmt){
                     console.log(paidAmt);
                     paidAmt = convertStringToNumber(paidAmt);
@@ -1692,13 +1694,6 @@
                     $("input[id=debt-real]").val(hasVat - prePaid);
                     $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
                     formatCurrency(".currency");
-                },
-
-                selectAll: function(){
-                    $('#ToolTables_table-data_0').click();
-                },
-                deselectAll: function(){
-                    $('#ToolTables_table-data_1').click();
                 }
             };
             debtCustomerView.loadData();
