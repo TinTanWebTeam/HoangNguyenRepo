@@ -31,12 +31,12 @@
                 <div class="dataTable_wrapper">
                     <p class="lead text-primary text-left"><strong>Chi tiết giao hàng</strong></p>
                     <div class="row">
-                        <div class="col-md-6" id="dateSearchDetailDelivery">
+                        <div class="col-md-7" id="dateSearchDetailDelivery">
                             <input id="dateStart" type="text" class="date start"/> đến
                             <input id="dateEnd" type="text" class="date end"/>
 
                         </div>
-                        <div class="col-md-6" style="padding-left: 0">
+                        <div class="col-md-5" style="padding-left: 0">
                             <button onclick="historyDeliveryReportView.searchDateToDate()" id="btnSearchDelivery"
                                     class="btn btn-sm btn-info marginRight"><i
                                         class="fa fa-search" aria-hidden="true"></i> Tìm

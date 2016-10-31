@@ -30,12 +30,12 @@
                 <div class="dataTable_wrapper">
                     <p class="lead text-primary text-left"><strong>Chi tiết doanh thu</strong></p>
                     <div class="row">
-                        <div class="col-md-6" id="dateSearchRevenueReport">
+                        <div class="col-md-7" id="dateSearchRevenueReport">
                             <input id="dateStart" type="text" class="date start"/> đến
                             <input id="dateEnd" type="text" class="date end"/>
 
                         </div>
-                        <div class="col-md-6" style="padding-left: 0">
+                        <div class="col-md-5" style="padding-left: 0">
                                 <button onclick="revenueReportView.searchDateToDate()" id="btnSearchTransport"
                                         class="btn btn-sm btn-info marginRight"><i
                                             class="fa fa-search" aria-hidden="true"></i> Tìm
