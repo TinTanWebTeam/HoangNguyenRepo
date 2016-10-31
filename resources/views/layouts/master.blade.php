@@ -28,6 +28,9 @@
     <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/DataTables-1.10.12/css/jquery.dataTables.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/Buttons-1.2.2/css/buttons.dataTables.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/TableTools/css/dataTables.tableTools.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/FixedHeader-3.1.2/css/fixedHeader.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('src/dataTableFull/Responsive-2.1.0/css/responsive.bootstrap.min.css') }}">
+
 
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ URL::to('libs/toastr/toastr.min.css') }}">
@@ -87,6 +90,9 @@
 <script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/buttons.html5.min.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/Buttons-1.2.2/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ URL::to('src/dataTableFull/JSZip-2.5.0/jszip.min.js') }}"></script>
+<script src="{{ URL::to('src/dataTableFull/FixedHeader-3.1.2/js/dataTables.fixedHeader.js') }}"></script>
+<script src="{{ URL::to('src/dataTableFull/Responsive-2.1.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ URL::to('src/dataTableFull/Responsive-2.1.0/js/responsive.bootstrap.min.js') }}"></script>
 
 <!-- Hightcharts -->
 <script src="{{ URL::to('libs/highcharts/highcharts.js') }}"></script>

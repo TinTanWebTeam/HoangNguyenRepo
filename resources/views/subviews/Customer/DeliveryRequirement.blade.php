@@ -1147,6 +1147,10 @@
                                 }, width: "9%"
                             }
                         ],
+                        responsive: true,
+                        fixedHeader: {
+                            header: true
+                        },
                         order: [[0, "desc"]],
                         dom: 'Bfrtip',
                         buttons: [
@@ -1190,7 +1194,8 @@
                                 text: 'Ẩn cột'
                             }
                         ]
-                    })
+                    });
+                    $("#table-data").css("width", "auto");
                 },
                 fillCurrentObjectToForm: function () {
                     $("input[id='vehicle_id']").val(transportView.current["vehicles_areaCode"] + '-' + transportView.current["vehicles_vehicleNumber"]);

@@ -430,7 +430,8 @@ $.extend( FixedHeader.prototype, {
 				.addClass( 'fixedHeader-floating' )
 				.css( item === 'header' ? 'top' : 'bottom', this.c[item+'Offset'] )
 				.css( 'left', position.left+'px' )
-				.css( 'width', position.width+'px' );
+				.css( 'width', 'auto' );
+				// .css( 'width', position.width+'px' );
 
 			if ( item === 'footer' ) {
 				itemDom.floating.css( 'top', '' );
