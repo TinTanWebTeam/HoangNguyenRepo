@@ -31,7 +31,7 @@
     }
 }
 .btn-del-edit {
-    float: left;
+    display: inline-block;
     padding-right: 5px;
 }
 .fixed {

@@ -1128,23 +1128,27 @@
                                     tr += '<p>' + full.status_transport_ + '</p>';
 
                                     return tr;
-                                }, width: "11%"
+                                }
                             },
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
-                                    tr += '<div class="btn btn-success  btn-circle" onclick="transportView.editTransport(' + full.id + ')">';
+                                    tr += '<div title="Chỉnh sửa" class="btn btn-success btn-circle marginRight" onclick="transportView.editTransport(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
-                                    tr += '</div>';
-                                    tr += '<div class="btn-del-edit" title="Xóa">';
-                                    tr += '<div class="btn btn-danger btn-circle" onclick="transportView.deleteTransport(' + full.id + ')">';
+                                    tr += '<div title="Xóa" class="btn btn-danger btn-circle" onclick="transportView.deleteTransport(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
-                                    tr += '</div>';
                                     return tr;
-                                }, width: "9%"
+                                }
+                            }
+                        ],
+                        columnDefs: [
+                            { responsivePriority: 1, targets: -1 },
+                            { responsivePriority: 1, targets: -2 },
+                            {
+                                "targets": [ 8 ],
+                                "visible": false
                             }
                         ],
                         responsive: true,
