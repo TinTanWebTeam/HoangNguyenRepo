@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Role;
 use Closure;
 
 class PostageManagement
@@ -9,8 +10,8 @@ class PostageManagement
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -19,7 +20,11 @@ class PostageManagement
             return $next($request);
         } else {
             $array_roleid = \App\SubRole::where('user_id', \Auth::user()->id)->pluck('role_id');
-            if (array_has($array_roleid, 8)) {
+            $roleId = Role::where('name', 'PostageManagement')
+                ->select('roles.id')
+                ->first();
+
+            if ($array_roleid->contains($roleId->id)) {
                 return $next($request);
             } else {
                 return redirect()->back();

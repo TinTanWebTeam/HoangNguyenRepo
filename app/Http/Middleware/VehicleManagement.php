@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-
+use App\Role;
 class VehicleManagement
 {
     /**
@@ -19,7 +19,10 @@ class VehicleManagement
             return $next($request);
         } else {
             $array_roleid = \App\SubRole::where('user_id', \Auth::user()->id)->pluck('role_id');
-            if (array_has($array_roleid, 5)) {
+            $roleId = Role::where('name', 'VehicleManagement')
+                ->select('roles.id')
+                ->first();
+            if ($array_roleid->contains($roleId->id)) {
                 return $next($request);
             } else {
                 return redirect()->back();
