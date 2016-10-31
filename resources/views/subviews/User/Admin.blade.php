@@ -36,10 +36,10 @@
                     <div class="modal-body"><h5 id="modalContent"></h5></div>
                     <div class="modal-footer">
                         <button id="id" type="button" class="btn btn-primary marginRight" name="modalAgree"
-                                onclick="userView.deleteUser()">Ðồng ý
+                                onclick="adminView.deleteUser()">Ðồng ý
                         </button>
                         <button type="button" class="btn default" name="modalClose"
-                                onclick="userView.cancelDelete()">Hủy
+                                onclick="adminView.cancelDelete()">Hủy
                         </button>
 
                     </div>
@@ -60,7 +60,7 @@
                     <div class="modal-body"><h5 id="modalUser"></h5></div>
                     <div class="modal-footer">
                         <button type="button" class="btn default" name="modalClose"
-                                onclick="userView.cancelUser()">Hủy
+                                onclick="adminView.cancelUser()">Hủy
                         </button>
 
                     </div>
@@ -81,13 +81,10 @@
                     <div class="modal-body"><h5 id="modalRestoreUser"></h5></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                                onclick="userView.createUser()">Tạo tài khoản mới
-                        </button>
-                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                                onclick="userView.restoreUser()">Khôi phục tài khoản củ
+                                onclick="adminView.restoreUser()">Khôi phục tài khoản
                         </button>
                         <button type="button" class="btn default" name="modalClose"
-                                onclick="userView.cancelRestoreUser()">Hủy
+                                onclick="adminView.cancelRestoreUser()">Hủy
                         </button>
 
                     </div>
@@ -109,10 +106,11 @@
                     <ol class="breadcrumb">
                         <li><a href="javascript:;">Trang chủ</a></li>
                         <li><a href="javascript:;">QL người dùng</a></li>
-                        <li class="active">Tài khoản</li>
+                        <li class="active">Admin</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="userView.addNewUser()">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="adminView.addNewUser()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -150,7 +148,7 @@
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">
                 <span class="titleControl"></span>
-                <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="userView.hide()">
+                <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="adminView.hide()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
@@ -268,7 +266,7 @@
                                                             <label>
                                                                 <input type="checkbox" id="array_roleId"
                                                                        value="{{$item->id}}"
-                                                                       onclick="userView.checkRole(this)">{{$item->description}}
+                                                                       onclick="adminView.checkRole(this)">{{$item->description}}
                                                             </label>
                                                         </div>
                                                     @endforeach
@@ -283,10 +281,10 @@
                             <div class="form-actions noborder">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="userView.validateUser()">
+                                            onclick="adminView.validateUser()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="userView.cancel()">Nhập lại
+                                    <button type="button" class="btn default" onclick="adminView.cancel()">Nhập lại
                                     </button>
                                 </div>
                             </div>
@@ -299,21 +297,41 @@
 </div>
 <!-- end #frmControl -->
 
+<!-- Modal notification -->
+<div class="row">
+    <div id="modal-notification" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal notification -->
 
 
 <script>
     $(function () {
-        if (typeof (userView) === 'undefined') {
-            userView = {
+        if (typeof (adminView) === 'undefined') {
+            adminView = {
                 table: null,
                 data: null,
-                tableUser: null,
+                tableAdmin: null,
                 tablePosition: null,
                 action: null,
                 idDelete: null,
                 current: null,
                 array_roleId: null,
                 user_id: null,
+                elementButton: null,
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -322,15 +340,15 @@
                     $('#divControl').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
-                    userView.resetRolesInDom();
-                    userView.clearInput();
+                    adminView.resetRolesInDom();
+                    adminView.clearInput();
                     $('label[class=error]').hide();
                 },
                 cancel: function () {
-                    if (userView.action == 'add') {
-                        userView.clearInput();
+                    if (adminView.action == 'add') {
+                        adminView.clearInput();
                     } else {
-                        userView.fillCurrentObjectToForm();
+                        adminView.fillCurrentObjectToForm();
                     }
                 },
                 loadData: function () {
@@ -340,15 +358,15 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            userView.tableUser = data['tableUser'];
-                            userView.fillDataToDatatable(data['tableUser']);
-                            userView.tablePosition = data['tablePosition'];
-                            userView.loadSelectBoxPosition(data['tablePosition']);
+                            adminView.tableAdmin = data['tableUserOfAdmin'];
+                            adminView.fillDataToDatatable(data['tableUserOfAdmin']);
+                            adminView.tablePosition = data['tablePosition'];
+                            adminView.loadSelectBoxPosition(data['tablePosition']);
                         } else {
-                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                     toastr.options = {
                         "closeButton": true,
@@ -374,7 +392,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    userView.renderDateTimePicker();
+                    adminView.renderDateTimePicker();
                 },
                 clearValidation: function () {
                     $('label[class=error]').hide();
@@ -410,22 +428,14 @@
                         $("div#modalConfirm").modal("show");
                         $("h5#modalContent").empty().append("Tài khoản đang đăng nhập không được xóa.");
                         $("button[id=id]").hide();
-                    }else {
-                        userView.idDelete = id;
+                    } else {
+                        adminView.idDelete = id;
                         $("div#modalConfirm").modal("show");
                         $("h5#modalContent").empty().append("Bạn có muốn xóa tài khoản này ?");
                         $("button[name=modalAgree]").show();
                     }
 
-                },
-                msgRestoreUser: function (id) {
-                    if (id) {
-                        userView.idRestore = id;
-                        $("div#modalRestoreUser").modal("show");
-                        $("h5#modalRestoreUser").empty().append("Tài khoản trùng với tài khoản đã xóa.");
-                        $("button[name=modalAgree]").show();
 
-                    }
                 },
                 msgUser: function () {
                     $("div#modalUser").modal("show");
@@ -436,15 +446,12 @@
                 cancelUser: function () {
                     $("#modalUser").modal('hide');
                 },
-                cancelRestoreUser: function () {
-                    $("#modalRestoreUser").modal('hide');
-                },
                 cancelDelete: function () {
-                    userView.idDelete = null;
+                    adminView.idDelete = null;
                     $("#modalConfirm").modal('hide');
                 },
                 fillDataToDatatable: function (data) {
-                    userView.table = $('#table-data').DataTable({
+                    adminView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
@@ -458,15 +465,22 @@
                                 render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
-                                    tr += '<div class="btn btn-success  btn-circle" onclick="userView.editUser(' + full.id + ')">';
+                                    tr += '<div class="btn btn-success  btn-circle" onclick="adminView.editUser(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit" title="Xóa">';
-                                    tr += '<div class="btn btn-danger btn-circle" onclick="userView.msgDelete(' + full.id + ')">';
-                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
+                                    if (full.active == 1) {
+
+                                        tr += '<div  title="Xóa"  data-id="' + full.id + '" class="btn btn-danger btn-circle" onclick="adminView.msgDelete(' + full.id + ')">';
+                                        tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                        tr += '</div>';
+
+                                    } else {
+                                        tr += '<div  title="Phục hồi" data-id="' + full.id + '" class="btn btn-info btn-circle" onclick="adminView.restoreUserConfirm(' + full.id + ')">';
+                                        tr += '<i class="glyphicon glyphicon-plus"></i>';
+                                        tr += '</div>';
+
+                                    }
                                     return tr;
                                 }
                             }
@@ -483,9 +497,9 @@
                             subRole.push($(this).attr('value'));
                         }
                     });
-                    userView.array_roleId = subRole;
-                    if (userView.action == 'add') {
-                        userView.current = {
+                    adminView.array_roleId = subRole;
+                    if (adminView.action == 'add') {
+                        adminView.current = {
                             fullName: $("input[id='fullName']").val(),
                             username: $("input[id='username']").val(),
                             password: $("input[id='password']").val(),
@@ -496,37 +510,37 @@
                             position_id: $("select[id='position_id']").val()
                         }
 
-                    } else if (userView.action == 'update') {
-                        userView.current.fullName = $("input[id='fullName']").val();
-                        userView.current.username = $("input[id='username']").val();
-                        userView.current.email = $("input[id='email']").val();
-                        userView.current.address = $("input[id='address']").val();
-                        userView.current.phone = $("input[id='phone']").val();
-                        userView.current.birthday = $("input[id='birthday']").val();
-                        userView.current.position_id = $("select[id='position_id']").val();
-                        userView.current.password = $("input[id='password']").val();
+                    } else if (adminView.action == 'update') {
+                        adminView.current.fullName = $("input[id='fullName']").val();
+                        adminView.current.username = $("input[id='username']").val();
+                        adminView.current.email = $("input[id='email']").val();
+                        adminView.current.address = $("input[id='address']").val();
+                        adminView.current.phone = $("input[id='phone']").val();
+                        adminView.current.birthday = $("input[id='birthday']").val();
+                        adminView.current.position_id = $("select[id='position_id']").val();
+                        adminView.current.password = $("input[id='password']").val();
                     }
                 },
                 fillCurrentObjectToForm: function () {
-                    var dateBirthday = moment(userView.current["birthday"], "YYYY-MM-DD");
+                    var dateBirthday = moment(adminView.current["birthday"], "YYYY-MM-DD");
                     $("input[id='birthday']").datepicker('update', dateBirthday.format("DD-MM-YYYY"));
-                    $("input[id='fullName']").val(userView.current["fullName"]);
-                    $("input[id='username']").val(userView.current["username"]);
-                    $("input[id='email']").val(userView.current["email"]);
-                    $("select[id='position_id']").val(userView.current["position_id"]);
-                    $("input[id='address']").val(userView.current["address"]);
-                    $("input[id='phone']").val(userView.current["phone"]);
+                    $("input[id='fullName']").val(adminView.current["fullName"]);
+                    $("input[id='username']").val(adminView.current["username"]);
+                    $("input[id='email']").val(adminView.current["email"]);
+                    $("select[id='position_id']").val(adminView.current["position_id"]);
+                    $("input[id='address']").val(adminView.current["address"]);
+                    $("input[id='phone']").val(adminView.current["phone"]);
                     $("input[id='password']").val();
                     $("input[id='password_confirmation']").val();
 
 
                 },
                 editUser: function (id) {
-                    if (userView.action = 'update') {
+                    if (adminView.action = 'update') {
                         $("input[id=username]").prop("readOnly", true);
                         $("input[id=username]").prop("onblur", false);
                     }
-                    userView.current = null;
+                    adminView.current = null;
                     var pwd = null;
                     var sendToServer = {
                         _token: _token,
@@ -543,29 +557,29 @@
                             for (var i = 0; i < data['subRoles'].length; i++) {
                                 roles_array.push(data['subRoles'][i]['role_id']);
                             }
-                            userView.current = _.clone(_.find(userView.tableUser, function (o) {
+                            adminView.current = _.clone(_.find(adminView.tableAdmin, function (o) {
                                 return o.id == id;
                             }), true);
                             pwd = data['password'];
-                            userView.fillRolesToDom(roles_array);
-                            userView.fillCurrentObjectToForm();
+                            adminView.fillRolesToDom(roles_array);
+                            adminView.fillCurrentObjectToForm();
                             $("input[id=password]").val(pwd);
                             $("input[id=password_confirmation]").val(pwd);
                             $("input[id=username]").prop("readOnly", true);
                             $("#divControl").find(".titleControl").html("Cập nhật tài khoản");
-                            userView.action = 'update';
-                            userView.show();
-                            userView.clearValidation();
+                            adminView.action = 'update';
+                            adminView.show();
+                            adminView.clearValidation();
                         }
                     });
                 },
                 addNewUser: function () {
-                    userView.renderDateTimePicker();
-                    userView.current = null;
+                    adminView.renderDateTimePicker();
+                    adminView.current = null;
                     $("input[id=username]").prop("readOnly", false);
                     $("#divControl").find(".titleControl").html("Thêm mới tài khoản");
-                    userView.action = 'add';
-                    userView.show();
+                    adminView.action = 'add';
+                    adminView.show();
                 },
                 clearInput: function () {
                     $("input[id='fullName']").val('');
@@ -576,11 +590,11 @@
                     $("input[id='address']").val('');
                     $("input[id='phone']").val('');
                     //clear input checkbox
-                    userView.resetRolesInDom();
+                    adminView.resetRolesInDom();
                 },
                 deleteUser: function () {
-                    userView.action = 'delete';
-                    userView.save();
+                    adminView.action = 'delete';
+                    adminView.save();
                     $("#modalConfirm").modal('hide');
                 },
                 validate: function () {
@@ -610,7 +624,7 @@
                                 minlength: 6,
                                 maxlength: 20
                             },
-                            position_id: "required",
+                            position_id: "required"
 
                         },
                         ignore: ".ignore",
@@ -659,40 +673,14 @@
                             break;
                     }
                 },
-                restoreUser: function () {
-                    sendToServer = {
-                        _token: _token,
-                        _action: "restoreUser",
-                        _object: userView.idRestore
-                    };
-                    $.ajax({
-                        url: url + 'user/modify',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 201) {
-                            userView.tableUser.push(data['TableRestoreUser']);
-                            userView.table.clear().rows.add(userView.tableUser).draw();
-                            userView.showNotification("success", "Đã khôi phục tài khoản thành công!");
-                            $("#modalRestoreUser").modal('hide');
-                            userView.clearInput();
-                            userView.hide();
-                        } else {
-                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                },
                 createUser: function () {
                     $("#modalRestoreUser").modal('hide');
                     $('input[id=username]').val('');
                     $('input[id=username]').focus();
                 },
                 validateUser: function () {
-                    if (userView.action == "update") {
-                        userView.save();
+                    if (adminView.action == "update") {
+                        adminView.save();
                     }
                     else {
                         var sendToServer = {
@@ -706,18 +694,18 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 200) {
-                                userView.save();
+                                adminView.save();
                             } else if (jqXHR.status == 201) {
                                 if (data['dataUser']['active'] == 1) {
-                                    userView.msgUser();
+                                    adminView.msgUser();
                                 } else {
-                                    userView.msgRestoreUser(data['dataUser']['id']);
+                                    adminView.msgRestoreUser(data['dataUser']['id']);
                                 }
                             } else {
-                                userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     }
 
@@ -725,20 +713,20 @@
                 },
                 displayModal: function (type, idModal) {
                     $(idModal).modal(type);
-                    if (userView.action == 'delete' && type == 'hide') {
-                        userView.action = null;
-                        userView.idDelete = null;
+                    if (adminView.action == 'delete' && type == 'hide') {
+                        adminView.action = null;
+                        adminView.idDelete = null;
                     }
 
 
                 },
                 save: function () {
                     var sendToServer = null;
-                    if (userView.action == 'delete') {
+                    if (adminView.action == 'delete') {
                         sendToServer = {
                             _token: _token,
-                            _action: userView.action,
-                            _object: userView.idDelete
+                            _action: adminView.action,
+                            _object: adminView.idDelete
                         };
                         $.ajax({
                             url: url + 'user/modify',
@@ -747,28 +735,31 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                var userOld = _.find(userView.tableUser, function (o) {
-                                    return o.id == sendToServer._object;
-                                });
-                                var indexOfUserOld = _.indexOf(userView.tableUser, userOld);
-                                userView.tableUser.splice(indexOfUserOld, 1);
-                                userView.showNotification("success", "Xóa thành công!");
-                                userView.displayModal("hide", "#modal-confirmDelete");
+                                var deleteUser = adminView.idDelete;
+                                element = $("div").attr('data-id', deleteUser);
+                                adminView.tableAdmin.splice(1, data['TableDeleteUser'][0]);
+                                adminView.table.clear().rows.add(adminView.tableAdmin).draw();
+                                adminView.showNotification("success", "Xóa thành công!");
+                                adminView.displayModal('hide', '#modal-notification');
+
+                                $(element).removeClass(".btn-danger").addClass(".btn-info");
+//                                $(element).find('i').removeClass(".glyphicon-plus").addClass(".glyphicon-remove");
+
 
                             }
-                            userView.table.clear().rows.add(userView.tableUser).draw();
+                            adminView.table.clear().rows.add(adminView.tableAdmin).draw();
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        userView.validate();
+                        adminView.validate();
                         if ($("#formUser").valid()) {
-                            userView.fillFormDataToCurrentObject();
+                            adminView.fillFormDataToCurrentObject();
                             sendToServer = {
                                 _token: _token,
-                                _action: userView.action,
-                                _object: userView.current,
-                                _object2: userView.array_roleId
+                                _action: adminView.action,
+                                _object: adminView.current,
+                                _object2: adminView.array_roleId
                             };
                             $.ajax({
                                 url: url + 'user/modify',
@@ -777,33 +768,33 @@
                                 data: sendToServer
                             }).done(function (data, textStatus, jqXHR) {
                                 if (jqXHR.status == 201) {
-                                    switch (userView.action) {
+                                    switch (adminView.action) {
                                         case 'add':
-                                            userView.tableUser.push(data['tableUserAdd'][0]);
-                                            userView.showNotification("success", "Thêm thành công!");
+                                            adminView.tableAdmin.push(data['tableUserAdd'][0]);
+                                            adminView.showNotification("success", "Thêm thành công!");
                                             break;
                                         case 'update':
-                                            var UpdateUserOld = _.find(userView.tableUser, function (o) {
+                                            var UpdateUserOld = _.find(adminView.tableAdmin, function (o) {
                                                 return o.id == sendToServer._object.id;
                                             });
-                                            var indexOfUpdateUserOld = _.indexOf(userView.tableUser, UpdateUserOld);
-                                            userView.tableUser.splice(indexOfUpdateUserOld, 1, data['tableUserUpdate'][0]);
-                                            userView.tableSubRow = data['subRoles'][0];
-                                            userView.showNotification("success", "Cập nhật thành công!");
-                                            userView.hide();
+                                            var indexOfUpdateUserOld = _.indexOf(adminView.tableAdmin, UpdateUserOld);
+                                            adminView.tableAdmin.splice(indexOfUpdateUserOld, 1, data['tableAdmin'][0]);
+                                            adminView.tableSubRow = data['subRoles'][0];
+                                            adminView.showNotification("success", "Cập nhật thành công!");
+                                            adminView.hide();
                                             break;
                                         default:
                                             break;
 
                                     }
-                                    userView.table.clear().rows.add(userView.tableUser).draw();
-                                    userView.clearInput();
+                                    adminView.table.clear().rows.add(adminView.tableAdmin).draw();
+                                    adminView.clearInput();
                                 } else {
-                                    userView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    adminView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                 }
 
                             }).fail(function (jqXHR, textStatus, errorThrown) {
-                                userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                             });
                         } else {
                             $("form#formUser").find("label[class=error]").css("color", "red");
@@ -821,15 +812,68 @@
                             $(this).prop('checked', true);
                         }
                     });
+                },
+                restoreUser: function (idRestore) {
+                    sendToServer = {
+                        _token: _token,
+                        _action: "restoreUser",
+                        _object: idRestore
+                    };
+                    $.ajax({
+                        url: url + 'user/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+//                            var restoreUserOld = _.find(adminView.tableAdmin, function (o) {
+//                                return o.id;
+//                            });
+//                            var indexOfRestoreUserOld = _.indexOf(adminView.tableAdmin, restoreUserOld);
+                            adminView.tableAdmin.splice(1, data['TableRestoreUser'][0]);
+                            adminView.table.clear().rows.add(adminView.tableAdmin).draw();
+                            adminView.showNotification("success", "Đã khôi phục tài khoản thành công!");
+                            adminView.clearInput();
+                            adminView.hide();
+                            adminView.displayModal('hide', '#modal-notification');
+//                            element = $("div").attr('data-id',idRestore);
+//                            console.log(element);
+//                            $(element).removeClass(".btn-info").addClass(".btn-danger");
+//                            $(element).find('i').removeClass(".glyphicon-plus").addClass(".glyphicon-remove");
+                        } else {
+                            adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                msgRestoreUser: function (id, element) {
+                    if (id) {
+                        adminView.restoreUserConfirm(id, element);
+                    }
+                },
+                restoreUserConfirm: function (user_id) {
+                    $("#modal-notification").find(".modal-title").html("Bạn muốn khôi phục tài khoản này?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="adminView.restoreUser(' + user_id + ')">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="adminView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    adminView.displayModal('show', '#modal-notification');
                 }
 
             };
-            userView.loadData();
+            adminView.loadData();
+        } else {
+            adminView.loadData();
         }
-        else {
-            userView.loadData();
-        }
+
 
     });
 </script>
-

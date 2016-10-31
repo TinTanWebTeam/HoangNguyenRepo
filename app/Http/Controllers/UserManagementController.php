@@ -25,27 +25,38 @@ class UserManagementController extends Controller
                 ->select('roles.*')
                 ->get();
             $positions = Position::where('active', 1)->get();
+            if (\Auth::user()->id == 1) {
+                return view('subviews.User.Admin', ['roles' => $roles, 'positions' => $positions]);
+            }
             return view('subviews.User.User', ['roles' => $roles, 'positions' => $positions]);
+
         } catch (\Exception $ex) {
             return $ex;
         }
-
     }
+
 
     public function getDataUser()
     {
         try {
-            $position = Position::where('active',1)->get();
+            $position = Position::where('active', 1)->get();
+            $userOfAdmin = DB::table('users')
+                ->join('positions', 'users.position_id', '=', 'positions.id')
+                ->select('users.*', 'positions.name as positions_name')
+                ->orderBy('users.id', 'DESC')
+                ->get();
             $users = DB::table('users')
                 ->where('users.active', 1)
-                ->join('positions','users.position_id', '=', 'positions.id')
+                ->where('users.id','!=',\Auth::user()->id)
+                ->join('positions', 'users.position_id', '=', 'positions.id')
                 ->select('users.*', 'positions.name as positions_name')
-                ->orderBy('users.id','DESC')
+                ->orderBy('users.id', 'DESC')
                 ->get();
             $response = [
                 'msg'           => 'Get data User success',
                 'tableUser'     => $users,
-                'tablePosition' => $position
+                'tablePosition' => $position,
+                'tableUserOfAdmin' =>$userOfAdmin
             ];
             return response()->json($response, 200);
         } catch (Exception $ex) {
@@ -61,14 +72,14 @@ class UserManagementController extends Controller
             ->first();
         if ($user == null) {
             $response = [
-                'msg' => "User khong ton tai",
-                'dataUser' =>$user
+                'msg'      => "User khong ton tai",
+                'dataUser' => $user
             ];
             return response()->json($response, 200);
         }
         $response = [
-            'msg' => "User đa ton tai",
-            'dataUser' =>$user
+            'msg'      => "User đa ton tai",
+            'dataUser' => $user
         ];
         return response()->json($response, 201);
 
@@ -115,7 +126,7 @@ class UserManagementController extends Controller
         $position_id = null;
         $action = $request->get('_action');
 
-        if ($action != 'delete' && $action != 'restoreUser' ) {
+        if ($action != 'delete' && $action != 'restoreUser') {
             $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
             if ($validateUser->fails()) {
                 return $validateUser->errors();
@@ -166,7 +177,7 @@ class UserManagementController extends Controller
                         ->where('users.id', $userNew->id)
                         ->join('positions', 'users.position_id', '=', 'positions.id')
                         ->select('users.*', 'positions.name as positions_name')
-                        ->orderBy('users.id','DESC')
+                        ->orderBy('users.id', 'DESC')
                         ->get();
                     $response = [
                         'msg'          => 'Created user',
@@ -216,7 +227,7 @@ class UserManagementController extends Controller
                         ->join('positions', 'users.position_id', '=', 'positions.id')
                         ->where('users.id', $userUpdate->id)
                         ->select('users.*', 'positions.name as positions_name')
-                        ->orderBy('users.id','DESC')
+                        ->orderBy('users.id', 'DESC')
                         ->get();
                     $response = [
                         'msg'             => 'Updated user',
@@ -232,14 +243,21 @@ class UserManagementController extends Controller
             case "delete":
                 $userDelete = User::findOrFail($request->get('_object'));
                 $userDelete->active = 0;
-                if ($userDelete->update()) {
-                    $response = [
-                        'msg' => 'Deleted user'
-                    ];
-                    return response()->json($response, 201);
+                if (!$userDelete->update()) {
+                    return response()->json(['msg' => 'Restore failed'], 404);
                 }
-                return response()->json(['msg' => 'Deletion failed'], 404);
+                $deleteUser = \DB::table('users')
+                    ->join('positions', 'users.position_id', '=', 'positions.id')
+                    ->select('users.*', 'positions.name as positions_name')
+                    ->where('users.id', $userDelete->id)
+                    ->first();
+                $response = [
+                    'msg'              => 'Restore User',
+                    'TableDeleteUser' => $deleteUser
+                ];
+                return response()->json($response, 201);
                 break;
+
             case "restoreUser":
                 $userRestore = User::findOrFail($request->get('_object'));
                 $userRestore->active = 1;
@@ -253,8 +271,8 @@ class UserManagementController extends Controller
                     ->first();
 
                 $response = [
-                    'msg' => 'Restore User',
-                    'TableRestoreUser' =>$restore
+                    'msg'              => 'Restore User',
+                    'TableRestoreUser' => $restore
                 ];
                 return response()->json($response, 201);
                 break;
@@ -282,24 +300,25 @@ class UserManagementController extends Controller
             ->first();
         if ($position == null) {
             $response = [
-                'msg' => "Position khong ton tai",
-                'dataPosition' =>$position
+                'msg'          => "Position khong ton tai",
+                'dataPosition' => $position
             ];
             return response()->json($response, 200);
         }
         $response = [
-            'msg' => "Position đa ton tai",
-            'dataPosition' =>$position
+            'msg'          => "Position đa ton tai",
+            'dataPosition' => $position
         ];
         return response()->json($response, 201);
 
     }
+
     public function postModifyPosition(Request $request)
     {
         $name = null;
         $description = null;
         $action = $request->get('_action');
-        if ($action != 'delete' && $action != 'restorePosition' ) {
+        if ($action != 'delete' && $action != 'restorePosition') {
             $validateResult = ValidateController::ValidatePosition($request->get('_object'));
             if ($validateResult->fails()) {
                 return $validateResult->errors();
@@ -321,10 +340,10 @@ class UserManagementController extends Controller
                         ->where('positions.active', 1)
                         ->where('positions.id', $positionNew->id)
                         ->select('positions.*')
-                        ->orderBy('positions.id','DESC')
+                        ->orderBy('positions.id', 'DESC')
                         ->get();
                     $response = [
-                        'msg'          => 'Created Position',
+                        'msg'              => 'Created Position',
                         'tablePositionAdd' => $positionNew,
                     ];
                     return response()->json($response, 201);
@@ -345,10 +364,10 @@ class UserManagementController extends Controller
                         ->where('positions.active', 1)
                         ->where('positions.id', $positionUpdate->id)
                         ->select('positions.*')
-                        ->orderBy('positions.id','DESC')
+                        ->orderBy('positions.id', 'DESC')
                         ->get();
                     $response = [
-                        'msg'             => 'Updated Position',
+                        'msg'                 => 'Updated Position',
                         'tablePositionUpdate' => $positionUpdate,
                     ];
                     return response()->json($response, 201);
@@ -373,8 +392,8 @@ class UserManagementController extends Controller
                 $positionRestore->active = 1;
                 if ($positionRestore->update()) {
                     $response = [
-                        'msg' => 'Restore Position',
-                        'TableRestorePosition' =>$positionRestore
+                        'msg'                  => 'Restore Position',
+                        'TableRestorePosition' => $positionRestore
                     ];
                     return response()->json($response, 201);
                 }
