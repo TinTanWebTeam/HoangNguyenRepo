@@ -35,7 +35,7 @@
                 <div class="modal-content">
                     <div class="modal-body"><h5 id="modalContent"></h5></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
+                        <button id="id" type="button" class="btn btn-primary marginRight" name="modalAgree"
                                 onclick="userView.deleteUser()">Ðồng ý
                         </button>
                         <button type="button" class="btn default" name="modalClose"
@@ -286,7 +286,8 @@
                                             onclick="userView.validateUser()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="userView.cancel()">Nhập lại</button>
+                                    <button type="button" class="btn default" onclick="userView.cancel()">Nhập lại
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -408,13 +409,36 @@
                     $('#birthday').datepicker("setDate", new Date());
                 },
                 msgDelete: function (id) {
-                    if (id) {
+                    var userId = '{{ Auth::user()->id }}';
+                    if (userId == id) {
+                        $("div#modalConfirm").modal("show");
+                        $("h5#modalContent").empty().append("Tài khoản đang đăng nhập không được xóa.");
+                        $("button[id=id]").hide();
+                    }else {
                         userView.idDelete = id;
                         $("div#modalConfirm").modal("show");
                         $("h5#modalContent").empty().append("Bạn có muốn xóa tài khoản này ?");
                         $("button[name=modalAgree]").show();
-
                     }
+//                        userView.idDelete = id;
+//                        $("div#modalConfirm").modal("show");
+//                        $("h5#modalContent").empty().append("Tài khoan đang đăng nhập không được xóa.");
+////                        $("button[name=modalAgree]").show();
+//                    }else {
+//                        userView.idDelete = id;
+//                        $("div#modalConfirm").modal("show");
+//                        $("h5#modalContent").empty().append("Bạn có muốn xóa tài khoản này ?");
+//                        $("button[name=modalAgree]").show();
+//                    }
+
+//                    if (id){
+//                        userView.idDelete = id;
+//                        $("div#modalConfirm").modal("show");
+//                        $("h5#modalContent").empty().append("Bạn có muốn xóa tài khoản này ?");
+//                        $("button[name=modalAgree]").show();
+//                    }
+
+
                 },
                 msgRestoreUser: function (id) {
                     if (id) {
@@ -660,7 +684,7 @@
                     }
                 },
 
-                restoreUser:function () {
+                restoreUser: function () {
                     sendToServer = {
                         _token: _token,
                         _action: "restoreUser",
@@ -692,7 +716,7 @@
                     $('input[id=username]').focus();
                 },
                 validateUser: function () {
-                    if(userView.action== "update"){
+                    if (userView.action == "update") {
                         userView.save();
                     }
                     else {
@@ -829,5 +853,7 @@
         } else {
             userView.loadData();
         }
+
+
     });
 </script>
