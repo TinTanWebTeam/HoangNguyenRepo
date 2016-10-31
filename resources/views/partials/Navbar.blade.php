@@ -42,7 +42,7 @@
                         @if($key != 'Admin')
                             <li>
                                 <a href="javascript:;" role-name="{{$key}}" data-url="{{ $array_url[$key] }}"
-                                   onclick="getContentByUrl(this)">
+                                   onclick="getContentByUrl(this)" class="gray bold">
                                     <div class="row">
                                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                             <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="22" height="22">
@@ -57,7 +57,7 @@
                         @endif
                     @else
                         <li>
-                            <a href="#" role-name="{{$key}}" data-url="{{ $array_url[$key] }}">
+                            <a href="#" role-name="{{$key}}" data-url="{{ $array_url[$key] }}" class="gray bold">
                                 <div class="row">
                                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                         <img src="{{ URL::to('/src/images/navbar/' . $array_icon[$key]) }}" alt="" width="22" height="22">
@@ -74,7 +74,7 @@
                                     <li>
                                         <a href="javascript:;" role-name="{{ $value2 }}"
                                            data-url="{{ $array_url[$value2] }}"
-                                           onclick="getContentByUrl(this)"><i>{{ \App\Role::where('name', $value2)->pluck('description')[0] }}</i></a>
+                                           onclick="getContentByUrl(this)" class="gray">{{ \App\Role::where('name', $value2)->pluck('description')[0] }}</a>
                                     </li>
                                 @endforeach
                             </ul>

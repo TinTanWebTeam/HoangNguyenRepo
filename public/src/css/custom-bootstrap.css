@@ -83,5 +83,16 @@ tr:hover {
     text-transform: uppercase;
 }
 
+.font-style{
+    color: gray;
+    font-weight: bold;
+}
+.gray{
+    color: gray;
+}
+.bold {
+    font-weight: bold;
+}
+
 
 
