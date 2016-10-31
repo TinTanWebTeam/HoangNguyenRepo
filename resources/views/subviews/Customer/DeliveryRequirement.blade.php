@@ -1133,7 +1133,7 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div title="Chỉnh sửa" class="btn btn-success btn-circle marginRight" onclick="transportView.editTransport(' + full.id + ')">';
+                                    tr += '<div title="Chỉnh sửa" class="btn btn-success btn-circle" onclick="transportView.editTransport(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '<div title="Xóa" class="btn btn-danger btn-circle" onclick="transportView.deleteTransport(' + full.id + ')">';

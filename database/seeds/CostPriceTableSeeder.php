@@ -11,17 +11,20 @@ class CostPriceTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\CostPrice::create([
-            'name' => 'Khác'
-        ]);
-        \App\CostPrice::create([
-            'name' => 'Nhiên liệu'
-        ]);
-        \App\CostPrice::create([
-            'name' => 'Thay nhớt'
-        ]);
-        \App\CostPrice::create([
-            'name' => 'Đậu bãi'
-        ]);
+        $array_name = [
+            'Khác',
+            'Nhiên liệu',
+            'Thay nhớt',
+            'Đậu bãi',
+            'Bốc xếp',
+            'Neo xe',
+            'Công an'
+        ];
+
+        foreach($array_name as $item){
+            \App\CostPrice::create([
+                'name' => $item
+            ]);
+        }
     }
 }
