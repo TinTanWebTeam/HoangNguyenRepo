@@ -93,10 +93,7 @@
                                         <label for="garages_name"><b>Nhà xe</b></label>
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
-                                                <input type="text" class="form-control"
-                                                       id="garages_name" data-id="" readonly
-                                                       name="garages_name"
-                                                       placeholder="Nhấp đôi để chọn" ondblclick="vehicleInsideView.loadListGarage()">
+                                                <input type="text" class="form-control" id="garages_name" data-garageId="" name="garages_name">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
@@ -204,41 +201,6 @@
     </div>
 </div>
 <!-- end Modal confirm delete Vehicle -->
-
-<!-- Modal list garages -->
-<div class="row">
-    <div id="modal-garage" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Danh sách nhà xe</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="table-garage">
-                            <thead>
-                            <tr>
-                                <th>Mã nhà xe</th>
-                                <th>Tên nhà xe</th>
-                                <th>Người liên hệ</th>
-                                <th>Địa chỉ</th>
-                                <th>Điện thoại</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal list garages -->
 
 <!-- Modal add garage -->
 <div class="row">
@@ -366,9 +328,13 @@
                 tableGarage: null,
                 tableVehicleType: null,
                 tableVehicle: null,
+
+                dataGarage: null,
+
                 current: null,
                 action: null,
                 idDelete: null,
+                tagsGarageName: [],
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -450,6 +416,26 @@
                         theme:"dark"
                     });
                 },
+                renderAutoCompleteSearch: function () {
+                    $("#garages_name").autocomplete({
+                        source: vehicleInsideView.tagsGarageName
+                    });
+                },
+                renderEventFocusOut: function () {
+                    $("#garages_name").focusout(function () {
+                        var garageName = this.value;
+                        if (garageName == '') return;
+                        var garage = _.find(vehicleInsideView.dataGarage, function (o) {
+                            return o.name == garageName;
+                        });
+                        if (typeof garage === "undefined") {
+                            vehicleInsideView.displayModal("show", "#modal-addGarage");
+                            $("input[id=Garage_name]").val(garageName);
+                        } else {
+                            $("#garages_name").attr("data-garageId", garage.id);
+                        }
+                    });
+                },
 
                 loadData: function () {
                     $.ajax({
@@ -470,6 +456,8 @@
                         vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
 
+                    vehicleInsideView.loadListGarage();
+                    vehicleInsideView.renderEventFocusOut();
                     vehicleInsideView.renderEventClickTableModal();
                     vehicleInsideView.renderScrollbar();
                 },
@@ -502,27 +490,16 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if(jqXHR.status == 200){
-                            if (vehicleInsideView.tableGarage != null) {
-                                vehicleInsideView.tableGarage.destroy();
-                            }
-                            vehicleInsideView.tableGarage = $('#table-garage').DataTable({
-                                language: languageOptions,
-                                data: data['garages'],
-                                columns: [
-                                    {data: 'id'},
-                                    {data: 'name'},
-                                    {data: 'contactor'},
-                                    {data: 'address'},
-                                    {data: 'phone'}
-                                ]
-                            })
+                            vehicleInsideView.dataGarage = data['garages'];
+                            vehicleInsideView.tagsGarageName = _.map(vehicleInsideView.dataGarage, 'name');
+                            vehicleInsideView.tagsGarageName = _.union(vehicleInsideView.tagsGarageName);
+                            vehicleInsideView.renderAutoCompleteSearch();
                         } else {
                             garageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         garageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-                    vehicleInsideView.displayModal("show", "#modal-garage")
                 },
 
                 fillDataToDatatable: function (data) {
@@ -795,7 +772,7 @@
                                 vehicleInsideView.clearInput();
                                 //
                                 $("input[id='garages_name']").val(data["garage"]["name"]);
-                                $("#garages_name").attr('data-id', data["garage"]["id"]);
+                                $("#garages_name").attr('data-garageId', data["garage"]["id"]);
                             } else {
                                 vehicleInsideView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
