@@ -38,7 +38,8 @@
                         <li class="active">Xe</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="vehicleInsideView.addVehicle();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="vehicleInsideView.addVehicle();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -86,79 +87,97 @@
             <div class="panel-body">
                 <form role="form" id="frmControl">
                     <div class="form-body">
-                        <div class="col-sm-12">
-                            <div class="row ">
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="garages_name"><b>Nhà xe</b></label>
-                                        <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
-                                                <input type="text" class="form-control" id="garages_name" data-garageId="" name="garages_name">
-                                            </div>
-                                            <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
-                                                     onclick="vehicleInsideView.displayModal('show', '#modal-addGarage')">
-                                                    <i class="glyphicon glyphicon-plus"></i>
-                                                </div>
-                                            </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group form-md-line-input">
+                                    <label for="garages_name"><b>Nhà xe</b></label>
+                                    <div class="row">
+                                        <div class="col-sm-10 col-xs-10">
+                                            <input type="text" class="form-control" id="garages_name" data-garageId=""
+                                                   name="garages_name">
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="vehicleType_id"><b>Loại xe</b></label>
-                                        <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
-                                                <select class="form-control" id="vehicleTypes_name" name="vehicleTypes_name">
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
-                                                     onclick="vehicleInsideView.displayModal('show', '#modal-addVehicleType')">
-                                                    <i class="glyphicon glyphicon-plus"></i>
-                                                </div>
+                                        <div class="col-sm-2 col-xs-2">
+                                            <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
+                                                 onclick="vehicleInsideView.displayModal('show', '#modal-addGarage')">
+                                                <i class="glyphicon glyphicon-plus"></i>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row ">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="areaCode"><b>Mã vùng</b></label>
-                                        <input type="text" class="form-control uppercase" id="areaCode" name="areaCode">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="vehicleNumber"><b>Số xe</b></label>
-                                        <input type="number" class="form-control" id="vehicleNumber" name="vehicleNumber">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="size"><b>Kích thước</b></label>
-                                        <input type="number" class="form-control" id="size" name="size">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="weight"><b>Trọng tải</b></label>
-                                        <input type="number" class="form-control" id="weight" name="weight">
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group form-md-line-input">
+                                    <label for="vehicleType_id"><b>Loại xe</b></label>
+                                    <div class="row">
+                                        <div class="col-sm-10 col-xs-10">
+                                            <select class="form-control" id="vehicleTypes_name"
+                                                    name="vehicleTypes_name">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2 col-xs-2">
+                                            <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
+                                                 onclick="vehicleInsideView.displayModal('show', '#modal-addVehicleType')">
+                                                <i class="glyphicon glyphicon-plus"></i>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12">
-                            <div class="form-actions noborder">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight"
-                                            onclick="vehicleInsideView.save()">
-                                        Hoàn tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="vehicleInsideView.clearInput()">Nhập lại</button>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="areaCode"><b>Mã vùng</b></label>
+                                    <input type="text" class="form-control uppercase" id="areaCode" name="areaCode">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="vehicleNumber"><b>Số xe</b></label>
+                                    <input type="number" class="form-control" id="vehicleNumber" name="vehicleNumber">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="owner"><b>Chủ xe</b></label>
+                                    <input type="text" class="form-control" id="owner" name="owner">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group form-md-line-input ">
+                                    <label for="size"><b>Kích thước</b></label>
+                                    <input type="number" class="form-control" id="size" name="size">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group form-md-line-input">
+                                    <label for="weight"><b>Trọng tải</b></label>
+                                    <input type="number" class="form-control" id="weight" name="weight">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="driver"><b>Tài xế</b></label>
+                                    <input type="text" class="form-control" id="driver" name="driver">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="vehicleInsideView.save()">
+                                            Hoàn tất
+                                        </button>
+                                        <button type="button" class="btn default"
+                                                onclick="vehicleInsideView.clearInput()">Nhập lại
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -255,8 +274,12 @@
                             <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
-                                        <button class="btn btn-primary marginRight" onclick="vehicleInsideView.saveGarage()">Hoàn tất</button>
-                                        <button class="btn default" onclick="vehicleInsideView.clearInputFormGarage()">Nhập lại</button>
+                                        <button class="btn btn-primary marginRight"
+                                                onclick="vehicleInsideView.saveGarage()">Hoàn tất
+                                        </button>
+                                        <button class="btn default" onclick="vehicleInsideView.clearInputFormGarage()">
+                                            Nhập lại
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -306,8 +329,12 @@
                             <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
-                                        <button class="btn btn-primary marginRight" onclick="vehicleInsideView.saveVehicleType()">Hoàn tất</button>
-                                        <button class="btn default" onclick="vehicleInsideView.clearInputFormVehicleType()">Nhập lại</button>
+                                        <button class="btn btn-primary marginRight"
+                                                onclick="vehicleInsideView.saveVehicleType()">Hoàn tất
+                                        </button>
+                                        <button class="btn default"
+                                                onclick="vehicleInsideView.clearInputFormVehicleType()">Nhập lại
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -340,16 +367,16 @@
                     $('#divControl').fadeIn(300);
                 },
                 hideControl: function () {
-                    $('#divControl').fadeOut(300, function(){
+                    $('#divControl').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
 
                     vehicleInsideView.clearValidation("#frmControl");
                     vehicleInsideView.clearInput();
                 },
-                displayModal: function(type, idModal){
+                displayModal: function (type, idModal) {
                     $(idModal).modal(type);
-                    if(vehicleInsideView.action == 'delete' && type == 'hide'){
+                    if (vehicleInsideView.action == 'delete' && type == 'hide') {
                         vehicleInsideView.action = null;
                         vehicleInsideView.idDelete = null;
                     }
@@ -357,8 +384,8 @@
                     vehicleInsideView.clearValidation("#frmGarage");
                     vehicleInsideView.clearValidation("#frmVehicleType");
                 },
-                showNotification: function (type ,msg) {
-                    switch (type){
+                showNotification: function (type, msg) {
+                    switch (type) {
                         case "info":
                             toastr.info(msg);
                             break;
@@ -404,16 +431,16 @@
                     $("textarea[id='description']").val('');
                 },
 
-                renderEventClickTableModal: function() {
+                renderEventClickTableModal: function () {
                     $("#table-garage").find("tbody").on('click', 'tr', function () {
                         $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
                         $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
                         vehicleInsideView.displayModal("hide", "#modal-garage");
                     });
                 },
-                renderScrollbar: function(){
+                renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme:"dark"
+                        theme: "dark"
                     });
                 },
                 renderAutoCompleteSearch: function () {
@@ -443,7 +470,7 @@
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
-                        if(jqXHR.status == 200){
+                        if (jqXHR.status == 200) {
                             vehicleInsideView.tableVehicle = data['vehicles'];
                             vehicleInsideView.fillDataToDatatable(data['vehicles']);
 
@@ -489,7 +516,7 @@
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
-                        if(jqXHR.status == 200){
+                        if (jqXHR.status == 200) {
                             vehicleInsideView.dataGarage = data['garages'];
                             vehicleInsideView.tagsGarageName = _.map(vehicleInsideView.dataGarage, 'name');
                             vehicleInsideView.tagsGarageName = _.union(vehicleInsideView.tagsGarageName);
@@ -503,7 +530,7 @@
                 },
 
                 fillDataToDatatable: function (data) {
-                    for(var i =0;i< data.length; i++){
+                    for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['areaCode'] + '-' + data[i]['vehicleNumber'];
                     }
 
@@ -651,7 +678,7 @@
 //                    var validator = $(idForm).validate();
 //                    validator.resetForm();
                 },
-                validateGarage: function(){
+                validateGarage: function () {
                     $("#frmGarage").validate({
                         rules: {
                             Garage_name: "required",
@@ -667,7 +694,7 @@
                         }
                     });
                 },
-                validateVehicleType: function(){
+                validateVehicleType: function () {
                     $("#frmVehicleType").validate({
                         rules: {
                             VehicleType_name: "required"
@@ -682,9 +709,9 @@
                     vehicleInsideView.formValidate();
                     if ($("#frmControl").valid()) {
                         if (vehicleInsideView.action != 'delete') {
-                            if($("#garages_name").attr('data-id') == ''){
+                            if ($("#garages_name").attr('data-id') == '') {
                                 vehicleInsideView.showNotification('warning', 'Vui lòng chọn một nhà xe có trong danh sách.');
-                                return ;
+                                return;
                             }
                         }
 
@@ -745,9 +772,9 @@
                         $("form#frmControl").find("label[class=error]").css("color", "red");
                     }
                 },
-                saveGarage: function(){
+                saveGarage: function () {
                     vehicleInsideView.validateGarage();
-                    if($("#frmGarage").valid()){
+                    if ($("#frmGarage").valid()) {
                         var garage = {
                             name: $("input[id='Garage_name']").val(),
                             contactor: $("input[id='contactor']").val(),
@@ -783,9 +810,9 @@
                         $("form#frmGarage").find("label[class=error]").css("color", "red");
                     }
                 },
-                saveVehicleType: function(){
+                saveVehicleType: function () {
                     vehicleInsideView.validateVehicleType();
-                    if($("#frmVehicleType").valid()){
+                    if ($("#frmVehicleType").valid()) {
                         var vehicleType = {
                             name: $("input[id='VehicleType_name']").val(),
                             description: $("textarea[id='description']").val()

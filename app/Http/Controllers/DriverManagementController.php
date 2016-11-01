@@ -9,11 +9,11 @@ use Auth;
 
 use App\Http\Requests;
 
-class DivisiveDriverController extends Controller
+class DriverManagementController extends Controller
 {
-    public function getViewDivisiveDriver()
+    public function getViewDriver()
     {
-        return view('subviews.Vehicle.DivisiveDriver');
+        return view('subviews.Driver.Driver');
     }
     public function getDataDivisiveDriver(){
         $vehicleUser = \DB::table('userVehicles')

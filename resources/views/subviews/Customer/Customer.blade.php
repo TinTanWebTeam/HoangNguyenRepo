@@ -2,17 +2,18 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 20%;
+        top: 15%;
         display: none;
         right: 0;
-        height: 60vh;
+        width: 80%;
+        height: 100%;
     }
 
     div.col-lg-12 {
         height: 40px;
     }
 
-    .marginRight{
+    .marginRight {
         margin-right: 5px;
     }
 
@@ -23,8 +24,9 @@
             height: 80vh;
         }
     }
+
     #divControl .panel-body {
-        height: 454px;
+        height: 488px;
     }
 </style>
 
@@ -41,7 +43,8 @@
                         <li class="active">Khách hàng</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="customerView.addCustomer();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="customerView.addCustomer();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -89,97 +92,232 @@
             </div>
 
             <div class="panel-body">
-                <form role="form" id="frmControl">
-                    <div class="form-body">
-                        <div class="col-sm-12">
-                            <div class="row ">
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="fullName"><b>Họ và tên</b></label>
-                                        <input type="text" class="form-control"
-                                               id="fullName"
-                                               name="fullName"
-                                               autofocus>
+                <div class="row">
+                    <div class="col-md-6">
+                        <form role="form" id="frmControl">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-sm-6 col-xs-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="fullName"><b>Họ và tên</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="fullName"
+                                                   name="fullName"
+                                                   autofocus>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="customerType_id"><b>Loại khách hàng</b></label>
+                                            <div class="row">
+                                                <div class="col-sm-10 col-xs-10">
+                                                    <select name="customerType_id" id="customerType_id" class="form-control">
+
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2 col-xs-2">
+                                                    <div class="btn btn-primary btn-sm btn-circle" title="Thêm loại khách hàng"
+                                                         onclick="customerView.displayModal('show', '#modal-addCustomerType')">
+                                                        <i class="glyphicon glyphicon-plus"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="customerType_id"><b>Loại khách hàng</b></label>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="taxCode"><b>Mã số thuế</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="taxCode"
+                                                   name="taxCode">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="address"><b>Địa chỉ</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="address"
+                                                   name="address">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="phone"><b>Số điện thoại</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="phone"
+                                                   name="phone">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="email"><b>Email</b></label>
+                                            <input type="email" class="form-control"
+                                                   id="email"
+                                                   name="email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
-                                                <select name="customerType_id" id="customerType_id" class="form-control">
-
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-2 col-xs-2">
-                                                <div class="btn btn-primary btn-sm btn-circle" title="Thêm loại khách hàng"
-                                                     onclick="customerView.displayModal('show', '#modal-addCustomerType')">
-                                                    <i class="glyphicon glyphicon-plus"></i>
+                                            <div class="col-md-12">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="percentFuel"><b>Phần trăm nhiên liệu</b></label>
+                                                    <input type="number" id="percentFuel" name="percentFuel"
+                                                           class="form-control">
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="percentPetroleum"><b>Phần trăm nhớt</b></label>
+                                                    <input type="number" id="percentPetroleum" name="percentPetroleum"
+                                                           class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="note"><b>Ghi chú</b></label>
+                                            <textarea class="form-control" id="note" name="note" rows="4" cols="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-actions noborder">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-primary marginRight"
+                                                        onclick="customerView.save()">
+                                                    Hoàn tất
+                                                </button>
+                                                <button type="button" class="btn default" onclick="customerView.clearInput()">
+                                                    Nhập lại
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span class="text text-primary">Nhân viên khách hàng</span>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
+                                        <thead>
+                                        <tr class="active">
+                                            <th>Mã</th>
+                                            <th>Tên</th>
+                                            <th>Chức vụ</th>
+                                            <th>Điện thoại</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <form role="form" id="frmStaffCustomer">
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group form-md-line-input ">
+                                                <label for="fullName"><b>Tên nhân viên</b></label>
+                                                <input type="text" class="form-control"
+                                                       id="fullName"
+                                                       name="fullName">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group form-md-line-input ">
+                                                <label for="fullName"><b>Chức vụ</b></label>
+                                                <input type="text" class="form-control"
+                                                       id="fullName"
+                                                       name="fullName">
                                             </div>
                                         </div>
 
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="taxCode"><b>Mã số thuế</b></label>
-                                        <input type="text" class="form-control"
-                                               id="taxCode"
-                                               name="taxCode">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group form-md-line-input ">
+                                                <label for="fullName"><b>Điện thoại</b></label>
+                                                <input type="text" class="form-control"
+                                                       id="fullName"
+                                                       name="fullName">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="address"><b>Địa chỉ</b></label>
+                                                <input type="text" class="form-control"
+                                                       id="address"
+                                                       name="address">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-xs-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="address"><b>Ngày sinh</b></label>
+                                                <input type="text" class="form-control"
+                                                       id="address"
+                                                       name="address">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group form-md-line-input ">
+                                                <label for="fullName"><b>Email</b></label>
+                                                <input type="text" class="form-control"
+                                                       id="fullName"
+                                                       name="fullName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-xs-12">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="address"><b>Ghi chú</b></label>
+                                                <input type="text" class="form-control"
+                                                       id="address"
+                                                       name="address">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-actions noborder">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-primary marginRight"
+                                                            onclick="customerView.save()">
+                                                        Hoàn tất
+                                                    </button>
+                                                    <button type="button" class="btn default" onclick="customerView.clearInput()">
+                                                        Nhập lại
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="address"><b>Địa chỉ</b></label>
-                                        <input type="text" class="form-control"
-                                               id="address"
-                                               name="address">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="phone"><b>Số điện thoại</b></label>
-                                        <input type="number" class="form-control"
-                                               id="phone"
-                                               name="phone">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group form-md-line-input ">
-                                        <label for="email"><b>Email</b></label>
-                                        <input type="email" class="form-control"
-                                               id="email"
-                                               name="email">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="form-group form-md-line-input">
-                                        <label for="note"><b>Ghi chú</b></label>
-                                        <textarea class="form-control" id="note" name="note" rows="3" cols="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="form-actions noborder">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight"
-                                            onclick="customerView.save()">
-                                        Hoàn tất
-                                    </button>
-                                    <button type="button" class="btn default" onclick="customerView.clearInput()">Nhập lại</button>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
-                </form>
+                </div>
+
             </div>
         </div>
     </div> <!-- end #divControl -->
@@ -259,7 +397,9 @@
                                                 onclick="customerView.saveCustomerType()">
                                             Hoàn tất
                                         </button>
-                                        <button type="button" class="btn default" onclick="customerView.displayModal('hide','#modal-addCustomerType')">Huỷ</button>
+                                        <button type="button" class="btn default"
+                                                onclick="customerView.displayModal('hide','#modal-addCustomerType')">Huỷ
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -287,16 +427,16 @@
                     $('#divControl').fadeIn(300);
                 },
                 hideControl: function () {
-                    $('#divControl').fadeOut(300, function(){
+                    $('#divControl').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
 
                     customerView.clearValidation("#frmControl");
                     customerView.clearInput();
                 },
-                displayModal: function(type, idModal){
+                displayModal: function (type, idModal) {
                     $(idModal).modal(type);
-                    if(customerView.action == 'delete' && type == 'hide'){
+                    if (customerView.action == 'delete' && type == 'hide') {
                         customerView.action = null;
                         customerView.idDelete = null;
                     }
@@ -316,9 +456,9 @@
                     $("textarea[id='description']").val('');
                 },
 
-                renderScrollbar: function(){
+                renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme:"dark"
+                        theme: "dark"
                     });
                 },
 
@@ -328,7 +468,7 @@
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
-                        if(jqXHR.status == 200){
+                        if (jqXHR.status == 200) {
                             customerView.tableCustomer = data['customers'];
                             customerView.fillDataToDatatable(data['customers']);
 
@@ -447,13 +587,13 @@
                 fillFormDataToCurrentObject: function () {
                     if (customerView.action == 'add') {
                         customerView.current = {
-                            fullName : $("input[id='fullName']").val(),
-                            taxCode : $("input[id='taxCode']").val(),
-                            address : $("input[id='address']").val(),
-                            phone : $("input[id='phone']").val(),
-                            email : $("input[id='email']").val(),
-                            note : $("textarea[id='note']").val(),
-                            customerType_id : $('#customerType_id').val()
+                            fullName: $("input[id='fullName']").val(),
+                            taxCode: $("input[id='taxCode']").val(),
+                            address: $("input[id='address']").val(),
+                            phone: $("input[id='phone']").val(),
+                            email: $("input[id='email']").val(),
+                            note: $("textarea[id='note']").val(),
+                            customerType_id: $('#customerType_id').val()
                         };
                     } else if (customerView.action == 'update') {
                         customerView.current.fullName = $("input[id='fullName']").val();
@@ -570,7 +710,7 @@
                         $("form#frmControl").find("label[class=error]").css("color", "red");
                     }
                 },
-                validateCustomerType: function(){
+                validateCustomerType: function () {
                     $("#frmCustomerType").validate({
                         rules: {
                             CustomerType_name: "required"
@@ -580,9 +720,9 @@
                         }
                     });
                 },
-                saveCustomerType: function(){
+                saveCustomerType: function () {
                     customerView.validateCustomerType();
-                    if($("#frmCustomerType").valid()){
+                    if ($("#frmCustomerType").valid()) {
                         var customerType = {
                             name: $("input[id='CustomerType_name']").val(),
                             description: $("textarea[id='description']").val()

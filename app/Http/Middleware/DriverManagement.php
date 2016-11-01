@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Role;
-class DivisiveDriver
+class DriverManagement
 {
     /**
      * Handle an incoming request.
@@ -19,7 +19,7 @@ class DivisiveDriver
             return $next($request);
         } else {
             $array_roleid = \App\SubRole::where('user_id', \Auth::user()->id)->pluck('role_id');
-            $roleId = Role::where('name', 'DivisiveDriver')
+            $roleId = Role::where('name', 'DriverManagement')
                 ->select('roles.id')
                 ->first();
             if ($array_roleid->contains($roleId->id)) {

@@ -23,7 +23,7 @@ class HomeController extends Controller
             'DebtManagement'        => 'debt-management',
             'CostManagement'        => 'cost-management',
             'PostageManagement'     => 'postage-management',
-            'DivisiveDriver'        => 'divisive-driver',
+            'DriverManagement'      => 'driver-management',
             'Report'                => 'report',
             'Customer'              => 'customer',
             'DeliveryRequirement'   => 'delivery-requirement',
@@ -47,7 +47,7 @@ class HomeController extends Controller
             'DebtManagement'      => "Debt.png",
             'CostManagement'      => "Cost.png",
             'PostageManagement'   => "Postage.png",
-            'DivisiveDriver'      => "DivisiveDriver.png",
+            'DriverManagement'    => "Driver.png",
             'Report'              => "Report.png",
         ];
 
@@ -59,7 +59,7 @@ class HomeController extends Controller
             'DebtManagement'      => ['DebtCustomer', 'DebtVehicleOutside'],
             'CostManagement'      => ['FuelCost', 'PetroleumCost', 'ParkingCost', 'OtherCost'],
             'PostageManagement'   => [],
-            'DivisiveDriver'      => [],
+            'DriverManagement'    => [],
             'Report'              => ['RevenueReport', 'HistoryDeliveryReport'],
         ];
 

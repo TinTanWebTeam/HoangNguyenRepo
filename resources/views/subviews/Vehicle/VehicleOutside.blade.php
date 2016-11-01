@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 48%;
+        top: 38%;
         display: none;
         right: 0;
         height: 60vh;
@@ -22,7 +22,7 @@
     }
 
     #divControl .panel-body {
-        height: 260px;
+        height: 341px;
     }
 </style>
 
@@ -96,14 +96,23 @@
                             </div>
                             <div class="col-sm-6 col-xs-6">
                                 <div class="form-group form-md-line-input">
+                                    <label for="garageType_id"><b>Loại nhà xe</b></label>
+                                    <select name="garageType_id" id="garageType_id" class="form-control">
+                                        <option value="1">Nhà xe trong</option>
+                                        <option value="2">Nhà xe ngoài</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group form-md-line-input">
                                     <label for="contactor"><b>Người liên hệ</b></label>
                                     <input type="text" class="form-control"
                                            id="contactor"
                                            name="contactor">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6 col-sm-6">
                                 <div class="form-group form-md-line-input ">
                                     <label for="phone"><b>Số điện thoại</b></label>
@@ -112,12 +121,14 @@
                                            name="phone">
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="address"><b>Địa chỉ</b></label>
                                     <textarea type="text" class="form-control"
-                                           id="address"
-                                           name="address" rows="1"></textarea>
+                                              id="address"
+                                              name="address" rows="2"></textarea>
                                 </div>
                             </div>
                         </div>

@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 55%;
+        top: 25%;
         display: none;
         right: 0;
         width: 60%;
@@ -73,55 +73,99 @@
                 </div>
             </div>
             <div class="panel-body">
-                <form role="form" id="frmControl">
-                    <div class="form-body">
-                        <div class="row">
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="customer_id"><b>Khách hàng</b></label>
-                                    <input type="text" class="form-control cursor-copy" id="customer_id" name="customer_id"
-                                           readonly placeholder="Nhấp đôi để chọn khách hàng"
-                                           data-customerId="">
-                                    <!--ondblclick="postageView.loadListCustomer()"-->
+                <div class="row">
+                    <div class="col-md-6">
+                        <form role="form" id="frmControl">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="customer_id"><b>Khách hàng</b></label>
+                                            <input type="text" class="form-control cursor-copy" id="customer_id"
+                                                   name="customer_id"
+                                                   readonly placeholder="Nhấp đôi để chọn khách hàng"
+                                                   data-customerId="">
+                                            <!--ondblclick="postageView.loadListCustomer()"-->
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="month"><b>Tháng</b></label>
-                                    <select class="form-control" id="month" name="month" disabled>
-                                        @for($i = 1; $i < 13; $i++)
-                                            <option value="{{$i}}">{{$i}}</option>
-                                        @endfor
-                                    </select>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="receivePlace"><b>Nơi nhận</b></label>
+                                            <input type="text" class="form-control" id="receivePlace" name="receivePlace">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="deliveryPlace"><b>Nơi giao</b></label>
+                                            <input type="text" class="form-control" name="deliveryPlace" id="deliveryPlace">
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="postage"><b>Cước phí</b></label>
-                                    <input type="number" class="form-control" id="postage" name="postage">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="month"><b>Tháng</b></label>
+                                            <select class="form-control" id="month" name="month" disabled>
+                                                @for($i = 1; $i < 13; $i++)
+                                                    <option value="{{$i}}">{{$i}}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="postage"><b>Cước phí</b></label>
+                                            <input type="number" class="form-control" id="postage" name="postage">
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 ">
-                                <div class="form-group form-md-line-input">
-                                    <label for="note"><b>Ghi chú</b></label>
-                                    <input type="text" class="form-control" name="note" id="note">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="note"><b>Ghi chú</b></label>
+                                            <textarea class="form-control" name="note" id="note" rows="2"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-actions">
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight" onclick="postageView.save()">Hoàn tất</button>
-                                        <button type="button" class="btn default" onclick="postageView.retype()">Nhập lại</button>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-actions">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-primary marginRight"
+                                                        onclick="postageView.save()">Hoàn tất
+                                                </button>
+                                                <button type="button" class="btn default"
+                                                        onclick="postageView.retype()">Nhập lại
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text text-primary">Cước phí khách hàng</span>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
+                                <thead>
+                                <tr class="active">
+                                    <th>Mã</th>
+                                    <th>Cước phí</th>
+                                    <th>Nơi nhận</th>
+                                    <th>Nơi giao</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </form>
+                </div>
+
             </div>
         </div>
     </div>
@@ -242,8 +286,8 @@
                     $("input[id='postage']").val('');
                     $("input[id='note']").val('');
                 },
-                
-                renderEventClickTableModal: function() {
+
+                renderEventClickTableModal: function () {
                     $("#table-customer").find("tbody").on('click', 'tr', function () {
                         $('#customer_id').attr('data-customerId', $(this).find('td:first')[0].innerText);
                         $('input[id=customer_id]').val($(this).find('td:eq(2)')[0].innerText);
@@ -268,7 +312,7 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-                    
+
                     postageView.renderEventClickTableModal();
                 },
                 loadListCustomer: function () {

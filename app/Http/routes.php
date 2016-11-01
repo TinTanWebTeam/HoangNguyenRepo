@@ -142,15 +142,15 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::post('/postage/modify', 'PostageManagementController@postModifyPostage');
     });
-    Route::group(['middleware' => 'DivisiveDriver'], function () {
+    Route::group(['middleware' => 'DriverManagement'], function () {
         //get View
-        Route::get('/divisive-driver', 'DivisiveDriverController@getViewDivisiveDriver');
+        Route::get('/driver-management', 'DriverManagementController@getViewDriver');
         //get Data
-        Route::get('/divisive-driver/vehicle-user', 'DivisiveDriverController@getDataDivisiveDriver');
-        Route::get('/divisive-driver/drivers', 'DivisiveDriverController@getAllDriver');
-        //post Modify
-        Route::post('/divisive-driver/modify', 'DivisiveDriverController@postModifyDivisiveDriver');
-        Route::post('/driver/modify', 'DivisiveDriverController@postModifyDriver');
+//        Route::get('/divisive-driver/vehicle-user', 'DivisiveDriverController@getDataDivisiveDriver');
+//        Route::get('/divisive-driver/drivers', 'DivisiveDriverController@getAllDriver');
+//        //post Modify
+//        Route::post('/divisive-driver/modify', 'DivisiveDriverController@postModifyDivisiveDriver');
+//        Route::post('/driver/modify', 'DivisiveDriverController@postModifyDriver');
     });
     Route::group(['middleware' => 'Report'], function () {
         Route::get('/revenue-report', 'ReportController@getViewRevenueReport');
