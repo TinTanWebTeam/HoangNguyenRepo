@@ -28,6 +28,6 @@ class CreateVoucherAttachFilesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('voucher_attach_files');
+        Schema::drop('voucherAttachFiles');
     }
 }

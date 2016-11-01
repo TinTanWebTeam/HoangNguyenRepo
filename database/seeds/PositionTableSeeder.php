@@ -13,24 +13,17 @@ class PositionTableSeeder extends Seeder
      */
     public function run()
     {
-        Position::create([
-            'name' => 'Tài xế',
-            'description' => '',
-        ]);
+        $array_name = [
+            'Kế toán',
+            'Kiểm kho',
+            'Thu ngân'
+        ];
 
-        Position::create([
-            'name' => 'Kế toán',
-            'description' => '',
-        ]);
-
-        Position::create([
-            'name' => 'Kiểm kho',
-            'description' => '',
-        ]);
-
-        Position::create([
-            'name' => 'Thu ngân',
-            'description' => '',
-        ]);
+        foreach($array_name as $item){
+            Position::create([
+                'name' => $item,
+                'description' => $item,
+            ]);
+        }
     }
 }

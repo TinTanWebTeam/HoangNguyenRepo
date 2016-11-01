@@ -12,7 +12,7 @@ class CreateGarageTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('garage_types', function (Blueprint $table) {
+        Schema::create('garageTypes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
@@ -26,6 +26,6 @@ class CreateGarageTypesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('garage_types');
+        Schema::drop('garageTypes');
     }
 }

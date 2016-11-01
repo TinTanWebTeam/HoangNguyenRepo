@@ -17,7 +17,8 @@ class VehicleTableSeeder extends Seeder
             'areaCode' => '54N',
             'vehicleNumber' => '1111',
             'size' => '8',
-            'weight' => '5'
+            'weight' => '5',
+            'owner' => 'Nguyễn Văn A'
         ]);
 
         \App\Vehicle::create([
@@ -26,7 +27,8 @@ class VehicleTableSeeder extends Seeder
             'areaCode' => '54N',
             'vehicleNumber' => '2222',
             'size' => '8',
-            'weight' => '5'
+            'weight' => '5',
+            'owner' => 'Nguyễn Văn B'
         ]);
 
         \App\Vehicle::create([
@@ -35,7 +37,8 @@ class VehicleTableSeeder extends Seeder
             'areaCode' => '52N',
             'vehicleNumber' => '3333',
             'size' => '5',
-            'weight' => '3'
+            'weight' => '3',
+            'owner' => 'Nguyễn Văn C'
         ]);
 
         \App\Vehicle::create([
@@ -44,7 +47,8 @@ class VehicleTableSeeder extends Seeder
             'areaCode' => '58N',
             'vehicleNumber' => '4444',
             'size' => '2',
-            'weight' => '9'
+            'weight' => '9',
+            'owner' => 'Nguyễn Văn D'
         ]);
 
         \App\Vehicle::create([
@@ -53,7 +57,8 @@ class VehicleTableSeeder extends Seeder
             'areaCode' => '60N',
             'vehicleNumber' => '5555',
             'size' => '12',
-            'weight' => '5'
+            'weight' => '5',
+            'owner' => 'Nguyễn Văn E'
         ]);
 
         \App\Vehicle::create([
@@ -62,7 +67,8 @@ class VehicleTableSeeder extends Seeder
             'areaCode' => '62N',
             'vehicleNumber' => '6666',
             'size' => '12',
-            'weight' => '5'
+            'weight' => '5',
+            'owner' => 'Nguyễn Văn F'
         ]);
     }
 }

@@ -12,7 +12,7 @@ class CreateTransportInvoicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('transport_invoices', function (Blueprint $table) {
+        Schema::create('transportInvoices', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('transport_id')->nullable();
             $table->integer('invoiceCustomer_id')->nullable();
@@ -30,6 +30,6 @@ class CreateTransportInvoicesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('transport_invoices');
+        Schema::drop('transportInvoices');
     }
 }

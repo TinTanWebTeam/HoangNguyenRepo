@@ -31,27 +31,33 @@ class PostageTableSeeder extends Seeder
             \App\Postage::create([
                 'postage'     => $arr_postage[$i],
                 'month'       => $arr_month[$i],
-                'customer_id' => '1',
-                'createdBy'   => '1',
-                'updatedBy'   => '1'
+                'customer_id' => 1,
+                'createdBy'   => 1,
+                'updatedBy'   => 1,
+                'receivePlace'=> '',
+                'deliveryPlace'=> '',
             ]);
         }
         for($i=0; $i<count($arr_month); $i++) {
             \App\Postage::create([
                 'postage'     => $arr_postage[$i],
                 'month'       => $arr_month[$i],
-                'customer_id' => '2',
-                'createdBy'   => '1',
-                'updatedBy'   => '1'
+                'customer_id' => 2,
+                'createdBy'   => 1,
+                'updatedBy'   => 1,
+                'receivePlace'=> '',
+                'deliveryPlace'=> '',
             ]);
         }
         for($i=0; $i<count($arr_month); $i++) {
             \App\Postage::create([
                 'postage'     => $arr_postage[$i],
                 'month'       => $arr_month[$i],
-                'customer_id' => '3',
-                'createdBy'   => '1',
-                'updatedBy'   => '1'
+                'customer_id' => 3,
+                'createdBy'   => 1,
+                'updatedBy'   => 1,
+                'receivePlace'=> '',
+                'deliveryPlace'=> '',
             ]);
         }
     }

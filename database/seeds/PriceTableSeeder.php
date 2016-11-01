@@ -12,19 +12,19 @@ class PriceTableSeeder extends Seeder
     public function run()
     {
         \App\Price::create([
-            'costPrice_id' => '1',
+            'costPrice_id' => 1,
             'price' => '0',
         ]);
         \App\Price::create([
-            'costPrice_id' => '2',
+            'costPrice_id' => 2,
             'price' => '100000',
         ]);
         \App\Price::create([
-            'costPrice_id' => '3',
+            'costPrice_id' => 3,
             'price' => '200000',
         ]);
         \App\Price::create([
-            'costPrice_id' => '4',
+            'costPrice_id' => 4,
             'price' => '300000',
         ]);
     }
