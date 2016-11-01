@@ -39,6 +39,10 @@ class CreateTransportsTable extends Migration
             $table->integer('status_transport')->unsigned()->comment('Trạng thái đơn hàng');
             $table->integer('status_customer')->unsigned()->comment('Trạng thái công nợ khách hàng');
             $table->integer('status_garage')->unsigned()->comment('Trạng thái công nợ nhà xe');
+            $table->decimal('carrying')->unsigned()->comment('Bốc xếp');
+            $table->decimal('parking')->unsigned()->comment('Neo đêm');
+            $table->decimal('fine')->unsigned()->comment('Công an');
+            $table->integer('transportType')->unsigned()->comment('Loại đơn hàng');
             $table->timestamps();
         });
     }

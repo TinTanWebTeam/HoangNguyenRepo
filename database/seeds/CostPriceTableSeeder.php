@@ -15,10 +15,7 @@ class CostPriceTableSeeder extends Seeder
             'Khác',
             'Nhiên liệu',
             'Thay nhớt',
-            'Đậu bãi',
-            'Bốc xếp',
-            'Neo xe',
-            'Công an'
+            'Đậu bãi'
         ];
 
         foreach($array_name as $item){

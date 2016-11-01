@@ -12,7 +12,7 @@ class CreateUserVehiclesTable extends Migration
      */
     public function up()
     {
-        Schema::create('userVehicles', function (Blueprint $table) {
+        Schema::create('driverVehicles', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('vehicle_id')->unsigned();
@@ -30,6 +30,6 @@ class CreateUserVehiclesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('userVehicles');
+        Schema::drop('driverVehicles');
     }
 }

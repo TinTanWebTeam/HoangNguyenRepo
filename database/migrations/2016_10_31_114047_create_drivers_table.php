@@ -18,9 +18,16 @@ class CreateDriversTable extends Migration
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->date('birthday')->nullable();
+            $table->string('governmentId')->nullable();
+            $table->date('issueDate_governmentId')->nullable();
+            $table->string('licenseDriver')->nullable();
+            $table->date('issueDate_licenseDriver')->nullable();
+            $table->string('expireDate')->nullable();
+            $table->string('licenseDriverType')->nullable();
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
-            $table->integer('position_id')->unsigned();
+            $table->integer('createdBy')->unsigned();
+            $table->integer('updatedBy')->unsigned();
             $table->timestamps();
         });
     }

@@ -18,6 +18,7 @@ class CreateVoucherTransportsTable extends Migration
             $table->integer('transport_id')->unsigned();
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
+            $table->integer('quantity')->unsigned();
             $table->timestamps();
         });
     }

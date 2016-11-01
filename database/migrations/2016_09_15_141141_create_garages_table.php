@@ -20,6 +20,7 @@ class CreateGaragesTable extends Migration
             $table->string('phone')->nullable();
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
+            $table->integer('garageType_id')->unsigned();
             $table->timestamps();
         });
     }

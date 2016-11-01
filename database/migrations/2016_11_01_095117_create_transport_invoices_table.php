@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePostagesTable extends Migration
+class CreateTransportInvoicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,17 +12,13 @@ class CreatePostagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('postages', function (Blueprint $table) {
+        Schema::create('transport_invoices', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('postage', 18, 0)->default(0);
-            $table->dateTime('month');
-            $table->integer('customer_id')->unsigned();
-            $table->text('note')->nullable();
+            $table->integer('transport_id')->nullable();
+            $table->integer('invoiceCustomer_id')->nullable();
+            $table->integer('invoiceGarage_id')->nullable();
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
-            $table->boolean('active')->default(1);
-            $table->date('receivePlace');
-            $table->date('deliveryPlace');
             $table->timestamps();
         });
     }
@@ -34,6 +30,6 @@ class CreatePostagesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('postages');
+        Schema::drop('transport_invoices');
     }
 }

@@ -28,6 +28,8 @@ class CreateInvoiceGaragesTable extends Migration
             $table->integer('updatedBy')->unsigned();
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
+            $table->integer('invoiceType')->comment('Loại hóa đơn');
+            $table->decimal('money', 18, 0)->default(0);
             $table->timestamps();
         });
     }

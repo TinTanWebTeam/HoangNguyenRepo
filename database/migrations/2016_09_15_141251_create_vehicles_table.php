@@ -22,6 +22,7 @@ class CreateVehiclesTable extends Migration
             $table->boolean('active')->default(1);
             $table->integer('vehicleType_id')->unsigned();
             $table->integer('garage_id')->unsigned();
+            $table->string('owner')->nullable();
             $table->timestamps();
         });
     }
