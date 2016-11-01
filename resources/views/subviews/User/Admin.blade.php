@@ -470,16 +470,13 @@
                                     tr += '</div>';
                                     tr += '</div>';
                                     if (full.active == 1) {
-
-                                        tr += '<div  title="Xóa"  data-id="' + full.id + '" class="btn btn-danger btn-circle" onclick="adminView.msgDelete(' + full.id + ')">';
+                                        tr += '<div id="deleteUser" title="Xóa"  data-id="' + full.id + '" class="btn btn-danger btn-circle" onclick="adminView.msgDelete(' + full.id + ')">';
                                         tr += '<i class="glyphicon glyphicon-remove"></i>';
                                         tr += '</div>';
-
                                     } else {
-                                        tr += '<div  title="Phục hồi" data-id="' + full.id + '" class="btn btn-info btn-circle" onclick="adminView.restoreUserConfirm(' + full.id + ')">';
+                                        tr += '<div id="restoreUser" title="Phục hồi" data-id="' + full.id + '" class="btn btn-info btn-circle" onclick="adminView.restoreUserConfirm(' + full.id + ')">';
                                         tr += '<i class="glyphicon glyphicon-plus"></i>';
                                         tr += '</div>';
-
                                     }
                                     return tr;
                                 }
@@ -735,16 +732,13 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                var deleteUser = adminView.idDelete;
-                                element = $("div").attr('data-id', deleteUser);
+                                var idUser = adminView.idDelete;
                                 adminView.tableAdmin.splice(1, data['TableDeleteUser'][0]);
                                 adminView.table.clear().rows.add(adminView.tableAdmin).draw();
                                 adminView.showNotification("success", "Xóa thành công!");
                                 adminView.displayModal('hide', '#modal-notification');
-
-                                $(element).removeClass(".btn-danger").addClass(".btn-info");
-//                                $(element).find('i').removeClass(".glyphicon-plus").addClass(".glyphicon-remove");
-
+                                $("#deleteUser").attr('data-id', idUser).removeClass("btn-danger").addClass("btn-info");
+                                $("#deleteUser").attr('data-id', idUser).find('i').removeClass("glyphicon-remove").addClass("glyphicon-plus");
 
                             }
                             adminView.table.clear().rows.add(adminView.tableAdmin).draw();
@@ -778,7 +772,7 @@
                                                 return o.id == sendToServer._object.id;
                                             });
                                             var indexOfUpdateUserOld = _.indexOf(adminView.tableAdmin, UpdateUserOld);
-                                            adminView.tableAdmin.splice(indexOfUpdateUserOld, 1, data['tableAdmin'][0]);
+                                            adminView.tableAdmin.splice(indexOfUpdateUserOld, 1, data['tableUserUpdate'][0]);
                                             adminView.tableSubRow = data['subRoles'][0];
                                             adminView.showNotification("success", "Cập nhật thành công!");
                                             adminView.hide();
@@ -826,20 +820,13 @@
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 201) {
-//                            var restoreUserOld = _.find(adminView.tableAdmin, function (o) {
-//                                return o.id;
-//                            });
-//                            var indexOfRestoreUserOld = _.indexOf(adminView.tableAdmin, restoreUserOld);
                             adminView.tableAdmin.splice(1, data['TableRestoreUser'][0]);
                             adminView.table.clear().rows.add(adminView.tableAdmin).draw();
                             adminView.showNotification("success", "Đã khôi phục tài khoản thành công!");
-                            adminView.clearInput();
-                            adminView.hide();
                             adminView.displayModal('hide', '#modal-notification');
-//                            element = $("div").attr('data-id',idRestore);
-//                            console.log(element);
-//                            $(element).removeClass(".btn-info").addClass(".btn-danger");
-//                            $(element).find('i').removeClass(".glyphicon-plus").addClass(".glyphicon-remove");
+                            $("#restoreUser").attr('data-id',idRestore).removeClass("btn-info").addClass("btn-danger");
+                            $("#restoreUser").attr('data-id',idRestore).find('i').removeClass("glyphicon-plus").addClass("glyphicon-remove");
+
                         } else {
                             adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -847,9 +834,9 @@
                         adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                msgRestoreUser: function (id, element) {
+                msgRestoreUser: function (id) {
                     if (id) {
-                        adminView.restoreUserConfirm(id, element);
+                        adminView.restoreUserConfirm(id);
                     }
                 },
                 restoreUserConfirm: function (user_id) {

@@ -80,12 +80,6 @@
                 <div class="modal-content">
                     <div class="modal-body"><h5 id="modalRestoreUser"></h5></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                                onclick="userView.createUser()">Tạo tài khoản mới
-                        </button>
-                        <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                                onclick="userView.restoreUser()">Khôi phục tài khoản củ
-                        </button>
                         <button type="button" class="btn default" name="modalClose"
                                 onclick="userView.cancelRestoreUser()">Hủy
                         </button>
@@ -422,7 +416,7 @@
                     if (id) {
                         userView.idRestore = id;
                         $("div#modalRestoreUser").modal("show");
-                        $("h5#modalRestoreUser").empty().append("Tài khoản trùng với tài khoản đã xóa.");
+                        $("h5#modalRestoreUser").empty().append("Tài khoản này đã bị xóa ! Vui lòng tạo tài khoản khác.");
                         $("button[name=modalAgree]").show();
 
                     }
@@ -659,32 +653,32 @@
                             break;
                     }
                 },
-                restoreUser: function () {
-                    sendToServer = {
-                        _token: _token,
-                        _action: "restoreUser",
-                        _object: userView.idRestore
-                    };
-                    $.ajax({
-                        url: url + 'user/modify',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 201) {
-                            userView.tableUser.push(data['TableRestoreUser']);
-                            userView.table.clear().rows.add(userView.tableUser).draw();
-                            userView.showNotification("success", "Đã khôi phục tài khoản thành công!");
-                            $("#modalRestoreUser").modal('hide');
-                            userView.clearInput();
-                            userView.hide();
-                        } else {
-                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                },
+//                restoreUser: function () {
+//                    sendToServer = {
+//                        _token: _token,
+//                        _action: "restoreUser",
+//                        _object: userView.idRestore
+//                    };
+//                    $.ajax({
+//                        url: url + 'user/modify',
+//                        type: "POST",
+//                        dataType: "json",
+//                        data: sendToServer
+//                    }).done(function (data, textStatus, jqXHR) {
+//                        if (jqXHR.status == 201) {
+//                            userView.tableUser.push(data['TableRestoreUser']);
+//                            userView.table.clear().rows.add(userView.tableUser).draw();
+//                            userView.showNotification("success", "Đã khôi phục tài khoản thành công!");
+//                            $("#modalRestoreUser").modal('hide');
+//                            userView.clearInput();
+//                            userView.hide();
+//                        } else {
+//                            userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+//                        }
+//                    }).fail(function (jqXHR, textStatus, errorThrown) {
+//                        userView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+//                    });
+//                },
                 createUser: function () {
                     $("#modalRestoreUser").modal('hide');
                     $('input[id=username]').val('');
