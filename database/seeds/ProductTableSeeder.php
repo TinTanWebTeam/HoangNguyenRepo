@@ -40,5 +40,11 @@ class ProductTableSeeder extends Seeder
             'name' => 'Phuy hóa chất',
             'description' => ''
         ]);
+
+        \App\Product::create([
+            'productType_id' => '3',
+            'name' => 'Vải',
+            'description' => ''
+        ]);
     }
 }

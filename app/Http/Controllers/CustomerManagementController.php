@@ -583,7 +583,7 @@ class CustomerManagementController extends Controller
                             'statuses_gar.status as status_garage_'
                         )
                         ->leftJoin('products', 'products.id', '=', 'transports.product_id')
-                        ->leftJoin('customers', 'cus->leftJointomers.id', '=', 'transports.customer_id')
+                        ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
                         ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
                         ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                         ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
@@ -705,6 +705,7 @@ class CustomerManagementController extends Controller
                         ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
                         ->where('transports.id', '=', $transportUpdate->id)
                         ->first();
+                    dd($transport);
 
                     $voucherTransport = VoucherTransport::where('transport_id', $transportUpdate->id)->get();
 

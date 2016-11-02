@@ -1226,6 +1226,9 @@
                     $("select[id='status_transport']").val(transportView.current["status_transport"]);
                     $("textarea[id='costNote']").val(transportView.current["costNote"]);
 
+                    transportView.transportType = (transportView.current["transportType"] === 0) ? false : true;
+                    $("input[id='transportType']").prop('checked', transportView.transportType);
+
                     var strVoucherName = "";
                     for (var i = 0; i < transportView.arrayVoucher.length; i++) {
                         var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
@@ -1289,6 +1292,8 @@
                 },
 
                 editTransport: function (id) {
+                    $("input[id=transportType]").prop('disabled', true);
+
                     transportView.current = null;
                     transportView.current = _.clone(_.find(transportView.dataTransport, function (o) {
                         return o.id == id;
@@ -1314,6 +1319,8 @@
                     transportView.showControl();
                 },
                 addTransport: function () {
+                    $("input[id=transportType]").prop('disabled', false);
+
                     transportView.arrayVoucher = [];
                     transportView.current = null;
                     transportView.action = 'add';

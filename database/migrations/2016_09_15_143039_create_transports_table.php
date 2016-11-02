@@ -31,6 +31,7 @@ class CreateTransportsTable extends Migration
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
             $table->text('note')->nullable();
+            $table->text('costNote')->nullable();
             $table->boolean('active')->default(1);
             $table->integer('vehicle_id')->nullable();
             $table->integer('product_id')->nullable();
