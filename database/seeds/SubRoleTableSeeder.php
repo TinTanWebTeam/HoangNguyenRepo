@@ -13,7 +13,7 @@ class SubRoleTableSeeder extends Seeder
     public function run()
     {
         //admin
-        for ($i = 1; $i < 10; $i++) {
+        for ($i = 1; $i < 11; $i++) {
             SubRole::create([
                 'user_id'   => 1,
                 'role_id'   => $i,
@@ -23,7 +23,7 @@ class SubRoleTableSeeder extends Seeder
         }
 
         //user
-        for ($i = 3; $i < 10; $i++) {
+        for ($i = 3; $i < 11; $i++) {
             SubRole::create([
                 'user_id'   => 2,
                 'role_id'   => $i,

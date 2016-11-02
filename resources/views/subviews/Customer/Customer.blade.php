@@ -176,8 +176,8 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentPetroleum"><b>Phần trăm nhớt</b></label>
-                                                    <input type="number" id="percentPetroleum" name="percentPetroleum"
+                                                    <label for="percentFuelChange"><b>Phần trăm nhiên liệu thay đổi</b></label>
+                                                    <input type="number" id="percentFuelChange" name="percentFuelChange"
                                                            class="form-control">
                                                 </div>
                                             </div>

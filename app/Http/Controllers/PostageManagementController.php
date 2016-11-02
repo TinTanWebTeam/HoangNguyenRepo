@@ -19,8 +19,6 @@ class PostageManagementController extends Controller
         $postages = \DB::table('postages')
             ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
             ->select('postages.*', 'customers.fullName as customers_fullName')
-            ->orderBy('postages.month', 'desc')
-            ->groupBy('month')
             ->get();
 
         $response = [

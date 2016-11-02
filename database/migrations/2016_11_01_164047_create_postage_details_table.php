@@ -15,12 +15,12 @@ class CreatePostageDetailsTable extends Migration
         Schema::create('postageDetails', function (Blueprint $table) {
             $table->increments('id');
             $table->decimal('postage', 18, 0)->default(0);
-            $table->dateTime('month');
+            $table->date('createdDate')->nullable();
             $table->integer('customer_id')->unsigned();
             $table->string('receivePlace');
             $table->string('deliveryPlace');
-            $table->decimal('cashDelivery');
-            $table->date('applyDate');
+            $table->decimal('cashDelivery')->default(0);
+            $table->date('applyDate')->nullable();
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
             $table->integer('createdBy')->unsigned();

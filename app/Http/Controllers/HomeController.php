@@ -12,7 +12,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-
         $array_url = [
             'Admin'                 => '',
             'UserManagement'        => 'user-management',
@@ -24,7 +23,7 @@ class HomeController extends Controller
             'DebtManagement'        => 'debt-management',
             'CostManagement'        => 'cost-management',
             'PostageManagement'     => 'postage-management',
-            'FuelManagement'       => 'fuel-management',
+            'FuelManagement'        => 'fuel-management',
             'Report'                => 'report',
             'Customer'              => 'customer',
             'DeliveryRequirement'   => 'delivery-requirement',

@@ -144,7 +144,9 @@ Route::group(['middleware' => 'auth'], function(){
     });
     //QL giá nhiên liệu
     Route::group(['middleware' => 'FuelManagement'], function () {
-        Route::get('/fuel-management', 'FuelManagementController@getViewFuel');
+        Route::get('/fuel-management', function (){
+            return 'aaaaa';
+        });
     });
     Route::group(['middleware' => 'DriverManagement'], function () {
         //get View
