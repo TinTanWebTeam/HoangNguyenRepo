@@ -30,11 +30,11 @@ class DatabaseSeeder extends Seeder
         $this->call(CostTableSeeder::class);
         $this->call(StatusTableSeeder::class);
         $this->call(PostageTableSeeder::class);
-        $this->call(DriverTableSeeder::class);
         $this->call(GarageTypeTableSeeder::class);
         $this->call(StaffCustomerTableSeeder::class);
         $this->call(TransportInvoiceTableSeeder::class);
         $this->call(VoucherAttachFileTableSeeder::class);
         $this->call(DriverVehicleTableSeeder::class);
+        $this->call(DriverTableSeeder::class);
     }
 }

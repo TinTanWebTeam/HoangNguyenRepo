@@ -12,7 +12,7 @@ class CreatePostageDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('postage_details', function (Blueprint $table) {
+        Schema::create('postageDetails', function (Blueprint $table) {
             $table->increments('id');
             $table->decimal('postage', 18, 0)->default(0);
             $table->dateTime('month');
@@ -37,6 +37,6 @@ class CreatePostageDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('postage_details');
+        Schema::drop('postageDetails');
     }
 }

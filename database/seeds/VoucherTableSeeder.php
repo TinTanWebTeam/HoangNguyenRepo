@@ -11,39 +11,22 @@ class VoucherTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Voucher::create([
-           'name' => 'HĐ xanh'
-        ]);
+        $array_name = [
+            'HĐ xanh',
+            'HĐ vàng',
+            'HĐ hồng',
+            'Phiếu cân',
+            'Phiếu nhập kho',
+            'Phiếu xuất kho',
+            'Phiếu giao hàng',
+            'Lịch giao hàng',
+            'Chứng từ khác'
+        ];
 
-        \App\Voucher::create([
-            'name' => 'HĐ vàng'
-        ]);
-
-        \App\Voucher::create([
-            'name' => 'HĐ hồng'
-        ]);
-
-        \App\Voucher::create([
-            'name' => 'Phiếu cân'
-        ]);
-
-        \App\Voucher::create([
-            'name' => 'Phiếu nhập kho'
-        ]);
-        \App\Voucher::create([
-            'name' => 'Phiếu xuất kho'
-        ]);
-
-        \App\Voucher::create([
-            'name' => 'Phiếu giao hàng'
-        ]);
-
-        \App\Voucher::create([
-            'name' => 'Lịch giao hàng'
-        ]);
-
-        \App\Voucher::create([
-            'name' => 'Chứng từ khác'
-        ]);
+        foreach($array_name as $item){
+            \App\Voucher::create([
+                'name' => $item
+            ]);
+        }
     }
 }

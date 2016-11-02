@@ -11,40 +11,22 @@ class ProductTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Product::create([
-           'productType_id' => '1',
-            'name' => 'Bao Vitamin',
-            'description' => ''
-        ]);
+        $array_name = [
+            'Sợi',
+            'Bông',
+            'Bao vitamin',
+            'Phuy hóa chất',
+            'Kiện',
+            'Bao',
+            'Thùng'
+        ];
 
-        \App\Product::create([
-            'productType_id' => '2',
-            'name' => 'Clear Men',
-            'description' => ''
-        ]);
-
-        \App\Product::create([
-            'productType_id' => '3',
-            'name' => 'Sợi',
-            'description' => ''
-        ]);
-
-        \App\Product::create([
-            'productType_id' => '3',
-            'name' => 'Bông',
-            'description' => ''
-        ]);
-
-        \App\Product::create([
-            'productType_id' => '3',
-            'name' => 'Phuy hóa chất',
-            'description' => ''
-        ]);
-
-        \App\Product::create([
-            'productType_id' => '3',
-            'name' => 'Vải',
-            'description' => ''
-        ]);
+        foreach($array_name as $key=>$value){
+            \App\Product::create([
+                'productType_id' => 1,
+                'name' => $value,
+                'description' => $value
+            ]);
+        }
     }
 }

@@ -11,16 +11,15 @@ class ProductTypeTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\ProductType::create([
-           'name' => 'Thuốc'
-        ]);
-
-        \App\ProductType::create([
-            'name' => 'Mỹ phẩm'
-        ]);
-
-        \App\ProductType::create([
-            'name' => 'Hóa chất'
-        ]);
+        $array_name = [
+            'Thuốc',
+            'Mỹ phẩm',
+            'Hóa chất'
+        ];
+        foreach($array_name as $item){
+            \App\ProductType::create([
+                'name' => $item
+            ]);
+        }
     }
 }
