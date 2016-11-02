@@ -51,7 +51,7 @@ class RoleTableSeeder extends Seeder
             'Khách hàng',
             'Đơn hàng',
             'Xe',
-            'Nhà xe ngoài',
+            'Nhà xe',
             'Khách hàng',
             'Nhà xe ngoài',
             'Nhiên liệu',

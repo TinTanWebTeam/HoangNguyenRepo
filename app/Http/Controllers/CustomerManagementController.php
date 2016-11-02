@@ -421,20 +421,16 @@ class CustomerManagementController extends Controller
             ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
                     'customers.id as customers_id', 'customers.fullName as customers_fullName',
                     'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
-                    'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
-                    'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
+                    'vehicles.vehicleNumber as vehicles_vehicleNumber',
                     'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
                     'statuses_gar.status as status_garage_'
             )
-            ->join('costs', 'costs.transport_id', '=', 'transports.id')
-            ->join('products', 'products.id', '=', 'transports.product_id')
-            ->join('customers', 'customers.id', '=', 'transports.customer_id')
-            ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-            ->join('prices', 'prices.id', '=', 'costs.price_id')
-            ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-            ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-            ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-            ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+            ->leftJoin('products', 'products.id', '=', 'transports.product_id')
+            ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+            ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+            ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+            ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+            ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
             ->get();
 
         $voucherTransports = VoucherTransport::all();
@@ -460,8 +456,10 @@ class CustomerManagementController extends Controller
         $quantumProduct = null;
         $cashRevenue = null;
         $cashDelivery = null;
-        $cashPreDelivery = null;
         $cashReceive = null;
+        $carrying = null;
+        $parking = null;
+        $fine = null;
         $cashProfit = null;
         $voucherNumber = null;
         $voucherQuantumProduct = null;
@@ -478,11 +476,8 @@ class CustomerManagementController extends Controller
         $customer_id = null;
         $invoiceCustomer_id = null;
         $invoiceGarage_id = null;
-        $costPrice_id = null;
-        $price_id = null;
-
-        $cost = null;
-        $costs_note = null;
+        $costNote = null;
+        $transportType = null;
 
         $array_voucherTransport = [];
 
@@ -497,10 +492,11 @@ class CustomerManagementController extends Controller
             $quantumProduct = $request->input('_transport')['quantumProduct'];
             $cashRevenue = $request->input('_transport')['cashRevenue'];
             $cashDelivery = $request->input('_transport')['cashDelivery'];
-            $cashPreDelivery = $request->input('_transport')['cashPreDelivery'];
+            $carrying = $request->input('_transport')['carrying'];
+            $parking = $request->input('_transport')['parking'];
+            $fine = $request->input('_transport')['fine'];
             $cashReceive = $request->input('_transport')['cashReceive'];
-            $cost = $request->input('_transport')['cost'];
-            $cashProfit = $cashRevenue - $cashDelivery - $cost;
+            $cashProfit = $cashRevenue - $cashDelivery - $carrying - $parking - $fine;
             $voucherNumber = $request->input('_transport')['voucherNumber'];
             $voucherQuantumProduct = $request->input('_transport')['voucherQuantumProduct'];
             $receiver = $request->input('_transport')['receiver'];
@@ -517,10 +513,9 @@ class CustomerManagementController extends Controller
             $vehicle_id = $request->input('_transport')['vehicles_id'];
             $product_id = $request->input('_transport')['product_id'];
             $customer_id = $request->input('_transport')['customers_id'];
-            $costPrice_id = $request->input('_transport')['costPrices_id'];
-            $price_id = Price::where('costPrice_id', $costPrice_id)->orderBy('created_at', 'desc')->pluck('id')->first();
 
-            $costs_note = $request->input('_transport')['costs_note'];
+            $costNote = $request->input('_transport')['costNote'];
+            $transportType = $request->input('_transport')['transportType'];
             if(array_key_exists('voucher_transport', $request->input('_transport'))){
                 $array_voucherTransport = $request->input('_transport')['voucher_transport'];
             }
@@ -535,7 +530,10 @@ class CustomerManagementController extends Controller
                     $transportNew->quantumProduct = $quantumProduct;
                     $transportNew->cashRevenue = $cashRevenue;
                     $transportNew->cashDelivery = $cashDelivery;
-                    $transportNew->cashPreDelivery = $cashPreDelivery;
+                    $transportNew->cashPreDelivery = 0;
+                    $transportNew->carrying = $carrying;
+                    $transportNew->parking = $parking;
+                    $transportNew->fine = $fine;
                     $transportNew->cashReceive = $cashReceive;
                     $transportNew->cashProfit = $cashProfit;
                     $transportNew->voucherNumber = $voucherNumber;
@@ -554,6 +552,9 @@ class CustomerManagementController extends Controller
                     $transportNew->customer_id = $customer_id;
                     $transportNew->invoiceCustomer_id = $invoiceCustomer_id;
                     $transportNew->invoiceGarage_id = $invoiceGarage_id;
+                    $transportNew->transportType = $transportType;
+                    $transportNew->costNote = $costNote;
+                    $transportNew->vehicle_id = $vehicle_id;
 
                     if (!$transportNew->save()) {
                         DB::rollBack();
@@ -572,39 +573,21 @@ class CustomerManagementController extends Controller
                         }
                     }
 
-                    //Add Cost
-                    $costNew = new Cost();
-                    $costNew->cost = $cost;
-                    $costNew->createdBy = \Auth::user()->id;
-                    $costNew->updatedBy = \Auth::user()->id;
-                    $costNew->note = $costs_note;
-                    $costNew->transport_id = $transportNew->id;
-                    $costNew->price_id = $price_id;
-                    $costNew->vehicle_id = $vehicle_id;
-                    if (!$costNew->save()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Create Cost failed'], 404);
-                    }
-
                     //Response
                     $transport = DB::table('transports')
                         ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
                             'customers.id as customers_id', 'customers.fullName as customers_fullName',
                             'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
-                            'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
                             'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
                             'statuses_gar.status as status_garage_'
                         )
-                        ->join('costs', 'costs.transport_id', '=', 'transports.id')
-                        ->join('products', 'products.id', '=', 'transports.product_id')
-                        ->join('customers', 'customers.id', '=', 'transports.customer_id')
-                        ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                        ->join('prices', 'prices.id', '=', 'costs.price_id')
-                        ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-                        ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-                        ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-                        ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                        ->leftJoin('products', 'products.id', '=', 'transports.product_id')
+                        ->leftJoin('customers', 'cus->leftJointomers.id', '=', 'transports.customer_id')
+                        ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+                        ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+                        ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+                        ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
                         ->where('transports.id', '=', $transportNew->id)
                         ->first();
 
@@ -623,15 +606,13 @@ class CustomerManagementController extends Controller
 
                     //keep value old row
                     $kp_cashRevenue = $transportUpdate->cashRevenue;
-                    $kp_cashDelivery = $transportUpdate->cashDelivery;
                     $kp_cashReceive = $transportUpdate->cashReceive;
-                    $kp_cashProfit = $transportUpdate->cashProfit;
 
                     $transportUpdate->weight = $weight;
                     $transportUpdate->quantumProduct = $quantumProduct;
                     $transportUpdate->cashRevenue = $cashRevenue;
                     $transportUpdate->cashDelivery = $cashDelivery;
-                    $transportUpdate->cashPreDelivery = $cashPreDelivery;
+                    $transportUpdate->cashPreDelivery = 0;
                     $transportUpdate->cashReceive = $cashReceive;
                     $transportUpdate->cashProfit = $cashProfit;
                     $transportUpdate->voucherNumber = $voucherNumber;
@@ -650,6 +631,8 @@ class CustomerManagementController extends Controller
                     $transportUpdate->status_garage = $status_garage;
                     $transportUpdate->product_id = $product_id;
                     $transportUpdate->customer_id = $customer_id;
+                    $transportUpdate->costNote = $costNote;
+                    $transportUpdate->vehicle_id = $vehicle_id;
 //                    $transportUpdate->invoiceCustomer_id = $invoiceCustomer_id;
 //                    $transportUpdate->invoiceGarage_id = $invoiceGarage_id;
 
@@ -678,27 +661,6 @@ class CustomerManagementController extends Controller
                             DB::rollBack();
                             return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
                         }
-                    }
-
-                    //Delete Cost
-                    $costDelete = Cost::where('transport_id', $transportUpdate->id)->first();
-                    if (!$costDelete->delete()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Delete Cost failed'], 404);
-                    }
-
-                    //Add Cost
-                    $costNew = new Cost();
-                    $costNew->cost = $cost;
-                    $costNew->createdBy = $createdBy;
-                    $costNew->updatedBy = \Auth::user()->id;
-                    $costNew->note = $costs_note;
-                    $costNew->transport_id = $transportUpdate->id;
-                    $costNew->price_id = $price_id;
-                    $costNew->vehicle_id = $vehicle_id;
-                    if (!$costNew->save()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Create Cost failed'], 404);
                     }
 
                     //Update InvoiceCustomer for Transport
@@ -731,17 +693,13 @@ class CustomerManagementController extends Controller
                         ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
                             'customers.id as customers_id', 'customers.fullName as customers_fullName',
                             'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
-                            'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
                             'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
                             'statuses_gar.status as status_garage_'
                         )
-                        ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
                         ->leftJoin('products', 'products.id', '=', 'transports.product_id')
                         ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-                        ->leftJoin('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                        ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
-                        ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+                        ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
                         ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                         ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
                         ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
@@ -770,12 +728,6 @@ class CustomerManagementController extends Controller
                             DB::rollBack();
                             return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
                         }
-                    }
-                    //Delete Cost
-                    $costDelete = Cost::where('transport_id', $transport_id)->first();
-                    if (!$costDelete->delete()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Delete Cost failed'], 404);
                     }
 
                     $transportDelete = Transport::findOrFail($request->input('_id'));

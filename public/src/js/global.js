@@ -261,6 +261,11 @@ function verifyProject(){
     }
 }
 
+function renderAutoCompleteSearch(inputId, dataSource) {
+    $(inputId).autocomplete({
+        source: dataSource
+    });
+}
 
 
 

@@ -14,9 +14,9 @@ class CreateTransportsTable extends Migration
     {
         Schema::create('transports', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('transportCode')->comment('Mã đơn hàng');
-            $table->float('weight')->unsigned()->comment('Trọng tải');
-            $table->float('quantumProduct')->unsigned()->comment('Số lượng hàng');
+            $table->string('transportCode')->nullable()->comment('Mã đơn hàng');
+            $table->float('weight')->nullable()->comment('Trọng tải');
+            $table->float('quantumProduct')->nullable()->comment('Số lượng hàng');
             $table->decimal('cashRevenue',18,0)->default(0)->comment('Doanh thu');
             $table->decimal('cashDelivery',18,0)->default(0)->comment('Tiền phải giao cho nhà xe');
             $table->decimal('cashPreDelivery',18,0)->default(0)->comment('Tiền đã giao trước cho nhà xe');
@@ -25,24 +25,25 @@ class CreateTransportsTable extends Migration
             $table->string('voucherNumber')->nullable()->comment('Số chứng từ');
             $table->string('voucherQuantumProduct')->nullable()->comment('Số lượng hàng trên chứng từ');
             $table->string('receiver')->nullable()->comment('Người nhận');
-            $table->dateTime('receiveDate')->comment('Ngày nhận');
+            $table->dateTime('receiveDate')->nullable()->comment('Ngày nhận');
             $table->string('receivePlace')->nullable()->comment('Nơi nhận');
             $table->string('deliveryPlace')->nullable()->comment('Nơi giao');
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
-            $table->integer('product_id')->unsigned();
-            $table->integer('customer_id')->unsigned();
+            $table->integer('vehicle_id')->nullable();
+            $table->integer('product_id')->nullable();
+            $table->integer('customer_id')->nullable();
             $table->integer('invoiceCustomer_id')->nullable();
             $table->integer('invoiceGarage_id')->nullable();
-            $table->integer('status_transport')->unsigned()->comment('Trạng thái đơn hàng');
-            $table->integer('status_customer')->unsigned()->comment('Trạng thái công nợ khách hàng');
-            $table->integer('status_garage')->unsigned()->comment('Trạng thái công nợ nhà xe');
-            $table->decimal('carrying')->unsigned()->comment('Bốc xếp');
-            $table->decimal('parking')->unsigned()->comment('Neo đêm');
-            $table->decimal('fine')->unsigned()->comment('Công an');
-            $table->integer('transportType')->unsigned()->comment('Loại đơn hàng');
+            $table->integer('status_transport')->nullable()->comment('Trạng thái đơn hàng');
+            $table->integer('status_customer')->nullable()->comment('Trạng thái công nợ khách hàng');
+            $table->integer('status_garage')->nullable()->comment('Trạng thái công nợ nhà xe');
+            $table->decimal('carrying')->default(0)->comment('Bốc xếp');
+            $table->decimal('parking')->default(0)->comment('Neo đêm');
+            $table->decimal('fine')->default(0)->comment('Công an');
+            $table->boolean('transportType')->default(0)->comment('Loại đơn hàng');
             $table->timestamps();
         });
     }

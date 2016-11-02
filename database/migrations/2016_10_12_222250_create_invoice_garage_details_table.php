@@ -16,7 +16,7 @@ class CreateInvoiceGarageDetailsTable extends Migration
             $table->increments('id');
             $table->integer('invoiceGarage_id')->unsigned();
             $table->decimal('paidAmt', 18, 0)->default(0);
-            $table->dateTime('payDate');
+            $table->dateTime('payDate')->nullable();
             $table->boolean('modify')->default(0);
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();

@@ -88,12 +88,12 @@
                                         <th>Nơi giao</th>
                                         <th>Khách hàng</th>
                                         <th>Doanh thu</th>
-                                        <th>Chi phí<br>giao xe</th>
-                                        <th>Giao trước<br>cho xe</th>
+                                        <th>Giao xe</th>
                                         <th>Nhận</th>
-                                        <th>Chi phí</th>
+                                        <th>Bốc xếp</th>
+                                        <th>Neo đêm</th>
+                                        <th>Công an</th>
                                         <th>Lợi nhuận</th>
-                                        <th>Lợi nhuận<br>thực tế</th>
                                         <th>Người nhận</th>
                                         <th>Ngày nhận</th>
                                         <th>Trạng thái</th>
@@ -133,38 +133,27 @@
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="vehicle_id"><b>Xe</b></label>
-                                            <input type="text" class="form-control cursor-copy" id="vehicle_id"
-                                                   name="vehicle_id"
-                                                   readonly placeholder="Nhấp đôi để chọn"
-                                                   data-vehicleId=""
-                                                   ondblclick="transportView.loadListVehicle()">
+                                            <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" placeholder="Nhập số xe" data-vehicleId="">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="customer_id"><b>Khách hàng</b></label>
-                                            <input type="text" class="form-control cursor-copy" id="customer_id"
-                                                   name="customer_id"
-                                                   readonly placeholder="Nhấp đôi để chọn"
-                                                   data-customerId=""
-                                                   ondblclick="transportView.loadListCustomer()">
+                                            <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Nhập tên khách hàng" data-customerId="">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input ">
                                             <label for="product_name"><b>Hàng</b></label>
                                             <div class="ui-widget">
-                                                <input type="text" class="form-control" id="product_name"
-                                                       name="product_name"
-                                                       data-productId="" placeholder="Nhập tên hàng">
+                                                <input type="text" class="form-control" id="product_name" name="product_name" data-productId="" placeholder="Nhập tên hàng">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="status_transport"><b>Trạng thái</b></label>
-                                            <select id="status_transport" name="status_transport"
-                                                    class="form-control"></select>
+                                            <select id="status_transport" name="status_transport" class="form-control"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -178,31 +167,31 @@
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="quantumProduct"><b>Số lượng hàng</b></label>
-                                            <input type="number" class="form-control" id="quantumProduct"
-                                                   name="quantumProduct">
+                                            <input type="number" class="form-control" id="quantumProduct" name="quantumProduct">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="voucherNumber"><b>Số chứng từ</b></label>
-                                            <input type="text" class="form-control" id="voucherNumber"
-                                                   name="voucherNumber">
+                                            <input type="text" class="form-control" id="voucherNumber" name="voucherNumber">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
-                                            <input type="number" class="form-control" id="voucherQuantumProduct"
-                                                   name="voucherQuantumProduct">
+                                            <input type="number" class="form-control" id="voucherQuantumProduct" name="voucherQuantumProduct">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group form-md-line-input">
+                                    <div style="position: absolute; display: block; z-index: 3; right: 5%;" class="pull-right">
+                                        <strong>HĐ khống</strong>&nbsp;
+                                        <input type="checkbox" id="transportType" name="transportType" onchange="transportView.renderEventCheckbox(this)">
+                                    </div>
                                     <label for="note"><b>Ghi chú đơn hàng</b></label>
-                                    <textarea type="text" class="form-control" id="note" name="note"
-                                              rows="4"></textarea>
+                                    <textarea type="text" class="form-control" id="note" name="note" rows="4"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -212,22 +201,19 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="cashRevenue"><b>Doanh thu</b></label>
-                                            <input type="text" class="form-control currency" id="cashRevenue"
-                                                   name="cashRevenue">
+                                            <input type="text" class="form-control currency" id="cashRevenue" name="cashRevenue">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="cashDelivery"><b>Giao xe</b></label>
-                                            <input type="text" class="form-control currency" id="cashDelivery"
-                                                   name="cashDelivery">
+                                            <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="cashReceive"><b>Nhận</b></label>
-                                            <input type="text" class="form-control currency" id="cashReceive"
-                                                   name="cashReceive">
+                                            <input type="text" class="form-control currency" id="cashReceive" name="cashReceive">
                                         </div>
                                     </div>
                                 </div>
@@ -235,28 +221,27 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="carrying"><b>Bốc xếp</b></label>
-                                            <input type="number" name="carrying" id="carrying" class="form-control currency">
+                                            <input type="text" name="carrying" id="carrying" class="form-control currency">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="parking"><b>Neo đêm</b></label>
-                                            <input type="number" name="parking" id="parking" class="form-control currency">
+                                            <input type="text" name="parking" id="parking" class="form-control currency">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="fine"><b>Công an</b></label>
-                                            <input type="number" name="fine" id="fine" class="form-control currency">
+                                            <input type="text" name="fine" id="fine" class="form-control currency">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group form-md-line-input">
-                                    <label for="costs_note"><b>Ghi chú chi phí</b></label>
-                                    <textarea type="text" class="form-control" id="costs_note" name="costs_note"
-                                              rows="4"></textarea>
+                                    <label for="costNote"><b>Ghi chú chi phí</b></label>
+                                    <textarea type="text" class="form-control" id="costNote" name="costNote" rows="4"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -270,23 +255,19 @@
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for="receiveDate"><b>Ngày nhận</b></label>
-                                    <input type="text" class="date form-control ignore"
-                                           id="receiveDate"
-                                           name="receiveDate">
+                                    <input type="text" class="date form-control ignore" id="receiveDate" name="receiveDate">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for="receivePlace"><b>Nơi nhận</b></label>
-                                    <input type="text" class="form-control" id="receivePlace"
-                                           name="receivePlace">
+                                    <input type="text" class="form-control" id="receivePlace" name="receivePlace">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for="deliveryPlace"><b>Nơi giao</b></label>
-                                    <input type="text" class="form-control" id="deliveryPlace"
-                                           name="deliveryPlace">
+                                    <input type="text" class="form-control" id="deliveryPlace" name="deliveryPlace">
                                 </div>
                             </div>
                         </div>
@@ -645,21 +626,41 @@
 </div>
 <!-- end add Product -->
 
+<!-- Modal notification -->
+<div class="row">
+    <div id="modal-notification" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title"></h5>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal notification -->
+
 <script>
     $(function () {
         if (typeof transportView === 'undefined') {
             transportView = {
                 table: null,
-                tableVehicle: null,
-                tableCustomer: null,
                 tableVoucher: null,
 
                 dataTransport: null,
+                dataVehicle: null,
+                dataCustomer: null,
+                dataProduct: null,
                 dataVoucher: null,
                 dataVoucherTransport: null,
                 dataStatus: null,
                 dataCostPrice: null,
-                dataProduct: null,
                 dataProductType: null,
 
                 arrayVoucher: [],
@@ -667,6 +668,9 @@
                 action: null,
                 idDelete: null,
                 tagsProductName: [],
+                tagsCustomerName: [],
+                tagsVehicleName: [],
+                transportType: false,
 
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -766,13 +770,10 @@
                         transportView.fillVoucher();
                     });
                 },
-                renderAutoCompleteSearch: function () {
-                    $("#product_name").autocomplete({
-                        source: transportView.tagsProductName
-                    });
-                },
                 renderEventFocusOut: function () {
                     $("#product_name").focusout(function () {
+                        if(transportView.transportType === true)
+                            return;
                         productName = this.value;
                         if (productName == '') return;
                         product = _.find(transportView.dataProduct, function (o) {
@@ -786,6 +787,43 @@
                             $("#product_name").attr("data-productId", product.id);
                         }
                     });
+                    $("#vehicle_id").focusout(function () {
+                        if(transportView.transportType === true)
+                            return;
+                        fullNumber = this.value;
+                        if (fullNumber == '') return;
+                        vehicle = _.find(transportView.dataVehicle, function (o) {
+                            return o.fullNumber == fullNumber;
+                        });
+                        if (typeof vehicle === "undefined") {
+                            $("#modal-notification").find(".modal-title").html("Số xe <label class='text text-danger'>" + fullNumber + "</label> không tồn tại");
+                            transportView.displayModal('show', '#modal-notification');
+                            $("input[id=vehicle_id]").val('');
+                            $("#vehicle_id").attr("data-vehicleId", '');
+                        } else {
+                            $("#vehicle_id").attr("data-vehicleId", vehicle.id);
+                        }
+                    });
+                    $("#customer_id").focusout(function () {
+                        if(transportView.transportType === true)
+                            return;
+                        custName = this.value;
+                        if (custName == '') return;
+                        customer = _.find(transportView.dataCustomer, function (o) {
+                            return o.fullName == custName;
+                        });
+                        if (typeof customer === "undefined") {
+                            $("#modal-notification").find(".modal-title").html("Khách hàng <label class='text text-danger'>" + custName + "</label> không tồn tại");
+                            transportView.displayModal('show', '#modal-notification');
+                            $("input[id=customer_id]").val('');
+                            $("#customer_id").attr("data-customerId", '');
+                        } else {
+                            $("#customer_id").attr("data-customerId", customer.id);
+                        }
+                    });
+                },
+                renderEventCheckbox: function(cb){
+                    transportView.transportType = cb.checked;
                 },
 
                 loadData: function () {
@@ -817,6 +855,8 @@
                     transportView.renderEventFocusOut();
                     transportView.loadListProductType();
                     transportView.loadListProduct();
+                    transportView.loadListCustomer();
+                    transportView.loadListVehicle();
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     defaultZero("#cashRevenue");
@@ -836,28 +876,14 @@
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
-
-                        for (var i = 0; i < data['vehicles'].length; i++) {
-                            data['vehicles'][i].fullNumber = data['vehicles'][i]['areaCode'] + "-" + data['vehicles']   [i]['vehicleNumber'];
-                        }
-
                         if (jqXHR.status == 200) {
-                            if (transportView.tableVehicle != null) {
-                                transportView.tableVehicle.destroy();
+                            for (var i = 0; i < data['vehicles'].length; i++) {
+                                data['vehicles'][i].fullNumber = data['vehicles'][i]['areaCode'] + "-" + data['vehicles']   [i]['vehicleNumber'];
                             }
-                            transportView.tableVehicle = $('#table-vehicle').DataTable({
-                                language: languageOptions,
-                                data: data['vehicles'],
-                                columns: [
-                                    {data: 'id'},
-                                    {data: 'fullNumber'},
-                                    {data: 'vehicleTypes_name'},
-                                    {data: 'garages_name'},
-                                    {data: 'size'},
-                                    {data: 'weight'}
-                                ]
-                            });
-                            transportView.displayModal("show", "#modal-vehicle");
+                            transportView.dataVehicle = data['vehicles'];
+                            transportView.tagsVehicleName = _.map(transportView.dataVehicle, 'fullNumber');
+                            transportView.tagsVehicleName = _.union(transportView.tagsVehicleName);
+                            renderAutoCompleteSearch('#vehicle_id', transportView.tagsVehicleName);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -872,23 +898,10 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            if (transportView.tableCustomer != null) {
-                                transportView.tableCustomer.destroy();
-                            }
-                            transportView.tableCustomer = $('#table-customer').DataTable({
-                                language: languageOptions,
-                                data: data['customers'],
-                                columns: [
-                                    {data: 'id'},
-                                    {data: 'customerTypes_name'},
-                                    {data: 'fullName'},
-                                    {data: 'taxCode'},
-                                    {data: 'address'},
-                                    {data: 'phone'},
-                                    {data: 'email'}
-                                ]
-                            });
-                            transportView.displayModal("show", "#modal-customer");
+                            transportView.dataCustomer = data['customers'];
+                            transportView.tagsCustomerName = _.map(transportView.dataCustomer, 'fullName');
+                            transportView.tagsCustomerName = _.union(transportView.tagsCustomerName);
+                            renderAutoCompleteSearch('#customer_id', transportView.tagsCustomerName);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -906,7 +919,7 @@
                             transportView.dataProduct = data['products'];
                             transportView.tagsProductName = _.map(transportView.dataProduct, 'name');
                             transportView.tagsProductName = _.union(transportView.tagsProductName);
-                            transportView.renderAutoCompleteSearch();
+                            renderAutoCompleteSearch('#product_name', transportView.tagsProductName);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1053,23 +1066,23 @@
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cashPreDelivery',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
-                            },
-                            {
                                 data: 'cashReceive',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cost',
+                                data: 'carrying',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'parking',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'fine',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
                                 data: 'cashProfit',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
-                            },
-                            {
-                                data: 'cashProfit_real',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {data: 'receiver'},
@@ -1196,8 +1209,10 @@
                     $("input[id='weight']").val(transportView.current["weight"]);
                     $("input[id='cashRevenue']").val(transportView.current["cashRevenue"]);
                     $("input[id='cashDelivery']").val(transportView.current["cashDelivery"]);
-                    $("input[id='cashPreDelivery']").val(transportView.current["cashPreDelivery"]);
                     $("input[id='cashReceive']").val(transportView.current["cashReceive"]);
+                    $("input[id='carrying']").val(transportView.current["carrying"]);
+                    $("input[id='parking']").val(transportView.current["parking"]);
+                    $("input[id='fine']").val(transportView.current["fine"]);
                     $("input[id='receiver']").val(transportView.current["receiver"]);
 
                     var receiveDate = moment(transportView.current["receiveDate"], "YYYY-MM-DD");
@@ -1209,8 +1224,7 @@
                     $("input[id='voucherQuantumProduct']").val(transportView.current["voucherQuantumProduct"]);
                     $("textarea[id='note']").val(transportView.current["note"]);
                     $("select[id='status_transport']").val(transportView.current["status_transport"]);
-                    $("input[id='cost']").val(transportView.current["cost"]);
-                    $("textarea[id='costs_note']").val(transportView.current["costs_note"]);
+                    $("textarea[id='costNote']").val(transportView.current["costNote"]);
 
                     var strVoucherName = "";
                     for (var i = 0; i < transportView.arrayVoucher.length; i++) {
@@ -1220,7 +1234,6 @@
                         strVoucherName += objVoucher.name + ", ";
                     }
                     $("input[id='voucher_transport']").val(strVoucherName);
-                    $("select[id='costPrices_id']").val(transportView.current["costPrices_id"]);
                     formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
@@ -1233,8 +1246,10 @@
                             weight: $("input[id='weight']").val(),
                             cashRevenue: asNumberFromCurrency("#cashRevenue"),
                             cashDelivery: asNumberFromCurrency("#cashDelivery"),
-                            cashPreDelivery: asNumberFromCurrency("#cashPreDelivery"),
                             cashReceive: asNumberFromCurrency("#cashReceive"),
+                            carrying: asNumberFromCurrency("#carrying"),
+                            parking: asNumberFromCurrency("#parking"),
+                            fine: asNumberFromCurrency("#fine"),
                             receiver: $("input[id='receiver']").val(),
                             receiveDate: $("input[id='receiveDate']").val(),
                             receivePlace: $("input[id='receivePlace']").val(),
@@ -1243,10 +1258,9 @@
                             voucherQuantumProduct: $("input[id='voucherQuantumProduct']").val(),
                             note: $("textarea[id='note']").val(),
                             status_transport: $("select[id='status_transport']").val(),
-                            cost: asNumberFromCurrency("#cost"),
-                            costs_note: $("textarea[id='costs_note']").val(),
+                            costNote: $("textarea[id='costNote']").val(),
                             voucher_transport: transportView.arrayVoucher,
-                            costPrices_id: $("select[id='costPrices_id']").val()
+                            transportType: transportView.transportType
                         };
                     } else if (transportView.action == 'update') {
                         transportView.current.vehicles_id = $("#vehicle_id").attr("data-vehicleId");
@@ -1256,8 +1270,10 @@
                         transportView.current.weight = $("input[id='weight']").val();
                         transportView.current.cashRevenue = asNumberFromCurrency("#cashRevenue");
                         transportView.current.cashDelivery = asNumberFromCurrency("#cashDelivery");
-                        transportView.current.cashPreDelivery = asNumberFromCurrency("#cashPreDelivery");
                         transportView.current.cashReceive = asNumberFromCurrency("#cashReceive");
+                        transportView.current.carrying = asNumberFromCurrency("#carrying");
+                        transportView.current.parking = asNumberFromCurrency("#parking");
+                        transportView.current.fine = asNumberFromCurrency("#fine");
                         transportView.current.receiver = $("input[id='receiver']").val();
                         transportView.current.receiveDate = $("input[id='receiveDate']").val();
                         transportView.current.receivePlace = $("input[id='receivePlace']").val();
@@ -1266,10 +1282,9 @@
                         transportView.current.voucherQuantumProduct = $("input[id='voucherQuantumProduct']").val();
                         transportView.current.note = $("textarea[id='note']").val();
                         transportView.current.status_transport = $("select[id='status_transport']").val();
-                        transportView.current.cost = asNumberFromCurrency("#cost");
-                        transportView.current.costs_note = $("textarea[id='costs_note']").val();
+                        transportView.current.costNote = $("textarea[id='costNote']").val();
                         transportView.current.voucher_transport = transportView.arrayVoucher;
-                        transportView.current.costPrices_id = $("select[id='costPrices_id']").val();
+                        transportView.current.transportType = transportView.transportType;
                     }
                 },
 
@@ -1397,8 +1412,12 @@
                             _id: transportView.idDelete
                         };
                     } else {
-                        transportView.formValidate();
-                        if ($("#frmControl").valid()) {
+                        if(transportView.transportType === false){
+                            transportView.formValidate();
+                            if (!$("#frmControl").valid()) {
+                                $("form#frmControl").find("label[class=error]").css("color", "red");
+                                return;
+                            }
                             if ($("#vehicle_id").attr('data-vehicleId') == '') {
                                 showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
                                 return;
@@ -1411,16 +1430,13 @@
                                 showNotification('warning', 'Vui lòng nhập hàng.');
                                 return;
                             }
-                            transportView.fillFormDataToCurrentObject();
-                            sendToServer = {
-                                _token: _token,
-                                _action: transportView.action,
-                                _transport: transportView.current
-                            };
-                        } else {
-                            $("form#frmControl").find("label[class=error]").css("color", "red");
-                            return;
                         }
+                        transportView.fillFormDataToCurrentObject();
+                        sendToServer = {
+                            _token: _token,
+                            _action: transportView.action,
+                            _transport: transportView.current
+                        };
                     }
                     console.log("CLIENT");
                     console.log(sendToServer._transport);
@@ -1539,7 +1555,7 @@
                                 transportView.dataProduct.push(data['product']);
                                 transportView.tagsProductName = _.map(transportView.dataProduct, 'name');
                                 transportView.tagsProductName = _.union(transportView.tagsProductName);
-                                transportView.renderAutoCompleteSearch();
+                                renderAutoCompleteSearch('#product_name', transportView.tagsProductName);
                                 $("input[id=product_name]").val(data['product']['name']);
                                 $("#product_name").attr("data-productId", data['product']['id']);
                                 transportView.displayModal("hide", "#modal-addProduct");
