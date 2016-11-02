@@ -18,12 +18,12 @@ class HomeController extends Controller
             'UserManagement'        => 'user-management',
             'Position'              => 'position',
             'User'                  => 'user',
+            'DriverManagement'      => 'driver-management',
             'CustomerManagement'    => 'customer-management',
             'VehicleManagement'     => 'vehicle-management',
             'DebtManagement'        => 'debt-management',
             'CostManagement'        => 'cost-management',
             'PostageManagement'     => 'postage-management',
-            'DriverManagement'      => 'driver-management',
             'Report'                => 'report',
             'Customer'              => 'customer',
             'DeliveryRequirement'   => 'delivery-requirement',
@@ -42,24 +42,24 @@ class HomeController extends Controller
         $array_icon = [
             'Admin'               => "Admin.png",
             'UserManagement'      => "User.png",
+            'DriverManagement'    => "Driver.png",
             'CustomerManagement'  => "Customer.png",
             'VehicleManagement'   => "Vehicle.png",
             'DebtManagement'      => "Debt.png",
             'CostManagement'      => "Cost.png",
             'PostageManagement'   => "Postage.png",
-            'DriverManagement'    => "Driver.png",
             'Report'              => "Report.png",
         ];
 
         $array_auth = [
             'Admin'               => [],
             'UserManagement'      => ['Position','User'],
+            'DriverManagement'    => [],
             'CustomerManagement'  => ['Customer', 'DeliveryRequirement'],
             'VehicleManagement'   => ['VehicleInside', 'VehicleOutside'],
             'DebtManagement'      => ['DebtCustomer', 'DebtVehicleOutside'],
             'CostManagement'      => ['FuelCost', 'PetroleumCost', 'ParkingCost', 'OtherCost'],
             'PostageManagement'   => [],
-            'DriverManagement'    => [],
             'Report'              => ['RevenueReport', 'HistoryDeliveryReport'],
         ];
 

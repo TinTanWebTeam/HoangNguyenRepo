@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\UserVehicle;
+use App\DriverVehicle;
 use App\User;
 use Illuminate\Http\Request;
 use Auth;
@@ -15,9 +15,11 @@ class DriverManagementController extends Controller
     {
         return view('subviews.Driver.Driver');
     }
-    public function getDataDivisiveDriver(){
-        $vehicleUser = \DB::table('userVehicles')
-            ->select('userVehicles.*', 'users.fullname as users_fullname', 'users.phone as users_phone', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'garages.name as garages_name')
+    public function getDataDriver(){
+        $driverVehicle = DriverVehicle::all();
+        dd($driverVehicle);
+        $vehicleUser = \DB::table('driverVehicles')
+            ->select('driverVehicles.*', 'users.fullname as users_fullname', 'users.phone as users_phone', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'garages.name as garages_name')
             ->join('users', 'users.id', '=', 'userVehicles.user_id')
             ->join('vehicles', 'vehicles.id', '=', 'userVehicles.vehicle_id')
             ->join('garages', 'garages.id', '=', 'vehicles.garage_id')

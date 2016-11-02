@@ -146,7 +146,7 @@ Route::group(['middleware' => 'auth'], function(){
         //get View
         Route::get('/driver-management', 'DriverManagementController@getViewDriver');
         //get Data
-//        Route::get('/divisive-driver/vehicle-user', 'DivisiveDriverController@getDataDivisiveDriver');
+        Route::get('/driver-management/driver', 'DriverManagementController@getDataDriver');
 //        Route::get('/divisive-driver/drivers', 'DivisiveDriverController@getAllDriver');
 //        //post Modify
 //        Route::post('/divisive-driver/modify', 'DivisiveDriverController@postModifyDivisiveDriver');

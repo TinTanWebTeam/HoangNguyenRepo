@@ -486,7 +486,7 @@
 
                 loadData: function () {
                     $.ajax({
-                        url: url + 'divisive-driver/vehicle-user',
+                        url: url + 'driver-management/driver',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
