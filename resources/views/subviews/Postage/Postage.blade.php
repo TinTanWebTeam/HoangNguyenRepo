@@ -115,13 +115,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="month"><b>Ngày tạo</b></label>
-                                            <input type="text" class="form-control date ignore" id="month" name="month">
-                                            {{--<select class="form-control" id="month" name="month">--}}
-                                                {{--@for($i = 1; $i < 13; $i++)--}}
-                                                    {{--<option value="{{$i}}">{{$i}}</option>--}}
-                                                {{--@endfor--}}
-                                            {{--</select>--}}
+                                            <label for="createdDate"><b>Ngày tạo</b></label>
+                                            <input type="text" class="form-control date ignore" id="createdDate" name="createdDate">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -287,7 +282,7 @@
                     $("#customer_id").attr("data-customerId", "");
 
                     $("input[id='postage']").val('');
-                    $("select[id='month']").val('');
+                    $("input[id='createdDate']").val('');
                     $("input[id='note']").val('');
                 },
                 retype: function () {
@@ -328,12 +323,12 @@
                     });
                     $('#applyDate').datepicker("setDate", new Date());
 
-                    $('#month').datepicker({
+                    $('#createdDate').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#month').datepicker("setDate", new Date());
+                    $('#createdDate').datepicker("setDate", new Date());
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -398,7 +393,7 @@
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {
-                                data: 'month',
+                                data: 'createdDate',
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("MM/YYYY");
                                 }, width: "5%"
@@ -468,11 +463,10 @@
 
                     $("input[id=postage]").val(postageView.current["postage"]);
                     $("textarea[id=note]").val(postageView.current["note"]);
-                    var month = moment(postageView.current["month"]).month();
-                    $("select[id=month]").val(month + 1);
                     $("input[id=receivePlace]").val(postageView.current["receivePlace"]);
                     $("input[id=deliveryPlace]").val(postageView.current["deliveryPlace"]);
                     $("input[id=applyDate]").val(postageView.current["applyDate"]);
+                    $("input[id=createdDate]").val(postageView.current["createdDate"]);
                     $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
                 },
                 fillFormDataToCurrentObject: function () {
@@ -480,7 +474,7 @@
                         postageView.current = {
                             customer_id: $("#customer_id").attr("data-customerId"),
                             postage: asNumberFromCurrency('#postage'),
-                            month: $("select[id='month']").val(),
+                            createdDate: $("input[id='createdDate']").val(),
                             note: $("textarea[id='note']").val(),
                             receivePlace: $("input[id=receivePlace]").val(),
                             deliveryPlace: $("input[id=deliveryPlace]").val(),
@@ -490,7 +484,7 @@
                     } else if (postageView.action == 'update') {
                         postageView.current.customer_id = $("#customer_id").attr("data-customerId");
                         postageView.current.postage = asNumberFromCurrency('#postage');
-                        postageView.current.month = $("select[id='month']").val();
+                        postageView.current.createdDate = $("input[id='createdDate']").val();
                         postageView.current.note = $("textarea[id='note']").val();
                         postageView.current.receivePlace = $("input[id='receivePlace']").val();
                         postageView.current.deliveryPlace = $("input[id='deliveryPlace']").val();
@@ -526,13 +520,11 @@
                     $("#frmControl").validate({
                         rules: {
                             customer_id: "required",
-                            postage: "required",
-                            month: "required"
+                            postage: "required"
                         },
                         messages: {
                             customer_id: "Vui lòng chọn khách hàng",
-                            postage: "Vui lòng nhập cước phí",
-                            month: "Vui lòng chọn tháng"
+                            postage: "Vui lòng nhập cước phí"
                         }
                     });
                 },

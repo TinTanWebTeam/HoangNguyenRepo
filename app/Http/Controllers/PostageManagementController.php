@@ -36,7 +36,7 @@ class PostageManagementController extends Controller
 
         $postage = null;
         $customer_id = null;
-        $month = null;
+        $createdDate = null;
         $note = null;
         $receivePlace = null;
         $deliveryPlace = null;
@@ -54,7 +54,7 @@ class PostageManagementController extends Controller
 
             $postage = $request->input('_postage')['postage'];
             $customer_id = $request->input('_postage')['customer_id'];
-            $month = $request->input('_postage')['month'];
+            $createdDate = $request->input('_postage')['createdDate'];
             $note = $request->input('_postage')['note'];
             $receivePlace = $request->input('_postage')['receivePlace'];
             $deliveryPlace = $request->input('_postage')['deliveryPlace'];
@@ -68,7 +68,7 @@ class PostageManagementController extends Controller
             case 'add':
                 $postageNew = new Postage();
                 $postageNew->postage = $postage;
-                $postageNew->month = $month;
+                $postageNew->createdDate = $createdDate;
                 $postageNew->customer_id = $customer_id;
                 $postageNew->note = $note;
                 $postageNew->receivePlace = $receivePlace;
@@ -82,7 +82,7 @@ class PostageManagementController extends Controller
                 $postageDetail = new PostageDetail();
                 $postageDetail->postage_id = $postageNew->id;
                 $postageDetail->postage = $postage;
-                $postageDetail->month = $month;
+                $postageDetail->createdDate = $createdDate;
                 $postageDetail->receivePlace = $receivePlace;
                 $postageDetail->deliveryPlace = $deliveryPlace;
                 $postageDetail->cashDelivery = $cashDelivery;
