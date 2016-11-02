@@ -142,6 +142,10 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::post('/postage/modify', 'PostageManagementController@postModifyPostage');
     });
+    //QL giá nhiên liệu
+    Route::group(['middleware' => 'FuelManagement'], function () {
+        Route::get('/fuel-management', 'FuelManagementController@getViewFuel');
+    });
     Route::group(['middleware' => 'DriverManagement'], function () {
         //get View
         Route::get('/driver-management', 'DriverManagementController@getViewDriver');

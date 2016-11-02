@@ -57,6 +57,7 @@ class Kernel extends HttpKernel
         'DebtManagement' => \App\Http\Middleware\DebtManagement::class,
         'CostManagement' => \App\Http\Middleware\CostManagement::class,
         'PostageManagement' => \App\Http\Middleware\PostageManagement::class,
+        'FuelManagement' => \App\Http\Middleware\FuelManagement::class,
         'DriverManagement' => \App\Http\Middleware\DriverManagement::class,
         'Report' => \App\Http\Middleware\Report::class
     ];

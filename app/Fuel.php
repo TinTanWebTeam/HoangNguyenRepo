@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Driver extends Model
+class Fuel extends Model
 {
-    protected $table = 'drivers';
+    protected $table = 'fuels';
 }

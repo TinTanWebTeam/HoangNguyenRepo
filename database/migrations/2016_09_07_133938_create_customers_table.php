@@ -24,8 +24,9 @@ class CreateCustomersTable extends Migration
             $table->integer('updatedBy')->unsigned();
             $table->boolean('active')->default(1);
             $table->integer('customerType_id')->unsigned();
-            $table->integer('percentPetroleum')->unsigned();
-            $table->integer('percentFuel')->unsigned();
+            $table->integer('percentPetroleum')->default(0);
+            $table->integer('percentFuel')->default(0);
+            $table->integer('percentFuelChange')->default(0);
             $table->timestamps();
         });
     }

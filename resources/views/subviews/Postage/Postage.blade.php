@@ -2,11 +2,15 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 25%;
+        top: 15%;
         display: none;
         right: 0;
         width: 60%;
         height: 100%;
+    }
+
+    #divControl .panel-body {
+        height: 501px;
     }
 
     div.col-lg-12 {
@@ -33,6 +37,12 @@
                         <li><a href="javascript:;">Trang chủ</a></li>
                         <li class="active">QL cước phí</li>
                     </ol>
+                    <div class="pull-right menu-toggle fixed">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="postageView.addPostage()">
+                            <i class="glyphicon glyphicon-plus icon-center"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- .panel-body -->
@@ -81,11 +91,10 @@
                                     <div class="col-md-12">
                                         <div class="form-group form-md-line-input">
                                             <label for="customer_id"><b>Khách hàng</b></label>
-                                            <input type="text" class="form-control cursor-copy" id="customer_id"
+                                            <input type="text" class="form-control" id="customer_id"
                                                    name="customer_id"
-                                                   readonly placeholder="Nhấp đôi để chọn khách hàng"
+                                                   placeholder="Nhập tên khách hàng"
                                                    data-customerId="">
-                                            <!--ondblclick="postageView.loadListCustomer()"-->
                                         </div>
                                     </div>
                                 </div>
@@ -106,18 +115,33 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="month"><b>Tháng</b></label>
-                                            <select class="form-control" id="month" name="month" disabled>
-                                                @for($i = 1; $i < 13; $i++)
-                                                    <option value="{{$i}}">{{$i}}</option>
-                                                @endfor
-                                            </select>
+                                            <label for="month"><b>Ngày tạo</b></label>
+                                            <input type="text" class="form-control date ignore" id="month" name="month">
+                                            {{--<select class="form-control" id="month" name="month">--}}
+                                                {{--@for($i = 1; $i < 13; $i++)--}}
+                                                    {{--<option value="{{$i}}">{{$i}}</option>--}}
+                                                {{--@endfor--}}
+                                            {{--</select>--}}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
+                                            <label for="applyDate"><b>Ngày áp dụng</b></label>
+                                            <input type="text" class="date ignore form-control" id="applyDate" name="applyDate">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input">
                                             <label for="postage"><b>Cước phí</b></label>
-                                            <input type="number" class="form-control" id="postage" name="postage">
+                                            <input type="text" class="form-control currency" id="postage" name="postage">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="cashDelivery"><b>Phí giao xe</b></label>
+                                            <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery">
                                         </div>
                                     </div>
                                 </div>
@@ -204,41 +228,25 @@
 </div>
 <!-- end Modal confirm delete Postage -->
 
-<!-- Modal list customers -->
+<!-- Modal notification -->
 <div class="row">
-    <div id="modal-customer" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
+    <div id="modal-notification" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">Danh sách khách hàng</h4>
+                    <h5 class="modal-title"></h5>
                 </div>
                 <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="table-customer" style="width: 100%">
-                            <thead>
-                            <tr>
-                                <th>Mã khách hàng</th>
-                                <th>Loại khách hàng</th>
-                                <th>Tên khách hàng</th>
-                                <th>Mã số thuế</th>
-                                <th>Địa chỉ</th>
-                                <th>Điện thoại</th>
-                                <th>Email</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- end Modal list customers -->
+<!-- end Modal notification -->
 
 <script>
     $(function () {
@@ -286,12 +294,50 @@
                     $("input[id='postage']").val('');
                     $("input[id='note']").val('');
                 },
+                tagsCustomerName: [],
 
                 renderEventClickTableModal: function () {
                     $("#table-customer").find("tbody").on('click', 'tr', function () {
                         $('#customer_id').attr('data-customerId', $(this).find('td:first')[0].innerText);
                         $('input[id=customer_id]').val($(this).find('td:eq(2)')[0].innerText);
                         postageView.displayModal("hide", "#modal-customer");
+                    });
+                },
+                renderEventFocusOut: function () {
+                    $("#customer_id").focusout(function () {
+                        custName = this.value;
+                        if (custName == '') return;
+                        customer = _.find(postageView.dataCustomer, function (o) {
+                            return o.fullName == custName;
+                        });
+                        if (typeof customer === "undefined") {
+                            $("#modal-notification").find(".modal-title").html("Khách hàng <label class='text text-danger'>" + custName + "</label> không tồn tại");
+                            postageView.displayModal('show', '#modal-notification');
+                            $("input[id=customer_id]").val('');
+                            $("#customer_id").attr("data-customerId", '');
+                        } else {
+                            $("#customer_id").attr("data-customerId", customer.id);
+                        }
+                    });
+                },
+                renderDateTimePicker: function () {
+                    $('#applyDate').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#applyDate').datepicker("setDate", new Date());
+
+                    $('#month').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#month').datepicker("setDate", new Date());
+                },
+                renderScrollbar: function () {
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
                     });
                 },
 
@@ -312,8 +358,15 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
+                    postageView.loadListCustomer();
                     postageView.renderEventClickTableModal();
+                    postageView.renderEventFocusOut();
+                    postageView.renderDateTimePicker();
+                    postageView.renderScrollbar();
+                    formatCurrency(".currency");
+                    setEventFormatCurrency(".currency");
+                    defaultZero("#postage");
+                    defaultZero("#cashDelivery");
                 },
                 loadListCustomer: function () {
                     $.ajax({
@@ -322,23 +375,10 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            if (postageView.tableCustomer != null) {
-                                postageView.tableCustomer.destroy();
-                            }
-                            postageView.tableCustomer = $('#table-customer').DataTable({
-                                language: languageOptions,
-                                data: data['customers'],
-                                columns: [
-                                    {data: 'id'},
-                                    {data: 'customerTypes_name'},
-                                    {data: 'fullName'},
-                                    {data: 'taxCode'},
-                                    {data: 'address'},
-                                    {data: 'phone'},
-                                    {data: 'email'}
-                                ]
-                            });
-                            postageView.displayModal("show", "#modal-customer");
+                            postageView.dataCustomer = data['customers'];
+                            postageView.tagsCustomerName = _.map(postageView.dataCustomer, 'fullName');
+                            postageView.tagsCustomerName = _.union(postageView.tagsCustomerName);
+                            renderAutoCompleteSearch('#customer_id', postageView.tagsCustomerName);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -423,27 +463,39 @@
                     })
                 },
                 fillCurrentObjectToForm: function () {
-                    $("input[id='customer_id']").val(postageView.current["customers_fullName"]);
+                    $("input[id=customer_id]").val(postageView.current["customers_fullName"]);
                     $("#customer_id").attr('data-customerId', postageView.current["customer_id"]);
 
-                    $("input[id='postage']").val(postageView.current["postage"]);
-                    $("input[id='note']").val(postageView.current["note"]);
+                    $("input[id=postage]").val(postageView.current["postage"]);
+                    $("textarea[id=note]").val(postageView.current["note"]);
                     var month = moment(postageView.current["month"]).month();
-                    $("select[id='month']").val(month + 1);
+                    $("select[id=month]").val(month + 1);
+                    $("input[id=receivePlace]").val(postageView.current["receivePlace"]);
+                    $("input[id=deliveryPlace]").val(postageView.current["deliveryPlace"]);
+                    $("input[id=applyDate]").val(postageView.current["applyDate"]);
+                    $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (postageView.action == 'add') {
                         postageView.current = {
-                            customer_id: $("#customer_id").attr("customer_id"),
-                            postage: $("input[id='postage']").val(),
+                            customer_id: $("#customer_id").attr("data-customerId"),
+                            postage: asNumberFromCurrency('#postage'),
                             month: $("select[id='month']").val(),
-                            note: $("input[id='note']").val()
+                            note: $("textarea[id='note']").val(),
+                            receivePlace: $("input[id=receivePlace]").val(),
+                            deliveryPlace: $("input[id=deliveryPlace]").val(),
+                            applyDate: $("input[id=applyDate]").val(),
+                            cashDelivery: asNumberFromCurrency("#cashDelivery")
                         };
                     } else if (postageView.action == 'update') {
                         postageView.current.customer_id = $("#customer_id").attr("data-customerId");
-                        postageView.current.postage = $("input[id='postage']").val();
+                        postageView.current.postage = asNumberFromCurrency('#postage');
                         postageView.current.month = $("select[id='month']").val();
-                        postageView.current.note = $("input[id='note']").val();
+                        postageView.current.note = $("textarea[id='note']").val();
+                        postageView.current.receivePlace = $("input[id='receivePlace']").val();
+                        postageView.current.deliveryPlace = $("input[id='deliveryPlace']").val();
+                        postageView.current.applyDate = $("input[id='applyDate']").val();
+                        postageView.current.cashDelivery = asNumberFromCurrency("#cashDelivery");
                     }
                 },
 
@@ -458,6 +510,8 @@
                     postageView.showControl();
                 },
                 addPostage: function () {
+                    $("input[id=postage]").val(0);
+                    $("input[id=cashDelivery]").val(0);
                     postageView.current = null;
                     postageView.action = 'add';
                     postageView.showControl();
@@ -508,6 +562,8 @@
                         if (postageView.action == 'delete') {
                             sendToServer._id = postageView.idDelete;
                         }
+                        console.log(sendToServer);
+                        return;
                         $.ajax({
                             url: url + 'postage/modify',
                             type: "POST",

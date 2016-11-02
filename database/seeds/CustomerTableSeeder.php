@@ -32,8 +32,9 @@ class CustomerTableSeeder extends Seeder
                 'updatedBy'       => 1,
                 'taxCode'         => '0301876168',
                 'customerType_id' => 1,
-                'percentPetroleum'=> 20,
-                'percentFuel'=> 10
+                'percentPetroleum'=> 0,
+                'percentFuel'     => 10,
+                'percentFuelChange'=> 15
             ]);
         }
     }

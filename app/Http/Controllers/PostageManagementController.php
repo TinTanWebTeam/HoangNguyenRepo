@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Postage;
+use App\PostageDetail;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -15,11 +16,12 @@ class PostageManagementController extends Controller
     }
     public function getDataPostage()
     {
-        $postages = Postage::join('customers', 'customers.id', '=', 'postages.customer_id')
+        $postages = \DB::table('postages')
+            ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
             ->select('postages.*', 'customers.fullName as customers_fullName')
             ->orderBy('postages.month', 'desc')
-            ->get()
-            ->groupBy('month')->first()->toArray();
+            ->groupBy('month')
+            ->get();
 
         $response = [
             'msg' => 'Get success',
@@ -38,8 +40,12 @@ class PostageManagementController extends Controller
         $customer_id = null;
         $month = null;
         $note = null;
+        $receivePlace = null;
+        $deliveryPlace = null;
+        $cashDelivery = null;
         $createdBy = null;
         $updatedBy = null;
+        $applyDate = null;
 
         $action = $request->input('_action');
         if ($action != 'delete') {
@@ -52,6 +58,10 @@ class PostageManagementController extends Controller
             $customer_id = $request->input('_postage')['customer_id'];
             $month = $request->input('_postage')['month'];
             $note = $request->input('_postage')['note'];
+            $receivePlace = $request->input('_postage')['receivePlace'];
+            $deliveryPlace = $request->input('_postage')['deliveryPlace'];
+            $cashDelivery = $request->input('_postage')['cashDelivery'];
+            $applyDate = $request->input('_postage')['applyDate'];
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
         }
@@ -63,45 +73,72 @@ class PostageManagementController extends Controller
                 $postageNew->month = $month;
                 $postageNew->customer_id = $customer_id;
                 $postageNew->note = $note;
+                $postageNew->receivePlace = $receivePlace;
+                $postageNew->deliveryPlace = $deliveryPlace;
+                $postageNew->cashDelivery = $cashDelivery;
                 $postageNew->createdBy = $createdBy;
                 $postageNew->updatedBy = $updatedBy;
-                if ($postageNew->save()) {
-                    $postage = \DB::table('postages')
-                        ->join('customers', 'customers.id', '=', 'postages.customer_id')
-                        ->select('postages.*', 'customers.fullName as customers_fullName')
-                        ->where('postages.id', '=', $postageNew->id)
-                        ->first();
-
-                    $response = [
-                        'msg'      => 'Created postage',
-                        'postage' => $postage
-                    ];
-                    return response()->json($response, 201);
+                if (!$postageNew->save()) {
+                    return response()->json(['msg' => 'Create Postage failed'], 404);
                 }
-                return response()->json(['msg' => 'Create failed'], 404);
+                $postageDetail = new PostageDetail();
+                $postageDetail->postage_id = $postageNew->id;
+                $postageDetail->postage = $postage;
+                $postageDetail->month = $month;
+                $postageDetail->receivePlace = $receivePlace;
+                $postageDetail->deliveryPlace = $deliveryPlace;
+                $postageDetail->cashDelivery = $cashDelivery;
+                $postageDetail->createdBy = $createdBy;
+                $postageDetail->updatedBy = $updatedBy;
+                $postageDetail->applyDate = $applyDate;
+                if (!$postageDetail->save()) {
+                    return response()->json(['msg' => 'Create PostageDetail failed'], 404);
+                }
+
+                //Response
+                $postage = \DB::table('postages')
+                    ->join('customers', 'customers.id', '=', 'postages.customer_id')
+                    ->select('postages.*', 'customers.fullName as customers_fullName')
+                    ->where('postages.id', '=', $postageNew->id)
+                    ->first();
+
+                $response = [
+                    'msg'      => 'Created postage',
+                    'postage' => $postage
+                ];
+                return response()->json($response, 201);
                 break;
             case 'update':
+                //Update PostageDetail
+
+                //Update Postage
                 $postageUpdate = Postage::findOrFail($request->input('_postage')['id']);
                 $postageUpdate->postage = $postage;
 //                $postageUpdate->month = $month;
                 $postageUpdate->customer_id = $customer_id;
                 $postageUpdate->note = $note;
+                $postageUpdate->receivePlace = $receivePlace;
+                $postageUpdate->deliveryPlace = $deliveryPlace;
+                $postageUpdate->cashDelivery = $cashDelivery;
                 $postageUpdate->updatedBy = $updatedBy;
                 if ($postageUpdate->update()) {
-                    $postage = \DB::table('postages')
-                        ->join('customers', 'customers.id', '=', 'postages.customer_id')
-                        ->select('postages.*', 'customers.fullName as customers_fullName')
-                        ->where('postages.id', '=', $postageUpdate->id)
-                        ->first();
-                    $response = [
-                        'msg'      => 'Updated postage',
-                        'postage' => $postage
-                    ];
-                    return response()->json($response, 201);
+                    return response()->json(['msg' => 'Update failed'], 404);
                 }
-                return response()->json(['msg' => 'Update failed'], 404);
+
+                //Response
+                $postage = \DB::table('postages')
+                    ->join('customers', 'customers.id', '=', 'postages.customer_id')
+                    ->select('postages.*', 'customers.fullName as customers_fullName')
+                    ->where('postages.id', '=', $postageUpdate->id)
+                    ->first();
+                $response = [
+                    'msg'      => 'Updated postage',
+                    'postage' => $postage
+                ];
+                return response()->json($response, 201);
                 break;
             case 'delete':
+                //Delete Postage
                 $postageDelete = Postage::findOrFail($request->input('_id'));
                 $postageDelete->active = 0;
 
