@@ -443,6 +443,7 @@
                     $("input[id='applyDate']").datepicker('update', applyDate.format("DD-MM-YYYY"));
                     var createdDate = moment(postageView.current["createdDate"], "YYYY-MM-DD");
                     $("input[id='createdDate']").datepicker('update', createdDate.format("DD-MM-YYYY"));
+                    formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
                     if (postageView.action == 'add') {
@@ -584,6 +585,8 @@
                                 }
                                 postageView.table.clear().rows.add(postageView.dataPostage).draw();
                                 postageView.clearInput();
+                            } else if (jqXHR.status == 203) {
+                                showNotification("error", "Khách hàng này đã có cước phí!");
                             } else {
                                 showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
