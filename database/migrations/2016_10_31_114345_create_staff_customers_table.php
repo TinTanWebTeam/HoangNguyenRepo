@@ -21,7 +21,7 @@ class CreateStaffCustomersTable extends Migration
             $table->string('email')->nullable();
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
-            $table->string('position')->unsigned();
+            $table->string('position')->nullable();
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
             $table->integer('customer_id')->unsigned();
