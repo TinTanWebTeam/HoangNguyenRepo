@@ -8,15 +8,29 @@ use App\Http\Requests;
 
 class FuelManagementController extends Controller
 {
+    /* OIL MANAGEMENT */
     /* GET VIEW */
-    public function getView()
+    public function getOilView()
     {
-        return view('subviews.Fuel.Fuel');
+        return view('subviews.Fuel.Oil');
     }
 
-    /* GET BASIC DATA WHEN VIEW LOAD COMPLETE */
-    public function getDataWhenViewLoadComplete()
+    public function getOilViewCompleteData()
+    {
+        
+    }
+
+    /*--------------------------------------------------------------------------------*/
+    /* LUBE MANAGEMENT */
+    /* GET VIEW */
+    public function getLubeView()
+    {
+        return view('subviews.Fuel.Oil');
+    }
+
+    public function getLubeViewCompleteData()
     {
 
     }
+
 }

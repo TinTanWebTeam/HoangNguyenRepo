@@ -38,7 +38,7 @@ class RoleTableSeeder extends Seeder
             'Position',
             'User',
             'Oil',
-            'Petroleum'
+            'Lube'
         ];
 
         $array_description = [

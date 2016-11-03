@@ -143,13 +143,9 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/postage/modify', 'PostageManagementController@postModifyPostage');
     });
     //QL giá nhiên liệu
-    Route::group(['middleware' => 'FuelManagement'], function () {
-        Route::get('/oil', function (){
-            return 'oil';
-        });
-        Route::get('/petroleum', function (){
-            return 'petroleum';
-        });
+    Route::group(['middleware' => 'FuelManagement','prefix' => 'fuel-price'], function () {
+        Route::get('/oil', 'FuelManagementController@getOilView');
+        Route::get('/lube', 'FuelManagementController@getLubeView');
     });
     Route::group(['middleware' => 'DriverManagement'], function () {
         //get View
