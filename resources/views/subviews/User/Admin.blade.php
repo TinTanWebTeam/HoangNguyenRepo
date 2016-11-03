@@ -451,6 +451,10 @@
                     $("#modalConfirm").modal('hide');
                 },
                 fillDataToDatatable: function (data) {
+                    if (adminView.table != null) {
+                        adminView.table.destroy();
+                    }
+
                     adminView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -732,14 +736,13 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                var idUser = adminView.idDelete;
-                                adminView.tableAdmin.splice(1, data['TableDeleteUser'][0]);
+                                var objectDelete = _.find(adminView.tableAdmin,function(o){
+                                    return o.id == adminView.idDelete;
+                                });
+                                objectDelete.active = 0;
                                 adminView.table.clear().rows.add(adminView.tableAdmin).draw();
                                 adminView.showNotification("success", "Xóa thành công!");
                                 adminView.displayModal('hide', '#modal-notification');
-                                $("#deleteUser").attr('data-id', idUser).removeClass("btn-danger").addClass("btn-info");
-                                $("#deleteUser").attr('data-id', idUser).find('i').removeClass("glyphicon-remove").addClass("glyphicon-plus");
-
                             }
                             adminView.table.clear().rows.add(adminView.tableAdmin).draw();
                         }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -820,13 +823,14 @@
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 201) {
-                            adminView.tableAdmin.splice(1, data['TableRestoreUser'][0]);
+
+                            var objectRestore = _.find(adminView.tableAdmin, function (o) {
+                                return o.id == idRestore;
+                            });
+                            objectRestore.active = 1;
                             adminView.table.clear().rows.add(adminView.tableAdmin).draw();
                             adminView.showNotification("success", "Đã khôi phục tài khoản thành công!");
                             adminView.displayModal('hide', '#modal-notification');
-                            $("#restoreUser").attr('data-id',idRestore).removeClass("btn-info").addClass("btn-danger");
-                            $("#restoreUser").attr('data-id',idRestore).find('i').removeClass("glyphicon-plus").addClass("glyphicon-remove");
-
                         } else {
                             adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }

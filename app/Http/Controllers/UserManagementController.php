@@ -246,14 +246,9 @@ class UserManagementController extends Controller
                 if (!$userDelete->update()) {
                     return response()->json(['msg' => 'Restore failed'], 404);
                 }
-                $deleteUser = \DB::table('users')
-                    ->join('positions', 'users.position_id', '=', 'positions.id')
-                    ->select('users.*', 'positions.name as positions_name')
-                    ->where('users.id', $userDelete->id)
-                    ->first();
+
                 $response = [
-                    'msg'              => 'Restore User',
-                    'TableDeleteUser' => $deleteUser
+                    'msg'              => 'deleted User',
                 ];
                 return response()->json($response, 201);
                 break;
@@ -264,15 +259,9 @@ class UserManagementController extends Controller
                 if (!$userRestore->update()) {
                     return response()->json(['msg' => 'Restore failed'], 404);
                 }
-                $restore = \DB::table('users')
-                    ->join('positions', 'users.position_id', '=', 'positions.id')
-                    ->select('users.*', 'positions.name as positions_name')
-                    ->where('users.id', $userRestore->id)
-                    ->first();
 
                 $response = [
-                    'msg'              => 'Restore User',
-                    'TableRestoreUser' => $restore
+                    'msg'              => 'Restored User'
                 ];
                 return response()->json($response, 201);
                 break;
