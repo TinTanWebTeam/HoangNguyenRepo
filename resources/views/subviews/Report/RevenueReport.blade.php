@@ -373,7 +373,6 @@
                     })
                 },
                 fillDataToDataTableYear: function (data) {
-
                     if (revenueReportView.tableYear != null) {
                         revenueReportView.tableYear.destroy();
                     }

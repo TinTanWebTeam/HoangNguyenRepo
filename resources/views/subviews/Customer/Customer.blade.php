@@ -1,5 +1,15 @@
 <style>
-    #divControl {
+    #divControl_add {
+        z-index: 3;
+        position: fixed;
+        top: 15%;
+        display: none;
+        right: 0;
+        width: 50%;
+        height: 100%;
+    }
+
+    #divControl_edit {
         z-index: 3;
         position: fixed;
         top: 15%;
@@ -18,14 +28,28 @@
     }
 
     @media (max-height: 500px) {
-        #divControl {
+        #divControl_add {
             top: 53px;
             overflow: auto;
             height: 80vh;
         }
+
     }
 
-    #divControl .panel-body {
+    @media (max-height: 500px) {
+        #divControl_edit {
+            top: 53px;
+            overflow: auto;
+            height: 80vh;
+        }
+
+    }
+
+    #divControl_add .panel-body {
+        height: 488px;
+    }
+
+    #divControl_edit .panel-body {
         height: 488px;
     }
 </style>
@@ -80,9 +104,9 @@
 </div>
 <!-- end Table -->
 
-<!-- Control -->
+<!-- Add customer-->
 <div class="row">
-    <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
+    <div id="divControl_add" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">
                 <span class="titleControl">Thêm mới khách hàng</span>
@@ -90,10 +114,9 @@
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
-
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <form role="form" id="frmControl">
                             <div class="form-body">
                                 <div class="row">
@@ -110,13 +133,15 @@
                                         <div class="form-group form-md-line-input ">
                                             <label for="customerType_id"><b>Loại khách hàng</b></label>
                                             <div class="row">
-                                                <div class="col-sm-10 col-xs-10">
-                                                    <select name="customerType_id" id="customerType_id" class="form-control">
+                                                <div class="col-sm-9 col-xs-9">
+                                                    <select name="customerType_id" id="customerType_id"
+                                                            class="form-control">
 
                                                     </select>
                                                 </div>
-                                                <div class="col-sm-2 col-xs-2">
-                                                    <div class="btn btn-primary btn-sm btn-circle" title="Thêm loại khách hàng"
+                                                <div class="col-sm-3 col-xs-3">
+                                                    <div class="btn btn-primary btn-sm btn-circle"
+                                                         title="Thêm loại khách hàng"
                                                          onclick="customerView.displayModal('show', '#modal-addCustomerType')">
                                                         <i class="glyphicon glyphicon-plus"></i>
                                                     </div>
@@ -163,7 +188,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
@@ -183,10 +208,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
                                             <label for="note"><b>Ghi chú</b></label>
-                                            <textarea class="form-control" id="note" name="note" rows="4" cols="3"></textarea>
+                                            <textarea class="form-control" id="note" name="note" rows="4"
+                                                      cols="3"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -198,7 +224,148 @@
                                                         onclick="customerView.save()">
                                                     Hoàn tất
                                                 </button>
-                                                <button type="button" class="btn default" onclick="customerView.clearInput()">
+                                                <button type="button" class="btn default"
+                                                        onclick="customerView.clearInput()">
+                                                    Nhập lại
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div> <!-- end #divControl -->
+</div>
+<!-- end Add customer -->
+
+<!-- Control -->
+<div class="row">
+    <div id="divControl_edit" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">
+                <span class="titleControl">Thêm mới khách hàng</span>
+                <div class="menu-toggles pull-right" title="Ẩn thêm mới" onclick="customerView.hideControl()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form role="form" id="frmControl">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-sm-6 col-xs-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="fullName"><b>Họ và tên</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="fullName"
+                                                   name="fullName"
+                                                   autofocus>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="customerType_id"><b>Loại khách hàng</b></label>
+                                            <div class="row">
+                                                <div class="col-sm-10 col-xs-10">
+                                                    <select name="customerType_id" id="customerType_id"
+                                                            class="form-control">
+
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2 col-xs-2">
+                                                    <div class="btn btn-primary btn-sm btn-circle"
+                                                         title="Thêm loại khách hàng"
+                                                         onclick="customerView.displayModal('show', '#modal-addCustomerType')">
+                                                        <i class="glyphicon glyphicon-plus"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="taxCode"><b>Mã số thuế</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="taxCode"
+                                                   name="taxCode">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="address"><b>Địa chỉ</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="address"
+                                                   name="address">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="phone"><b>Số điện thoại</b></label>
+                                            <input type="number" class="form-control"
+                                                   id="phone"
+                                                   name="phone">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="email"><b>Email</b></label>
+                                            <input type="email" class="form-control"
+                                                   id="email"
+                                                   name="email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="percentFuel"><b>Phần trăm nhiên liệu</b></label>
+                                                    <input type="number" id="percentFuel" name="percentFuel"
+                                                           class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="percentFuelChange"><b>Phần trăm nhiên liệu thay đổi</b></label>
+                                                    <input type="number" id="percentFuelChange" name="percentFuelChange"
+                                                           class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="note"><b>Ghi chú</b></label>
+                                            <textarea class="form-control" id="note" name="note" rows="4"
+                                                      cols="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-actions noborder">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-primary marginRight"
+                                                        onclick="customerView.save()">
+                                                    Hoàn tất
+                                                </button>
+                                                <button type="button" class="btn default"
+                                                        onclick="customerView.clearInput()">
                                                     Nhập lại
                                                 </button>
                                             </div>
@@ -213,17 +380,18 @@
                             <div class="col-md-12">
                                 <span class="text text-primary">Nhân viên khách hàng</span>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
+                                    <table style="width: 100%" class="table table-bordered table-hover"
+                                           id="table-tableStaffCustomers">
                                         <thead>
                                         <tr class="active">
                                             <th>Mã</th>
                                             <th>Tên</th>
                                             <th>Chức vụ</th>
                                             <th>Điện thoại</th>
+                                            <th>Xóa</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -235,18 +403,18 @@
                                     <div class="row">
                                         <div class="col-md-6 col-sm-6">
                                             <div class="form-group form-md-line-input ">
-                                                <label for="fullName"><b>Tên nhân viên</b></label>
+                                                <label for="fullNameStaff"><b>Tên nhân viên</b></label>
                                                 <input type="text" class="form-control"
-                                                       id="fullName"
-                                                       name="fullName">
+                                                       id="fullNameStaff"
+                                                       name="fullNameStaff">
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-sm-6">
                                             <div class="form-group form-md-line-input ">
-                                                <label for="fullName"><b>Chức vụ</b></label>
+                                                <label for="positionStaff"><b>Chức vụ</b></label>
                                                 <input type="text" class="form-control"
-                                                       id="fullName"
-                                                       name="fullName">
+                                                       id="positionStaff"
+                                                       name="positionStaff">
                                             </div>
                                         </div>
 
@@ -254,46 +422,46 @@
                                     <div class="row">
                                         <div class="col-md-6 col-sm-6">
                                             <div class="form-group form-md-line-input ">
-                                                <label for="fullName"><b>Điện thoại</b></label>
-                                                <input type="text" class="form-control"
-                                                       id="fullName"
-                                                       name="fullName">
+                                                <label for="phoneStaff"><b>Điện thoại</b></label>
+                                                <input type="number" class="form-control"
+                                                       id="phoneStaff"
+                                                       name="phoneStaff">
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-xs-6">
                                             <div class="form-group form-md-line-input">
-                                                <label for="address"><b>Địa chỉ</b></label>
+                                                <label for="addressStaff"><b>Địa chỉ</b></label>
                                                 <input type="text" class="form-control"
-                                                       id="address"
-                                                       name="address">
+                                                       id="addressStaff"
+                                                       name="addressStaff">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6 col-xs-6">
                                             <div class="form-group form-md-line-input">
-                                                <label for="address"><b>Ngày sinh</b></label>
+                                                <label for="birthdayStaff"><b>Ngày sinh</b></label>
                                                 <input type="text" class="form-control"
-                                                       id="address"
-                                                       name="address">
+                                                       id="birthdayStaff"
+                                                       name="birthdayStaff">
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-sm-6">
                                             <div class="form-group form-md-line-input ">
-                                                <label for="fullName"><b>Email</b></label>
+                                                <label for="emailStaff"><b>Email</b></label>
                                                 <input type="text" class="form-control"
-                                                       id="fullName"
-                                                       name="fullName">
+                                                       id="emailStaff"
+                                                       name="emailStaff">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12 col-xs-12">
                                             <div class="form-group form-md-line-input">
-                                                <label for="address"><b>Ghi chú</b></label>
-                                                <input type="text" class="form-control"
-                                                       id="address"
-                                                       name="address">
+                                                <label for="noteStaff"><b>Ghi chú</b></label>
+                                                <textarea type="text" class="form-control"
+                                                       id="noteStaff"
+                                                       name="noteStaff"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -301,11 +469,13 @@
                                         <div class="col-sm-12">
                                             <div class="form-actions noborder">
                                                 <div class="form-group">
-                                                    <button type="button" class="btn btn-primary marginRight"
-                                                            onclick="customerView.save()">
+                                                    <button id="addStaffCustomer" type="button"
+                                                            class="btn btn-primary marginRight"
+                                                            onclick="customerView.saveSatff()">
                                                         Hoàn tất
                                                     </button>
-                                                    <button type="button" class="btn default" onclick="customerView.clearInput()">
+                                                    <button id="retype" type="button" class="btn default"
+                                                            onclick="customerView.clearInput()">
                                                         Nhập lại
                                                     </button>
                                                 </div>
@@ -323,6 +493,39 @@
     </div> <!-- end #divControl -->
 </div>
 <!-- end Control -->
+
+<!-- Modal add Staff of Customer -->
+<div class="row">
+    <div id="modal-addStaffOfCustomer" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Bạn có muốn thêm nhân viên cho khách hàng?</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
+                            <button type="button" class="btn btn-primary marginRight"
+                                    onclick="customerView.addStaff()">
+                                Thêm
+                            </button>
+                            <button type="button" class="btn default"
+                                    onclick="customerView.displayModal('hide','#modal-addStaffOfCustomer')">
+                                Huỷ
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal add Staff of Customer -->
+
 
 <!-- Modal confirm delete Customer -->
 <div class="row">
@@ -417,17 +620,29 @@
         if (typeof (customerView) === 'undefined') {
             customerView = {
                 table: null,
+                tableStaff: null,
                 tableCustomer: null,
                 tableCustomerType: null,
                 current: null,
                 action: null,
+                dataStaff: null,
                 idDelete: null,
+                currentStaff: null,
                 showControl: function () {
+
                     $('.menu-toggle').fadeOut();
-                    $('#divControl').fadeIn(300);
+                    if (customerView.action == 'add') {
+                        $('#divControl_add').fadeIn(300);
+                    }
+                    if (customerView.action == 'update') {
+                        $('#divControl_edit').fadeIn(300);
+                    }
                 },
                 hideControl: function () {
-                    $('#divControl').fadeOut(300, function () {
+                    $('#divControl_add').fadeOut(300, function () {
+                        $('.menu-toggle').fadeIn();
+                    });
+                    $('#divControl_edit').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
 
@@ -451,17 +666,34 @@
                     $("input[id='email']").val('');
                     $("textarea[id='note']").val('');
                     customerView.current = null;
-
                     $("input[id='CustomerType_name']").val('');
                     $("textarea[id='description']").val('');
-                },
+                    $("input[id='fullNameStaff']").val('');
+                    $("input[id='phoneStaff']").val('');
+                    $("input[id='birthdayStaff']").val('');
+                    $("input[id='positionStaff']").val('');
+                    $("input[id='emailStaff']").val('');
+                    $("input[id='addressStaff']").val('');
+                    $("textarea[id='noteStaff']").val('');
 
+
+
+
+
+
+
+
+
+
+                },
                 renderScrollbar: function () {
-                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                    $("#divControl_add").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
+                    $("#divControl_edit").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
                 },
-
                 loadData: function () {
                     $.ajax({
                         url: url + 'customer/customers',
@@ -471,7 +703,8 @@
                         if (jqXHR.status == 200) {
                             customerView.tableCustomer = data['customers'];
                             customerView.fillDataToDatatable(data['customers']);
-
+                            customerView.dataStaff = data['dataStaff'];
+                            customerView.fillDataToDatatableStaff(data['dataStaff']);
                             customerView.tableCustomerType = data['customerTypes'];
                             customerView.loadSelectBox(data['customerTypes']);
                         } else {
@@ -480,8 +713,25 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
                     customerView.renderScrollbar();
+                    $("#table-tableStaffCustomers").find("tbody").on('click', 'tr', function () {
+                        var staff = $(this).find('td:eq(0)')[0].innerText;
+                        customerView.fillDataStaffToForm(staff);
+
+                    });
+                },
+                fillDataStaffToForm: function (id) {
+                    customerView.currentStaff = null;
+                    customerView.currentStaff = _.clone(_.find(customerView.dataStaff, function (o) {
+                        return o.id == id;
+                    }), true);
+                    $("input[id='fullNameStaff']").val(customerView.currentStaff["fullName"]);
+                    $("input[id='phoneStaff']").val(customerView.currentStaff["phone"]);
+                    $("input[id='birthdayStaff']").val(customerView.currentStaff["birthday"]);
+                    $("input[id='positionStaff']").val(customerView.currentStaff["position"]);
+                    $("input[id='emailStaff']").val(customerView.currentStaff["email"]);
+                    $("input[id='addressStaff']").val(customerView.currentStaff["address"]);
+                    $("textarea[id='noteStaff']").val(customerView.currentStaff["note"]);
                 },
                 loadSelectBox: function (lstCustomerType) {
                     //reset selectbox
@@ -499,7 +749,37 @@
                         select.appendChild(el);
                     }
                 },
+                fillDataToDatatableStaff: function (data) {
 
+                    if (customerView.tableStaff != null) {
+                        customerView.tableStaff.destroy();
+                    }
+                    customerView.tableStaff = $('#table-tableStaffCustomers').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'id'},
+                            {data: 'fullName'},
+                            {data: 'position'},
+                            {data: 'phone'},
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="btn-del-edit" title="Xóa">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="customerView.deleteCustomer(' + full.id + ')">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }, width: "10%"
+                            }
+
+
+                        ],
+                        dom: ''
+
+                    })
+                },
                 fillDataToDatatable: function (data) {
                     customerView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -576,6 +856,7 @@
                     })
                 },
                 fillCurrentObjectToForm: function () {
+                    //Cty
                     $("input[id='fullName']").val(customerView.current["fullName"]);
                     $("input[id='taxCode']").val(customerView.current["taxCode"]);
                     $("input[id='address']").val(customerView.current["address"]);
@@ -583,6 +864,7 @@
                     $("input[id='email']").val(customerView.current["email"]);
                     $("textarea[id='note']").val(customerView.current["note"]);
                     $("select[id='customerType_id']").val(customerView.current["customerType_id"]);
+
                 },
                 fillFormDataToCurrentObject: function () {
                     if (customerView.action == 'add') {
@@ -605,21 +887,25 @@
                         customerView.current.customerType_id = $("select[id='customerType_id']").val();
                     }
                 },
-
                 editCustomer: function (id) {
+                    var datastaffs = _.filter(customerView.dataStaff, function (o) {
+                        return o.customer_id == id;
+                    });
+                    customerView.fillDataToDatatableStaff(datastaffs);
                     customerView.current = null;
+
                     customerView.current = _.clone(_.find(customerView.tableCustomer, function (o) {
                         return o.id == id;
                     }), true);
                     customerView.fillCurrentObjectToForm();
                     customerView.action = 'update';
-                    $("#divControl").find(".titleControl").html("Cập nhật khách hàng");
+                    $("#divControl_edit").find(".titleControl").html("Cập nhật khách hàng");
                     customerView.showControl();
                 },
                 addCustomer: function () {
                     customerView.current = null;
                     customerView.action = 'add';
-                    $("#divControl").find(".titleControl").html("Thêm mới khách hàng");
+                    $("#divControl_add").find(".titleControl").html("Thêm mới khách hàng");
                     customerView.showControl();
                 },
                 deleteCustomer: function (id) {
@@ -627,7 +913,6 @@
                     customerView.idDelete = id;
                     customerView.displayModal("show", "#modal-confirmDelete");
                 },
-
                 formValidate: function () {
                     $("#frmControl").validate({
                         rules: {
@@ -649,12 +934,10 @@
 //                    var validator = $(idForm).validate();
 //                    validator.resetForm();
                 },
-
                 save: function () {
                     customerView.formValidate();
                     if ($("#frmControl").valid()) {
                         customerView.fillFormDataToCurrentObject();
-
                         var sendToServer = {
                             _token: _token,
                             _action: customerView.action,
@@ -674,6 +957,7 @@
                                     case 'add':
                                         customerView.tableCustomer.push(data['customer'][0]);
                                         showNotification("success", "Thêm thành công!");
+                                        customerView.displayModal("show", "#modal-addStaffOfCustomer");
                                         break;
                                     case 'update':
                                         var customerOld = _.find(customerView.tableCustomer, function (o) {

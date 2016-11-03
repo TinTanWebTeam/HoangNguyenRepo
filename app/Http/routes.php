@@ -66,6 +66,9 @@ Route::group(['middleware' => 'auth'], function(){
 
         //post to get Data
         Route::post('/customer/postage','CustomerManagementController@postDataPostageOfCustomer');
+
+
+
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         //get View
