@@ -36,5 +36,6 @@ class DatabaseSeeder extends Seeder
         $this->call(VoucherAttachFileTableSeeder::class);
         $this->call(DriverVehicleTableSeeder::class);
         $this->call(DriverTableSeeder::class);
+        $this->call(FuelPriceTableSeeder::class);
     }
 }
