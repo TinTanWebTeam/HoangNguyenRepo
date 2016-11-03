@@ -36,7 +36,9 @@ class HomeController extends Controller
             'ParkingCost'           => 'parking-cost',
             'OtherCost'             => 'other-cost',
             'RevenueReport'         => 'revenue-report',
-            'HistoryDeliveryReport' => 'history-delivery-report'
+            'HistoryDeliveryReport' => 'history-delivery-report',
+            'Oil'                   => 'oil',
+            'Petroleum'             => 'petroleum'
         ];
 
         $array_icon = [
@@ -61,7 +63,7 @@ class HomeController extends Controller
             'DebtManagement'      => ['DebtCustomer', 'DebtVehicleOutside'],
             'CostManagement'      => ['FuelCost', 'PetroleumCost', 'ParkingCost', 'OtherCost'],
             'PostageManagement'   => [],
-            'FuelManagement'      => [],
+            'FuelManagement'      => ['Oil', 'Petroleum'],
             'Report'              => ['RevenueReport', 'HistoryDeliveryReport'],
         ];
 
