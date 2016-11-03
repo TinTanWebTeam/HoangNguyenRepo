@@ -35,6 +35,11 @@ class CustomerManagementController extends Controller
 
     public function getDataCustomer()
     {
+        $staffCustomers = DB::table('staffcustomers')
+            ->select('staffcustomers.*')
+            ->join('customers', 'customers.id', '=', 'staffcustomers.customer_id')
+            ->where('staffcustomers.active', 1)
+            ->get();
         $customers = DB::table('customers')
             ->select('customers.*', 'customerTypes.name as customerTypes_name')
             ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
@@ -44,7 +49,8 @@ class CustomerManagementController extends Controller
         $response = [
             'msg'           => 'Get list all Customer',
             'customers'     => $customers,
-            'customerTypes' => $customerTypes
+            'customerTypes' => $customerTypes,
+            'dataStaff'     => $staffCustomers,
         ];
         return response()->json($response, 200);
     }
