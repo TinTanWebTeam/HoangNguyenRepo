@@ -35,10 +35,10 @@ class CustomerManagementController extends Controller
 
     public function getDataCustomer()
     {
-        $staffCustomers = DB::table('staffcustomers')
-            ->select('staffcustomers.*')
-            ->join('customers', 'customers.id', '=', 'staffcustomers.customer_id')
-            ->where('staffcustomers.active', 1)
+        $staffCustomers = DB::table('staffCustomers')
+            ->select('staffCustomers.*')
+            ->join('customers', 'customers.id', '=', 'staffCustomers.customer_id')
+            ->where('staffCustomers.active', 1)
             ->get();
         $customers = DB::table('customers')
             ->select('customers.*', 'customerTypes.name as customerTypes_name')
