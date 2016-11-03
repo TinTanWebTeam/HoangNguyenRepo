@@ -210,13 +210,11 @@ class ValidateController extends Controller
     {
         $rules = [
             'customer_id' => 'required',
-            'postage'     => 'required',
-            'month'       => 'required',
+            'postage'     => 'required'
         ];
         $messages = [
             'customer_id.required' => 'Trường khách hàng bắt buộc nhập',
-            'postage.required'     => 'Trường cước phí bắt buộc nhập',
-            'month.required'       => 'Trường tháng bắt buộc nhập'
+            'postage.required'     => 'Trường cước phí bắt buộc nhập'
         ];
         return Validator::make($data, $rules, $messages);
     }

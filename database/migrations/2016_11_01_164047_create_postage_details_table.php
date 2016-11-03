@@ -19,13 +19,14 @@ class CreatePostageDetailsTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->string('receivePlace');
             $table->string('deliveryPlace');
-            $table->decimal('cashDelivery')->default(0);
+            $table->decimal('cashDelivery', 18, 0)->default(0);
             $table->date('applyDate')->nullable();
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
             $table->integer('postage_id')->unsigned();
+            $table->boolean('changeByFuel')->default(0);
             $table->timestamps();
         });
     }

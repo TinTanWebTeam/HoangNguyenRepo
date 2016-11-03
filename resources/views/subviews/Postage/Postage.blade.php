@@ -116,7 +116,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
                                             <label for="createdDate"><b>Ngày tạo</b></label>
-                                            <input type="text" class="form-control date ignore" id="createdDate" name="createdDate">
+                                            <input type="text" class="date ignore form-control" id="createdDate" name="createdDate">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -191,38 +191,6 @@
 </div>
 <!-- End divControl -->
 
-<!-- Modal confirm delete Postage -->
-<div class="row">
-    <div id="modal-confirmDelete" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h5 class="modal-title">Có chắc muốn xóa cước phí này?</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
-                            <button type="button" class="btn btn-primary marginRight"
-                                    onclick="postageView.save()">
-                                Đồng ý
-                            </button>
-                            <button type="button" class="btn default"
-                                    onclick="postageView.displayModal('hide','#modal-confirmDelete')">
-                                Huỷ
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal confirm delete Postage -->
-
 <!-- Modal notification -->
 <div class="row">
     <div id="modal-notification" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
@@ -280,10 +248,13 @@
                 clearInput: function () {
                     $("input[id='customer_id']").val('');
                     $("#customer_id").attr("data-customerId", "");
-
-                    $("input[id='postage']").val('');
+                    $("input[id='receivePlace']").val('');
+                    $("input[id='deliveryPlace']").val('');
                     $("input[id='createdDate']").val('');
-                    $("input[id='note']").val('');
+                    $("input[id='applyDate']").val('');
+                    $("input[id='postage']").val('');
+                    $("input[id='cashDelivery']").val('');
+                    $("textarea[id='note']").val('');
                 },
                 retype: function () {
                     $("input[id='postage']").val('');
@@ -396,20 +367,21 @@
                                 data: 'createdDate',
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("MM/YYYY");
-                                }, width: "5%"
+                                }
                             },
                             {data: 'customers_fullName'},
                             {data: 'note'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-success  btn-circle" onclick="postageView.editPostage(' + full.id + ')">';
+                                    tr += '<div class="btn btn-success  btn-circle marginRight" onclick="postageView.editPostage(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
+                                    tr += '<div class="btn btn-danger  btn-circle" onclick="postageView.deletePostageConfirm(' + full.id + ')">';
+                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
                                     return tr;
-                                }, width: "5%"
+                                }
                             }
                         ],
                         order: [[0, "desc"]],
@@ -465,9 +437,12 @@
                     $("textarea[id=note]").val(postageView.current["note"]);
                     $("input[id=receivePlace]").val(postageView.current["receivePlace"]);
                     $("input[id=deliveryPlace]").val(postageView.current["deliveryPlace"]);
-                    $("input[id=applyDate]").val(postageView.current["applyDate"]);
-                    $("input[id=createdDate]").val(postageView.current["createdDate"]);
                     $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
+
+                    var applyDate = moment(postageView.current["applyDate"], "YYYY-MM-DD");
+                    $("input[id='applyDate']").datepicker('update', applyDate.format("DD-MM-YYYY"));
+                    var createdDate = moment(postageView.current["createdDate"], "YYYY-MM-DD");
+                    $("input[id='createdDate']").datepicker('update', createdDate.format("DD-MM-YYYY"));
                 },
                 fillFormDataToCurrentObject: function () {
                     if (postageView.action == 'add') {
@@ -513,7 +488,22 @@
                 deletePostage: function (id) {
                     postageView.action = 'delete';
                     postageView.idDelete = id;
-                    postageView.displayModal("show", "#modal-confirmDelete");
+                    postageView.save();
+                },
+                deletePostageConfirm: function (id) {
+                    $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa cước phí này?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="postageView.deletePostage('+ id +')">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="postageView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    postageView.displayModal('show', '#modal-notification');
                 },
 
                 formValidate: function () {
@@ -555,7 +545,6 @@
                             sendToServer._id = postageView.idDelete;
                         }
                         console.log(sendToServer);
-                        return;
                         $.ajax({
                             url: url + 'postage/modify',
                             type: "POST",
@@ -563,6 +552,7 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
+                                console.log(data);
                                 switch (postageView.action) {
                                     case 'add':
                                         postageView.dataPostage.push(data['postage']);
@@ -587,7 +577,7 @@
                                         var indexOfOld = _.indexOf(postageView.dataPostage, Old);
                                         postageView.dataPostage.splice(indexOfOld, 1);
                                         showNotification("success", "Xóa thành công!");
-                                        postageView.displayModal("hide", "#modal-confirmDelete");
+                                        postageView.displayModal("hide", "#modal-notification");
                                         break;
                                     default:
                                         break;

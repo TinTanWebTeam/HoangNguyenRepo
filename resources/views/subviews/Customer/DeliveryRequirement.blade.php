@@ -132,14 +132,34 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="vehicle_id"><b>Xe</b></label>
-                                            <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" placeholder="Nhập số xe" data-vehicleId="">
+                                            <label for="customer_id"><b>Khách hàng</b></label>
+                                            <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Nhập tên khách hàng" data-customerId="">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="customer_id"><b>Khách hàng</b></label>
-                                            <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Nhập tên khách hàng" data-customerId="">
+                                            <label for="receivePlace"><b>Nơi nhận</b></label>
+                                            <input type="text" class="form-control" id="receivePlace" name="receivePlace">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="deliveryPlace"><b>Nơi giao</b></label>
+                                            <input type="text" class="form-control" id="deliveryPlace" name="deliveryPlace">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="receiveDate"><b>Ngày nhận</b></label>
+                                            <input type="text" class="date form-control ignore" id="receiveDate" name="receiveDate">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="vehicle_id"><b>Xe</b></label>
+                                            <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" placeholder="Nhập số xe" data-vehicleId="">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -152,14 +172,6 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="status_transport"><b>Trạng thái</b></label>
-                                            <select id="status_transport" name="status_transport" class="form-control"></select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
                                             <label for="weight"><b>Trọng tải</b></label>
                                             <input type="number" class="form-control" id="weight" name="weight">
                                         </div>
@@ -168,18 +180,6 @@
                                         <div class="form-group form-md-line-input">
                                             <label for="quantumProduct"><b>Số lượng hàng</b></label>
                                             <input type="number" class="form-control" id="quantumProduct" name="quantumProduct">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="voucherNumber"><b>Số chứng từ</b></label>
-                                            <input type="text" class="form-control" id="voucherNumber" name="voucherNumber">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
-                                            <input type="number" class="form-control" id="voucherQuantumProduct" name="voucherQuantumProduct">
                                         </div>
                                     </div>
                                 </div>
@@ -248,26 +248,26 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
+                                    <label for="voucherNumber"><b>Số chứng từ</b></label>
+                                    <input type="text" class="form-control" id="voucherNumber" name="voucherNumber">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
+                                    <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
+                                    <input type="number" class="form-control" id="voucherQuantumProduct" name="voucherQuantumProduct">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group form-md-line-input">
                                     <label for="receiver"><b>Người nhận</b></label>
                                     <input type="text" class="form-control" id="receiver" name="receiver">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
-                                    <label for="receiveDate"><b>Ngày nhận</b></label>
-                                    <input type="text" class="date form-control ignore" id="receiveDate" name="receiveDate">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for="receivePlace"><b>Nơi nhận</b></label>
-                                    <input type="text" class="form-control" id="receivePlace" name="receivePlace">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group form-md-line-input">
-                                    <label for="deliveryPlace"><b>Nơi giao</b></label>
-                                    <input type="text" class="form-control" id="deliveryPlace" name="deliveryPlace">
+                                    <label for="status_transport"><b>Trạng thái</b></label>
+                                    <select id="status_transport" name="status_transport" class="form-control"></select>
                                 </div>
                             </div>
                         </div>
@@ -1577,10 +1577,13 @@
                     }
                 },
 
-                postDataPostageOfCustomer: function (cust_id) {
+                postDataPostageOfCustomer: function (customerId, receivePlace, deliveryPlace, createdDate) {
                     var sendToServer = {
                         _token: _token,
-                        _cust_id: cust_id
+                        _customterId: customerId,
+                        _receivePlace: receivePlace,
+                        _deliveryPlace: deliveryPlace,
+                        _createdDate: createdDate
                     };
                     $.ajax({
                         url: url + 'customer/postage',
@@ -1591,7 +1594,7 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            $("input[id='cashDelivery']").val(data['postage']);
+                            $("input[id='cashRevenue']").val(data['postage']);
                             formatCurrency(".currency");
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");

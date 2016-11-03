@@ -9,6 +9,7 @@ use App\CustomerType;
 use App\InvoiceCustomer;
 use App\InvoiceCustomerDetail;
 use App\Postage;
+use App\PostageDetail;
 use App\Price;
 use App\Product;
 use App\Status;
@@ -771,10 +772,22 @@ class CustomerManagementController extends Controller
      * */
     public function postDataPostageOfCustomer(Request $request)
     {
-        $postage = Postage::where('customer_id', $request->input('_cust_id'))->orderBy('month', 'desc')->pluck('postage')->first();
-        if($postage == null) $postage = 0;
+        $customerId = $request->input('_customerId');
+        $receivePlace = $request->input('_receivePlace');
+        $deliveryPlace = $request->input('_deliveryPlace');
+        $createdDate = $request->input('_createdDate');
+
+        $postageDetail = PostageDetail::where([
+            ['customer_id', $customerId],
+            ['receivePlace', $receivePlace],
+            ['deliveryPlace', $deliveryPlace]
+        ])
+            ->where(\DB::raw('DATE(applyDate)'), '>', $createdDate)
+            ->orderBy('createdDate', 'desc')->first();
+        $postage = ($postageDetail == null) ? 0 : $postageDetail->postage;
+
         $response = [
-            'msg' => 'return a postage success',
+            'msg' => 'Get postage success',
             'postage' => $postage
         ];
         return response()->json($response, 201);

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class PostageTableSeeder extends Seeder
+class PostageDetailTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,8 +11,9 @@ class PostageTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Postage::create([
+        \App\PostageDetail::create([
             'postage' => 7000000,
+            'postage_id' => 1,
             'createdDate' => '2016-10-10',
             'customer_id' => 1,
             'receivePlace' => 'Hồ Chí Minh',
@@ -20,6 +21,7 @@ class PostageTableSeeder extends Seeder
             'cashDelivery' => 1000000,
             'createdBy' => 1,
             'updatedBy' => 1,
+            'applyDate' => '2016-11-11',
             'changeByFuel' => 0
         ]);
     }
