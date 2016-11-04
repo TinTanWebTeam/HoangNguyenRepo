@@ -100,8 +100,10 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="price"><b>Giá</b></label>
-                                            <input type="text" id="price" name="price"
-                                                   class="form-control currency">
+                                            <input type="text" class="form-control currency" value="0"
+                                                   id="price" name="price">
+
+
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
@@ -114,9 +116,10 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
-                                <button  class="btn btn-primary marginRight" onclick="lubePriceView.save()">Hoàn tất</button>
+                                <button class="btn btn-primary marginRight" onclick="lubePriceView.save()">Hoàn tất
+                                </button>
                                 <button type="button" class="btn default" onclick="lubePriceView.hideFormControl()"
-                                        style="margin-right: 10px">Nhập lại
+                                        style="margin-right: 10px">Hủy
                                 </button>
                             </div>
                         </div>
@@ -145,7 +148,12 @@
                     lubePriceView.resetForm();
                     $(".menu-toggle").fadeIn();
                     $("#divControl").fadeOut(300);
+                    lubePriceView.clearValidation();
                 },
+                clearValidation: function () {
+                    $('label[class=error]').hide();
+                },
+
                 showFormForAddNew: function () {
                     lubePriceView.resetForm();
                     lubePriceView.renderDateTimePicker();
@@ -154,7 +162,7 @@
                 },
                 showFormForEdit: function (id) {
                     lubePriceView.resetForm();
-                    lubePriceView.lubeObject = _.find(lubePriceView.dataForTableLubePrice,function(o){
+                    lubePriceView.lubeObject = _.find(lubePriceView.dataForTableLubePrice, function (o) {
                         return o.id == id;
                     });
                     $("#form_mode").text("Chỉnh sửa giá nhớt");
@@ -162,7 +170,7 @@
                     lubePriceView.showFormControl();
                 },
                 resetForm: function () {
-                    $("#price").empty().val("");
+                    $("#price").empty().val(0);
                     $("#note").empty().val("");
                     $("#applyDate").empty().val("");
                 },
@@ -174,8 +182,8 @@
                 },
                 save: function () {
                     lubePriceView.validateForm();
-                    if($("#formFuelPrice").valid()){
-                        if(lubePriceView.lubeObject){
+                    if ($("#formFuelPrice").valid()) {
+                        if (lubePriceView.lubeObject) {
                             /* EDIT */
                             $.ajax({
                                 url: url + "fuel-price/lube/update",
@@ -183,25 +191,25 @@
                                 dataType: "json",
                                 data: {
                                     _token: _token,
-                                    id : lubePriceView.lubeObject.id,
+                                    id: lubePriceView.lubeObject.id,
                                     price: asNumberFromCurrency("#price"),
                                     note: $("#note").val().trim(),
                                     applyDate: $("#applyDate").val()
                                 }
-                            }).done(function (data, textStatus, jqXHR){
-                                if(jqXHR.status == 201){
-                                    var indexLubePriceOld = _.findIndex(lubePriceView.dataForTableLubePrice,function(o){
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    var indexLubePriceOld = _.findIndex(lubePriceView.dataForTableLubePrice, function (o) {
                                         return o.id == lubePriceView.lubeObject.id;
                                     });
                                     lubePriceView.dataForTableLubePrice.splice(indexLubePriceOld, 1, data);
                                     lubePriceView.tableLubePrice.clear().rows.add(lubePriceView.dataForTableLubePrice).draw();
                                 }
-                            }).fail(function (jqXHR, textStatus, errorThrown){
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                            }).always(function(){
+                            }).always(function () {
                                 lubePriceView.hideFormControl();
                             });
-                        }else{
+                        } else {
                             /* ADD */
                             $.ajax({
                                 async: false,
@@ -214,14 +222,15 @@
                                     note: $("#note").val().trim(),
                                     applyDate: $("#applyDate").val()
                                 }
-                            }).done(function (data, textStatus, jqXHR){
-                                if(jqXHR.status == 201){
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
                                     lubePriceView.dataForTableLubePrice.push(data);
                                     lubePriceView.tableLubePrice.clear().rows.add(lubePriceView.dataForTableLubePrice).draw();
+                                    lubePriceView.clearValidation();
                                 }
-                            }).fail(function (jqXHR, textStatus, errorThrown){
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                            }).always(function(){
+                            }).always(function () {
                                 lubePriceView.hideFormControl();
                             });
                         }
@@ -237,7 +246,7 @@
                     });
                     $("#applyDate").datepicker("setDate", new Date());
                 },
-                validateForm: function(){
+                validateForm: function () {
                     $("#formFuelPrice").validate({
                         rules: {
                             applyDate: {
@@ -254,6 +263,7 @@
                             },
                             price: {
                                 required: "Giá dầu bắt buộc nhập"
+
                             }
                         }
                     });
@@ -270,11 +280,11 @@
                             data: lubePriceView.dataForTableLubePrice,
                             columns: [
                                 {
-                                    data: "id",
+                                    data: "id"
                                 },
                                 {
                                     data: "applyDate",
-                                    render: function(data, type, full, meta){
+                                    render: function (data, type, full, meta) {
                                         return moment(data).format("DD/MM/YYYY");
                                     }
                                 },

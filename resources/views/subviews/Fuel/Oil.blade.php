@@ -99,7 +99,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="price"><b>Giá</b></label>
-                                            <input type="text" id="price" name="price"
+                                            <input type="text" id="price" name="price" value="0"
                                                    class="form-control currency">
                                         </div>
                                     </div>
@@ -115,7 +115,7 @@
                             <div class="col-sm-12 form-group">
                                 <button class="btn btn-primary marginRight" onclick="oilPriceView.save()">Hoàn tất</button>
                                 <button class="btn default" onclick="oilPriceView.hideFormControl()"
-                                        style="margin-right: 10px">Nhập lại
+                                        style="margin-right: 10px">Hủy
                                 </button>
                             </div>
                         </div>
@@ -144,6 +144,10 @@
                     oilPriceView.resetForm();
                     $(".menu-toggle").fadeIn();
                     $("#divControl").fadeOut(300);
+                    oilPriceView.clearValidation();
+                },
+                clearValidation: function () {
+                    $('label[class=error]').hide();
                 },
                 showFormForAddNew: function () {
                     oilPriceView.resetForm();
@@ -161,7 +165,7 @@
                     oilPriceView.showFormControl();
                 },
                 resetForm: function () {
-                    $("#price").empty().val("");
+                    $("#price").empty().val(0);
                     $("#note").empty().val("");
                     $("#applyDate").empty().val("");
                 },
