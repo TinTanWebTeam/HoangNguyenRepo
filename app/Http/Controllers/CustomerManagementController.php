@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Cost;
 use App\CostPrice;
 use App\Customer;
+
 use App\CustomerType;
 use App\InvoiceCustomer;
 use App\InvoiceCustomerDetail;
@@ -12,6 +13,8 @@ use App\Postage;
 use App\PostageDetail;
 use App\Price;
 use App\Product;
+
+use App\StaffCustomer;
 use App\Status;
 use App\Transport;
 use App\Voucher;
@@ -92,7 +95,7 @@ class CustomerManagementController extends Controller
         switch ($action) {
             case 'add':
                 $customerNew = Customer::where('fullName', $fullName)->first();
-                if($customerNew != null){
+                if ($customerNew != null) {
                     return response()->json(['msg' => 'fullName exists'], 203);
                 }
 
@@ -155,6 +158,130 @@ class CustomerManagementController extends Controller
                     ];
                     return response()->json($response, 201);
                 }
+                return response()->json(['msg' => 'Deletion failed'], 404);
+                break;
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
+    }
+
+    /*Add staff*/
+
+
+    public function postModifyStaff(Request $request)
+    {
+        dd($request->all());
+        if (!\Auth::check()) {
+            return response()->json(['msg' => 'Not authorize'], 404);
+        }
+        $fullNameStaff = null;
+        $positionStaff = null;
+        $addressStaff = null;
+        $phoneStaff = null;
+        $emailStaff = null;
+        $birthdayStaff = null;
+        $noteStaff = null;
+
+
+        $action = $request->input('_action');
+//        if ($action != 'delete') {
+//            $validator = ValidateController::ValidateCustomer($request->input('_customer'));
+//            if ($validator->fails()) {
+//                return response()->json(['msg' => 'Input data fail'], 404);
+//            }
+//
+//            $customerType_id = $request->input('_customer')['customerType_id'];
+//            $fullName = $request->input('_customer')['fullName'];
+//            $taxCode = $request->input('_customer')['taxCode'];
+//            $address = $request->input('_customer')['address'];
+//            $phone = $request->input('_customer')['phone'];
+//            $email = $request->input('_customer')['email'];
+//            $note = $request->input('_customer')['note'];
+//            $createdBy = \Auth::user()->id;
+//            $updatedBy = \Auth::user()->id;
+//        }
+
+
+
+        $fullNameStaff = null;
+        $positionStaff = null;
+        $addressStaff = null;
+        $phoneStaff = null;
+        $emailStaff = null;
+        $birthdayStaff = null;
+        $noteStaff = null;
+
+
+
+        switch ($action) {
+//            case 'add':
+//                $customerNew = Customer::where('fullName', $fullName)->first();
+//                if ($customerNew != null) {
+//                    return response()->json(['msg' => 'fullName exists'], 203);
+//                }
+//
+//                $customerNew = new Customer();
+//                $customerNew->customerType_id = $customerType_id;
+//                $customerNew->fullName = $fullName;
+//                $customerNew->taxCode = $taxCode;
+//                $customerNew->address = $address;
+//                $customerNew->phone = $phone;
+//                $customerNew->email = $email;
+//                $customerNew->note = $note;
+//                $customerNew->createdBy = $createdBy;
+//                $customerNew->updatedBy = $updatedBy;
+//                if ($customerNew->save()) {
+//                    $customer = DB::table('customers')
+//                        ->select('customers.*', 'customerTypes.name as customerTypes_name')
+//                        ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
+//                        ->where('customers.id', '=', $customerNew->id)
+//                        ->get();
+//
+//                    $response = [
+//                        'msg'      => 'Created customer',
+//                        'customer' => $customer
+//                    ];
+//                    return response()->json($response, 201);
+//                }
+//                return response()->json(['msg' => 'Create failed'], 404);
+//                break;
+            case 'updateStaff':
+                $customerUpdate = Customer::findOrFail($request->input('_customer')['id']);
+                $customerUpdate->customerType_id = $customerType_id;
+                $customerUpdate->fullName = $fullName;
+                $customerUpdate->taxCode = $taxCode;
+                $customerUpdate->address = $address;
+                $customerUpdate->phone = $phone;
+                $customerUpdate->email = $email;
+                $customerUpdate->note = $note;
+                $customerUpdate->updatedBy = $updatedBy;
+                if ($customerUpdate->update()) {
+                    $customer = DB::table('customers')
+                        ->select('customers.*', 'customerTypes.name as customerTypes_name')
+                        ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
+                        ->where('customers.id', '=', $customerUpdate->id)
+                        ->get();
+                    $response = [
+                        'msg'      => 'Updated customer',
+                        'customer' => $customer
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+
+            case 'deleteStaff':
+
+                $staffDelete = StaffCustomer::findOrFail($request->input('_object'));
+                $staffDelete->active = 0;
+                if ($staffDelete->update()) {
+                    $response = [
+                        'msg' => 'Deleted staff'
+                    ];
+                    return response()->json($response, 201);
+                }
+                dd($staffDelete);
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:
@@ -277,7 +404,7 @@ class CustomerManagementController extends Controller
                 $productNew->productType_id = $productType_id;
                 if ($productNew->save()) {
                     $response = [
-                        'msg'          => 'Created Product',
+                        'msg'     => 'Created Product',
                         'product' => $productNew
                     ];
                     return response()->json($response, 201);
@@ -291,7 +418,7 @@ class CustomerManagementController extends Controller
                 $productUpdate->productType_id = $productType_id;
                 if ($productUpdate->update()) {
                     $response = [
-                        'msg'          => 'Updated Product',
+                        'msg'     => 'Updated Product',
                         'product' => $productUpdate
                     ];
                     return response()->json($response, 201);
@@ -325,7 +452,7 @@ class CustomerManagementController extends Controller
             ->select('productTypes.*')
             ->get();
         $response = [
-            'msg'      => 'Get list all Product',
+            'msg'          => 'Get list all Product',
             'productTypes' => $productTypes,
         ];
         return response()->json($response, 200);
@@ -370,7 +497,7 @@ class CustomerManagementController extends Controller
                     $voucherNew = new Voucher();
                     $voucherNew->name = $name;
                     $voucherNew->description = $description;
-                    if($voucherNew->save()){
+                    if ($voucherNew->save()) {
                         $response = [
                             'msg'     => 'Created voucher',
                             'voucher' => $voucherNew
@@ -408,8 +535,7 @@ class CustomerManagementController extends Controller
                     return response()->json(['msg' => 'Connection to server failed'], 404);
                     break;
             }
-        }
-        catch (Exception $ex){
+        } catch (Exception $ex) {
             return response()->json(['msg' => $ex], 404);
         }
     }
@@ -426,11 +552,11 @@ class CustomerManagementController extends Controller
     {
         $transports = DB::table('transports')
             ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
-                    'customers.id as customers_id', 'customers.fullName as customers_fullName',
-                    'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
-                    'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                    'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
-                    'statuses_gar.status as status_garage_'
+                'customers.id as customers_id', 'customers.fullName as customers_fullName',
+                'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
+                'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                'statuses_gar.status as status_garage_'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -523,11 +649,11 @@ class CustomerManagementController extends Controller
 
             $costNote = $request->input('_transport')['costNote'];
             $transportType = $request->input('_transport')['transportType'];
-            if(array_key_exists('voucher_transport', $request->input('_transport'))){
+            if (array_key_exists('voucher_transport', $request->input('_transport'))) {
                 $array_voucherTransport = $request->input('_transport')['voucher_transport'];
             }
         }
-        try{
+        try {
             DB::beginTransaction();
             switch ($action) {
                 case 'add':
@@ -649,9 +775,11 @@ class CustomerManagementController extends Controller
                     }
                     //Delete VoucherTransport
                     $vouTranDelete = VoucherTransport::where('transport_id', $transportUpdate->id)->get()->toArray();
-                    if(count($vouTranDelete) > 0){
-                        $ids_to_delete = array_map(function($item){ return $item['id']; }, $vouTranDelete);
-                        if(DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0){
+                    if (count($vouTranDelete) > 0) {
+                        $ids_to_delete = array_map(function ($item) {
+                            return $item['id'];
+                        }, $vouTranDelete);
+                        if (DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0) {
                             DB::rollBack();
                             return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
                         }
@@ -671,7 +799,7 @@ class CustomerManagementController extends Controller
                     }
 
                     //Update InvoiceCustomer for Transport
-                    if($transportUpdate->invoiceCustomer_id != null){
+                    if ($transportUpdate->invoiceCustomer_id != null) {
                         $invoiceCustomer = InvoiceCustomer::find($transportUpdate->invoiceCustomer_id);
                         $invoiceCustomer->totalPay = $invoiceCustomer->totalPay - $kp_cashRevenue + $transportUpdate->cashRevenue;
                         $invoiceCustomer->prePaid = $invoiceCustomer->prePaid - $kp_cashReceive + $transportUpdate->cashReceive;
@@ -679,7 +807,7 @@ class CustomerManagementController extends Controller
                         $invoiceCustomer->notVAT = $invoiceCustomer->totalPay;
                         $invoiceCustomer->hasVAT = $invoiceCustomer->notVAT * $invoiceCustomer->VAT / 100;
                         $invoiceCustomer->updatedBy = \Auth::user()->id;
-                        if(!$invoiceCustomer->update()){
+                        if (!$invoiceCustomer->update()) {
                             DB::rollBack();
                             return response()->json(['msg' => 'Update InvoiceCustomer failed'], 404);
                         }
@@ -689,7 +817,7 @@ class CustomerManagementController extends Controller
                         $invoiceCustomerDetail->payDate = date('Y-m-d H:i');
                         $invoiceCustomerDetail->modify = true;
                         $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
-                        if(!$invoiceCustomerDetail->update()){
+                        if (!$invoiceCustomerDetail->update()) {
                             DB::rollBack();
                             return response()->json(['msg' => 'Update InvoiceCustomerDetail failed'], 404);
                         }
@@ -728,7 +856,7 @@ class CustomerManagementController extends Controller
                     $transport_id = $request->input('_id');
                     //Delete VoucherTransport
                     $vouTranDelete = VoucherTransport::where('transport_id', $transport_id)->get()->toArray();
-                    if(count($vouTranDelete) > 0) {
+                    if (count($vouTranDelete) > 0) {
                         $ids_to_delete = array_map(function ($item) {
                             return $item['id'];
                         }, $vouTranDelete);
@@ -758,7 +886,7 @@ class CustomerManagementController extends Controller
                     return response()->json(['msg' => 'Connection to server failed'], 404);
                     break;
             }
-        } catch (Exception $ex){
+        } catch (Exception $ex) {
             DB::rollBack();
             return response()->json(['msg' => $ex], 404);
         }
@@ -793,7 +921,7 @@ class CustomerManagementController extends Controller
         $postage = ($postageDetail == null) ? 0 : $postageDetail->postage;
 
         $response = [
-            'msg' => 'Get postage success',
+            'msg'     => 'Get postage success',
             'postage' => $postage
         ];
         return response()->json($response, 201);
