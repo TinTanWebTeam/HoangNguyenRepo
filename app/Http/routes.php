@@ -147,8 +147,23 @@ Route::group(['middleware' => 'auth'], function(){
     });
     //QL giá nhiên liệu
     Route::group(['middleware' => 'FuelManagement','prefix' => 'fuel-price'], function () {
+        /* GET VIEW */
         Route::get('/oil', 'FuelManagementController@getOilView');
+        /* GET VIEW COMPLETE DATA */
+        Route::get('/oil/getOilViewCompleteData','FuelManagementController@getOilViewCompleteData');
+        /* ADD NEW OIL PRICE */
+        Route::post('/oil/add','FuelManagementController@addNewOilPrice');
+        /* UPDATE OIL PRICE */
+        Route::post('/oil/update','FuelManagementController@updateOilPrice');
+        /*---------------------------------------------------------------------*/
+        /* GET VIEW */
         Route::get('/lube', 'FuelManagementController@getLubeView');
+        /* GET VIEW COMPLETE DATA */
+        Route::get('/lube/getLubeViewCompleteData','FuelManagementController@getLubeViewCompleteData');
+        /* ADD NEW OIL PRICE */
+        Route::post('/lube/add','FuelManagementController@addNewLubePrice');
+        /* UPDATE OIL PRICE */
+        Route::post('/lube/update','FuelManagementController@updateLubePrice');
     });
     Route::group(['middleware' => 'DriverManagement'], function () {
         //get View
