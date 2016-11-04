@@ -39,7 +39,8 @@
                         <li class="active">Giá Dầu</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="oilPriceView.showFormForAddNew()">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="oilPriceView.showFormForAddNew()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -49,7 +50,7 @@
             <div class="panel-body">
                 <div class="dataTable_wrapper">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-striped" id="table-data">
+                        <table class="table table-bordered table-hover table-striped" id="table_oil_price">
                             <thead>
                             <tr class="active">
                                 <th>Mã</th>
@@ -58,7 +59,6 @@
                                 <th>Người tạo</th>
                                 <th>Người sửa</th>
                                 <th>Ghi chú</th>
-                                <th>Loại</th>
                                 <th>Chỉnh sửa</th>
                             </tr>
                             </thead>
@@ -84,7 +84,7 @@
                 </div>
             </div>
             <div class="panel-body">
-                <form role="form" id="formFuelCost" data-parsley-validate="" onsubmit="return false;">
+                <form role="form" id="formFuelPrice" data-parsley-validate="" onsubmit="return false;">
                     <div class="form-body">
                         <div class="row">
                             <div class="col-sm-12">
@@ -92,26 +92,31 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="applyDate"><b>Ngày áp dụng</b></label>
-                                            <input type="text" id="applyDate" name="applyDate" class="date form-control ignore">
+                                            <input type="text" id="applyDate" name="applyDate"
+                                                   class="date form-control ignore">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="oilPrice"><b>Giá</b></label>
-                                            <input type="text" id="oilPrice" name="oilPrice" class="form-control currency">
+                                            <label for="price"><b>Giá</b></label>
+                                            <input type="text" id="price" name="price"
+                                                   class="form-control currency">
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label for="note"><b>Ghi chú</b></label>
-                                            <textarea id="note" name="note" rows="4" class="form-control" style="resize: none"></textarea>
+                                            <textarea id="note" name="note" rows="4" class="form-control"
+                                                      style="resize: none"></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <button class="btn btn-success pull-right" onclick="oilPriceView.save()">Lưu</button>
-                                <button class="btn btn-danger pull-right" onclick="oilPriceView.hideFormControl()" style="margin-right: 10px">Hủy</button>
+                                <button class="btn btn-danger pull-right" onclick="oilPriceView.hideFormControl()"
+                                        style="margin-right: 10px">Hủy
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -127,46 +132,220 @@
     $(function () {
         if (typeof oilPriceView === "undefined") {
             oilPriceView = {
-                oilObjectId : null,
-                showFormControl: function(){
+                oilObject: null,
+                tableOilPrice: null,
+                dataForTableOilPrice: null,
+                showFormControl: function () {
                     $(".menu-toggle").fadeOut();
                     $("#divControl").fadeIn(300);
                 },
-                hideFormControl: function(){
-                    oilObjectId = null;
+                hideFormControl: function () {
+                    oilPriceView.oilObject = null;
                     oilPriceView.resetForm();
                     $(".menu-toggle").fadeIn();
                     $("#divControl").fadeOut(300);
                 },
-                showFormForAddNew: function(){
-                    oilObjectId = null;
+                showFormForAddNew: function () {
                     oilPriceView.resetForm();
+                    oilPriceView.renderDateTimePicker();
                     $("#form_mode").text("Thêm giá dầu");
                     oilPriceView.showFormControl();
                 },
-                showFormForEdit: function(id){
-                    oilObjectId = id;
+                showFormForEdit: function (id) {
                     oilPriceView.resetForm();
+                    oilPriceView.oilObject = _.find(oilPriceView.dataForTableOilPrice,function(o){
+                        return o.id == id;
+                    });
                     $("#form_mode").text("Chỉnh sửa giá dầu");
-                    oilPriceView.fillForm();
+                    oilPriceView.fillForm(oilPriceView.oilObject);
+                    oilPriceView.showFormControl();
                 },
-                resetForm: function(){
+                resetForm: function () {
+                    $("#price").empty().val("");
+                    $("#note").empty().val("");
+                    $("#applyDate").empty().val("");
+                },
+                fillForm: function (oilObject) {
+                    $("#price").empty().val(oilObject.price);
+                    $("#note").empty().val(oilObject.note);
+                    $("#applyDate").datepicker('update', moment(oilObject.applyDate).format("DD-MM-YYYY"));
+                    formatCurrency(".currency");
+                },
+                save: function () {
+                    if($("#formFuelPrice").valid()){
+                        if(oilPriceView.oilObject){
+                            /* EDIT */
+                            $.ajax({
+                                url: url + "fuel-price/oil/update",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    _token: _token,
+                                    id : oilPriceView.oilObject.id,
+                                    price: asNumberFromCurrency("#price"),
+                                    note: $("#note").val().trim(),
+                                    applyDate: $("#applyDate").val()
+                                }
+                            }).done(function (data, textStatus, jqXHR){
+                                if(jqXHR.status == 201){
+                                    var indexOilPriceOld = _.findIndex(oilPriceView.dataForTableOilPrice,function(o){
+                                        return o.id == oilPriceView.oilObject.id;
+                                    });
+                                    oilPriceView.dataForTableOilPrice.splice(indexOilPriceOld, 1, data);
+                                    oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown){
 
-                },
-                fillForm: function(oilObject){
+                            }).always(function(){
+                                oilPriceView.hideFormControl();
+                            });
+                        }else{
+                            /* ADD */
+                            $.ajax({
+                                async: false,
+                                url: url + "fuel-price/oil/add",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    _token: _token,
+                                    price: asNumberFromCurrency("#price"),
+                                    note: $("#note").val().trim(),
+                                    applyDate: $("#applyDate").val()
+                                }
+                            }).done(function (data, textStatus, jqXHR){
+                                if(jqXHR.status == 201){
+                                    oilPriceView.dataForTableOilPrice.push(data);
+                                    oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown){
 
+                            }).always(function(){
+                                oilPriceView.hideFormControl();
+                            });
+                        }
+                    }
                 },
-                save: function(){
-
-                },
-                renderDateTimePicker: function(){
+                renderDateTimePicker: function () {
                     $("#applyDate").datepicker({
                         "format": "dd-mm-yyyy",
                         "autoclose": true
                     });
                     $("#applyDate").datepicker("setDate", new Date());
                 },
-                loadDateWhenViewRendComplete: function(){
+                validateForm: function(){
+                    $("#formFuelPrice").validate({
+                        rules: {
+                            applyDate: {
+                                required: true
+                            },
+                            price: {
+                                required: true
+                            }
+                        },
+                        ignore: ".ignore",
+                        messages: {
+                            applyDate: {
+                                required: "Ngày áp dụng bắt buộc nhập"
+                            },
+                            price: {
+                                required: "Giá dầu bắt buộc nhập"
+                            }
+                        }
+                    });
+                },
+                loadDateWhenViewRendComplete: function () {
+                    $.ajax({
+                        url: url + "fuel-price/oil/getOilViewCompleteData",
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        oilPriceView.dataForTableOilPrice = data;
+                        oilPriceView.tableOilPrice = $("#table_oil_price").DataTable({
+                            language: languageOptions,
+                            data: oilPriceView.dataForTableOilPrice,
+                            columns: [
+                                {
+                                    data: "id",
+                                },
+                                {
+                                    data: "applyDate",
+                                    render: function(data, type, full, meta){
+                                        return moment(data).format("DD/MM/YYYY");
+                                    }
+                                },
+                                {
+                                    data: "price",
+                                    render: $.fn.dataTable.render.number(",", ".", 0)
+                                },
+                                {
+                                    data: "createdBy"
+                                },
+                                {
+                                    data: "updatedBy"
+                                },
+                                {
+                                    data: "note"
+                                },
+                                {
+                                    render: function (data, type, full, meta) {
+                                        var tr = '';
+                                        tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
+                                        tr += '<div class="btn btn-success  btn-circle" onclick="oilPriceView.showFormForEdit(' + full.id + ')">';
+                                        tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                        tr += '</div>';
+                                        tr += '</div>';
+                                        return tr;
+                                    }
+                                }
+                            ],
+                            order: [[0, "desc"]],
+                            dom: "Bfrtip",
+                            buttons: [
+                                {
+                                    extend: "copyHtml5",
+                                    text: "Sao chép",
+                                    exportOptions: {
+                                        columns: [0, ":visible"]
+                                    }
+                                },
+                                {
+                                    extend: "excelHtml5",
+                                    text: "Xuất Excel",
+                                    exportOptions: {
+                                        columns: ":visible"
+                                    },
+                                    customize: function (xlsx) {
+                                        var sheet = xlsx.xl.worksheets["sheet1.xml"];
+                                    }
+                                },
+                                {
+                                    extend: "pdfHtml5",
+                                    text: "Xuất PDF",
+                                    message: "Thống Kê Xe Từ Ngày ... Đến Ngày",
+                                    customize: function (doc) {
+                                        doc.content.splice(0, 1);
+                                        doc.styles.tableBodyEven.alignment = 'center';
+                                        doc.styles.tableBodyOdd.alignment = 'center';
+                                        doc.content.columnGap = 10;
+                                        doc.pageOrientation = 'landscape';
+                                        for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                            for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                                doc.content[1].table.body[i].splice(6, 1);
+                                            }
+                                        }
+                                        doc.content[1].table.widths = ["*", "*", "*", "*", "*", "*"];
+                                    }
+                                },
+                                {
+                                    extend: "colvis",
+                                    text: "Ẩn cột"
+                                }
+                            ]
+
+                        });
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     oilPriceView.renderDateTimePicker();
