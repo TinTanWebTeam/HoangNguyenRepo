@@ -64,6 +64,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/voucher/modify','CustomerManagementController@postModifyVoucher');
         Route::post('/product/modify','CustomerManagementController@postModifyProduct');
 
+        Route::post('/staff/modify','CustomerManagementController@postModifyStaff');
+
         //post to get Data
         Route::post('/customer/postage','CustomerManagementController@postDataPostageOfCustomer');
 
