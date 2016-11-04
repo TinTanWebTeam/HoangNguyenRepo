@@ -10,7 +10,7 @@
     }
 
     #divControl .panel-body {
-        height: 300px;
+        height: 320px;
     }
 
     div.col-lg-12 {
@@ -112,10 +112,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12">
-                                <button class="btn btn-success pull-right" onclick="oilPriceView.save()">Lưu</button>
-                                <button class="btn btn-danger pull-right" onclick="oilPriceView.hideFormControl()"
-                                        style="margin-right: 10px">Hủy
+                            <div class="col-sm-12 form-group">
+                                <button class="btn btn-primary marginRight" onclick="oilPriceView.save()">Hoàn tất</button>
+                                <button class="btn default" onclick="oilPriceView.hideFormControl()"
+                                        style="margin-right: 10px">Nhập lại
                                 </button>
                             </div>
                         </div>
@@ -224,6 +224,9 @@
                                 oilPriceView.hideFormControl();
                             });
                         }
+                    }
+                    else {
+                        $("form#formFuelPrice").find("label[class=error]").css("color", "red");
                     }
                 },
                 renderDateTimePicker: function () {
@@ -350,6 +353,9 @@
                     });
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
                     oilPriceView.renderDateTimePicker();
                 }
             };

@@ -10,7 +10,7 @@
     }
 
     #divControl .panel-body {
-        height: 300px;
+        height: 310px;
     }
 
     div.col-lg-12 {
@@ -24,6 +24,7 @@
             height: 80vh;
         }
     }
+
 </style>
 
 <!-- Begin Table Postage -->
@@ -112,10 +113,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12">
-                                <button class="btn btn-success pull-right" onclick="lubePriceView.save()">Lưu</button>
-                                <button class="btn btn-danger pull-right" onclick="lubePriceView.hideFormControl()"
-                                        style="margin-right: 10px">Hủy
+                            <div class="col-sm-12 form-group">
+                                <button  class="btn btn-primary marginRight" onclick="lubePriceView.save()">Hoàn tất</button>
+                                <button type="button" class="btn default" onclick="lubePriceView.hideFormControl()"
+                                        style="margin-right: 10px">Nhập lại
                                 </button>
                             </div>
                         </div>
@@ -224,6 +225,9 @@
                                 lubePriceView.hideFormControl();
                             });
                         }
+                    }
+                    else {
+                        $("form#formFuelPrice").find("label[class=error]").css("color", "red");
                     }
                 },
                 renderDateTimePicker: function () {
@@ -350,6 +354,9 @@
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     lubePriceView.renderDateTimePicker();
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
                 }
             };
             lubePriceView.loadDateWhenViewRendComplete();
