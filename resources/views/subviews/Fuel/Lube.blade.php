@@ -172,6 +172,7 @@
                     formatCurrency(".currency");
                 },
                 save: function () {
+                    lubePriceView.validateForm();
                     if($("#formFuelPrice").valid()){
                         if(lubePriceView.lubeObject){
                             /* EDIT */

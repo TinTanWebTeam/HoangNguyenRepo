@@ -172,6 +172,7 @@
                     formatCurrency(".currency");
                 },
                 save: function () {
+                    oilPriceView.validateForm();
                     if($("#formFuelPrice").valid()){
                         if(oilPriceView.oilObject){
                             /* EDIT */
@@ -233,6 +234,7 @@
                     $("#applyDate").datepicker("setDate", new Date());
                 },
                 validateForm: function(){
+
                     $("#formFuelPrice").validate({
                         rules: {
                             applyDate: {
