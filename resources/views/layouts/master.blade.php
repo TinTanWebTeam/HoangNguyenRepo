@@ -11,7 +11,7 @@
     <title>@yield('title')</title>
 
     <!-- Custom Bootstrap Core CSS -->
-    <link rel="stylesheet" href="{{ URL::to('libs/bootstrap/dist/css/bootstrap.material.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('libs/bootstrap/dist/css/bootstrap.material.css') }}">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ URL::to('src/css/sb-admin-2.css') }}">

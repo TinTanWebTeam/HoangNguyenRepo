@@ -5,12 +5,12 @@
         top: 15%;
         display: none;
         right: 0;
-        width: 60%;
+        width: 80%;
         height: 100%;
     }
 
     #divControl .panel-body {
-        height: 501px;
+        height: 519px;
     }
 
     div.col-lg-12 {
@@ -99,30 +99,40 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="receivePlace"><b>Nơi nhận</b></label>
-                                            <input type="text" class="form-control" id="receivePlace" name="receivePlace">
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="receivePlace"><b>Nơi nhận</b></label>
+                                                    <input type="text" class="form-control" id="receivePlace" name="receivePlace">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="deliveryPlace"><b>Nơi giao</b></label>
+                                                    <input type="text" class="form-control" name="deliveryPlace" id="deliveryPlace">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input ">
+                                                    <label for="createdDate"><b>Ngày tạo</b></label>
+                                                    <input type="text" class="date ignore form-control" id="createdDate" name="createdDate">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="applyDate"><b>Ngày áp dụng</b></label>
+                                                    <input type="text" class="date ignore form-control" id="applyDate" name="applyDate">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
-                                            <label for="deliveryPlace"><b>Nơi giao</b></label>
-                                            <input type="text" class="form-control" name="deliveryPlace" id="deliveryPlace">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="createdDate"><b>Ngày tạo</b></label>
-                                            <input type="text" class="date ignore form-control" id="createdDate" name="createdDate">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="applyDate"><b>Ngày áp dụng</b></label>
-                                            <input type="text" class="date ignore form-control" id="applyDate" name="applyDate">
+                                            <label for="note"><b>Ghi chú</b></label>
+                                            <textarea class="form-control" name="note" id="note" rows="4"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -141,11 +151,22 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="note"><b>Ghi chú</b></label>
-                                            <textarea class="form-control" name="note" id="note" rows="2"></textarea>
-                                        </div>
+                                    <div class="col-sm-12">
+                                        <fieldset>
+                                            <legend>Thông tin giá dầu:</legend>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="oils_price"><b>Giá dầu</b></label>
+                                                    <input type="text" class="form-control" name="Oils_price" id="Oils_price">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="oils_applyDate"><b>Ngày áp dụng giá dầu</b></label>
+                                                    <input type="text" class="date ignore form-control" name="Oils_applyDate" id="Oils_applyDate">
+                                                </div>
+                                            </div>
+                                        </fieldset>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -168,7 +189,7 @@
                     <div class="col-md-6">
                         <span class="text text-primary">Cước phí khách hàng</span>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
+                            <table class="table table-bordered table-hover" id="table-postageDetail">
                                 <thead>
                                 <tr class="active">
                                     <th>Mã</th>
@@ -216,10 +237,11 @@
         if (typeof postageView === 'undefined') {
             postageView = {
                 table: null,
-                tableCustomer: null,
+                tablePostageDetail: null,
 
                 dataPostage: null,
                 dataCustomer: null,
+                dataFuel: null,
 
                 current: null,
                 action: null,
@@ -314,10 +336,11 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            postageView.dataPostage = data['postages'];
-                            postageView.fillDataToDatatable(postageView.dataPostage);
-
+                            postageView.dataFuel = data['fuels'];
                             postageView.dataCustomer = data['customers'];
+                            postageView.dataPostage = data['postages'];
+                            postageView.dataPostageDetail = data['postageDetails'];
+                            postageView.fillDataToDatatable(postageView.dataPostage);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -374,12 +397,12 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn btn-success  btn-circle marginRight" onclick="postageView.editPostage(' + full.id + ')">';
+                                    tr += '<div class="btn btn-success btn-circle" onclick="postageView.editPostage(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
-                                    tr += '<div class="btn btn-danger  btn-circle" onclick="postageView.deletePostageConfirm(' + full.id + ')">';
-                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
-                                    tr += '</div>';
+//                                    tr += '<div class="btn btn-danger  btn-circle" onclick="postageView.deletePostageConfirm(' + full.id + ')">';
+//                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+//                                    tr += '</div>';
                                     return tr;
                                 }
                             }
@@ -429,6 +452,23 @@
                         ]
                     })
                 },
+                fillDataToDatatablePostageDetail: function (data) {
+                    postageView.table = $('#table-postageDetail').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'id'},
+                            {
+                                data: 'postage',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {data: 'receivePlace'},
+                            {data: 'deliveryPlace'}
+                        ],
+                        order: [[0, "desc"]],
+                        dom: ''
+                    })
+                },
                 fillCurrentObjectToForm: function () {
                     $("input[id=customer_id]").val(postageView.current["customers_fullName"]);
                     $("#customer_id").attr('data-customerId', postageView.current["customer_id"]);
@@ -438,6 +478,9 @@
                     $("input[id=receivePlace]").val(postageView.current["receivePlace"]);
                     $("input[id=deliveryPlace]").val(postageView.current["deliveryPlace"]);
                     $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
+
+                    $("input[id=oils_applyDate]").val(postageView.current["oils_applyDate"]);
+                    $("input[id=oils_price]").val(postageView.current["oils_price"]);
 
                     var applyDate = moment(postageView.current["applyDate"], "YYYY-MM-DD");
                     $("input[id='applyDate']").datepicker('update', applyDate.format("DD-MM-YYYY"));
@@ -478,6 +521,17 @@
                     postageView.fillCurrentObjectToForm();
                     postageView.action = 'update';
                     postageView.showControl();
+
+                    var data = _.filter(postageView.dataPostageDetail, function (o) {
+                        return o.postage_id == id;
+                    });
+                    postageView.fillDataToDatatablePostageDetail(data);
+
+                    debugger;
+                    var fuel = _.find(postageView.dataFuel, function (o) {
+                        return o.id == postageView.current['fuel_id'];
+                    });
+                    console.log(postageView.dataFuel);
                 },
                 addPostage: function () {
                     $("input[id=postage]").val(0);
@@ -557,6 +611,7 @@
                                 switch (postageView.action) {
                                     case 'add':
                                         postageView.dataPostage.push(data['postage']);
+                                        postageView.dataPostageDetail.push(data['postageDetail']);
 
                                         showNotification("success", "Thêm thành công!");
                                         break;
@@ -567,6 +622,7 @@
                                         var indexOfOld = _.indexOf(postageView.dataPostage, Old);
 
                                         postageView.dataPostage.splice(indexOfOld, 1, data['postage']);
+                                        postageView.dataPostageDetail.push(data['postageDetail']);
 
                                         showNotification("success", "Cập nhật thành công!");
                                         postageView.hideControl();
@@ -584,6 +640,7 @@
                                         break;
                                 }
                                 postageView.table.clear().rows.add(postageView.dataPostage).draw();
+                                postageView.tablePostageDetail.clear().rows.add(postageView.dataPostageDetail).draw();
                                 postageView.clearInput();
                             } else if (jqXHR.status == 203) {
                                 showNotification("error", "Khách hàng này đã có cước phí!");

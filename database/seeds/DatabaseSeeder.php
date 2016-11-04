@@ -37,6 +37,5 @@ class DatabaseSeeder extends Seeder
         $this->call(DriverTableSeeder::class);
         $this->call(FuelPriceTableSeeder::class);
         $this->call(PostageTableSeeder::class);
-        $this->call(PostageDetailTableSeeder::class);
     }
 }

@@ -11,16 +11,24 @@ class PostageTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Postage::create([
-            'postage' => 7000000,
-            'createdDate' => '2016-10-10',
-            'customer_id' => 1,
-            'receivePlace' => 'Hồ Chí Minh',
-            'deliveryPlace' => 'Bình Dương',
-            'cashDelivery' => 1000000,
-            'createdBy' => 1,
-            'updatedBy' => 1,
-            'changeByFuel' => 0
-        ]);
+        for($i = 1; $i < 30; $i ++){
+            \App\Postage::create([
+                'postage' => $i * 1000000,
+                'postageBase' => $i * 1000000,
+                'createdDate' => '2016-10-10',
+                'applyDate' => '2016-10-10',
+                'customer_id' => $i % 10 + 1,
+                'fuel_id' => 1,
+                'receivePlace' => 'Hồ Chí Minh',
+                'deliveryPlace' => 'Bình Dương',
+                'cashDelivery' => 1000000,
+                'createdBy' => 1,
+                'updatedBy' => 1,
+                'changeByFuel' => 0,
+                'note' => 'lorem'
+            ]);
+        }
+
+
     }
 }

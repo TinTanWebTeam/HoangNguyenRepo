@@ -14,18 +14,41 @@ class PostageManagementController extends Controller
 {
     public function getViewPostage()
     {
+        $postages = \DB::table('postages')
+            ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
+            ->whereIn('customer_id' ,[1,2])
+            ->where(\DB::raw('applyDate'),'<=',date('Y-m-d 23:59:59'))
+            ->orderBy('applyDate', 'desc')
+            ->select('postages.*', 'customers.fullName as customers_fullName')
+            ->get();
+        dd(collect($postages)->groupBy('customer_id')->map(function($item){
+            return collect($item)->sortByDesc('applyDate')->first();
+        }));
         return view('subviews.Postage.Postage');
     }
+
     public function getDataPostage()
     {
         $postages = \DB::table('postages')
             ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
             ->select('postages.*', 'customers.fullName as customers_fullName')
+            ->orderBy('applyDate', 'desc')
+            ->groupBy('customer_id')
+            ->whereIn('customer_id' ,[1,2])
+            ->where(\DB::raw('DATE(applyDate)'), '<', date('Y-m-d'))
             ->get();
 
+        dd($postages);
+
+        $postageDetails = \DB::table('postageDetails')->get();
+
+        $fuels = \DB::table('fuels')->get();
+
         $response = [
-            'msg' => 'Get success',
-            'postages' => $postages
+            'msg'            => 'Get success',
+            'postages'       => $postages,
+            'postageDetails' => $postageDetails,
+            'fuels'           => $fuels
         ];
         return response()->json($response, 200);
     }
@@ -38,6 +61,7 @@ class PostageManagementController extends Controller
 
         $postage = null;
         $customer_id = null;
+        $fuel_id = null;
         $createdDate = null;
         $note = null;
         $receivePlace = null;
@@ -56,7 +80,7 @@ class PostageManagementController extends Controller
 
             $postage = $request->input('_postage')['postage'];
             $customer_id = $request->input('_postage')['customer_id'];
-
+            $fuel_id = $request->input('_postage')['fuel_id'];
 
             $createdDate = $request->input('_postage')['createdDate'];
             $createdDate = Carbon::createFromFormat('d-m-Y', $createdDate)->toDateTimeString();
@@ -102,6 +126,7 @@ class PostageManagementController extends Controller
 
                     $postageDetail = new PostageDetail();
                     $postageDetail->postage_id = $postageNew->id;
+                    $postageDetail->fuel_id = $fuel_id;
                     $postageDetail->postage = $postage;
                     $postageDetail->createdDate = $createdDate;
                     $postageDetail->receivePlace = $receivePlace;
@@ -121,33 +146,22 @@ class PostageManagementController extends Controller
                     $postage = \DB::table('postages')
                         ->join('customers', 'customers.id', '=', 'postages.customer_id')
                         ->select('postages.*', 'customers.fullName as customers_fullName')
-                        ->where('postages.id', '=', $postageNew->id)
+                        ->where('postages.id', $postageNew->id)
+                        ->first();
+
+                    $postageDetail = \DB::table('postageDetails')
+                        ->where('postage_id', $postageNew->id)
+                        ->orderBy('createdDate', 'desc')
                         ->first();
 
                     $response = [
                         'msg'      => 'Created postage',
-                        'postage' => $postage
+                        'postage' => $postage,
+                        'postageDetail' => $postageDetail
                     ];
                     return response()->json($response, 201);
                     break;
                 case 'update':
-                    //Update PostageDetail
-                    $postageDetail = PostageDetail::where('postage_id', $request->input('_postage')['id'])->orderBy('createdDate', 'desc')->first();
-                    $postageDetail->postage = $postage;
-                    $postageDetail->createdDate = $createdDate;
-                    $postageDetail->receivePlace = $receivePlace;
-                    $postageDetail->deliveryPlace = $deliveryPlace;
-                    $postageDetail->cashDelivery = $cashDelivery;
-                    $postageDetail->note = $note;
-                    $postageDetail->createdBy = $createdBy;
-                    $postageDetail->updatedBy = $updatedBy;
-                    $postageDetail->applyDate = $applyDate;
-                    $postageDetail->changeByFuel = 0;
-                    if (!$postageDetail->update()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Update PostageDetail failed'], 404);
-                    }
-
                     //Update Postage
                     $postageUpdate = Postage::findOrFail($request->input('_postage')['id']);
                     $postageUpdate->postage = $postage;
@@ -163,6 +177,26 @@ class PostageManagementController extends Controller
                         DB::rollBack();
                         return response()->json(['msg' => 'Update Postage failed'], 404);
                     }
+
+                    //Add PostageDetail
+                    $postageDetail = new PostageDetail();
+                    $postageDetail->postage = $postage;
+                    $postageDetail->postage_id = $postageUpdate->id;
+                    $postageDetail->fuel_id = $fuel_id;
+                    $postageDetail->createdDate = $createdDate;
+                    $postageDetail->receivePlace = $receivePlace;
+                    $postageDetail->deliveryPlace = $deliveryPlace;
+                    $postageDetail->cashDelivery = $cashDelivery;
+                    $postageDetail->note = $note;
+                    $postageDetail->createdBy = $createdBy;
+                    $postageDetail->updatedBy = $updatedBy;
+                    $postageDetail->applyDate = $applyDate;
+                    $postageDetail->changeByFuel = 0;
+                    if (!$postageDetail->save()) {
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Add PostageDetail failed'], 404);
+                    }
+
                     DB::commit();
                     //Response
                     $postage = \DB::table('postages')
@@ -170,9 +204,16 @@ class PostageManagementController extends Controller
                         ->select('postages.*', 'customers.fullName as customers_fullName')
                         ->where('postages.id', '=', $postageUpdate->id)
                         ->first();
+
+                    $postageDetail = \DB::table('postageDetails')
+                        ->where('postage_id', $postageUpdate->id)
+                        ->orderBy('createdDate', 'desc')
+                        ->first();
+
                     $response = [
                         'msg'      => 'Updated postage',
-                        'postage' => $postage
+                        'postage' => $postage,
+                        'postageDetail' => $postageDetail
                     ];
                     return response()->json($response, 201);
                     break;
