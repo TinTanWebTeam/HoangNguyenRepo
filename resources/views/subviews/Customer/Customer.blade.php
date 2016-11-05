@@ -374,6 +374,7 @@
                                 </div>
                             </div>
                         </form>
+
                     </div>
                     <div class="col-md-6">
                         <div class="row">
@@ -399,7 +400,9 @@
                         </div>
                         <div class="row">
                             <form role="form" id="frmStaffCustomer">
-                                <div class="form-body">
+                                <input id="idStaff" style="display: none;">
+                                <input id="idCustomer" style="display: none;">
+                                <div class="form-body" id='datetimepicker'>
                                     <div class="row">
                                         <div class="col-md-6 col-sm-6">
                                             <div class="form-group form-md-line-input ">
@@ -441,7 +444,7 @@
                                         <div class="col-sm-6 col-xs-6">
                                             <div class="form-group form-md-line-input">
                                                 <label for="birthdayStaff"><b>Ngày sinh</b></label>
-                                                <input type="text" class="form-control"
+                                                <input type="text" class="date form-control ignore"
                                                        id="birthdayStaff"
                                                        name="birthdayStaff">
                                             </div>
@@ -493,38 +496,6 @@
     </div> <!-- end #divControl -->
 </div>
 <!-- end Control -->
-
-<!-- Modal add Staff of Customer -->
-<div class="row">
-    <div id="modal-addStaffOfCustomer" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h5 class="modal-title">Bạn có muốn thêm nhân viên cho khách hàng?</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
-                            <button type="button" class="btn btn-primary marginRight"
-                                    onclick="customerView.addStaff()">
-                                Thêm
-                            </button>
-                            <button type="button" class="btn default"
-                                    onclick="customerView.displayModal('hide','#modal-addStaffOfCustomer')">
-                                Huỷ
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal add Staff of Customer -->
 
 
 <!-- Modal confirm delete Customer -->
@@ -619,8 +590,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="description"><b>Mô tả</b></label>
                                     <textarea name="description" id="description" cols="10" rows="3"
-                                              class="form-control">
-                                </textarea>
+                                              class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -655,7 +625,7 @@
                 tableStaff: null,
                 tableCustomer: null,
                 tableCustomerType: null,
-                current: null,
+                dataStaffTemp: null,
                 action: null,
                 dataStaff: null,
                 idDelete: null,
@@ -689,7 +659,7 @@
                         customerView.idDelete = null;
                     }
                     customerView.clearValidation("#frmCustomerType");
-                    customerView.clearInput();
+//                    customerView.clearInput();
                 },
                 clearInput: function () {
                     //Clear form Customer
@@ -698,15 +668,15 @@
                     $("input[id='taxCode']").val('');
                     $("input[id='phone']").val('');
                     $("input[id='email']").val('');
+                    $("input[id='percentFuel']").val('');
+                    $("input[id='percentFuelChange']").val('');
                     $("textarea[id='note']").val('');
                 },
                 clearInputStaff: function () {
                     //Clear form Staff
-                    $("input[id='CustomerType_name']").val('');
-                    $("textarea[id='description']").val('');
+                    $("input[id='idStaff']").val('');
                     $("input[id='fullNameStaff']").val('');
                     $("input[id='phoneStaff']").val('');
-                    $("input[id='birthdayStaff']").val('');
                     $("input[id='positionStaff']").val('');
                     $("input[id='emailStaff']").val('');
                     $("input[id='addressStaff']").val('');
@@ -741,12 +711,24 @@
                     });
                     customerView.renderScrollbar();
                     $("#table-tableStaffCustomers").find("tbody").on('click', 'tr', function () {
-                        var staff = $(this).find('td:eq(0)')[0].innerText;
-                        customerView.fillDataStaffToForm(staff);
-
+                        var staffId = $(this).find('td:eq(0)')[0].innerText;
+                        customerView.fillDataStaffToForm(staffId);
+                    });
+                    customerView.renderDateTimePicker();
+                    $('#datetimepicker .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
                     });
                 },
+                renderDateTimePicker: function () {
+                    $('#birthdayStaff').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#birthdayStaff').datepicker("setDate", new Date());
 
+                },
                 loadSelectBox: function (lstCustomerType) {
                     //reset selectbox
                     $('#customerType_id')
@@ -763,6 +745,7 @@
                         select.appendChild(el);
                     }
                 },
+
                 fillDataToDatatableStaff: function (data) {
                     if (customerView.tableStaff != null) {
                         customerView.tableStaff.destroy();
@@ -875,8 +858,11 @@
                     $("input[id='address']").val(customerView.current["address"]);
                     $("input[id='phone']").val(customerView.current["phone"]);
                     $("input[id='email']").val(customerView.current["email"]);
+                    $("input[id='percentFuel']").val(customerView.current["percentFuel"]);
+                    $("input[id='percentFuelChange']").val(customerView.current["percentFuelChange"]);
                     $("textarea[id='note']").val(customerView.current["note"]);
                     $("select[id='customerType_id']").val(customerView.current["customerType_id"]);
+
 
                 },
                 fillFormDataToCurrentObject: function () {
@@ -888,7 +874,10 @@
                             phone: $("input[id='phone']").val(),
                             email: $("input[id='email']").val(),
                             note: $("textarea[id='note']").val(),
-                            customerType_id: $('#customerType_id').val()
+                            percentFuel: $("input[id='percentFuel']").val(),
+                            percentFuelChange: $("input[id='percentFuelChange']").val(),
+                            customerType_id: $("select[id='customerType_id']").val(),
+//                            customerType_id: $('#customerType_id').val()
                         };
                     } else if (customerView.action == 'update') {
                         customerView.current.fullName = $("input[id='fullName']").val();
@@ -896,63 +885,35 @@
                         customerView.current.address = $("input[id='address']").val();
                         customerView.current.phone = $("input[id='phone']").val();
                         customerView.current.email = $("input[id='email']").val();
+                        customerView.current.percentFuel = $("input[id='percentFuel']").val();
+                        customerView.current.percentFuelChange = $("input[id='percentFuelChange']").val();
                         customerView.current.note = $("textarea[id='note']").val();
                         customerView.current.customerType_id = $("select[id='customerType_id']").val();
                     }
                 },
-                fillFormDataStaffToCurrentObject:function () {
-                    if (customerView.action == 'updateStaff') {
-                        customerView.currentStaff.fullNameStaff = $("input[id='fullNameStaff']").val();
-                        customerView.currentStaff.phoneStaff = $("input[id='phoneStaff']").val();
-                        customerView.currentStaff.birthdayStaff = $("input[id='birthdayStaff']").val();
-                        customerView.currentStaff.positionStaff = $("input[id='positionStaff']").val();
-                        customerView.currentStaff.addressStaff = $("input[id='addressStaff']").val();
-                        customerView.currentStaff.emailStaff = $("input[id='emailStaff']").val();
-                        customerView.currentStaff.noteStaff = $("textarea[id='noteStaff']").val();
-                    } else if (customerView.action == 'addStaff') {
-                        customerView.currentStaff = {
-                            fullNameStaff: $("input[id='fullNameStaff']").val(),
-                            phoneStaff: $("input[id='phoneStaff']").val(),
-                            birthdayStaff: $("input[id='birthdayStaff']").val(),
-                            positionStaff: $("input[id='positionStaff']").val(),
-                            emailStaff: $("input[id='emailStaff']").val(),
-                            addressStaff: $("input[id='addressStaff']").val(),
-                            noteStaff: $("textarea[id='noteStaff']").val()
-                        };
-                    }
-                },
+
                 fillDataStaffToForm: function (id) {
                     customerView.currentStaff = null;
                     customerView.currentStaff = _.clone(_.find(customerView.dataStaff, function (o) {
                         return o.id == id;
                     }), true);
-                    customerView.action = 'updateStaff';
+                    $("input[id='idStaff']").val(customerView.currentStaff["id"]);
                     $("input[id='fullNameStaff']").val(customerView.currentStaff["fullName"]);
                     $("input[id='phoneStaff']").val(customerView.currentStaff["phone"]);
-                    $("input[id='birthdayStaff']").val(customerView.currentStaff["birthday"]);
                     $("input[id='positionStaff']").val(customerView.currentStaff["position"]);
                     $("input[id='emailStaff']").val(customerView.currentStaff["email"]);
                     $("input[id='addressStaff']").val(customerView.currentStaff["address"]);
                     $("textarea[id='noteStaff']").val(customerView.currentStaff["note"]);
-                },
-                fillFormDataStaffToCurrentObject: function () {
-                    if (customerView.action == 'addStaff') {
-                        customerView.currentStaff = {
-                            fullNameStaff: $("input[id='fullNameStaff']").val(),
-                            positionStaff: $("input[id='positionStaff']").val(),
-                            addressStaff: $("input[id='addressStaff']").val(),
-                            phoneStaff: $("input[id='phoneStaff']").val(),
-                            emailStaff: $("input[id='emailStaff']").val(),
-                            birthdayStaff: $("input[id='birthdayStaff']").val(),
-                            noteStaff: $("textarea[id='noteStaff']").val()
-                        };
-                    }
+                    var birthday = moment(customerView.currentStaff["birthday"], "YYYY-MM-DD HH:mm:ss");
+                    $("input[id='birthdayStaff']").datepicker('update', birthday.format("DD-MM-YYYY"));
+                    customerView.clearValidation("#frmStaffCustomer");
                 },
                 editCustomer: function (id) {
-                    var datastaffs = _.filter(customerView.dataStaff, function (o) {
+                    customerView.dataStaffTemp = _.filter(customerView.dataStaff, function (o) {
                         return o.customer_id == id;
                     });
-                    customerView.fillDataToDatatableStaff(datastaffs);
+                    customerView.fillDataToDatatableStaff(customerView.dataStaffTemp);
+                    $("input[id='idCustomer']").val(id);
                     customerView.current = null;
                     customerView.current = _.clone(_.find(customerView.tableCustomer, function (o) {
                         return o.id == id;
@@ -975,7 +936,7 @@
                 },
                 deleteStaff: function (id) {
                     customerView.action = 'deleteStaff';
-                    customerView.idDelete = id;
+                    customerView.idStaff = id;
                     customerView.displayModal("show", "#modal-confirmDeleteStaff");
                 },
                 formValidate: function () {
@@ -1001,6 +962,7 @@
                             phoneStaff: "required"
 
                         },
+                        ignore: ".ignore",
                         messages: {
                             fullNameStaff: "Vui lòng nhập tên nhân viên",
                             phoneStaff: "Vui lòng nhập số điện thoại"
@@ -1010,6 +972,116 @@
                 },
                 clearValidation: function (idForm) {
                     $(idForm).find("label[class=error]").remove();
+                },
+                saveStaff: function () {
+                    var sendToServer = null;
+                    if (customerView.action == 'deleteStaff') {
+                        sendToServer = {
+                            _token: _token,
+                            _action: customerView.action,
+                            _object: customerView.idStaff
+                        };
+                        $.ajax({
+                            url: url + 'staff/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                var staffDelete = _.find(customerView.dataStaff, function (o) {
+                                    return o.id == sendToServer._object;
+                                });
+                                var indexOfStaffOld = _.indexOf(customerView.dataStaff, staffDelete);
+                                customerView.dataStaff.splice(indexOfStaffOld, 1);
+                                var staffOld = _.filter(customerView.dataStaff, function (o) {
+                                    return o.customer_id == customerView.current.id;
+                                });
+                                customerView.fillDataToDatatableStaff(staffOld);
+                                showNotification("success", "Xóa nhân viên thành công!");
+                                customerView.displayModal("hide", "#modal-confirmDeleteStaff");
+                                customerView.clearInputStaff();
+                            }
+
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        if ($("input[id='idStaff']").val().trim() == '') {
+                            customerView.action = "addStaff";
+                            customerView.currentStaff = {
+                                customer_id: $("input[id='idCustomer']").val(),
+                                fullNameStaff: $("input[id='fullNameStaff']").val(),
+                                phoneStaff: $("input[id='phoneStaff']").val(),
+                                birthdayStaff: $("input[id='birthdayStaff']").val(),
+                                positionStaff: $("input[id='positionStaff']").val(),
+                                emailStaff: $("input[id='emailStaff']").val(),
+                                addressStaff: $("input[id='addressStaff']").val(),
+                                noteStaff: $("textarea[id='noteStaff']").val()
+                            };
+                        } else {
+                            customerView.action = "updateStaff";
+                            customerView.currentStaff.fullNameStaff = $("input[id='fullNameStaff']").val();
+                            customerView.currentStaff.phoneStaff = $("input[id='phoneStaff']").val();
+                            customerView.currentStaff.birthdayStaff = $("input[id='birthdayStaff']").val();
+                            customerView.currentStaff.positionStaff = $("input[id='positionStaff']").val();
+                            customerView.currentStaff.addressStaff = $("input[id='addressStaff']").val();
+                            customerView.currentStaff.emailStaff = $("input[id='emailStaff']").val();
+                            customerView.currentStaff.noteStaff = $("textarea[id='noteStaff']").val();
+                        }
+                        customerView.staffFormValidate();
+                        if ($("#frmStaffCustomer").valid()) {
+                            sendToServer = {
+                                _token: _token,
+                                _action: customerView.action,
+                                _object: customerView.currentStaff
+                            };
+                            $.ajax({
+                                url: url + 'staff/modify',
+                                type: "POST",
+                                dataType: "json",
+                                data: sendToServer
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    switch (customerView.action) {
+                                        case 'addStaff':
+                                            customerView.dataStaff.push(data['staffNew']);
+                                            var StaffOld = _.filter(customerView.dataStaff, function (o) {
+                                                return o.customer_id == customerView.current.id;
+                                            });
+                                            customerView.fillDataToDatatableStaff(StaffOld);
+                                            showNotification("success", "Thêm nhân viên thành công!");
+                                            break;
+                                        case 'updateStaff':
+                                            console.log(customerView.dataStaff);
+                                            console.log(sendToServer._object.id);
+                                            var StaffOld = _.find(customerView.dataStaffTemp, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var indexOfStaffOld = _.indexOf(customerView.dataStaffTemp, StaffOld);
+                                            console.log(indexOfStaffOld);
+                                            customerView.dataStaffTemp.splice(indexOfStaffOld, 1, data['updateStaff']);
+                                            customerView.tableStaff.clear().rows.add(customerView.dataStaffTemp).draw();
+                                            showNotification("success", "Cập nhật nhân viên thành công!");
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                    customerView.clearInputStaff();
+                                } else {
+                                    showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                }
+
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+
+                            });
+                        } else {
+                            $("form#frmStaffCustomer").find("label[class=error]").css("color", "red");
+                        }
+                    }
+
+
                 },
                 save: function () {
                     customerView.formValidate();
@@ -1034,7 +1106,6 @@
                                     case 'add':
                                         customerView.tableCustomer.push(data['customer'][0]);
                                         showNotification("success", "Thêm thành công!");
-                                        customerView.displayModal("show", "#modal-addStaffOfCustomer");
                                         break;
                                     case 'update':
                                         var customerOld = _.find(customerView.tableCustomer, function (o) {
@@ -1071,149 +1142,11 @@
                         $("form#frmControl").find("label[class=error]").css("color", "red");
                     }
                 },
-                saveStaff: function () {
 
-                    var sendToServer = null;
-                    if (customerView.action == 'deleteStaff') {
-                        sendToServer = {
-                            _token: _token,
-                            _action: customerView.action,
-                            _object: customerView.idDelete
-                        };
-                        $.ajax({
-                            url: url + 'staff/modify',
-                            type: "POST",
-                            dataType: "json",
-                            data: sendToServer
-                        }).done(function (data, textStatus, jqXHR) {
-                            if (jqXHR.status == 201) {
-                                var staffOld = _.find(customerView.dataStaff, function (o) {
-                                    return o.id == sendToServer._object;
-                                });
-                                var indexOfStaffOld = _.indexOf(customerView.dataStaff, staffOld);
-                                customerView.dataStaff.splice(indexOfStaffOld, 1);
-                                showNotification("success", "Xóa nhân viên thành công!");
-                                customerView.displayModal("hide", "#modal-confirmDeleteStaff");
-                            }
-                            customerView.tableStaff.clear().rows.add(customerView.dataStaff).draw();
-                        }).fail(function (jqXHR, textStatus, errorThrown) {
-                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        });
-                    } else {
-                        customerView.staffFormValidate();
-                        if ($("#frmStaffCustomer").valid()) {
-                            customerView.fillDataStaffToForm();
-                            sendToServer = {
-                                _token: _token,
-                                _action: customerView.action,
-                                _object: customerView.currentStaff
-                            };
-                            $.ajax({
-                                url: url + 'staff/modify',
-                                type: "POST",
-                                dataType: "json",
-                                data: sendToServer
-                            }).done(function (data, textStatus, jqXHR) {
-                                console.log(customerView.currentStaff);
-                                if (jqXHR.status == 201) {
-                                    switch (customerView.action) {
-                                        case 'addStaff':
-                                            data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
-                                            customerView.tableCost.push(data['tableCost'][0]);
-                                            customerView.showNotification("success", "Thêm thành công!");
-                                            $("#price").attr('data-priceId', fuelCostView.current["prices_id"]);
-                                            break;
-                                        case 'updateStaff':
-                                            alert('a');
-                                            var StaffOld = _.find(customerView.dataStaff, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var indexOfStaffOld = _.indexOf(customerView.tableCost, StaffOld);
-                                            customerView.dataStaff.splice(indexOfStaffOld, 1, data['tableCost'][0]);
-                                            showNotification("success", "Cập nhật thành công!");
-                                            customerView.hide();
-                                            break;
-
-                                        default:
-                                            break;
-                                    }
-                                    customerView.tableStaff.clear().rows.add(customerView.dataStaff).draw();
-                                    customerView.clearInput();
-                                } else {
-                                    showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
-
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-
-                            });
-                        } else {
-                            $("form#frmStaffCustomer").find("label[class=error]").css("color", "red");
-                        }
-                    }
-
-
-//                    if ($("#frmStaffCustomer").valid()) {
-//                        customerView.fillFormDataStaffToCurrentObject();
-//                        var sendToServer = {
-//                            _token: _token,
-//                            _action: customerView.action,
-//                            _staff: customerView.currentStaff
-//                        };
-//                        if (customerView.action == 'deleteStaff') {
-//                            sendToServer._id = customerView.idDelete;
-//                        }
-//                        $.ajax({
-//                            url: url + 'staff/modify',
-//                            type: "POST",
-//                            dataType: "json",
-//                            data: sendToServer
-//                        }).done(function (data, textStatus, jqXHR) {
-//                            if (jqXHR.status == 201) {
-//                                switch (customerView.action) {
-//                                    case 'addStaff':
-//                                        customerView.tableCustomer.push(data['customer'][0]);
-//                                        showNotification("success", "Thêm thành công!");
-//                                        customerView.displayModal("show", "#modal-addStaffOfCustomer");
-//                                        break;
-//                                    case 'update':
-//                                        var customerOld = _.find(customerView.tableCustomer, function (o) {
-//                                            return o.id == sendToServer._customer.id;
-//                                        });
-//                                        var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
-//                                        customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
-//                                        showNotification("success", "Cập nhật thành công!");
-//                                        customerView.hideControl();
-//                                        break;
-//                                    case 'delete':
-//                                        var customerOld = _.find(customerView.tableCustomer, function (o) {
-//                                            return o.id == sendToServer._id;
-//                                        });
-//                                        var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
-//                                        customerView.tableCustomer.splice(indexOfCustomerOld, 1);
-//                                        showNotification("success", "Xóa thành công!");
-//                                        customerView.displayModal("hide", "#modal-confirmDelete");
-//                                        break;
-//                                    default:
-//                                        break;
-//                                }
-//                                customerView.table.clear().rows.add(customerView.tableCustomer).draw();
-//                                customerView.clearInput();
-//                            } else if (jqXHR.status == 203) {
-//                                showNotification("error", "Tên khách hàng đã tồn tại!");
-//                            } else {
-//                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-//                            }
-//                        }).fail(function (jqXHR, textStatus, errorThrown) {
-//                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-//                        });
-//                    } else {
-//                        $("form#frmStaffCustomer").find("label[class=error]").css("color", "red");
-//                    }
-
-                }
-                ,
-
+                clearInputCustomerType: function () {
+                    $("input[id='CustomerType_name']").val('');
+                    $("textarea[id='description']").val('');
+                },
 
                 validateCustomerType: function () {
                     $("#frmCustomerType").validate({
@@ -1224,8 +1157,7 @@
                             CustomerType_name: "Vui lòng nhập tên loại khách hàng"
                         }
                     });
-                }
-                ,
+                },
                 saveCustomerType: function () {
                     customerView.validateCustomerType();
                     if ($("#frmCustomerType").valid()) {
@@ -1247,9 +1179,8 @@
                             if (jqXHR.status == 201) {
                                 showNotification("success", "Thêm thành công!");
                                 customerView.displayModal("hide", "#modal-addCustomerType");
-                                customerView.clearInput();
-                                //
                                 customerView.tableCustomerType.push(data['customerType']);
+                                customerView.clearInputCustomerType();
                                 customerView.loadSelectBox(customerView.tableCustomerType);
                                 $("select[id='customerType_id']").val(data['customerType']['id']);
                             } else {
@@ -1259,7 +1190,7 @@
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#frmControl").find("label[class=error]").css("color", "red");
+                        $("form#frmCustomerType").find("label[class=error]").css("color", "red");
                     }
                 }
             }

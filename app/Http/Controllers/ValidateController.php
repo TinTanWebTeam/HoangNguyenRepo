@@ -256,5 +256,16 @@ class ValidateController extends Controller
         ];
         return Validator::make($data, $rules, $messages);
     }
+    public static function ValidateStaffOfCustomer(array $data)
+    {
+        $rules = [
+            'fullNameStaff' => 'required',
+
+        ];
+        $messages = [
+            'fullNameStaff.required' => 'Trường tên bắt buộc nhập'
+        ];
+        return Validator::make($data, $rules, $messages);
+    }
 
 }

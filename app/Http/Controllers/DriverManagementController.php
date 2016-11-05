@@ -15,24 +15,31 @@ class DriverManagementController extends Controller
     {
         return view('subviews.Driver.Driver');
     }
-    public function getDataDriver(){
-        $driverVehicle = DriverVehicle::all();
-        dd($driverVehicle);
-        $vehicleUser = \DB::table('driverVehicles')
-            ->select('driverVehicles.*', 'users.fullname as users_fullname', 'users.phone as users_phone', 'vehicles.areaCode as vehicles_areaCode', 'vehicles.vehicleNumber as vehicles_vehicleNumber', 'garages.name as garages_name')
-            ->join('users', 'users.id', '=', 'userVehicles.user_id')
-            ->join('vehicles', 'vehicles.id', '=', 'userVehicles.vehicle_id')
-            ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
-            ->join('positions', 'positions.id', '=', 'users.position_id')
-            ->where([
-                ['positions.name', 'like', '%Tài xế%'],
-                ['userVehicles.active', '=', '1']
-            ])
-            ->get();
 
+    public function getDataDriver()
+    {
+        $dataDrivers = \DB::table('driverVehicles')
+            ->select('drivers.fullName',
+                'drivers.phone',
+                'drivers.licenseDriverType as driverType',
+                'garageTypes.name as garageTypes',
+                'drivers.expireDate as expireDate ',
+                'drivers.issueDate_licenseDriver as issueDate_driver',
+                'drivers.governmentId',
+                'vehicles.areaCode',
+                'vehicles.vehicleNumber',
+                'vehicleTypes.name as vehicle_types  ',
+                'garages.name as garage'
+            )
+            ->join('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
+            ->join('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+            ->join('garageTypes', 'garages.garageType_id', '=', 'garagetypes.id')
+            ->get();
         $response = [
-            'msg' => 'Get list all VehicleUser',
-            'vehicleUser' => $vehicleUser
+            'msg'         => 'Get list all Driver',
+            'dataDrivers' => $dataDrivers
         ];
 
         return response()->json($response, 200);
@@ -40,7 +47,7 @@ class DriverManagementController extends Controller
 
     public function postModifyDivisiveDriver(Request $request)
     {
-        if (!Auth::check()){
+        if (!Auth::check()) {
             return response()->json(['msg' => 'Not authorize'], 404);
         }
 
@@ -50,7 +57,7 @@ class DriverManagementController extends Controller
         $updatedBy = null;
 
         $action = $request->input('_action');
-        if($action != 'delete'){
+        if ($action != 'delete') {
             $validator = ValidateController::ValidateVehicleUser($request->input('_vehicleUser'));
             if ($validator->fails()) {
                 return response()->json(['msg' => 'Input data fail'], 404);
@@ -76,7 +83,7 @@ class DriverManagementController extends Controller
                         ->where('userVehicles.id', '=', $vehicleUserNew->id)
                         ->first();
                     $response = [
-                        'msg' => 'Created vehicleUser',
+                        'msg'         => 'Created vehicleUser',
                         'vehicleUser' => $vehicleUser
                     ];
                     return response()->json($response, 201);
@@ -98,7 +105,7 @@ class DriverManagementController extends Controller
                         ->first();
 
                     $response = [
-                        'msg' => 'Updated vehicleUser',
+                        'msg'         => 'Updated vehicleUser',
                         'vehicleUser' => $vehicleUser
                     ];
                     return response()->json($response, 201);
@@ -108,7 +115,7 @@ class DriverManagementController extends Controller
             case 'delete':
                 $vehicleUserDelete = UserVehicle::findOrFail($request->input('_id'));
                 $vehicleUserDelete->active = 0;
-                if ($vehicleUserDelete->update()){
+                if ($vehicleUserDelete->update()) {
                     $response = [
                         'msg' => 'Deleted vehicle'
                     ];
@@ -131,7 +138,7 @@ class DriverManagementController extends Controller
             ->get();
 
         $response = [
-            'msg' => '',
+            'msg'  => '',
             'user' => $users
         ];
 
@@ -178,7 +185,7 @@ class DriverManagementController extends Controller
                 $driverNew->updatedBy = $updatedBy;
                 if ($driverNew->save()) {
                     $response = [
-                        'msg'      => 'Created driver',
+                        'msg'    => 'Created driver',
                         'driver' => $driverNew
                     ];
                     return response()->json($response, 201);
@@ -194,7 +201,7 @@ class DriverManagementController extends Controller
                 $driverUpdate->updatedBy = $updatedBy;
                 if ($driverUpdate->update()) {
                     $response = [
-                        'msg'      => 'Updated driver',
+                        'msg'    => 'Updated driver',
                         'driver' => $driverUpdate
                     ];
                     return response()->json($response, 201);

@@ -60,6 +60,7 @@ class CustomerManagementController extends Controller
 
     public function postModifyCustomer(Request $request)
     {
+
         if (!\Auth::check()) {
             return response()->json(['msg' => 'Not authorize'], 404);
         }
@@ -87,6 +88,8 @@ class CustomerManagementController extends Controller
             $address = $request->input('_customer')['address'];
             $phone = $request->input('_customer')['phone'];
             $email = $request->input('_customer')['email'];
+            $percentFuel = $request->input('_customer')['percentFuel'];
+            $percentFuelChange = $request->input('_customer')['percentFuelChange'];
             $note = $request->input('_customer')['note'];
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
@@ -107,6 +110,10 @@ class CustomerManagementController extends Controller
                 $customerNew->phone = $phone;
                 $customerNew->email = $email;
                 $customerNew->note = $note;
+                $customerNew->note = $percentFuel;
+                $customerNew->note = $percentFuelChange;
+
+
                 $customerNew->createdBy = $createdBy;
                 $customerNew->updatedBy = $updatedBy;
                 if ($customerNew->save()) {
@@ -171,7 +178,6 @@ class CustomerManagementController extends Controller
 
     public function postModifyStaff(Request $request)
     {
-        dd($request->all());
         if (!\Auth::check()) {
             return response()->json(['msg' => 'Not authorize'], 404);
         }
@@ -182,89 +188,76 @@ class CustomerManagementController extends Controller
         $emailStaff = null;
         $birthdayStaff = null;
         $noteStaff = null;
-
-
         $action = $request->input('_action');
-//        if ($action != 'delete') {
-//            $validator = ValidateController::ValidateCustomer($request->input('_customer'));
-//            if ($validator->fails()) {
+        if ($action != 'deleteStaff') {
+            $validator = ValidateController::ValidateStaffOfCustomer($request->input('_object'));
+            if ($validator->fails()) {
+                return $validator->errors();
 //                return response()->json(['msg' => 'Input data fail'], 404);
-//            }
-//
-//            $customerType_id = $request->input('_customer')['customerType_id'];
-//            $fullName = $request->input('_customer')['fullName'];
-//            $taxCode = $request->input('_customer')['taxCode'];
-//            $address = $request->input('_customer')['address'];
-//            $phone = $request->input('_customer')['phone'];
-//            $email = $request->input('_customer')['email'];
-//            $note = $request->input('_customer')['note'];
-//            $createdBy = \Auth::user()->id;
-//            $updatedBy = \Auth::user()->id;
-//        }
+            }
+            $idCustomer = $request->input('_object')['customer_id'];
+            $fullNameStaff = $request->input('_object')['fullNameStaff'];
+            $positionStaff = $request->input('_object')['positionStaff'];
+            $addressStaff = $request->input('_object')['addressStaff'];
+            $phoneStaff = $request->input('_object')['phoneStaff'];
+            $emailStaff = $request->input('_object')['emailStaff'];
+            $birthdayStaff = $request->input('_object')['birthdayStaff'];
+            $birthday = Carbon::createFromFormat('d-m-Y', $birthdayStaff)->toDateTimeString();
+            $noteStaff = $request->input('_object')['noteStaff'];
+            $createdBy = \Auth::user()->id;
+            $updatedBy = \Auth::user()->id;
 
-
-
-        $fullNameStaff = null;
-        $positionStaff = null;
-        $addressStaff = null;
-        $phoneStaff = null;
-        $emailStaff = null;
-        $birthdayStaff = null;
-        $noteStaff = null;
-
+        }
 
 
         switch ($action) {
-//            case 'add':
-//                $customerNew = Customer::where('fullName', $fullName)->first();
-//                if ($customerNew != null) {
-//                    return response()->json(['msg' => 'fullName exists'], 203);
-//                }
-//
-//                $customerNew = new Customer();
-//                $customerNew->customerType_id = $customerType_id;
-//                $customerNew->fullName = $fullName;
-//                $customerNew->taxCode = $taxCode;
-//                $customerNew->address = $address;
-//                $customerNew->phone = $phone;
-//                $customerNew->email = $email;
-//                $customerNew->note = $note;
-//                $customerNew->createdBy = $createdBy;
-//                $customerNew->updatedBy = $updatedBy;
-//                if ($customerNew->save()) {
-//                    $customer = DB::table('customers')
-//                        ->select('customers.*', 'customerTypes.name as customerTypes_name')
-//                        ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
-//                        ->where('customers.id', '=', $customerNew->id)
-//                        ->get();
-//
-//                    $response = [
-//                        'msg'      => 'Created customer',
-//                        'customer' => $customer
-//                    ];
-//                    return response()->json($response, 201);
-//                }
-//                return response()->json(['msg' => 'Create failed'], 404);
-//                break;
-            case 'updateStaff':
-                $customerUpdate = Customer::findOrFail($request->input('_customer')['id']);
-                $customerUpdate->customerType_id = $customerType_id;
-                $customerUpdate->fullName = $fullName;
-                $customerUpdate->taxCode = $taxCode;
-                $customerUpdate->address = $address;
-                $customerUpdate->phone = $phone;
-                $customerUpdate->email = $email;
-                $customerUpdate->note = $note;
-                $customerUpdate->updatedBy = $updatedBy;
-                if ($customerUpdate->update()) {
-                    $customer = DB::table('customers')
-                        ->select('customers.*', 'customerTypes.name as customerTypes_name')
-                        ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
-                        ->where('customers.id', '=', $customerUpdate->id)
-                        ->get();
+            case 'addStaff':
+                $staffNew = new StaffCustomer();
+                $staffNew->fullName =$fullNameStaff;
+                $staffNew->position =$positionStaff;
+                $staffNew->address =$addressStaff;
+                $staffNew->phone =$phoneStaff;
+                $staffNew->email =$emailStaff;
+                $staffNew->birthday = $birthday;
+                $staffNew->customer_id = $idCustomer;
+                $staffNew->note =$noteStaff;
+                $staffNew->updatedBy = $updatedBy;
+                $staffNew->createdBy = $createdBy;
+                if ($staffNew->save()) {
+                    $staff = DB::table('staffCustomers')
+                        ->select('staffCustomers.*')
+                        ->join('customers', 'customers.id', '=', 'staffCustomers.customer_id')
+                        ->where('staffCustomers.id', '=', $staffNew->id)
+                        ->first();
                     $response = [
-                        'msg'      => 'Updated customer',
-                        'customer' => $customer
+                        'msg'      => 'Created customer',
+                        'staffNew' => $staff
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Create failed'], 404);
+                break;
+            case 'updateStaff':
+
+                $staffUpdate = StaffCustomer::findOrFail($request->input('_object')['id']);
+                $staffUpdate->fullName =$fullNameStaff;
+                $staffUpdate->position =$positionStaff;
+                $staffUpdate->address =$addressStaff;
+                $staffUpdate->phone =$phoneStaff;
+                $staffUpdate->email =$emailStaff;
+                $staffUpdate->birthday =$birthday;
+                $staffUpdate->note =$noteStaff;
+                $staffUpdate->updatedBy = $updatedBy;
+                $staffUpdate->createdBy = $createdBy;
+                if ($staffUpdate->update()) {
+                    $staff = DB::table('staffCustomers')
+                        ->select('staffCustomers.*')
+                        ->join('customers', 'customers.id', '=', 'staffCustomers.customer_id')
+                        ->where('staffCustomers.id', '=', $staffUpdate->id)
+                        ->first();
+                    $response = [
+                        'msg'      => 'Updated Staff',
+                        'updateStaff' => $staff
                     ];
                     return response()->json($response, 201);
                 }
@@ -281,7 +274,6 @@ class CustomerManagementController extends Controller
                     ];
                     return response()->json($response, 201);
                 }
-                dd($staffDelete);
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:

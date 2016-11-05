@@ -53,6 +53,7 @@
                             <thead>
                             <tr class="active">
                                 <th>Mã xe</th>
+                                <th>Chủ xe</th>
                                 <th>Số xe</th>
                                 <th>Loại xe</th>
                                 <th>Nhà xe</th>
@@ -416,6 +417,7 @@
                     $("input[id='contactor']").val('');
                     $("input[id='phone']").val('');
                     $("input[id='address']").val('');
+                    $("input[id='owner']").val('');
                 },
                 clearInputFormGarage: function () {
                     $("input[id='VehicleType_name']").val('');
@@ -539,6 +541,7 @@
                         data: data,
                         columns: [
                             {data: 'id'},
+                            {data: 'owner'},
                             {data: 'fullNumber'},
                             {data: 'vehicleTypes_name'},
                             {data: 'garages_name'},
@@ -608,6 +611,7 @@
                 },
                 fillCurrentObjectToForm: function () {
                     $("input[id='areaCode']").val(vehicleInsideView.current["areaCode"]);
+                    $("input[id='owner']").val(vehicleInsideView.current["owner"]);
                     $("input[id='vehicleNumber']").val(vehicleInsideView.current["vehicleNumber"]);
                     $("input[id='size']").val(vehicleInsideView.current["size"]);
                     $("input[id='weight']").val(vehicleInsideView.current["weight"]);
@@ -623,6 +627,7 @@
                             vehicleNumber: $("input[id='vehicleNumber']").val(),
                             areaCode: $("input[id='areaCode']").val(),
                             size: $("input[id='size']").val(),
+                            owner: $("input[id='owner']").val(),
                             weight: $("input[id='weight']").val()
                         };
                     } else if (vehicleInsideView.action == 'update') {
@@ -632,6 +637,7 @@
                         vehicleInsideView.current.areaCode = $("input[id='areaCode']").val();
                         vehicleInsideView.current.size = $("input[id='size']").val();
                         vehicleInsideView.current.weight = $("input[id='weight']").val();
+                        vehicleInsideView.current.owner = $("input[id='owner']").val();
                     }
                 },
 

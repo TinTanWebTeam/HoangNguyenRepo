@@ -98,8 +98,6 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="garageType_id"><b>Loại nhà xe</b></label>
                                     <select name="garageType_id" id="garageType_id" class="form-control">
-                                        <option value="1">Nhà xe trong</option>
-                                        <option value="2">Nhà xe ngoài</option>
                                     </select>
                                 </div>
                             </div>
@@ -189,6 +187,7 @@
             garageView = {
                 table: null,
                 tableGarage: null,
+                tableGarageTypes: null,
                 current: null,
                 action: null,
                 idDelete: null,
@@ -257,6 +256,9 @@
                         if(jqXHR.status == 200){
                             garageView.tableGarage = data['garages'];
                             garageView.fillDataToDatatable(data['garages']);
+                            garageView.tableGarageTypes = data['garageTypes'];
+                            garageView.loadSelectBox(data['garageTypes']);
+
                         } else {
                             garageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -275,8 +277,8 @@
                             {data: 'id'},
                             {data: 'name'},
                             {data: 'contactor'},
-                            {data: 'phone'},
                             {data: 'address'},
+                            {data: 'phone'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -344,6 +346,7 @@
                     $("input[id='contactor']").val(garageView.current["contactor"]);
                     $("input[id='phone']").val(garageView.current["phone"]);
                     $("textarea[id='address']").val(garageView.current["address"]);
+                    $("select[id='garageType_id']").val(garageView.current["garageType_id"]);
                 },
                 fillFormDataToCurrentObject: function () {
                     if (garageView.action == 'add') {
@@ -351,13 +354,15 @@
                             name:      $("input[id='name']").val(),
                             contactor: $("input[id='contactor']").val(),
                             phone:     $("input[id='phone']").val(),
-                            address:   $("textarea[id='address']").val()
+                            address:   $("textarea[id='address']").val(),
+                            garageType_id: $("select[id='garageType_id']").val()
                         };
                     } else if (garageView.action == 'update') {
                         garageView.current.name      = $("input[id='name']").val();
                         garageView.current.contactor = $("input[id='contactor']").val();
                         garageView.current.phone     = $("input[id='phone']").val();
                         garageView.current.address   = $("textarea[id='address']").val();
+                        garageView.current.garageType_id   = $("select[id='garageType_id']").val();
                     }
                 },
 
@@ -403,7 +408,22 @@
                     var validator = $(idForm).validate();
                     validator.resetForm();
                 },
-
+                loadSelectBox: function (lstGarageType) {
+                    //reset selectbox
+                    $('#garageType_id')
+                            .find('option')
+                            .remove()
+                            .end();
+                    //fill option to selectbox
+                    var select = document.getElementById("garageType_id");
+                    for (var i = 0; i < lstGarageType.length; i++) {
+                        var opt = lstGarageType[i]['name'];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = lstGarageType[i]['id'];
+                        select.appendChild(el);
+                    }
+                },
                 save: function () {
                     garageView.formValidate();
                     if ($("#frmControl").valid()) {
