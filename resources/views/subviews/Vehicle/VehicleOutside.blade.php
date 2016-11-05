@@ -55,8 +55,8 @@
                                 <th>Mã nhà xe</th>
                                 <th>Tên nhà xe</th>
                                 <th>Người liên hệ</th>
-                                <th>Địa chỉ</th>
                                 <th>Số điện thoại</th>
+                                <th>Địa chỉ</th>
                                 <th>Sửa/ Xóa</th>
                             </tr>
                             </thead>
@@ -277,8 +277,8 @@
                             {data: 'id'},
                             {data: 'name'},
                             {data: 'contactor'},
-                            {data: 'address'},
                             {data: 'phone'},
+                            {data: 'address'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
