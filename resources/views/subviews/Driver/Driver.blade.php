@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 60%;
+        top: 30%;
         display: none;
         right: 0;
         height: 60vh;
@@ -34,7 +34,7 @@
                         <li class="active">Quản lý tài xế</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="divisiveDriverView.addVehicleUser();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="driverView.addDriver();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -53,7 +53,6 @@
                                 <th>Ngày cấp</th>
                                 <th>Ngày hết hạn</th>
                                 <th>CMND</th>
-                                <th>Ngày cấp</th>
                                 <th>Số xe</th>
                                 <th>Loại xe</th>
                                 <th>Nhà xe</th>
@@ -78,71 +77,112 @@
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">
-                <span class="titleControl">Thêm mới phân tài</span>
-                <div class="menu-toggles pull-right" onclick="divisiveDriverView.hideControl()">
+                <span class="titleControl"></span>
+                <div class="menu-toggles pull-right" onclick="driverView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
             </div>
 
             <div class="panel-body">
-                <form role="form" id="frmControl">
-                    <div class="form-body">
-                        <div class="row">
-                            <div class="col-sm-6 col-xs-6">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="vehicle_id"><b>Xe</b></label>
-                                    <div class="row">
-                                        <div class="col-sm-10 col-xs-10">
-                                            <input type="text" class="form-control"
-                                                   id="vehicle_id"
-                                                   name="vehicle_id"
-                                                   data-vehicleId=""
-                                                   placeholder="Nhấp đôi để chọn"
-                                                   autofocus readonly
-                                                   ondblclick="divisiveDriverView.loadListVehicle()">
-                                        </div>
-                                        <div class="col-sm-2 col-xs-2">
-                                            <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
-                                                 onclick="divisiveDriverView.addVehicle()">
-                                                <i class="glyphicon glyphicon-plus"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-xs-6">
-                                <div class="form-group form-md-line-input ">
-                                    <label for="user_id"><b>Tài xế</b></label>
-                                    <div class="row">
-                                        <div class="col-sm-10 col-xs-10">
-                                            <input type="text" class="form-control"
-                                                   id="user_id"
-                                                   name="user_id"
-                                                   data-userId=""
-                                                   placeholder="Nhấp đôi để chọn"
-                                                   readonly ondblclick="divisiveDriverView.loadListDriver()">
-                                        </div>
-                                        <div class="col-sm-2 col-xs-2">
-                                            <div class="btn btn-primary btn-sm btn-circle" title="Thêm mới tài xế"
-                                                 onclick="divisiveDriverView.displayModal('show', '#modal-addDriver')">
-                                                <i class="glyphicon glyphicon-plus"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                <form id="frmDriver">
+                    <div class="row ">
+                        <div class="col-md-6">
+                            <div class="form-group form-md-line-input">
+                                <label for="fullName"><b>Họ và tên</b></label>
+                                <input type="text" class="form-control"
+                                       id="fullName"
+                                       name="fullName">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-actions noborder">
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight" onclick="divisiveDriverView.save()">Hoàn tất</button>
-                                        <button type="button" class="btn default" onclick="divisiveDriverView.clearInput()">Nhập lại</button>
-                                    </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-md-line-input">
+                                <label for="phone"><b>Số điện thoại</b></label>
+                                <input type="number" class="form-control"
+                                       id="phone"
+                                       name="phone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-6">
+                            <div class="form-group form-md-line-input">
+                                <label for="address"><b>CMND</b></label>
+                                <input type="text" class="form-control"
+                                       id="address"
+                                       name="address">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-md-line-input">
+                                <label for="note"><b>Ngày cấp</b></label>
+                                <input type="text" class="form-control"
+                                       id="note"
+                                       name="note">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-6">
+                            <div class="form-group form-md-line-input">
+                                <label for="driverType"><b>Loại bằng</b></label>
+                                <input type="text" class="form-control"
+                                       id="driverType"
+                                       name="driverType">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group form-md-line-input">
+                                <label for="note"><b>Ngày cấp</b></label>
+                                <input type="text" class="form-control"
+                                       id="note"
+                                       name="note">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group form-md-line-input">
+                                <label for="note"><b>Ngày hết hạn</b></label>
+                                <input type="text" class="form-control"
+                                       id="note"
+                                       name="note">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-12">
+                            <div class="form-group form-md-line-input">
+                                <label for="note"><b>Ghi chú</b></label>
+                                <textarea type="text" class="form-control"
+                                       id="note"
+                                       name="note"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-actions">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary marginRight" onclick="garageView.save()">Hoàn tất</button>
+                                    <button type="button" class="btn default" onclick="garageView.clearInput()">Nhập lại</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {{--<div class="row">--}}
+                        {{--<div class="col-md-offset-8 col-md-4">--}}
+                            {{--<div class="form-actions noborder">--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<button type="button" class="btn btn-primary marginRight"--}}
+                                            {{--onclick="divisiveDriverView.saveDriver()">--}}
+                                        {{--Hoàn tất--}}
+                                    {{--</button>--}}
+                                    {{--<button type="button" class="btn default"--}}
+                                            {{--onclick="divisiveDriverView.displayModal('hide','#modal-addDriver')">--}}
+                                        {{--Nhập lại--}}
+                                    {{--</button>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
                 </form>
             </div>
         </div>
@@ -150,274 +190,10 @@
 </div>
 <!-- end Control -->
 
-<!-- Modal confirm delete VehicleUser -->
-<div class="row">
-    <div id="modal-confirmDelete" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h5 class="modal-title">Có chắc muốn xóa?</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
-                            <button type="button" class="btn btn-primary marginRight"
-                                    onclick="divisiveDriverView.save()">
-                                Đồng ý
-                            </button>
-                            <button type="button" class="btn default"
-                                    onclick="divisiveDriverView.displayModal('hide','#modal-confirmDelete')">
-                                Huỷ
-                            </button>
-                        </div>
-                    </div>
 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal confirm delete VehicleUser -->
 
-<!-- Modal list vehicles -->
-<div class="row">
-    <div id="modal-vehicle" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Danh sách xe</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="table-vehicle">
-                            <thead>
-                            <tr>
-                                <th>Mã xe</th>
-                                <th>Số xe</th>
-                                <th>Loại xe</th>
-                                <th>Nhà xe</th>
-                                <th>Kích thước</th>
-                                <th>Trọng tải</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal list vehicles -->
 
-<!-- Modal list users -->
-<div class="row">
-    <div id="modal-user" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Danh sách tài xế</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="table-user">
-                            <thead>
-                            <tr>
-                                <th>Mã</th>
-                                <th>Họ và tên</th>
-                                <th>Số điện thoại</th>
-                                <th>Địa chỉ</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal list users -->
 
-<!-- Modal add Vehicle -->
-<div class="row">
-    <div id="modal-addVehicle" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Thêm Xe</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="frmVehicle">
-                        <div class="row ">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="areaCode"><b>Mã vùng</b></label>
-                                    <input type="text" class="form-control"
-                                           id="areaCode"
-                                           name="areaCode">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="vehicleNumber"><b>Số xe</b></label>
-                                    <input type="number" class="form-control"
-                                           id="vehicleNumber"
-                                           name="vehicleNumber">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="size"><b>Kích thước</b></label>
-                                    <input type="number" class="form-control"
-                                           id="size"
-                                           name="size">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="weight"><b>Trọng tải</b></label>
-                                    <input type="number" class="form-control"
-                                           id="weight"
-                                           name="weight">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="garage_id"><b>Nhà xe</b></label>
-
-                                    <select class="form-control" id="garage_id"
-                                            name="garage_id">
-                                    </select>
-
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="vehicleType_id"><b>Loại Xe</b></label>
-                                    <select class="form-control" id="vehicleType_id"
-                                            name="vehicleType_id">
-                                    </select>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
-                                <div class="form-actions noborder">
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight"
-                                                onclick="divisiveDriverView.saveVehicle()">
-                                            Hoàn tất
-                                        </button>
-                                        <button type="button" class="btn default"
-                                                onclick="divisiveDriverView.displayModal('hide','#modal-addVehicle')">
-                                            Huỷ
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal add vehicle -->
-
-<!-- Modal add Driver -->
-<div class="row">
-    <div id="modal-addDriver" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Thêm tài xế</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="frmDriver">
-                        <div class="row ">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="fullName"><b>Họ và tên</b></label>
-                                    <input type="text" class="form-control"
-                                           id="fullName"
-                                           name="fullName">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="phone"><b>Số điện thoại</b></label>
-                                    <input type="number" class="form-control"
-                                           id="phone"
-                                           name="phone">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="address"><b>Địa chỉ</b></label>
-                                    <input type="text" class="form-control"
-                                           id="address"
-                                           name="address">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label for="note"><b>Ghi chú</b></label>
-                                    <input type="text" class="form-control"
-                                           id="note"
-                                           name="note">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
-                                <div class="form-actions noborder">
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight"
-                                                onclick="divisiveDriverView.saveDriver()">
-                                            Hoàn tất
-                                        </button>
-                                        <button type="button" class="btn default"
-                                                onclick="divisiveDriverView.displayModal('hide','#modal-addDriver')">
-                                            Huỷ
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal add Driver -->
 
 <script>
     $(function () {
@@ -488,13 +264,8 @@
                                 }
                             },
                             {data: 'governmentId'},
-                            {data: 'expireDate',
-                                render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY");
-                                }
-                            },
                             {data: 'fullNumber'},
-                            {data: 'vehicle_types'},
+                            {data:'vehicle_types'},
                             {data: 'garage'},
                             {data: 'garageTypes'},
                             {
@@ -517,6 +288,11 @@
                         order: [[0, "desc"]]
 
                     })
+                },
+                addDriver: function () {
+                    $("#divControl").find(".titleControl").html("Thêm mới tài xế");
+                    driverView.action = 'add';
+                    driverView.showControl();
                 }
 
             };

@@ -53,6 +53,7 @@
                             <thead>
                             <tr class="active">
                                 <th>Mã nhà xe</th>
+                                <th>Loại nhà xe</th>
                                 <th>Tên nhà xe</th>
                                 <th>Người liên hệ</th>
                                 <th>Số điện thoại</th>
@@ -275,6 +276,7 @@
                         data: data,
                         columns: [
                             {data: 'id'},
+                            {data: 'garageTypes'},
                             {data: 'name'},
                             {data: 'contactor'},
                             {data: 'phone'},

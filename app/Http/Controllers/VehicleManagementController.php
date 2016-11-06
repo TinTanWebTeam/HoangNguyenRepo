@@ -139,7 +139,13 @@ class VehicleManagementController extends Controller
 
     public function getDataGarage()
     {
-        $garages = Garage::all();
+//        $garages = Garage::all();
+        $garages = \DB::table('garages')
+            ->select('garages.*','garageTypes.name as garageTypes')
+            ->join('garageTypes','garages.garageType_id','=','garageTypes.id')
+            ->where('garages.active',1)
+            ->get();
+
         $garageTypes = GarageType::all();
         $response = [
             'msg'         => 'List of all Garage',
