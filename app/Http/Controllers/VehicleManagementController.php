@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Driver;
 use App\Garage;
 use App\GarageType;
 use App\Vehicle;
@@ -22,6 +23,7 @@ class VehicleManagementController extends Controller
     public function getDataVehicle()
     {
         $vehicleTypes = VehicleType::all();
+        $driver = Driver::all();
         $vehicles = \DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
@@ -32,7 +34,8 @@ class VehicleManagementController extends Controller
         $response = [
             'msg'          => 'Get data vehicle success',
             'vehicles'     => $vehicles,
-            'vehicleTypes' => $vehicleTypes
+            'vehicleTypes' => $vehicleTypes,
+            'drivers' => $driver
         ];
         return response()->json($response, 200);
     }

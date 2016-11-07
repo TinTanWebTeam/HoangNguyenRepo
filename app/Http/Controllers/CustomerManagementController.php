@@ -60,11 +60,9 @@ class CustomerManagementController extends Controller
 
     public function postModifyCustomer(Request $request)
     {
-
         if (!\Auth::check()) {
             return response()->json(['msg' => 'Not authorize'], 404);
         }
-
         $customerType_id = null;
         $fullName = null;
         $taxCode = null;
@@ -72,30 +70,50 @@ class CustomerManagementController extends Controller
         $phone = null;
         $email = null;
         $note = null;
+
+        $fullNameEdit = null;
+        $taxCodeEdit = null;
+        $addressEdit = null;
+        $phoneEdit = null;
+        $emailEdit = null;
+        $noteEdit = null;
         $createdBy = null;
         $updatedBy = null;
 
         $action = $request->input('_action');
         if ($action != 'delete') {
-            $validator = ValidateController::ValidateCustomer($request->input('_customer'));
+            $validator = ValidateController::ValidateCustomer($request->input('_customer'),$action);
             if ($validator->fails()) {
-                return response()->json(['msg' => 'Input data fail'], 404);
+                return $validator->errors();
+//                return response()->json(['msg' => 'Input data fail'], 404);
             }
-
+            if ($action == "add") {
+                $fullName = $request->input('_customer')['fullName'];
+                $taxCode = $request->input('_customer')['taxCode'];
+                $address = $request->input('_customer')['address'];
+                $phone = $request->input('_customer')['phone'];
+                $email = $request->input('_customer')['email'];
+                $percentFuel = $request->input('_customer')['percentFuel'];
+                $percentFuelChange = $request->input('_customer')['percentFuelChange'];
+                $note = $request->input('_customer')['note'];
+            } elseif ($action == "update") {
+                $fullNameEdit = $request->input('_customer')['fullName'];
+                $taxCodeEdit = $request->input('_customer')['taxCode'];
+                $addressEdit = $request->input('_customer')['address'];
+                $phoneEdit = $request->input('_customer')['phone'];
+                $emailEdit = $request->input('_customer')['email'];
+                $percentFuelEdit = $request->input('_customer')['percentFuel'];
+                $percentFuelChangeEdit = $request->input('_customer')['percentFuelChange'];
+                $noteEdit = $request->input('_customer')['note'];
+            }
             $customerType_id = $request->input('_customer')['customerType_id'];
-            $fullName = $request->input('_customer')['fullName'];
-            $taxCode = $request->input('_customer')['taxCode'];
-            $address = $request->input('_customer')['address'];
-            $phone = $request->input('_customer')['phone'];
-            $email = $request->input('_customer')['email'];
-            $percentFuel = $request->input('_customer')['percentFuel'];
-            $percentFuelChange = $request->input('_customer')['percentFuelChange'];
-            $note = $request->input('_customer')['note'];
+
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
         }
 
         switch ($action) {
+
             case 'add':
                 $customerNew = Customer::where('fullName', $fullName)->first();
                 if ($customerNew != null) {
@@ -110,10 +128,8 @@ class CustomerManagementController extends Controller
                 $customerNew->phone = $phone;
                 $customerNew->email = $email;
                 $customerNew->note = $note;
-                $customerNew->note = $percentFuel;
-                $customerNew->note = $percentFuelChange;
-
-
+                $customerNew->percentFuel = $percentFuel;
+                $customerNew->percentFuelChange = $percentFuelChange;
                 $customerNew->createdBy = $createdBy;
                 $customerNew->updatedBy = $updatedBy;
                 if ($customerNew->save()) {
@@ -134,12 +150,14 @@ class CustomerManagementController extends Controller
             case 'update':
                 $customerUpdate = Customer::findOrFail($request->input('_customer')['id']);
                 $customerUpdate->customerType_id = $customerType_id;
-                $customerUpdate->fullName = $fullName;
-                $customerUpdate->taxCode = $taxCode;
-                $customerUpdate->address = $address;
-                $customerUpdate->phone = $phone;
-                $customerUpdate->email = $email;
-                $customerUpdate->note = $note;
+                $customerUpdate->fullName = $fullNameEdit;
+                $customerUpdate->taxCode = $taxCodeEdit;
+                $customerUpdate->address = $addressEdit;
+                $customerUpdate->phone = $phoneEdit;
+                $customerUpdate->email = $emailEdit;
+                $customerUpdate->note = $noteEdit;
+                $customerUpdate->percentFuel = $percentFuelEdit;
+                $customerUpdate->percentFuelChange = $percentFuelChangeEdit;
                 $customerUpdate->updatedBy = $updatedBy;
                 if ($customerUpdate->update()) {
                     $customer = DB::table('customers')
@@ -213,14 +231,14 @@ class CustomerManagementController extends Controller
         switch ($action) {
             case 'addStaff':
                 $staffNew = new StaffCustomer();
-                $staffNew->fullName =$fullNameStaff;
-                $staffNew->position =$positionStaff;
-                $staffNew->address =$addressStaff;
-                $staffNew->phone =$phoneStaff;
-                $staffNew->email =$emailStaff;
+                $staffNew->fullName = $fullNameStaff;
+                $staffNew->position = $positionStaff;
+                $staffNew->address = $addressStaff;
+                $staffNew->phone = $phoneStaff;
+                $staffNew->email = $emailStaff;
                 $staffNew->birthday = $birthday;
                 $staffNew->customer_id = $idCustomer;
-                $staffNew->note =$noteStaff;
+                $staffNew->note = $noteStaff;
                 $staffNew->updatedBy = $updatedBy;
                 $staffNew->createdBy = $createdBy;
                 if ($staffNew->save()) {
@@ -240,13 +258,13 @@ class CustomerManagementController extends Controller
             case 'updateStaff':
 
                 $staffUpdate = StaffCustomer::findOrFail($request->input('_object')['id']);
-                $staffUpdate->fullName =$fullNameStaff;
-                $staffUpdate->position =$positionStaff;
-                $staffUpdate->address =$addressStaff;
-                $staffUpdate->phone =$phoneStaff;
-                $staffUpdate->email =$emailStaff;
-                $staffUpdate->birthday =$birthday;
-                $staffUpdate->note =$noteStaff;
+                $staffUpdate->fullName = $fullNameStaff;
+                $staffUpdate->position = $positionStaff;
+                $staffUpdate->address = $addressStaff;
+                $staffUpdate->phone = $phoneStaff;
+                $staffUpdate->email = $emailStaff;
+                $staffUpdate->birthday = $birthday;
+                $staffUpdate->note = $noteStaff;
                 $staffUpdate->updatedBy = $updatedBy;
                 $staffUpdate->createdBy = $createdBy;
                 if ($staffUpdate->update()) {
@@ -256,7 +274,7 @@ class CustomerManagementController extends Controller
                         ->where('staffCustomers.id', '=', $staffUpdate->id)
                         ->first();
                     $response = [
-                        'msg'      => 'Updated Staff',
+                        'msg'         => 'Updated Staff',
                         'updateStaff' => $staff
                     ];
                     return response()->json($response, 201);

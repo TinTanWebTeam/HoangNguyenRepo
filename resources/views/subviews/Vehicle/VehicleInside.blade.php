@@ -356,12 +356,11 @@
                 tableGarage: null,
                 tableVehicleType: null,
                 tableVehicle: null,
-
                 dataGarage: null,
-
                 current: null,
                 action: null,
                 idDelete: null,
+                dataDrivers: null,
                 tagsGarageName: [],
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -432,7 +431,6 @@
                     $("input[id='VehicleType_name']").val('');
                     $("textarea[id='description']").val('');
                 },
-
                 renderEventClickTableModal: function () {
                     $("#table-garage").find("tbody").on('click', 'tr', function () {
                         $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
@@ -465,7 +463,6 @@
                         }
                     });
                 },
-
                 loadData: function () {
                     $.ajax({
                         url: url + 'vehicle-inside/vehicles',
@@ -475,9 +472,10 @@
                         if (jqXHR.status == 200) {
                             vehicleInsideView.tableVehicle = data['vehicles'];
                             vehicleInsideView.fillDataToDatatable(data['vehicles']);
-
                             vehicleInsideView.tableVehicleType = data['vehicleTypes'];
                             vehicleInsideView.loadSelectBox(data['vehicleTypes']);
+                            vehicleInsideView.dataDrivers = data['drivers'];
+
                         } else {
                             vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -489,6 +487,15 @@
                     vehicleInsideView.renderEventFocusOut();
                     vehicleInsideView.renderEventClickTableModal();
                     vehicleInsideView.renderScrollbar();
+                    vehicleInsideView.renderAutoCompleteSearch();
+                },
+                renderAutoCompleteSearch: function(){
+                    var nameDriver = _.map(vehicleInsideView.dataDrivers, function (o) {
+                        return o.fullName;
+                    });
+                    $( "#driver" ).autocomplete({
+                        source: nameDriver
+                    });
                 },
                 localSearch: function () {
                     var dataSearch = _.filter(vehicleInsideView.tableVehicle, function (o) {
@@ -530,7 +537,6 @@
                         garageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['areaCode'] + '-' + data[i]['vehicleNumber'];
@@ -640,7 +646,6 @@
                         vehicleInsideView.current.owner = $("input[id='owner']").val();
                     }
                 },
-
                 editVehicle: function (id) {
                     vehicleInsideView.current = null;
                     vehicleInsideView.current = _.clone(_.find(vehicleInsideView.tableVehicle, function (o) {
@@ -662,7 +667,6 @@
                     vehicleInsideView.idDelete = id;
                     vehicleInsideView.displayModal("show", "#modal-confirmDelete");
                 },
-
                 formValidate: function () {
                     $("#frmControl").validate({
                         rules: {
@@ -681,8 +685,6 @@
                 },
                 clearValidation: function (idForm) {
                     $(idForm).find("label[class=error]").remove();
-//                    var validator = $(idForm).validate();
-//                    validator.resetForm();
                 },
                 validateGarage: function () {
                     $("#frmGarage").validate({

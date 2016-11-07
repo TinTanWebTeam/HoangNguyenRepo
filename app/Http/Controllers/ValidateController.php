@@ -102,8 +102,9 @@ class ValidateController extends Controller
         return Validator::make($data, $rules, $messages);
     }
 
-    public static function ValidateCustomer(array $data)
+    public static function ValidateCustomer(array $data, $active)
     {
+
         $rules = [
             'customerType_id' => 'required',
             'fullName'        => 'required',
@@ -114,8 +115,9 @@ class ValidateController extends Controller
             'fullName.required'        => 'Trường tên khách hàng bắt buộc nhập',
             'taxCode.required'         => 'Trường mã số thuế bắt buộc nhập'
         ];
-
         return Validator::make($data, $rules, $messages);
+
+
     }
 
     public static function ValidateCustomerType(array $data)
@@ -256,6 +258,7 @@ class ValidateController extends Controller
         ];
         return Validator::make($data, $rules, $messages);
     }
+
     public static function ValidateStaffOfCustomer(array $data)
     {
         $rules = [

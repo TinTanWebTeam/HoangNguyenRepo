@@ -266,7 +266,7 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         garageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
+                    garageView.renderScrollbar();
                     garageView.renderEventClickTableModal();
                 },
 

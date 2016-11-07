@@ -3,29 +3,29 @@
  * Public Route
  * */
 
-Route::get('/',function(){
-    if(Auth::check()){
+Route::get('/', function () {
+    if (Auth::check()) {
         return redirect('index');
     }
     return redirect('auth/login');
 });
 
-Route::get('auth/logout',[
+Route::get('auth/logout', [
     'uses' => 'Auth\AuthController@getLogout',
-    'as' => 'logout'
+    'as'   => 'logout'
 ]);
 
-Route::group(['middleware' => ['guest']],function (){
-    Route::get('auth/login','Auth\AuthController@getLogin');
-    Route::post('auth/login','Auth\AuthController@postLogin');
+Route::group(['middleware' => ['guest']], function () {
+    Route::get('auth/login', 'Auth\AuthController@getLogin');
+    Route::post('auth/login', 'Auth\AuthController@postLogin');
 });
 
 /*
  * Route phân quy?n
  * */
 
-Route::group(['middleware' => 'auth'], function(){
-    Route::get('/index','HomeController@index');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/index', 'HomeController@index');
     Route::get('/verify-project', 'HomeController@getVerifyProject');
     Route::get('/dashboard', 'HomeController@getDashboard');
     Route::group(['middleware' => 'Admin'], function () {
@@ -35,40 +35,39 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/invoice-garage-detail/delete', 'DebtManagementController@postDeleteInvoiceGarageDetail');
     });
     Route::group(['middleware' => 'UserManagement'], function () {
-        Route::get('/position','UserManagementController@getViewPosition');
-        Route::get('/user','UserManagementController@getViewUser');
+        Route::get('/position', 'UserManagementController@getViewPosition');
+        Route::get('/user', 'UserManagementController@getViewUser');
         /*Post view*/
-        Route::post('/position','UserManagementController@getDataPosition');
-        Route::get('/user/users','UserManagementController@getDataUser');
-        Route::post('/position/modify','UserManagementController@postModifyPosition');
-        Route::post('/user/edit','UserManagementController@postEditUser');
-        Route::post('/user/modify','UserManagementController@postModifyUser');
+        Route::post('/position', 'UserManagementController@getDataPosition');
+        Route::get('/user/users', 'UserManagementController@getDataUser');
+        Route::post('/position/modify', 'UserManagementController@postModifyPosition');
+        Route::post('/user/edit', 'UserManagementController@postEditUser');
+        Route::post('/user/modify', 'UserManagementController@postModifyUser');
 
-        Route::post('/validate-user','UserManagementController@postDataUserValidate');
-        Route::post('/validate-position','UserManagementController@postDataPositionValidate');
+        Route::post('/validate-user', 'UserManagementController@postDataUserValidate');
+        Route::post('/validate-position', 'UserManagementController@postDataPositionValidate');
     });
     Route::group(['middleware' => 'CustomerManagement'], function () {
         //get View
         Route::get('/customer', 'CustomerManagementController@getViewCustomer');
         Route::get('/delivery-requirement', 'CustomerManagementController@getViewTransport');
         //get Data
-        Route::get('/customer/customers','CustomerManagementController@getDataCustomer');
-        Route::get('/product-type/product-types','CustomerManagementController@getDataProductType');
-        Route::get('/product/products','CustomerManagementController@getDataProduct');
-        Route::get('/voucher/vouchers','CustomerManagementController@getDataVoucher');
+        Route::get('/customer/customers', 'CustomerManagementController@getDataCustomer');
+        Route::get('/product-type/product-types', 'CustomerManagementController@getDataProductType');
+        Route::get('/product/products', 'CustomerManagementController@getDataProduct');
+        Route::get('/voucher/vouchers', 'CustomerManagementController@getDataVoucher');
         Route::get('/transport/transports', 'CustomerManagementController@getDataTransport');
         //post Modify
-        Route::post('/customer/modify','CustomerManagementController@postModifyCustomer');
-        Route::post('/customer-type/modify','CustomerManagementController@postModifyCustomerType');
-        Route::post('/transport/modify','CustomerManagementController@postModifyTransport');
-        Route::post('/voucher/modify','CustomerManagementController@postModifyVoucher');
-        Route::post('/product/modify','CustomerManagementController@postModifyProduct');
+        Route::post('/customer/modify', 'CustomerManagementController@postModifyCustomer');
+        Route::post('/customer-type/modify', 'CustomerManagementController@postModifyCustomerType');
+        Route::post('/transport/modify', 'CustomerManagementController@postModifyTransport');
+        Route::post('/voucher/modify', 'CustomerManagementController@postModifyVoucher');
+        Route::post('/product/modify', 'CustomerManagementController@postModifyProduct');
 
-        Route::post('/staff/modify','CustomerManagementController@postModifyStaff');
+        Route::post('/staff/modify', 'CustomerManagementController@postModifyStaff');
 
         //post to get Data
-        Route::post('/customer/postage','CustomerManagementController@postDataPostageOfCustomer');
-
+        Route::post('/customer/postage', 'CustomerManagementController@postDataPostageOfCustomer');
 
 
     });
@@ -90,13 +89,13 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');
         Route::get('/debt-vehicle-outside', 'DebtManagementController@getViewDebtGarage');
         /*GET DATA*/
-        Route::get('/debt-customer/transports','DebtManagementController@getDataDebtCustomer');
-        Route::get('/debt-garage/transports','DebtManagementController@getDataDebtGarage');
+        Route::get('/debt-customer/transports', 'DebtManagementController@getDataDebtCustomer');
+        Route::get('/debt-garage/transports', 'DebtManagementController@getDataDebtGarage');
         /*POST MODIFY*/
-        Route::post('/debt-customer/modify','DebtManagementController@postModifyDebtCustomer');
-        Route::post('/invoice-customer/modify','DebtManagementController@postModifyInvoiceCustomer');
-        Route::post('/debt-garage/modify','DebtManagementController@postModifyDebtGarage');
-        Route::post('/invoice-garage/modify','DebtManagementController@postModifyInvoiceGarage');
+        Route::post('/debt-customer/modify', 'DebtManagementController@postModifyDebtCustomer');
+        Route::post('/invoice-customer/modify', 'DebtManagementController@postModifyInvoiceCustomer');
+        Route::post('/debt-garage/modify', 'DebtManagementController@postModifyDebtGarage');
+        Route::post('/invoice-garage/modify', 'DebtManagementController@postModifyInvoiceGarage');
     });
     //Chi phí
     Route::group(['middleware' => 'CostManagement'], function () {
@@ -119,7 +118,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/fuel-cost/fuelCost', 'CostManagementController@getDataFuelCost');
         /*Get Data View petroleum */
         Route::get('/petroleum-cost/petroleum-cost', 'CostManagementController@getDataPetroleumCost');
-         /*Get Data View ParkingCost */
+        /*Get Data View ParkingCost */
         Route::get('/parking-cost/parkingCost', 'CostManagementController@getDataParkingCost');
         /*Get Data View OtherCost */
         Route::get('/other-cost/otherCost', 'CostManagementController@getDataOtherCost');
@@ -128,7 +127,7 @@ Route::group(['middleware' => 'auth'], function(){
         /*Post Data server */
         /*Cost*/
         Route::post('/fuel-cost/modify', 'CostManagementController@postModifyFuelCost');
-         /*Petroleum*/
+        /*Petroleum*/
         Route::post('/petroleum/modify', 'CostManagementController@postModifyPetroleum');
         /*Parking Cost*/
         Route::post('/parking-cost/modify', 'CostManagementController@postModifyParkingCost');
@@ -148,34 +147,32 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/postage/modify', 'PostageManagementController@postModifyPostage');
     });
     //QL giá nhiên liệu
-    Route::group(['middleware' => 'FuelManagement','prefix' => 'fuel-price'], function () {
+    Route::group(['middleware' => 'FuelManagement', 'prefix' => 'fuel-price'], function () {
         /* GET VIEW */
         Route::get('/oil', 'FuelManagementController@getOilView');
         /* GET VIEW COMPLETE DATA */
-        Route::get('/oil/getOilViewCompleteData','FuelManagementController@getOilViewCompleteData');
+        Route::get('/oil/getOilViewCompleteData', 'FuelManagementController@getOilViewCompleteData');
         /* ADD NEW OIL PRICE */
-        Route::post('/oil/add','FuelManagementController@addNewOilPrice');
+        Route::post('/oil/add', 'FuelManagementController@addNewOilPrice');
         /* UPDATE OIL PRICE */
-        Route::post('/oil/update','FuelManagementController@updateOilPrice');
+        Route::post('/oil/update', 'FuelManagementController@updateOilPrice');
         /*---------------------------------------------------------------------*/
         /* GET VIEW */
         Route::get('/lube', 'FuelManagementController@getLubeView');
         /* GET VIEW COMPLETE DATA */
-        Route::get('/lube/getLubeViewCompleteData','FuelManagementController@getLubeViewCompleteData');
+        Route::get('/lube/getLubeViewCompleteData', 'FuelManagementController@getLubeViewCompleteData');
         /* ADD NEW OIL PRICE */
-        Route::post('/lube/add','FuelManagementController@addNewLubePrice');
+        Route::post('/lube/add', 'FuelManagementController@addNewLubePrice');
         /* UPDATE OIL PRICE */
-        Route::post('/lube/update','FuelManagementController@updateLubePrice');
+        Route::post('/lube/update', 'FuelManagementController@updateLubePrice');
     });
     Route::group(['middleware' => 'DriverManagement'], function () {
         //get View
         Route::get('/driver-management', 'DriverManagementController@getViewDriver');
         //get Data
         Route::get('/driver-management/driver', 'DriverManagementController@getDataDriver');
-//        Route::get('/divisive-driver/drivers', 'DivisiveDriverController@getAllDriver');
-//        //post Modify
-//        Route::post('/divisive-driver/modify', 'DivisiveDriverController@postModifyDivisiveDriver');
-//        Route::post('/driver/modify', 'DivisiveDriverController@postModifyDriver');
+        //Post modify
+        Route::post('/driver/modify', 'DriverManagementController@postModifyDriver');
     });
     Route::group(['middleware' => 'Report'], function () {
         Route::get('/revenue-report', 'ReportController@getViewRevenueReport');

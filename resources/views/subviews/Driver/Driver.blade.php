@@ -21,6 +21,26 @@
         }
     }
 </style>
+{{--start Modal delete Driver--}}
+<div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body"><h5 id="modalContent"></h5></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
+                        onclick="driverView.deleteDriver()">Ðồng ý
+                </button>
+                <button type="button" class="btn default" name="modalClose"
+                        onclick="driverView.cancelDelete()">Hủy
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+{{--End Modal delete Driver--}}
+
 
 <!-- Table -->
 <div class="row">
@@ -34,7 +54,8 @@
                         <li class="active">Quản lý tài xế</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="driverView.addDriver();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="driverView.addDriver();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -85,114 +106,102 @@
 
             <div class="panel-body">
                 <form id="frmDriver">
-                    <div class="row ">
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input">
-                                <label for="fullName"><b>Họ và tên</b></label>
-                                <input type="text" class="form-control"
-                                       id="fullName"
-                                       name="fullName">
+                    <div class="col-md-12">
+                        <div class="row" id='datetimepicker'>
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="fullName"><b>Họ và tên</b></label>
+                                        <input type="text" class="form-control"
+                                               id="fullName"
+                                               name="fullName">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="phone"><b>Số điện thoại</b></label>
+                                        <input type="number" class="form-control"
+                                               id="phone"
+                                               name="phone">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input">
-                                <label for="phone"><b>Số điện thoại</b></label>
-                                <input type="number" class="form-control"
-                                       id="phone"
-                                       name="phone">
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="governmentId"><b>CMND</b></label>
+                                        <input type="number" class="form-control"
+                                               id="governmentId"
+                                               name="governmentId">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="issueDateId"><b>Ngày cấp</b></label>
+                                        <input type="text" class="form-control date"
+                                               id="issueDateId"
+                                               name="issueDateId">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row ">
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input">
-                                <label for="address"><b>CMND</b></label>
-                                <input type="text" class="form-control"
-                                       id="address"
-                                       name="address">
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="driverType"><b>Loại bằng</b></label>
+                                        <input type="text" class="form-control"
+                                               id="driverType"
+                                               name="driverType">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="issueDateDriver"><b>Ngày cấp</b></label>
+                                        <input type="text" class="form-control date"
+                                               id="issueDateDriver"
+                                               name="issueDateDriver">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="expireDateDriver"><b>Ngày hết hạn</b></label>
+                                        <input type="text" class="form-control date"
+                                               id="expireDateDriver"
+                                               name="expireDateDriver">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input">
-                                <label for="note"><b>Ngày cấp</b></label>
-                                <input type="text" class="form-control"
-                                       id="note"
-                                       name="note">
+                            <div class="row ">
+                                <div class="col-md-12">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="note"><b>Ghi chú</b></label>
+                                        <textarea type="text" class="form-control"
+                                                  id="note"
+                                                  name="note"></textarea>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row ">
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input">
-                                <label for="driverType"><b>Loại bằng</b></label>
-                                <input type="text" class="form-control"
-                                       id="driverType"
-                                       name="driverType">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group form-md-line-input">
-                                <label for="note"><b>Ngày cấp</b></label>
-                                <input type="text" class="form-control"
-                                       id="note"
-                                       name="note">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group form-md-line-input">
-                                <label for="note"><b>Ngày hết hạn</b></label>
-                                <input type="text" class="form-control"
-                                       id="note"
-                                       name="note">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row ">
-                        <div class="col-md-12">
-                            <div class="form-group form-md-line-input">
-                                <label for="note"><b>Ghi chú</b></label>
-                                <textarea type="text" class="form-control"
-                                       id="note"
-                                       name="note"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-actions">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary marginRight" onclick="garageView.save()">Hoàn tất</button>
-                                    <button type="button" class="btn default" onclick="garageView.clearInput()">Nhập lại</button>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-actions">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-primary marginRight"
+                                                    onclick="driverView.save()">Hoàn tất
+                                            </button>
+                                            <button type="button" class="btn default" onclick="driverView.clearInput()">
+                                                Nhập lại
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {{--<div class="row">--}}
-                        {{--<div class="col-md-offset-8 col-md-4">--}}
-                            {{--<div class="form-actions noborder">--}}
-                                {{--<div class="form-group">--}}
-                                    {{--<button type="button" class="btn btn-primary marginRight"--}}
-                                            {{--onclick="divisiveDriverView.saveDriver()">--}}
-                                        {{--Hoàn tất--}}
-                                    {{--</button>--}}
-                                    {{--<button type="button" class="btn default"--}}
-                                            {{--onclick="divisiveDriverView.displayModal('hide','#modal-addDriver')">--}}
-                                        {{--Nhập lại--}}
-                                    {{--</button>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
                 </form>
             </div>
         </div>
     </div> <!-- end #divControl -->
 </div>
 <!-- end Control -->
-
-
-
-
 
 
 <script>
@@ -212,17 +221,31 @@
                     $('#divControl').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
+                    driverView.clearInput();
 
                 },
                 displayModal: function (type, idModal) {
                     $(idModal).modal(type);
-                    if (divisiveDriverView.action == 'delete' && type == 'hide') {
-                        divisiveDriverView.action = null;
-                        divisiveDriverView.idDelete = null;
+                    if (driverView.action == 'delete' && type == 'hide') {
+                        driverView.action = null;
+                        driverView.idDelete = null;
                     }
-                    divisiveDriverView.clearInputVehicle();
-                    divisiveDriverView.clearInputDriver();
-                    divisiveDriverView.clearValidation('frmVehicle');
+                },
+                showNotification: function (type, msg) {
+                    switch (type) {
+                        case "info":
+                            toastr.info(msg);
+                            break;
+                        case "success":
+                            toastr.success(msg);
+                            break;
+                        case "warning":
+                            toastr.warning(msg);
+                            break;
+                        case "error":
+                            toastr.error(msg);
+                            break;
+                    }
                 },
                 loadData: function () {
                     $.ajax({
@@ -231,6 +254,7 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
+                            console.log(data['dataDrivers']);
                             driverView.dataDrivers = data['dataDrivers'];
                             driverView.fillDataToDatatable(data['dataDrivers']);
                         } else {
@@ -239,6 +263,69 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                    $('#datetimepicker .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
+                    driverView.renderDateTimePicker();
+
+                },
+                cancelDelete: function () {
+                    driverView.idDelete = null;
+                    $("#modalConfirm").modal('hide');
+                },
+                renderDateTimePicker: function () {
+                    $('#issueDateId').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#issueDateDriver').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#expireDateDriver').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#issueDateId').datepicker("setDate", new Date());
+                    $('#issueDateDriver').datepicker("setDate", new Date());
+                    $('#expireDateDriver').datepicker("setDate", new Date());
+
+                },
+                clearInput: function () {
+                    $('input[id=fullName]').val('');
+                    $('input[id=phone]').val('');
+                    $('input[id=governmentId]').val('');
+                    $('input[id=driverType]').val('');
+                    $('textarea[id=note]').val('');
+                },
+                deleteDriver: function () {
+                    driverView.action = 'delete';
+                    driverView.save();
+                    $("#modalConfirm").modal('hide');
 
                 },
                 fillDataToDatatable: function (data) {
@@ -253,31 +340,33 @@
                             {data: 'fullName'},
                             {data: 'phone'},
                             {data: 'driverType'},
-                            {data: 'issueDate_driver',
+                            {
+                                data: 'issueDate_driver',
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("DD/MM/YYYY");
                                 }
                             },
-                            {data: 'expireDate',
+                            {
+                                data: 'expireDate',
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("DD/MM/YYYY");
                                 }
                             },
                             {data: 'governmentId'},
                             {data: 'fullNumber'},
-                            {data:'vehicle_types'},
+                            {data: 'vehicle_types'},
                             {data: 'garage'},
                             {data: 'garageTypes'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
-                                    tr += '<div class="btn btn-success  btn-circle" onclick="divisiveDriverView.editVehicleUser(' + full.id + ')">';
+                                    tr += '<div class="btn btn-success  btn-circle" onclick="driverView.editDriver(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
                                     tr += '<div class="btn-del-edit" title="Xóa">';
-                                    tr += '<div class="btn btn-danger btn-circle" onclick="divisiveDriverView.deleteVehicleUser(' + full.id + ')">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="driverView.msgDelete(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -289,10 +378,176 @@
 
                     })
                 },
+                validateDriver:function () {
+                    $("#frmDriver").validate({
+                        rules: {
+                            fullName: "required",
+                            governmentId: {
+                                required: true,
+                                number: true
+                            },
+                            driverType: "required"
+
+                        },
+                        ignore: ".ignore",
+                        messages: {
+                            fullName: "Vui lòng nhập tên",
+                            governmentId: {
+                                required: "Vui lòng nhập CMND",
+                                number: "CMND phải là số"
+                            },
+                            driverType:"Vui lòng nhập loại Bằng lái"
+                        }
+                    });
+                },
+                msgDelete: function (id) {
+                    if (id) {
+                        driverView.idDelete = id;
+                        $("div#modalConfirm").modal("show");
+                        $("h5#modalContent").empty().append("Bạn có muốn xóa tài xế này ?");
+                        $("button[name=modalAgree]").show();
+                    }
+                },
                 addDriver: function () {
                     $("#divControl").find(".titleControl").html("Thêm mới tài xế");
                     driverView.action = 'add';
                     driverView.showControl();
+                },
+                fillCurrentObjectToForm: function () {
+                    var dateFuel = moment(driverView.current["dateRefuel"], "YYYY-MM-DD");
+                    var timeFuel = moment(driverView.current["dateRefuel"], "YYYY-MM-DD HH:mm:ss");
+                    $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
+                    $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
+                    var vehicle = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
+                    var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
+                    $("input[id='vehicle_id']").val(vehicle);
+                    $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
+                    $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
+                    $("input[id='totalprice']").val(totalPrice);
+                    $("input[id='noted']").val(fuelCostView.current["note"]);
+                    $("input[id='price']").val(fuelCostView.current["prices_price"]);
+                    $("#price").attr('data-priceId', fuelCostView.current["price_id"]);
+                    formatCurrency(".currency");
+
+                },
+                editDriver:function () {
+                    $("#divControl").find(".titleControl").html("Cập nhật chi phi");
+//                    driverView.current = _.clone(_.find(driverView.dataDrivers, function (o) {
+//                        return o.id == id;
+//                    }), true);
+                    driverView.fillCurrentObjectToForm();
+                    driverView.action = 'update';
+                    driverView.show();
+                    driverView.clearValidation();
+                },
+                fillFormDataToCurrentObject: function () {
+                    if (fuelCostView.action == 'add') {
+                        fuelCostView.current = {
+                            vehicle_id: $("#vehicle_id").attr('data-id'),
+                            dateFuel: $("input[id='dateFuel']").val(),
+                            timeFuel: $("input[id='timeFuel']").val(),
+                            totalPrice: $("input[id='totalprice']").val(),
+                            literNumber: $("input[id='literNumber']").val(),
+                            prices_price: $("input[id='price']").val(),
+                            prices_id: $("#price").attr('data-priceId'),
+                            noted: $("input[id='noted']").val()
+                        };
+
+                    } else if (fuelCostView.action == 'update') {
+
+                        fuelCostView.current.prices_price = $("input[id='price']").val();
+                        fuelCostView.current.prices_id = $("#price").attr('data-priceId');
+                        fuelCostView.current.literNumber = $("input[id='literNumber']").val();
+                        fuelCostView.current.totalCost = $("input[id='totalprice']").val();
+                        fuelCostView.current.dateFuel = $("input[id='dateFuel']").val();
+                        fuelCostView.current.timeFuel = $("input[id='timeFuel']").val();
+                        fuelCostView.current.noted = $("input[id='noted']").val();
+                        fuelCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
+                    }
+                },
+                save: function () {
+                    var sendToServer = null;
+                    if (driverView.action == 'delete') {
+                        sendToServer = {
+                            _token: _token,
+                            _action: driverView.action,
+                            _id: driverView.idDelete
+                        };
+
+                        $.ajax({
+                            url: url + 'driver/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                var driverOld = _.find(driverView.dataDrivers, function (o) {
+                                    return o.id == sendToServer._id;
+                                });
+                                var indexOfDriverOld = _.indexOf(driverView.dataDrivers, driverOld);
+                                driverView.dataDrivers.splice(indexOfDriverOld, 1);
+                                driverView.showNotification("success", "Xóa thành công!");
+                                driverView.displayModal("hide", "#modalConfirm");
+
+                            }
+                            driverView.table.clear().rows.add(driverView.dataDrivers).draw();
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        driverView.validateDriver();
+                        if ($("#frmDriver").valid()) {
+                            driverView.fillFormDataToCurrentObject();
+                            sendToServer = {
+                                _token: _token,
+                                _action: driverView.action,
+                                _object: driverView.current
+                            };
+
+                            $.ajax({
+                                url: url + 'driver/modify',
+                                type: "POST",
+                                dataType: "json",
+                                data: sendToServer
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    switch (fuelCostView.action) {
+                                        case 'add':
+                                            data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
+                                            fuelCostView.tableCost.push(data['tableCost'][0]);
+                                            fuelCostView.showNotification("success", "Thêm thành công!");
+                                            $("#price").attr('data-priceId', fuelCostView.current["prices_id"]);
+                                            break;
+                                        case 'update':
+                                            data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
+                                            var CostOld = _.find(fuelCostView.tableCost, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var indexOfVehicleOld = _.indexOf(fuelCostView.tableCost, CostOld);
+                                            fuelCostView.tableCost.splice(indexOfVehicleOld, 1, data['tableCost'][0]);
+                                            fuelCostView.showNotification("success", "Cập nhật thành công!");
+                                            fuelCostView.hide();
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                    fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
+                                    fuelCostView.clearInput();
+                                } else {
+                                    fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                }
+
+
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+
+                                fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+
+                            });
+                        } else {
+                            $("form#frmDriver").find("label[class=error]").css("color", "red");
+                        }
+                    }
                 }
 
             };

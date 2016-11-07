@@ -257,15 +257,15 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <form role="form" id="frmControl">
+                        <form role="form" id="frmControlEdit">
                             <div class="form-body">
                                 <div class="row">
                                     <div class="col-sm-6 col-xs-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="fullName"><b>Họ và tên</b></label>
+                                            <label for="fullNameEdit"><b>Họ và tên</b></label>
                                             <input type="text" class="form-control"
-                                                   id="fullName"
-                                                   name="fullName"
+                                                   id="fullNameEdit"
+                                                   name="fullNameEdit"
                                                    autofocus>
                                         </div>
                                     </div>
@@ -274,7 +274,7 @@
                                             <label for="customerType_id"><b>Loại khách hàng</b></label>
                                             <div class="row">
                                                 <div class="col-sm-10 col-xs-10">
-                                                    <select name="customerType_id" id="customerType_id"
+                                                    <select name="customerType" id="customerType"
                                                             class="form-control">
 
                                                     </select>
@@ -294,36 +294,36 @@
                                 <div class="row">
                                     <div class="col-md-6 col-sm-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="taxCode"><b>Mã số thuế</b></label>
+                                            <label for="taxCodeEdit"><b>Mã số thuế</b></label>
                                             <input type="text" class="form-control"
-                                                   id="taxCode"
-                                                   name="taxCode">
+                                                   id="taxCodeEdit"
+                                                   name="taxCodeEdit">
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-xs-6">
                                         <div class="form-group form-md-line-input">
-                                            <label for="address"><b>Địa chỉ</b></label>
+                                            <label for="addressEdit"><b>Địa chỉ</b></label>
                                             <input type="text" class="form-control"
-                                                   id="address"
-                                                   name="address">
+                                                   id="addressEdit"
+                                                   name="addressEdit">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 col-sm-6">
                                         <div class="form-group form-md-line-input">
-                                            <label for="phone"><b>Số điện thoại</b></label>
+                                            <label for="phoneEdit"><b>Số điện thoại</b></label>
                                             <input type="number" class="form-control"
-                                                   id="phone"
-                                                   name="phone">
+                                                   id="phoneEdit"
+                                                   name="phoneEdit">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="email"><b>Email</b></label>
+                                            <label for="emailEdit"><b>Email</b></label>
                                             <input type="email" class="form-control"
-                                                   id="email"
-                                                   name="email">
+                                                   id="emailEdit"
+                                                   name="emailEdit">
                                         </div>
                                     </div>
                                 </div>
@@ -332,8 +332,8 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuel"><b>Phần trăm nhiên liệu</b></label>
-                                                    <input type="number" id="percentFuel" name="percentFuel"
+                                                    <label for="percentFuelEdit"><b>Phần trăm nhiên liệu</b></label>
+                                                    <input type="number" id="percentFuelEdit" name="percentFuel"
                                                            class="form-control">
                                                 </div>
                                             </div>
@@ -341,8 +341,10 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelChange"><b>Phần trăm nhiên liệu thay đổi</b></label>
-                                                    <input type="number" id="percentFuelChange" name="percentFuelChange"
+                                                    <label for="percentFuelChangeEdit"><b>Phần trăm nhiên liệu thay
+                                                            đổi</b></label>
+                                                    <input type="number" id="percentFuelChangeEdit"
+                                                           name="percentFuelChange"
                                                            class="form-control">
                                                 </div>
                                             </div>
@@ -350,8 +352,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
-                                            <label for="note"><b>Ghi chú</b></label>
-                                            <textarea class="form-control" id="note" name="note" rows="4"
+                                            <label for="noteEdit"><b>Ghi chú</b></label>
+                                            <textarea class="form-control" id="noteEdit" name="note" rows="4"
                                                       cols="3"></textarea>
                                         </div>
                                     </div>
@@ -400,8 +402,8 @@
                         </div>
                         <div class="row">
                             <form role="form" id="frmStaffCustomer">
-                                <input id="idStaff" style="display: none;">
-                                <input id="idCustomer" style="display: none;">
+                                <input id="idStaff" style="display: block;">
+                                <input id="idCustomer" style="display: block;">
                                 <div class="form-body" id='datetimepicker'>
                                     <div class="row">
                                         <div class="col-md-6 col-sm-6">
@@ -631,7 +633,6 @@
                 idDelete: null,
                 currentStaff: null,
                 showControl: function () {
-
                     $('.menu-toggle').fadeOut();
                     if (customerView.action == 'add') {
                         $('#divControl_add').fadeIn(300);
@@ -648,6 +649,7 @@
                         $('.menu-toggle').fadeIn();
                     });
                     customerView.clearValidation("#frmControl");
+                    customerView.clearValidation("#frmControlEdit");
                     customerView.clearValidation("#frmStaffCustomer");
                     customerView.clearInput();
                     customerView.clearInputStaff();
@@ -737,6 +739,19 @@
                             .end();
                     //fill option to selectbox
                     var select = document.getElementById("customerType_id");
+                    for (var i = 0; i < lstCustomerType.length; i++) {
+                        var opt = lstCustomerType[i]['name'];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = lstCustomerType[i]['id'];
+                        select.appendChild(el);
+                    }
+                    $('#customerType')
+                            .find('option')
+                            .remove()
+                            .end();
+                    //fill option to selectbox
+                    var select = document.getElementById("customerType");
                     for (var i = 0; i < lstCustomerType.length; i++) {
                         var opt = lstCustomerType[i]['name'];
                         var el = document.createElement("option");
@@ -853,16 +868,15 @@
                 },
                 fillCurrentObjectToForm: function () {
                     //Cty
-                    $("input[id='fullName']").val(customerView.current["fullName"]);
-                    $("input[id='taxCode']").val(customerView.current["taxCode"]);
-                    $("input[id='address']").val(customerView.current["address"]);
-                    $("input[id='phone']").val(customerView.current["phone"]);
-                    $("input[id='email']").val(customerView.current["email"]);
-                    $("input[id='percentFuel']").val(customerView.current["percentFuel"]);
-                    $("input[id='percentFuelChange']").val(customerView.current["percentFuelChange"]);
-                    $("textarea[id='note']").val(customerView.current["note"]);
-                    $("select[id='customerType_id']").val(customerView.current["customerType_id"]);
-
+                    $("input[id='fullNameEdit']").val(customerView.current["fullName"]);
+                    $("input[id='taxCodeEdit']").val(customerView.current["taxCode"]);
+                    $("input[id='addressEdit']").val(customerView.current["address"]);
+                    $("input[id='phoneEdit']").val(customerView.current["phone"]);
+                    $("input[id='emailEdit']").val(customerView.current["email"]);
+                    $("input[id='percentFuelEdit']").val(customerView.current["percentFuel"]);
+                    $("input[id='percentFuelChangeEdit']").val(customerView.current["percentFuelChange"]);
+                    $("textarea[id='noteEdit']").val(customerView.current["note"]);
+                    $("select[id='customerType']").val(customerView.current["customerType_id"]);
 
                 },
                 fillFormDataToCurrentObject: function () {
@@ -876,19 +890,19 @@
                             note: $("textarea[id='note']").val(),
                             percentFuel: $("input[id='percentFuel']").val(),
                             percentFuelChange: $("input[id='percentFuelChange']").val(),
-                            customerType_id: $("select[id='customerType_id']").val(),
-//                            customerType_id: $('#customerType_id').val()
+                            customerType_id: $("select[id='customerType_id']").val()
+
                         };
                     } else if (customerView.action == 'update') {
-                        customerView.current.fullName = $("input[id='fullName']").val();
-                        customerView.current.taxCode = $("input[id='taxCode']").val();
-                        customerView.current.address = $("input[id='address']").val();
-                        customerView.current.phone = $("input[id='phone']").val();
-                        customerView.current.email = $("input[id='email']").val();
-                        customerView.current.percentFuel = $("input[id='percentFuel']").val();
-                        customerView.current.percentFuelChange = $("input[id='percentFuelChange']").val();
-                        customerView.current.note = $("textarea[id='note']").val();
-                        customerView.current.customerType_id = $("select[id='customerType_id']").val();
+                        customerView.current.fullName = $("input[id='fullNameEdit']").val();
+                        customerView.current.taxCode = $("input[id='taxCodeEdit']").val();
+                        customerView.current.address = $("input[id='addressEdit']").val();
+                        customerView.current.phone = $("input[id='phoneEdit']").val();
+                        customerView.current.email = $("input[id='emailEdit']").val();
+                        customerView.current.percentFuel = $("input[id='percentFuelEdit']").val();
+                        customerView.current.percentFuelChange = $("input[id='percentFuelChangeEdit']").val();
+                        customerView.current.note = $("textarea[id='noteEdit']").val();
+                        customerView.current.customerType_id = $("select[id='customerType']").val();
                     }
                 },
 
@@ -922,6 +936,7 @@
                     customerView.action = 'update';
                     $("#divControl_edit").find(".titleControl").html("Cập nhật khách hàng");
                     customerView.showControl();
+
                 },
                 addCustomer: function () {
                     customerView.current = null;
@@ -939,28 +954,59 @@
                     customerView.idStaff = id;
                     customerView.displayModal("show", "#modal-confirmDeleteStaff");
                 },
+                formValidateEdit: function () {
+                    $("#frmControlEdit").validate({
+                        rules: {
+                            customerType_id: "required",
+                            fullNameEdit: "required",
+                            taxCodeEdit: "required",
+                            emailEdit: {
+                                required: true,
+                                email: true
+                            }
+                        },
+                        messages: {
+                            customerType_id: "Vui lòng chọn loại khách hàng",
+                            fullNameEdit: "Vui lòng nhập tên khách hàng",
+                            taxCodeEdit: "Vui lòng nhập mã số thuế",
+                            emailEdit: {
+                                required: "Vui lòng nhập email ",
+                                email: "Email hợp lệ"
+                            }
+                        }
+                    });
+                },
                 formValidate: function () {
                     $("#frmControl").validate({
                         rules: {
                             customerType_id: "required",
                             fullName: "required",
                             taxCode: "required",
-                            email: "email"
+                            email: {
+                                required: true,
+                                email: true
+                            }
+
                         },
                         messages: {
                             customerType_id: "Vui lòng chọn loại khách hàng",
                             fullName: "Vui lòng nhập tên khách hàng",
                             taxCode: "Vui lòng nhập mã số thuế",
-                            email: "Vui lòng nhập một email hợp lệ"
+                            email: {
+                                required: "Vui lòng nhập email ",
+                                email: "Email hợp lệ"
+                            }
+
                         }
                     });
+
+
                 },
                 staffFormValidate: function () {
                     $("#frmStaffCustomer").validate({
                         rules: {
                             fullNameStaff: "required",
                             phoneStaff: "required"
-
                         },
                         ignore: ".ignore",
                         messages: {
@@ -1052,21 +1098,23 @@
                                             showNotification("success", "Thêm nhân viên thành công!");
                                             break;
                                         case 'updateStaff':
-                                            console.log(customerView.dataStaff);
-                                            console.log(sendToServer._object.id);
                                             var StaffOld = _.find(customerView.dataStaffTemp, function (o) {
                                                 return o.id == sendToServer._object.id;
                                             });
                                             var indexOfStaffOld = _.indexOf(customerView.dataStaffTemp, StaffOld);
-                                            console.log(indexOfStaffOld);
                                             customerView.dataStaffTemp.splice(indexOfStaffOld, 1, data['updateStaff']);
+
+                                            var StaffOld = _.find(customerView.dataStaff, function (o) {
+                                                return o.id == sendToServer._object.id;
+                                            });
+                                            var indexOfStaffOld = _.indexOf(customerView.dataStaff, StaffOld);
+                                            customerView.dataStaff.splice(indexOfStaffOld, 1, data['updateStaff']);
                                             customerView.tableStaff.clear().rows.add(customerView.dataStaffTemp).draw();
                                             showNotification("success", "Cập nhật nhân viên thành công!");
                                             break;
                                         default:
                                             break;
                                     }
-
                                     customerView.clearInputStaff();
                                 } else {
                                     showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
@@ -1084,63 +1132,135 @@
 
                 },
                 save: function () {
-                    customerView.formValidate();
-                    if ($("#frmControl").valid()) {
-                        customerView.fillFormDataToCurrentObject();
-                        var sendToServer = {
-                            _token: _token,
-                            _action: customerView.action,
-                            _customer: customerView.current
-                        };
-                        if (customerView.action == 'delete') {
-                            sendToServer._id = customerView.idDelete;
-                        }
-                        $.ajax({
-                            url: url + 'customer/modify',
-                            type: "POST",
-                            dataType: "json",
-                            data: sendToServer
-                        }).done(function (data, textStatus, jqXHR) {
-                            if (jqXHR.status == 201) {
-                                switch (customerView.action) {
-                                    case 'add':
-                                        customerView.tableCustomer.push(data['customer'][0]);
-                                        showNotification("success", "Thêm thành công!");
-                                        break;
-                                    case 'update':
-                                        var customerOld = _.find(customerView.tableCustomer, function (o) {
-                                            return o.id == sendToServer._customer.id;
-                                        });
-                                        var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
-                                        customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
-                                        showNotification("success", "Cập nhật thành công!");
-                                        customerView.hideControl();
-                                        break;
-                                    case 'delete':
-                                        var customerOld = _.find(customerView.tableCustomer, function (o) {
-                                            return o.id == sendToServer._id;
-                                        });
-                                        var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
-                                        customerView.tableCustomer.splice(indexOfCustomerOld, 1);
-                                        showNotification("success", "Xóa thành công!");
-                                        customerView.displayModal("hide", "#modal-confirmDelete");
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                customerView.table.clear().rows.add(customerView.tableCustomer).draw();
-                                customerView.clearInput();
-                            } else if (jqXHR.status == 203) {
-                                showNotification("error", "Tên khách hàng đã tồn tại!");
-                            } else {
-                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                            }
-                        }).fail(function (jqXHR, textStatus, errorThrown) {
-                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        });
-                    } else {
-                        $("form#frmControl").find("label[class=error]").css("color", "red");
+                    if ($("input[id=idCustomer]").val() == "") {
+                        customerView.action = "add";
                     }
+                    if ($("input[id=idCustomer]").val() !== "") {
+                        customerView.action = "update";
+                    }
+                    var nameCustomer = _.map(customerView.tableCustomer, function (o) {
+                        return o.fullName;
+                    });
+                    if (_.indexOf(nameCustomer, $("input[id=fullName]").val()) > 0) {
+                        showNotification("error", "Khách hàng đã tồn tại!");
+                    } else {
+                        customerView.formValidate();
+                        customerView.formValidateEdit();
+                        if ($("#frmControl").valid() && $("#frmControlEdit").valid()) {
+                            customerView.fillFormDataToCurrentObject();
+                            var sendToServer = {
+                                _token: _token,
+                                _action: customerView.action,
+                                _customer: customerView.current
+                            };
+                            if (customerView.action == 'delete') {
+                                sendToServer._id = customerView.idDelete;
+                            }
+                            $.ajax({
+                                url: url + 'customer/modify',
+                                type: "POST",
+                                dataType: "json",
+                                data: sendToServer
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    switch (customerView.action) {
+                                        case 'add':
+                                            customerView.tableCustomer.push(data['customer'][0]);
+                                            showNotification("success", "Thêm thành công!");
+                                            break;
+                                        case 'update':
+                                            var customerOld = _.find(customerView.tableCustomer, function (o) {
+                                                return o.id == sendToServer._customer.id;
+                                            });
+                                            var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
+                                            customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
+                                            showNotification("success", "Cập nhật thành công!");
+                                            customerView.hideControl();
+                                            break;
+                                        case 'delete':
+                                            var customerOld = _.find(customerView.tableCustomer, function (o) {
+                                                return o.id == sendToServer._id;
+                                            });
+                                            var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
+                                            customerView.tableCustomer.splice(indexOfCustomerOld, 1);
+                                            showNotification("success", "Xóa thành công!");
+                                            customerView.displayModal("hide", "#modal-confirmDelete");
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    customerView.table.clear().rows.add(customerView.tableCustomer).draw();
+                                    customerView.clearInput();
+                                } else if (jqXHR.status == 203) {
+                                    showNotification("error", "Tên khách hàng đã tồn tại!");
+                                } else {
+                                    showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            });
+                        } else {
+                            $("form#frmControl").find("label[class=error]").css("color", "red");
+                            $("form#frmControlEdit").find("label[class=error]").css("color", "red");
+                        }
+                    }
+//                    if ($("#frmControl").valid() && $("#frmControlEdit").valid() ) {
+//                        customerView.fillFormDataToCurrentObject();
+//                        var sendToServer = {
+//                            _token: _token,
+//                            _action: customerView.action,
+//                            _customer: customerView.current
+//                        };
+//                        if (customerView.action == 'delete') {
+//                            sendToServer._id = customerView.idDelete;
+//                        }
+//                        $.ajax({
+//                            url: url + 'customer/modify',
+//                            type: "POST",
+//                            dataType: "json",
+//                            data: sendToServer
+//                        }).done(function (data, textStatus, jqXHR) {
+//                            if (jqXHR.status == 201) {
+//                                switch (customerView.action) {
+//                                    case 'add':
+//                                        customerView.tableCustomer.push(data['customer'][0]);
+//                                        showNotification("success", "Thêm thành công!");
+//                                        break;
+//                                    case 'update':
+//                                        var customerOld = _.find(customerView.tableCustomer, function (o) {
+//                                            return o.id == sendToServer._customer.id;
+//                                        });
+//                                        var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
+//                                        customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
+//                                        showNotification("success", "Cập nhật thành công!");
+//                                        customerView.hideControl();
+//                                        break;
+//                                    case 'delete':
+//                                        var customerOld = _.find(customerView.tableCustomer, function (o) {
+//                                            return o.id == sendToServer._id;
+//                                        });
+//                                        var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
+//                                        customerView.tableCustomer.splice(indexOfCustomerOld, 1);
+//                                        showNotification("success", "Xóa thành công!");
+//                                        customerView.displayModal("hide", "#modal-confirmDelete");
+//                                        break;
+//                                    default:
+//                                        break;
+//                                }
+//                                customerView.table.clear().rows.add(customerView.tableCustomer).draw();
+//                                customerView.clearInput();
+//                            } else if (jqXHR.status == 203) {
+//                                showNotification("error", "Tên khách hàng đã tồn tại!");
+//                            } else {
+//                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+//                            }
+//                        }).fail(function (jqXHR, textStatus, errorThrown) {
+//                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+//                        });
+//                    } else {
+//                        $("form#frmControl").find("label[class=error]").css("color", "red");
+//                        $("form#frmControlEdit").find("label[class=error]").css("color", "red");
+//                    }
                 },
 
                 clearInputCustomerType: function () {
