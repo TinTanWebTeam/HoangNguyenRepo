@@ -14,41 +14,35 @@ class PostageManagementController extends Controller
 {
     public function getViewPostage()
     {
-        $postages = \DB::table('postages')
-            ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
-            ->whereIn('customer_id' ,[1,2])
-            ->where(\DB::raw('applyDate'),'<=',date('Y-m-d 23:59:59'))
-            ->orderBy('applyDate', 'desc')
-            ->select('postages.*', 'customers.fullName as customers_fullName')
-            ->get();
-        dd(collect($postages)->groupBy('customer_id')->map(function($item){
-            return collect($item)->sortByDesc('applyDate')->first();
-        }));
         return view('subviews.Postage.Postage');
     }
 
     public function getDataPostage()
     {
-        $postages = \DB::table('postages')
+        $postageFiltered = DB::select("     
+            select p.*, customers.fullName as customers_fullName
+            from postages p
+            INNER JOIN customers ON customers.id = p.customer_id
+            INNER JOIN
+            (
+                select MAX(t.applyDate) as maxApplyDate, t.customer_id
+                from (select * from postages order by applyDate desc) as t
+                group by t.customer_id
+            ) as t1 ON p.customer_id = t1.customer_id AND t1.maxApplyDate = p.applyDate
+        ");
+
+        $postageFull = \DB::table('postages')
             ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
             ->select('postages.*', 'customers.fullName as customers_fullName')
-            ->orderBy('applyDate', 'desc')
-            ->groupBy('customer_id')
-            ->whereIn('customer_id' ,[1,2])
-            ->where(\DB::raw('DATE(applyDate)'), '<', date('Y-m-d'))
             ->get();
 
-        dd($postages);
-
-        $postageDetails = \DB::table('postageDetails')->get();
-
-        $fuels = \DB::table('fuels')->get();
+        $fuels = \DB::table('fuels')->where('type', 'oil')->get();
 
         $response = [
             'msg'            => 'Get success',
-            'postages'       => $postages,
-            'postageDetails' => $postageDetails,
-            'fuels'           => $fuels
+            'postageFull'    => $postageFull,
+            'postageFiltered'=> $postageFiltered,
+            'fuels'          => $fuels
         ];
         return response()->json($response, 200);
     }
@@ -97,150 +91,65 @@ class PostageManagementController extends Controller
             $updatedBy = \Auth::user()->id;
         }
 
-        try{
+        try {
             DB::beginTransaction();
             switch ($action) {
                 case 'add':
-                    //Check exists Customer
-                    $exist =  Postage::where('customer_id', $customer_id)->first();
-                    if($exist != null){
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Customer exitst'], 203);
-                    }
+                    $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', desc)->first();
+                    $postageBase = $postageOld->postage;
 
+                    //Check exists Customer
                     $postageNew = new Postage();
                     $postageNew->postage = $postage;
+                    $postageNew->postageBase = $postageBase;
                     $postageNew->createdDate = $createdDate;
-                    $postageNew->customer_id = $customer_id;
-                    $postageNew->note = $note;
+                    $postageNew->applyDate = $applyDate;
                     $postageNew->receivePlace = $receivePlace;
                     $postageNew->deliveryPlace = $deliveryPlace;
                     $postageNew->cashDelivery = $cashDelivery;
+                    $postageNew->note = $note;
+                    $postageNew->active = 1;
                     $postageNew->createdBy = $createdBy;
                     $postageNew->updatedBy = $updatedBy;
+                    $postageNew->customer_id = $customer_id;
+                    $postageNew->fuel_id = $fuel_id;
                     $postageNew->changeByFuel = 0;
                     if (!$postageNew->save()) {
                         DB::rollBack();
                         return response()->json(['msg' => 'Create Postage failed'], 404);
                     }
-
-                    $postageDetail = new PostageDetail();
-                    $postageDetail->postage_id = $postageNew->id;
-                    $postageDetail->fuel_id = $fuel_id;
-                    $postageDetail->postage = $postage;
-                    $postageDetail->createdDate = $createdDate;
-                    $postageDetail->receivePlace = $receivePlace;
-                    $postageDetail->deliveryPlace = $deliveryPlace;
-                    $postageDetail->cashDelivery = $cashDelivery;
-                    $postageDetail->note = $note;
-                    $postageDetail->createdBy = $createdBy;
-                    $postageDetail->updatedBy = $updatedBy;
-                    $postageDetail->applyDate = $applyDate;
-                    $postageDetail->changeByFuel = 0;
-                    if (!$postageDetail->save()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Create PostageDetail failed'], 404);
-                    }
                     DB::commit();
                     //Response
-                    $postage = \DB::table('postages')
-                        ->join('customers', 'customers.id', '=', 'postages.customer_id')
-                        ->select('postages.*', 'customers.fullName as customers_fullName')
-                        ->where('postages.id', $postageNew->id)
-                        ->first();
-
-                    $postageDetail = \DB::table('postageDetails')
-                        ->where('postage_id', $postageNew->id)
-                        ->orderBy('createdDate', 'desc')
-                        ->first();
-
-                    $response = [
-                        'msg'      => 'Created postage',
-                        'postage' => $postage,
-                        'postageDetail' => $postageDetail
-                    ];
+                    $response = $this->getData();
                     return response()->json($response, 201);
                     break;
                 case 'update':
-                    //Update Postage
-                    $postageUpdate = Postage::findOrFail($request->input('_postage')['id']);
-                    $postageUpdate->postage = $postage;
-                    $postageUpdate->customer_id = $customer_id;
-                    $postageUpdate->note = $note;
-                    $postageUpdate->receivePlace = $receivePlace;
-                    $postageUpdate->deliveryPlace = $deliveryPlace;
-                    $postageUpdate->cashDelivery = $cashDelivery;
-                    $postageUpdate->updatedBy = $updatedBy;
-                    $postageUpdate->createdDate = $createdDate;
-                    $postageUpdate->changeByFuel = 0;
-                    if (!$postageUpdate->update()) {
+                    //Add Postage
+                    $postageNew = new Postage();
+                    $postageNew->postage = $postage;
+                    $postageNew->postageBase = $postageBase;
+                    $postageNew->createdDate = $createdDate;
+                    $postageNew->applyDate = $applyDate;
+                    $postageNew->receivePlace = $receivePlace;
+                    $postageNew->deliveryPlace = $deliveryPlace;
+                    $postageNew->cashDelivery = $cashDelivery;
+                    $postageNew->note = $note;
+                    $postageNew->active = 1;
+                    $postageNew->createdBy = $createdBy;
+                    $postageNew->updatedBy = $updatedBy;
+                    $postageNew->customer_id = $customer_id;
+                    $postageNew->fuel_id = $fuelId;
+                    $postageNew->changeByFuel = 0;
+                    if (!$postageNew->save()) {
                         DB::rollBack();
-                        return response()->json(['msg' => 'Update Postage failed'], 404);
+                        return response()->json(['msg' => 'Create Postage failed'], 404);
                     }
-
-                    //Add PostageDetail
-                    $postageDetail = new PostageDetail();
-                    $postageDetail->postage = $postage;
-                    $postageDetail->postage_id = $postageUpdate->id;
-                    $postageDetail->fuel_id = $fuel_id;
-                    $postageDetail->createdDate = $createdDate;
-                    $postageDetail->receivePlace = $receivePlace;
-                    $postageDetail->deliveryPlace = $deliveryPlace;
-                    $postageDetail->cashDelivery = $cashDelivery;
-                    $postageDetail->note = $note;
-                    $postageDetail->createdBy = $createdBy;
-                    $postageDetail->updatedBy = $updatedBy;
-                    $postageDetail->applyDate = $applyDate;
-                    $postageDetail->changeByFuel = 0;
-                    if (!$postageDetail->save()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Add PostageDetail failed'], 404);
-                    }
-
                     DB::commit();
                     //Response
-                    $postage = \DB::table('postages')
-                        ->join('customers', 'customers.id', '=', 'postages.customer_id')
-                        ->select('postages.*', 'customers.fullName as customers_fullName')
-                        ->where('postages.id', '=', $postageUpdate->id)
-                        ->first();
-
-                    $postageDetail = \DB::table('postageDetails')
-                        ->where('postage_id', $postageUpdate->id)
-                        ->orderBy('createdDate', 'desc')
-                        ->first();
-
-                    $response = [
-                        'msg'      => 'Updated postage',
-                        'postage' => $postage,
-                        'postageDetail' => $postageDetail
-                    ];
+                    $response = $this->getData();
                     return response()->json($response, 201);
                     break;
                 case 'delete':
-                    //Delete Postage
-                    $postageDelete = Postage::findOrFail($request->input('_id'));
-                    $postageDelete->active = 0;
-
-                    //Delete PostageDetail
-                    $postageDetail = PostageDetail::where('postage_id', $request->input('_id'))->get()->toArray();
-                    if(count($postageDetail) > 0){
-                        $ids_to_delete = array_map(function($item){ return $item['id']; }, $postageDetail);
-                        if(\DB::table('postageDetails')->whereIn('id', $ids_to_delete)->update(['active' => 0]) <= 0){
-                            DB::rollBack();
-                            return response()->json(['msg' => 'Delete PostageDetail failed'], 404);
-                        }
-                    }
-
-                    if (!$postageDelete->update()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Deletion failed'], 404);
-                    }
-                    DB::commit();
-                    $response = [
-                        'msg' => 'Deleted postage'
-                    ];
-                    return response()->json($response, 201);
                     break;
                 default:
                     return response()->json(['msg' => 'Connection to server failed'], 404);
@@ -250,7 +159,35 @@ class PostageManagementController extends Controller
             DB::rollBack();
             return response()->json(['msg' => $ex], 404);
         }
+    }
 
+    public function getData()
+    {
+        $postageFiltered = DB::select("     
+            select p.*, customers.fullName as customers_fullName
+            from postages p
+            INNER JOIN customers ON customers.id = p.customer_id
+            INNER JOIN
+            (
+                select MAX(t.applyDate) as maxApplyDate, t.customer_id
+                from (select * from postages order by applyDate desc) as t
+                group by t.customer_id
+            ) as t1 ON p.customer_id = t1.customer_id AND t1.maxApplyDate = p.applyDate
+        ");
 
+        $postageFull = \DB::table('postages')
+            ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
+            ->select('postages.*', 'customers.fullName as customers_fullName')
+            ->get();
+
+        $fuels = \DB::table('fuels')->where('type', 'oil')->get();
+
+        $response = [
+            'msg'            => 'Get success',
+            'postageFull'    => $postageFull,
+            'postageFiltered'=> $postageFiltered,
+            'fuels'          => $fuels
+        ];
+        return $response;
     }
 }
