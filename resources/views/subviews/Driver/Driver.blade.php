@@ -10,7 +10,7 @@
     }
 
     div.col-lg-12 {
-        height: 40px;
+        height: 44px;
     }
 
     @media (max-height: 500px) {
@@ -19,6 +19,9 @@
             overflow: auto;
             height: 80vh;
         }
+    }
+    #divControl .panel-body {
+        height: 400px;
     }
 </style>
 {{--start Modal delete Driver--}}
@@ -69,6 +72,7 @@
                             <thead>
                             <tr class="active">
                                 <th>Tài xế</th>
+                                <th>Địa chỉ</th>
                                 <th>Điện thoại</th>
                                 <th>Loại bằng</th>
                                 <th>Ngày cấp</th>
@@ -104,12 +108,12 @@
                 </div>
             </div>
 
-            <div class="panel-body">
+            <div class="panel-body portlet-body">
                 <form id="frmDriver">
                     <div class="col-md-12">
                         <div class="row" id='datetimepicker'>
                             <div class="row ">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="fullName"><b>Họ và tên</b></label>
                                         <input type="text" class="form-control"
@@ -117,7 +121,16 @@
                                                name="fullName">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="address"><b>Địa chỉ</b></label>
+                                        <input type="text" class="form-control"
+                                               id="address"
+                                               name="address">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="phone"><b>Số điện thoại</b></label>
                                         <input type="number" class="form-control"
@@ -127,7 +140,15 @@
                                 </div>
                             </div>
                             <div class="row ">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="birthday"><b>Năm sinh</b></label>
+                                        <input type="text" class="form-control date ignore"
+                                               id="birthday"
+                                               name="birthday">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="governmentId"><b>CMND</b></label>
                                         <input type="number" class="form-control"
@@ -135,17 +156,17 @@
                                                name="governmentId">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="issueDateId"><b>Ngày cấp</b></label>
-                                        <input type="text" class="form-control date"
+                                        <input type="text" class="form-control date ignore"
                                                id="issueDateId"
                                                name="issueDateId">
                                     </div>
                                 </div>
                             </div>
                             <div class="row ">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="driverType"><b>Loại bằng</b></label>
                                         <input type="text" class="form-control"
@@ -153,18 +174,18 @@
                                                name="driverType">
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="issueDateDriver"><b>Ngày cấp</b></label>
-                                        <input type="text" class="form-control date"
+                                        <input type="text" class="form-control date ignore"
                                                id="issueDateDriver"
                                                name="issueDateDriver">
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="expireDateDriver"><b>Ngày hết hạn</b></label>
-                                        <input type="text" class="form-control date"
+                                        <input type="text" class="form-control date ignore"
                                                id="expireDateDriver"
                                                name="expireDateDriver">
                                     </div>
@@ -222,6 +243,7 @@
                         $('.menu-toggle').fadeIn();
                     });
                     driverView.clearInput();
+                    driverView.clearValidation();
 
                 },
                 displayModal: function (type, idModal) {
@@ -288,13 +310,24 @@
                         theme: "dark"
                     });
                     driverView.renderDateTimePicker();
+                    driverView.renderScrollbar();
 
+                },
+                renderScrollbar: function () {
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
                 },
                 cancelDelete: function () {
                     driverView.idDelete = null;
                     $("#modalConfirm").modal('hide');
                 },
                 renderDateTimePicker: function () {
+                    $('#birthday').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
                     $('#issueDateId').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
@@ -310,6 +343,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    $('#birthday').datepicker("setDate", new Date());
                     $('#issueDateId').datepicker("setDate", new Date());
                     $('#issueDateDriver').datepicker("setDate", new Date());
                     $('#expireDateDriver').datepicker("setDate", new Date());
@@ -317,6 +351,7 @@
                 },
                 clearInput: function () {
                     $('input[id=fullName]').val('');
+                    $('input[id=address]').val('');
                     $('input[id=phone]').val('');
                     $('input[id=governmentId]').val('');
                     $('input[id=driverType]').val('');
@@ -338,6 +373,7 @@
                         data: data,
                         columns: [
                             {data: 'fullName'},
+                            {data: 'address'},
                             {data: 'phone'},
                             {data: 'driverType'},
                             {
@@ -413,56 +449,61 @@
                     driverView.action = 'add';
                     driverView.showControl();
                 },
-                fillCurrentObjectToForm: function () {
-                    var dateFuel = moment(driverView.current["dateRefuel"], "YYYY-MM-DD");
-                    var timeFuel = moment(driverView.current["dateRefuel"], "YYYY-MM-DD HH:mm:ss");
-                    $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
-                    $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
-                    var vehicle = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
-                    var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
-                    $("input[id='vehicle_id']").val(vehicle);
-                    $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
-                    $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(totalPrice);
-                    $("input[id='noted']").val(fuelCostView.current["note"]);
-                    $("input[id='price']").val(fuelCostView.current["prices_price"]);
-                    $("#price").attr('data-priceId', fuelCostView.current["price_id"]);
-                    formatCurrency(".currency");
-
+                clearValidation: function () {
+                    $('label[class=error]').hide();
                 },
-                editDriver:function () {
-                    $("#divControl").find(".titleControl").html("Cập nhật chi phi");
-//                    driverView.current = _.clone(_.find(driverView.dataDrivers, function (o) {
-//                        return o.id == id;
-//                    }), true);
+                fillCurrentObjectToForm: function () {
+                    var birthday = moment(driverView.current["birthday"], "YYYY-MM-DD");
+                    var issueDateGovernmentId = moment(driverView.current["issueDate_governmentId"], "YYYY-MM-DD");
+                    var issueDateDriver = moment(driverView.current["issueDate_driver"], "YYYY-MM-DD");
+                    var expireDate = moment(driverView.current["expireDate"], "YYYY-MM-DD");
+                    $("input[id='birthday']").datepicker('update', birthday.format("DD-MM-YYYY"));
+                    $("input[id='issueDateId']").datepicker('update', issueDateGovernmentId.format("DD-MM-YYYY"));
+                    $("input[id='issueDateDriver']").datepicker('update', issueDateDriver.format("DD-MM-YYYY"));
+                    $("input[id='expireDateDriver']").datepicker('update', expireDate.format("DD-MM-YYYY"));
+                    $("input[id='fullName']").val(driverView.current["fullName"]);
+                    $("input[id='phone']").val(driverView.current["phone"]);
+                    $("input[id='governmentId']").val(driverView.current["governmentId"]);
+                    $("input[id='driverType']").val(driverView.current["driverType"]);
+                    $("input[id='address']").val(driverView.current["address"]);
+                    $("textarea[id='note']").val(driverView.current["note"]);
+                },
+                editDriver:function (id) {
+                    $("#divControl").find(".titleControl").html("Cập nhật tài xế");
+                    driverView.current = _.clone(_.find(driverView.dataDrivers, function (o) {
+                        return o.id == id;
+                    }), true);
                     driverView.fillCurrentObjectToForm();
                     driverView.action = 'update';
-                    driverView.show();
+                    driverView.showControl();
                     driverView.clearValidation();
                 },
                 fillFormDataToCurrentObject: function () {
-                    if (fuelCostView.action == 'add') {
-                        fuelCostView.current = {
-                            vehicle_id: $("#vehicle_id").attr('data-id'),
-                            dateFuel: $("input[id='dateFuel']").val(),
-                            timeFuel: $("input[id='timeFuel']").val(),
-                            totalPrice: $("input[id='totalprice']").val(),
-                            literNumber: $("input[id='literNumber']").val(),
-                            prices_price: $("input[id='price']").val(),
-                            prices_id: $("#price").attr('data-priceId'),
-                            noted: $("input[id='noted']").val()
+                    if (driverView.action == 'add') {
+                        driverView.current = {
+                            fullName: $("input[id='fullName']").val(),
+                            address: $("input[id='address']").val(),
+                            phone: $("input[id='phone']").val(),
+                            governmentId: $("input[id='governmentId']").val(),
+                            driverType: $("input[id='driverType']").val(),
+                            note: $("textarea[id='note']").val(),
+                            birthday: $("input[id='birthday']").val(),
+                            issueDateId: $("input[id='issueDateId']").val(),
+                            issueDateDriver: $("input[id='issueDateDriver']").val(),
+                            expireDateDriver: $("input[id='expireDateDriver']").val()
                         };
 
-                    } else if (fuelCostView.action == 'update') {
-
-                        fuelCostView.current.prices_price = $("input[id='price']").val();
-                        fuelCostView.current.prices_id = $("#price").attr('data-priceId');
-                        fuelCostView.current.literNumber = $("input[id='literNumber']").val();
-                        fuelCostView.current.totalCost = $("input[id='totalprice']").val();
-                        fuelCostView.current.dateFuel = $("input[id='dateFuel']").val();
-                        fuelCostView.current.timeFuel = $("input[id='timeFuel']").val();
-                        fuelCostView.current.noted = $("input[id='noted']").val();
-                        fuelCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
+                    } else if (driverView.action == 'update') {
+                        driverView.current.fullName = $("input[id='fullName']").val();
+                        driverView.current.address = $("input[id='address']").val();
+                        driverView.current.phone = $("input[id='phone']").val();
+                        driverView.current.governmentId = $("input[id='governmentId']").val();
+                        driverView.current.driverType = $("input[id='driverType']").val();
+                        driverView.current.note = $("textarea[id='note']").val();
+                        driverView.current.birthday = $("input[id='birthday']").val();
+                        driverView.current.issueDateId = $("input[id='issueDateId']").val();
+                        driverView.current.issueDateDriver = $("input[id='issueDateDriver']").val();
+                        driverView.current.expireDateDriver =$("input[id='expireDateDriver']").val();
                     }
                 },
                 save: function () {
@@ -511,38 +552,37 @@
                                 data: sendToServer
                             }).done(function (data, textStatus, jqXHR) {
                                 if (jqXHR.status == 201) {
-                                    switch (fuelCostView.action) {
+                                    switch (driverView.action) {
                                         case 'add':
-                                            data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
-                                            fuelCostView.tableCost.push(data['tableCost'][0]);
-                                            fuelCostView.showNotification("success", "Thêm thành công!");
-                                            $("#price").attr('data-priceId', fuelCostView.current["prices_id"]);
+                                            data['dataUpdateDriver'].fullNumber = data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']["vehicleNumber"];
+                                            driverView.dataDrivers.push(data['dataAddDriver']);
+                                            showNotification("success", "Thêm thành công!");
                                             break;
                                         case 'update':
-                                            data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
-                                            var CostOld = _.find(fuelCostView.tableCost, function (o) {
+                                            data['dataUpdateDriver'].fullNumber = data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']["vehicleNumber"];
+                                            //data[i].fullNumber = data[i]['areaCode'] + "-" + data[i]['vehicleNumber'];
+
+                                            var driverOld = _.find(driverView.dataDrivers, function (o) {
                                                 return o.id == sendToServer._object.id;
                                             });
-                                            var indexOfVehicleOld = _.indexOf(fuelCostView.tableCost, CostOld);
-                                            fuelCostView.tableCost.splice(indexOfVehicleOld, 1, data['tableCost'][0]);
-                                            fuelCostView.showNotification("success", "Cập nhật thành công!");
-                                            fuelCostView.hide();
+                                            var indexOfDriverOld = _.indexOf(driverView.dataDrivers, driverOld);
+//                                            driverView.dataDrivers.splice(indexOfDriverOld, 1, data['dataUpdateDriver'][0]);
+                                            driverView.dataDrivers.splice(indexOfDriverOld, 1,data['dataUpdateDriver']);
+                                            showNotification("success", "Cập nhật thành công!");
+                                            driverView.hideControl();
                                             break;
-
                                         default:
                                             break;
                                     }
-                                    fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
-                                    fuelCostView.clearInput();
+                                    driverView.table.clear().rows.add(driverView.dataDrivers).draw();
+                                    driverView.clearInput();
                                 } else {
-                                    fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    driverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                 }
 
 
                             }).fail(function (jqXHR, textStatus, errorThrown) {
-
-                                fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-
+                                driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                             });
                         } else {
                             $("form#frmDriver").find("label[class=error]").css("color", "red");

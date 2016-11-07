@@ -155,7 +155,7 @@
                                     <div class="col-md-6 col-sm-6">
                                         <div class="form-group form-md-line-input ">
                                             <label for="taxCode"><b>Mã số thuế</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="number" class="form-control"
                                                    id="taxCode"
                                                    name="taxCode">
                                         </div>
@@ -295,7 +295,7 @@
                                     <div class="col-md-6 col-sm-6">
                                         <div class="form-group form-md-line-input ">
                                             <label for="taxCodeEdit"><b>Mã số thuế</b></label>
-                                            <input type="text" class="form-control"
+                                            <input type="number" class="form-control"
                                                    id="taxCodeEdit"
                                                    name="taxCodeEdit">
                                         </div>
@@ -673,6 +673,7 @@
                     $("input[id='percentFuel']").val('');
                     $("input[id='percentFuelChange']").val('');
                     $("textarea[id='note']").val('');
+                    $("input[id='idCustomer']").val('');
                 },
                 clearInputStaff: function () {
                     //Clear form Staff
@@ -959,7 +960,13 @@
                         rules: {
                             customerType_id: "required",
                             fullNameEdit: "required",
-                            taxCodeEdit: "required",
+                            taxCodeEdit: {
+                                required: true,
+                                number: true
+                            },
+                            phoneEdit:{
+                                number: "Số điện thoại không hợp lệ"
+                            },
                             emailEdit: {
                                 required: true,
                                 email: true
@@ -968,10 +975,16 @@
                         messages: {
                             customerType_id: "Vui lòng chọn loại khách hàng",
                             fullNameEdit: "Vui lòng nhập tên khách hàng",
-                            taxCodeEdit: "Vui lòng nhập mã số thuế",
+                            taxCodeEdit: {
+                                required: "Vui lòng nhập mã số thuế",
+                                number: "Mã số thuế không hợp lệ"
+                            },
+                            phoneEdit:{
+                                number: "Số điện thoại không hợp lệ"
+                            },
                             emailEdit: {
                                 required: "Vui lòng nhập email ",
-                                email: "Email hợp lệ"
+                                email: "Email không hợp lệ"
                             }
                         }
                     });
@@ -981,7 +994,13 @@
                         rules: {
                             customerType_id: "required",
                             fullName: "required",
-                            taxCode: "required",
+                            taxCode: {
+                                required: true,
+                                number: true
+                            },
+                            phone:{
+                                number: true
+                            },
                             email: {
                                 required: true,
                                 email: true
@@ -991,10 +1010,16 @@
                         messages: {
                             customerType_id: "Vui lòng chọn loại khách hàng",
                             fullName: "Vui lòng nhập tên khách hàng",
-                            taxCode: "Vui lòng nhập mã số thuế",
+                            taxCode: {
+                                required: "Vui lòng nhập mã số thuế",
+                                number: "Mã số thuế không hợp lệ"
+                            },
+                            phone:{
+                                number: "Số điện thoại không hợp lệ"
+                            },
                             email: {
                                 required: "Vui lòng nhập email ",
-                                email: "Email hợp lệ"
+                                email: "Email không hợp lệ"
                             }
 
                         }
@@ -1008,6 +1033,7 @@
                             fullNameStaff: "required",
                             phoneStaff: "required"
                         },
+
                         ignore: ".ignore",
                         messages: {
                             fullNameStaff: "Vui lòng nhập tên nhân viên",
@@ -1132,10 +1158,11 @@
 
                 },
                 save: function () {
+
                     if ($("input[id=idCustomer]").val() == "") {
                         customerView.action = "add";
                     }
-                    if ($("input[id=idCustomer]").val() !== "") {
+                    if ($("input[id=idCustomer]").val() != "") {
                         customerView.action = "update";
                     }
                     var nameCustomer = _.map(customerView.tableCustomer, function (o) {
@@ -1176,6 +1203,7 @@
                                             customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
                                             showNotification("success", "Cập nhật thành công!");
                                             customerView.hideControl();
+                                           customerView.clearInput();
                                             break;
                                         case 'delete':
                                             var customerOld = _.find(customerView.tableCustomer, function (o) {
@@ -1204,63 +1232,6 @@
                             $("form#frmControlEdit").find("label[class=error]").css("color", "red");
                         }
                     }
-//                    if ($("#frmControl").valid() && $("#frmControlEdit").valid() ) {
-//                        customerView.fillFormDataToCurrentObject();
-//                        var sendToServer = {
-//                            _token: _token,
-//                            _action: customerView.action,
-//                            _customer: customerView.current
-//                        };
-//                        if (customerView.action == 'delete') {
-//                            sendToServer._id = customerView.idDelete;
-//                        }
-//                        $.ajax({
-//                            url: url + 'customer/modify',
-//                            type: "POST",
-//                            dataType: "json",
-//                            data: sendToServer
-//                        }).done(function (data, textStatus, jqXHR) {
-//                            if (jqXHR.status == 201) {
-//                                switch (customerView.action) {
-//                                    case 'add':
-//                                        customerView.tableCustomer.push(data['customer'][0]);
-//                                        showNotification("success", "Thêm thành công!");
-//                                        break;
-//                                    case 'update':
-//                                        var customerOld = _.find(customerView.tableCustomer, function (o) {
-//                                            return o.id == sendToServer._customer.id;
-//                                        });
-//                                        var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
-//                                        customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
-//                                        showNotification("success", "Cập nhật thành công!");
-//                                        customerView.hideControl();
-//                                        break;
-//                                    case 'delete':
-//                                        var customerOld = _.find(customerView.tableCustomer, function (o) {
-//                                            return o.id == sendToServer._id;
-//                                        });
-//                                        var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
-//                                        customerView.tableCustomer.splice(indexOfCustomerOld, 1);
-//                                        showNotification("success", "Xóa thành công!");
-//                                        customerView.displayModal("hide", "#modal-confirmDelete");
-//                                        break;
-//                                    default:
-//                                        break;
-//                                }
-//                                customerView.table.clear().rows.add(customerView.tableCustomer).draw();
-//                                customerView.clearInput();
-//                            } else if (jqXHR.status == 203) {
-//                                showNotification("error", "Tên khách hàng đã tồn tại!");
-//                            } else {
-//                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-//                            }
-//                        }).fail(function (jqXHR, textStatus, errorThrown) {
-//                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-//                        });
-//                    } else {
-//                        $("form#frmControl").find("label[class=error]").css("color", "red");
-//                        $("form#frmControlEdit").find("label[class=error]").css("color", "red");
-//                    }
                 },
 
                 clearInputCustomerType: function () {
@@ -1313,8 +1284,7 @@
                         $("form#frmCustomerType").find("label[class=error]").css("color", "red");
                     }
                 }
-            }
-            ;
+            };
             customerView.loadData();
         }
         else {

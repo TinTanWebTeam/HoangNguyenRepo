@@ -102,7 +102,7 @@
                 </div>
             </div>
             <div class="panel-body portlet-body">
-                <form role="form" id="formFuelCost" data-parsley-validate="">
+                <form role="form" id="formFuelCost">
                     <div class="form-body">
                         <div class="col-md-12 ">
 
