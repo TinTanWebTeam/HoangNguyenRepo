@@ -157,13 +157,13 @@
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="oils_price"><b>Giá dầu</b></label>
-                                                    <input type="text" class="form-control" name="Oils_price" id="Oils_price">
+                                                    <input type="text" class="form-control currency" name="oils_price" id="oils_price" disabled>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="oils_applyDate"><b>Ngày áp dụng giá dầu</b></label>
-                                                    <input type="text" class="date ignore form-control" name="Oils_applyDate" id="Oils_applyDate">
+                                                    <input type="text" class="date ignore form-control" name="oils_applyDate" id="oils_applyDate" disabled>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -196,6 +196,8 @@
                                     <th>Cước phí</th>
                                     <th>Nơi nhận</th>
                                     <th>Nơi giao</th>
+                                    <th>Ngày áp dụng</th>
+                                    <th>Thay đổi do</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -239,9 +241,11 @@
                 table: null,
                 tablePostageDetail: null,
 
+                dataPostageFiltered: null,
                 dataPostage: null,
                 dataCustomer: null,
                 dataFuel: null,
+                dataFuelLastest: null,
 
                 current: null,
                 action: null,
@@ -322,6 +326,13 @@
                         'autoclose': true
                     });
                     $('#createdDate').datepicker("setDate", new Date());
+
+                    $('#oils_applyDate').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#oils_applyDate').datepicker("setDate", new Date());
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -337,10 +348,11 @@
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
                             postageView.dataFuel = data['fuels'];
-                            postageView.dataCustomer = data['customers'];
-                            postageView.dataPostage = data['postages'];
-                            postageView.dataPostageDetail = data['postageDetails'];
-                            postageView.fillDataToDatatable(postageView.dataPostage);
+                            postageView.dataPostage = data['postageFull'];
+                            postageView.dataPostageFiltered = data['postageFiltered'];
+                            postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+
+                            postageView.getLatestFuel();
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -356,6 +368,7 @@
                     setEventFormatCurrency(".currency");
                     defaultZero("#postage");
                     defaultZero("#cashDelivery");
+                    defaultZero("#oils_price");
                 },
                 loadListCustomer: function () {
                     $.ajax({
@@ -453,7 +466,10 @@
                     })
                 },
                 fillDataToDatatablePostageDetail: function (data) {
-                    postageView.table = $('#table-postageDetail').DataTable({
+                    if(postageView.tablePostageDetail != null)
+                        postageView.tablePostageDetail.destroy();
+
+                    postageView.tablePostageDetail = $('#table-postageDetail').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
@@ -463,7 +479,24 @@
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {data: 'receivePlace'},
-                            {data: 'deliveryPlace'}
+                            {data: 'deliveryPlace'},
+                            {
+                                data: 'applyDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("MM/YYYY");
+                                }
+                            },
+                            {
+                                data: 'changeByFuel',
+                                render: function (data, type, full, meta) {
+                                    var tr = "";
+                                    if(full.changeById == 0)
+                                        tr = "Thủ công";
+                                    else
+                                        tr = "Tự động"
+                                    return tr;
+                                }
+                            }
                         ],
                         order: [[0, "desc"]],
                         dom: ''
@@ -479,8 +512,10 @@
                     $("input[id=deliveryPlace]").val(postageView.current["deliveryPlace"]);
                     $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
 
-                    $("input[id=oils_applyDate]").val(postageView.current["oils_applyDate"]);
-                    $("input[id=oils_price]").val(postageView.current["oils_price"]);
+                    var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
+                    $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
+
+                    $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
 
                     var applyDate = moment(postageView.current["applyDate"], "YYYY-MM-DD");
                     $("input[id='applyDate']").datepicker('update', applyDate.format("DD-MM-YYYY"));
@@ -522,20 +557,19 @@
                     postageView.action = 'update';
                     postageView.showControl();
 
-                    var data = _.filter(postageView.dataPostageDetail, function (o) {
-                        return o.postage_id == id;
+                    var data = _.find(postageView.dataPostage, function (o) {
+                        return o.id == id;
+                    });
+                    data = _.filter(postageView.dataPostage, function (o) {
+                        return o.customer_id == data['customer_id'];
                     });
                     postageView.fillDataToDatatablePostageDetail(data);
-
-                    debugger;
-                    var fuel = _.find(postageView.dataFuel, function (o) {
-                        return o.id == postageView.current['fuel_id'];
-                    });
-                    console.log(postageView.dataFuel);
                 },
                 addPostage: function () {
+                    $("input[id=oils_price]").val(0);
                     $("input[id=postage]").val(0);
                     $("input[id=cashDelivery]").val(0);
+                    postageView.tablePostageDetail.clear().rows.add("").draw();
                     postageView.current = null;
                     postageView.action = 'add';
                     postageView.showControl();
@@ -559,6 +593,15 @@
                     tr += '</div>';
                     $("#modal-notification").find(".modal-body").html(tr);
                     postageView.displayModal('show', '#modal-notification');
+                },
+                getLatestFuel: function(){
+                    var fuel = _.maxBy(postageView.dataFuel, function(o) {
+                        return o.applyDate;
+                    });
+                    if(typeof fuel === 'undefined'){
+                        postageView.dataFuelLastest = null;
+                    }
+                    postageView.dataFuelLastest = fuel;
                 },
 
                 formValidate: function () {
@@ -610,8 +653,8 @@
                                 console.log(data);
                                 switch (postageView.action) {
                                     case 'add':
-                                        postageView.dataPostage.push(data['postage']);
-                                        postageView.dataPostageDetail.push(data['postageDetail']);
+                                        postageView.dataPostageFiltered.push(data['postage']);
+                                        postageView.dataPostage.push(data['postageDetail']);
 
                                         showNotification("success", "Thêm thành công!");
                                         break;
@@ -640,7 +683,7 @@
                                         break;
                                 }
                                 postageView.table.clear().rows.add(postageView.dataPostage).draw();
-                                postageView.tablePostageDetail.clear().rows.add(postageView.dataPostageDetail).draw();
+                                postageView.tablePostageDetail.clear().rows.add().draw();
                                 postageView.clearInput();
                             } else if (jqXHR.status == 203) {
                                 showNotification("error", "Khách hàng này đã có cước phí!");

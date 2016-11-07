@@ -14,41 +14,35 @@ class PostageManagementController extends Controller
 {
     public function getViewPostage()
     {
-        $postages = \DB::table('postages')
-            ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
-            ->whereIn('customer_id' ,[1,2])
-            ->where(\DB::raw('applyDate'),'<=',date('Y-m-d 23:59:59'))
-            ->orderBy('applyDate', 'desc')
-            ->select('postages.*', 'customers.fullName as customers_fullName')
-            ->get();
-        dd(collect($postages)->groupBy('customer_id')->map(function($item){
-            return collect($item)->sortByDesc('applyDate')->first();
-        }));
         return view('subviews.Postage.Postage');
     }
 
     public function getDataPostage()
     {
-        $postages = \DB::table('postages')
+        $postageFiltered = DB::select("     
+            select p.*, customers.fullName as customers_fullName
+            from postages p
+            INNER JOIN customers ON customers.id = p.customer_id
+            INNER JOIN
+            (
+                select MAX(t.applyDate) as maxApplyDate, t.customer_id
+                from (select * from postages order by applyDate desc) as t
+                group by t.customer_id
+            ) as t1 ON p.customer_id = t1.customer_id AND t1.maxApplyDate = p.applyDate
+        ");
+
+        $postageFull = \DB::table('postages')
             ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
             ->select('postages.*', 'customers.fullName as customers_fullName')
-            ->orderBy('applyDate', 'desc')
-            ->groupBy('customer_id')
-            ->whereIn('customer_id' ,[1,2])
-            ->where(\DB::raw('DATE(applyDate)'), '<', date('Y-m-d'))
             ->get();
 
-        dd($postages);
-
-        $postageDetails = \DB::table('postageDetails')->get();
-
-        $fuels = \DB::table('fuels')->get();
+        $fuels = \DB::table('fuels')->where('type', 'oil')->get();
 
         $response = [
             'msg'            => 'Get success',
-            'postages'       => $postages,
-            'postageDetails' => $postageDetails,
-            'fuels'           => $fuels
+            'postageFull'    => $postageFull,
+            'postageFiltered'=> $postageFiltered,
+            'fuels'          => $fuels
         ];
         return response()->json($response, 200);
     }
@@ -97,13 +91,13 @@ class PostageManagementController extends Controller
             $updatedBy = \Auth::user()->id;
         }
 
-        try{
+        try {
             DB::beginTransaction();
             switch ($action) {
                 case 'add':
                     //Check exists Customer
-                    $exist =  Postage::where('customer_id', $customer_id)->first();
-                    if($exist != null){
+                    $exist = Postage::where('customer_id', $customer_id)->first();
+                    if ($exist != null) {
                         DB::rollBack();
                         return response()->json(['msg' => 'Customer exitst'], 203);
                     }
@@ -155,8 +149,8 @@ class PostageManagementController extends Controller
                         ->first();
 
                     $response = [
-                        'msg'      => 'Created postage',
-                        'postage' => $postage,
+                        'msg'           => 'Created postage',
+                        'postage'       => $postage,
                         'postageDetail' => $postageDetail
                     ];
                     return response()->json($response, 201);
@@ -211,8 +205,8 @@ class PostageManagementController extends Controller
                         ->first();
 
                     $response = [
-                        'msg'      => 'Updated postage',
-                        'postage' => $postage,
+                        'msg'           => 'Updated postage',
+                        'postage'       => $postage,
                         'postageDetail' => $postageDetail
                     ];
                     return response()->json($response, 201);
@@ -224,9 +218,11 @@ class PostageManagementController extends Controller
 
                     //Delete PostageDetail
                     $postageDetail = PostageDetail::where('postage_id', $request->input('_id'))->get()->toArray();
-                    if(count($postageDetail) > 0){
-                        $ids_to_delete = array_map(function($item){ return $item['id']; }, $postageDetail);
-                        if(\DB::table('postageDetails')->whereIn('id', $ids_to_delete)->update(['active' => 0]) <= 0){
+                    if (count($postageDetail) > 0) {
+                        $ids_to_delete = array_map(function ($item) {
+                            return $item['id'];
+                        }, $postageDetail);
+                        if (\DB::table('postageDetails')->whereIn('id', $ids_to_delete)->update(['active' => 0]) <= 0) {
                             DB::rollBack();
                             return response()->json(['msg' => 'Delete PostageDetail failed'], 404);
                         }

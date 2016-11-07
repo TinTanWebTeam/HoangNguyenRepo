@@ -192,7 +192,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuel"><b>Phần trăm nhiên liệu</b></label>
+                                                    <label for="percentFuel"><b>Nhiên liệu/ cước phí (%)</b></label>
                                                     <input type="number" id="percentFuel" name="percentFuel"
                                                            class="form-control">
                                                 </div>
@@ -201,7 +201,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelChange"><b>Phần trăm nhiên liệu thay đổi</b></label>
+                                                    <label for="percentFuelChange"><b>Nhiên liệu thay đổi (%)</b></label>
                                                     <input type="number" id="percentFuelChange" name="percentFuelChange"
                                                            class="form-control">
                                                 </div>
@@ -332,7 +332,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuel"><b>Phần trăm nhiên liệu</b></label>
+                                                    <label for="percentFuel"><b>Nhiên liệu/ cước phí (%)</b></label>
                                                     <input type="number" id="percentFuel" name="percentFuel"
                                                            class="form-control">
                                                 </div>
@@ -341,7 +341,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelChange"><b>Phần trăm nhiên liệu thay đổi</b></label>
+                                                    <label for="percentFuelChange"><b>Nhiên liệu thay đổi (%)</b></label>
                                                     <input type="number" id="percentFuelChange" name="percentFuelChange"
                                                            class="form-control">
                                                 </div>
