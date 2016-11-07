@@ -158,6 +158,7 @@
                                                 <div class="form-group form-md-line-input">
                                                     <label for="oils_price"><b>Giá dầu</b></label>
                                                     <input type="text" class="form-control currency" name="oils_price" id="oils_price" disabled>
+                                                    <input type="hidden" name="fuel_id" id="fuel_id">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -512,11 +513,6 @@
                     $("input[id=deliveryPlace]").val(postageView.current["deliveryPlace"]);
                     $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
 
-                    var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
-                    $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
-
-                    $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
-
                     var applyDate = moment(postageView.current["applyDate"], "YYYY-MM-DD");
                     $("input[id='applyDate']").datepicker('update', applyDate.format("DD-MM-YYYY"));
                     var createdDate = moment(postageView.current["createdDate"], "YYYY-MM-DD");
@@ -533,7 +529,8 @@
                             receivePlace: $("input[id=receivePlace]").val(),
                             deliveryPlace: $("input[id=deliveryPlace]").val(),
                             applyDate: $("input[id=applyDate]").val(),
-                            cashDelivery: asNumberFromCurrency("#cashDelivery")
+                            cashDelivery: asNumberFromCurrency("#cashDelivery"),
+                            fuel_id: $("input[id=fuel_id]").val()
                         };
                     } else if (postageView.action == 'update') {
                         postageView.current.customer_id = $("#customer_id").attr("data-customerId");
@@ -544,6 +541,7 @@
                         postageView.current.deliveryPlace = $("input[id='deliveryPlace']").val();
                         postageView.current.applyDate = $("input[id='applyDate']").val();
                         postageView.current.cashDelivery = asNumberFromCurrency("#cashDelivery");
+                        postageView.current.fuel_id = $("input[id=fuel_id]").val();
                     }
                 },
 
@@ -564,15 +562,27 @@
                         return o.customer_id == data['customer_id'];
                     });
                     postageView.fillDataToDatatablePostageDetail(data);
+
+                    var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
+                    $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
+                    $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
+                    $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
                 },
                 addPostage: function () {
+                    if(postageView.tablePostageDetail != null)
+                        postageView.tablePostageDetail.clear().draw();
+
                     $("input[id=oils_price]").val(0);
                     $("input[id=postage]").val(0);
                     $("input[id=cashDelivery]").val(0);
-                    postageView.tablePostageDetail.clear().rows.add("").draw();
                     postageView.current = null;
                     postageView.action = 'add';
                     postageView.showControl();
+
+                    var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
+                    $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
+                    $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
+                    $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
                 },
                 deletePostage: function (id) {
                     postageView.action = 'delete';
@@ -623,80 +633,81 @@
                 },
 
                 save: function () {
-                    postageView.formValidate();
-                    if ($("#frmControl").valid()) {
-                        if (postageView.action != 'delete') {
+                    if (postageView.action == 'delete') {
+                        var sendToServer = {
+                            _token: _token,
+                            _action: postageView.action,
+                            _id: postageView.idDelete
+                        };
+                    } else {
+                        postageView.formValidate();
+                        if ($("#frmControl").valid()) {
                             if ($("#customer_id").attr('data-customerId') == '') {
                                 showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
                                 return;
                             }
+                            postageView.fillFormDataToCurrentObject();
+                            var sendToServer = {
+                                _token: _token,
+                                _action: postageView.action,
+                                _postage: postageView.current
+                            };
+                        } else {
+                            $("form#frmControl").find("label[class=error]").css("color", "red");
                         }
-
-                        postageView.fillFormDataToCurrentObject();
-
-                        var sendToServer = {
-                            _token: _token,
-                            _action: postageView.action,
-                            _postage: postageView.current
-                        };
-                        if (postageView.action == 'delete') {
-                            sendToServer._id = postageView.idDelete;
-                        }
-                        console.log(sendToServer);
-                        $.ajax({
-                            url: url + 'postage/modify',
-                            type: "POST",
-                            dataType: "json",
-                            data: sendToServer
-                        }).done(function (data, textStatus, jqXHR) {
-                            if (jqXHR.status == 201) {
-                                console.log(data);
-                                switch (postageView.action) {
-                                    case 'add':
-                                        postageView.dataPostageFiltered.push(data['postage']);
-                                        postageView.dataPostage.push(data['postageDetail']);
-
-                                        showNotification("success", "Thêm thành công!");
-                                        break;
-                                    case 'update':
-                                        var Old = _.find(postageView.dataPostage, function (o) {
-                                            return o.id == sendToServer._postage.id;
-                                        });
-                                        var indexOfOld = _.indexOf(postageView.dataPostage, Old);
-
-                                        postageView.dataPostage.splice(indexOfOld, 1, data['postage']);
-                                        postageView.dataPostageDetail.push(data['postageDetail']);
-
-                                        showNotification("success", "Cập nhật thành công!");
-                                        postageView.hideControl();
-                                        break;
-                                    case 'delete':
-                                        var Old = _.find(postageView.dataPostage, function (o) {
-                                            return o.id == sendToServer._id;
-                                        });
-                                        var indexOfOld = _.indexOf(postageView.dataPostage, Old);
-                                        postageView.dataPostage.splice(indexOfOld, 1);
-                                        showNotification("success", "Xóa thành công!");
-                                        postageView.displayModal("hide", "#modal-notification");
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                postageView.table.clear().rows.add(postageView.dataPostage).draw();
-                                postageView.tablePostageDetail.clear().rows.add().draw();
-                                postageView.clearInput();
-                            } else if (jqXHR.status == 203) {
-                                showNotification("error", "Khách hàng này đã có cước phí!");
-                            } else {
-                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                            }
-                        }).fail(function (jqXHR, textStatus, errorThrown) {
-                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        });
-                    } else {
-                        $("form#frmControl").find("label[class=error]").css("color", "red");
                     }
-                },
+                    console.log(sendToServer);
+                    $.ajax({
+                        url: url + 'postage/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            console.log(data);
+                            switch (postageView.action) {
+                                case 'add':
+                                    postageView.dataPostageFiltered.push(data['postage']);
+                                    postageView.dataPostage.push(data['postageDetail']);
+
+                                    showNotification("success", "Thêm thành công!");
+                                    break;
+                                case 'update':
+                                    var Old = _.find(postageView.dataPostage, function (o) {
+                                        return o.id == sendToServer._postage.id;
+                                    });
+                                    var indexOfOld = _.indexOf(postageView.dataPostage, Old);
+
+                                    postageView.dataPostage.splice(indexOfOld, 1, data['postage']);
+                                    postageView.dataPostageDetail.push(data['postageDetail']);
+
+                                    showNotification("success", "Cập nhật thành công!");
+                                    postageView.hideControl();
+                                    break;
+                                case 'delete':
+                                    var Old = _.find(postageView.dataPostage, function (o) {
+                                        return o.id == sendToServer._id;
+                                    });
+                                    var indexOfOld = _.indexOf(postageView.dataPostage, Old);
+                                    postageView.dataPostage.splice(indexOfOld, 1);
+                                    showNotification("success", "Xóa thành công!");
+                                    postageView.displayModal("hide", "#modal-notification");
+                                    break;
+                                default:
+                                    break;
+                            }
+                            postageView.table.clear().rows.add(postageView.dataPostage).draw();
+                            postageView.tablePostageDetail.clear().rows.add().draw();
+                            postageView.clearInput();
+                        } else if (jqXHR.status == 203) {
+                            showNotification("error", "Khách hàng này đã có cước phí!");
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                }
             };
             postageView.loadData();
         } else {
