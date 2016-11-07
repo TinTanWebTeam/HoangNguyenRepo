@@ -124,6 +124,9 @@ class PostageManagementController extends Controller
                     return response()->json($response, 201);
                     break;
                 case 'update':
+                    $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', desc)->first();
+                    $postageBase = $postageOld->postage;
+
                     //Add Postage
                     $postageNew = new Postage();
                     $postageNew->postage = $postage;
