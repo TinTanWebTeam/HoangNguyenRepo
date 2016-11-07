@@ -26,13 +26,17 @@ class CostManagementController extends Controller
 
     public function getListDataVehicle()
     {
-        $tableVehicle = DB::table('vehicles')
-            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-            ->where('vehicles.active', 1)
-            ->select('vehicles.*', 'vehicleTypes.name as vehicleType')
+//        $tableVehicle = DB::table('vehicles')
+//            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+//            ->where('vehicles.active', 1)
+//            ->select('vehicles.*', 'vehicleTypes.name as vehicleType')
+//            ->get();
+        $vehicle = DB::table('vehicles')
+            ->where('active', 1)
             ->get();
         $response = [
-            'tableVehicle' => $tableVehicle
+            //'tableVehicle' => $tableVehicle
+            'tableVehicle' => $vehicle
         ];
         return response()->json($response, 200);
 
@@ -64,6 +68,7 @@ class CostManagementController extends Controller
     public function getDataFuelCost()
     {
         $tableCostPrice = CostPrice::all();
+        $tableVehicle = Vehicle::all();
         $tablePrice = DB::table('prices')
             ->select('prices.id', 'prices.price')
             ->orderBy('prices.created_at', 'desc')
@@ -87,12 +92,12 @@ class CostManagementController extends Controller
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'vehicles.note as vehicleNote')
             ->get();
-
         $response = [
             'msg'            => 'Get data cost success',
             'tableCost'      => $tableCost,
             'tablePrice'     => $tablePrice,
             'tableCostPrice' => $tableCostPrice,
+            'dataVehicle' => $tableVehicle,
 
         ];
         return response()->json($response, 200);
@@ -253,7 +258,7 @@ class CostManagementController extends Controller
                     $pricesNew->createdBy = Auth::user()->id;
                     if ($pricesNew->save()) {
                         $response = [
-                            'msg'    => 'Created price fuel',
+                            'msg'   => 'Created price fuel',
                             'price' => $pricesNew
 
                         ];
@@ -599,7 +604,7 @@ class CostManagementController extends Controller
             $checkOut = Carbon::createFromFormat('d-m-Y H:i', $dateOut . " " . $timeOut)->toDateTimeString();
             $totalDate = $request->get('_object')['totalDate'];
             $totalHour = $request->get('_object')['totalTime'];
-            $price =  str_replace(',', '', $request->get('_object')['prices_price']);
+            $price = str_replace(',', '', $request->get('_object')['prices_price']);
             $totalCost = $price * $totalHour;
 
         }
