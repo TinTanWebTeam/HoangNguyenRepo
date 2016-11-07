@@ -402,8 +402,8 @@
                         </div>
                         <div class="row">
                             <form role="form" id="frmStaffCustomer">
-                                <input id="idStaff" style="display: block;">
-                                <input id="idCustomer" style="display: block;">
+                                <input id="idStaff" style="display: none;">
+                                <input id="idCustomer" style="display: none;">
                                 <div class="form-body" id='datetimepicker'>
                                     <div class="row">
                                         <div class="col-md-6 col-sm-6">
