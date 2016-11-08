@@ -401,6 +401,8 @@
                 },
 
                 fillDataToDatatable: function (data) {
+                    removeDataTable();
+
                     if(postageView.table != null)
                         postageView.table.destroy();
 
@@ -408,7 +410,10 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'id'},
+                            {
+                                data: 'id',
+                                visible: false
+                            },
                             {
                                 data: 'postage',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
@@ -434,6 +439,9 @@
                             }
                         ],
                         order: [[0, "desc"]],
+                        fixedHeader: {
+                            header: true
+                        },
                         dom: 'Bfrtip',
                         buttons: [
                             {
@@ -476,7 +484,9 @@
                                 text: 'Ẩn cột'
                             }
                         ]
-                    })
+                    });
+                    $("#table-data").css("width", "auto");
+                    pushDataTable(postageView.table);
                 },
                 fillDataToDatatablePostageDetail: function (data) {
                     if (postageView.tablePostageDetail != null)

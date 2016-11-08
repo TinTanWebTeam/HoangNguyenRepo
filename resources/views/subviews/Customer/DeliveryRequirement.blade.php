@@ -772,7 +772,7 @@
                 },
                 renderEventFocusOut: function () {
                     $("#product_name").focusout(function () {
-                        if(transportView.transportType === true)
+                        if(transportView.transportType === 1)
                             return;
                         productName = this.value;
                         if (productName == '') return;
@@ -788,7 +788,7 @@
                         }
                     });
                     $("#vehicle_id").focusout(function () {
-                        if(transportView.transportType === true)
+                        if(transportView.transportType === 1)
                             return;
                         fullNumber = this.value;
                         if (fullNumber == '') return;
@@ -805,7 +805,7 @@
                         }
                     });
                     $("#customer_id").focusout(function () {
-                        if(transportView.transportType === true)
+                        if(transportView.transportType === 1)
                             return;
                         custName = this.value;
                         if (custName == '') return;
@@ -835,7 +835,7 @@
                     });
                 },
                 renderEventCheckbox: function(cb){
-                    transportView.transportType = cb.checked;
+                    transportView.transportType = (cb.checked) ? 1 : 0;
                 },
 
                 loadData: function () {
@@ -1058,7 +1058,8 @@
                     removeDataTable();
 
                     for (var i = 0; i < data.length; i++) {
-                        data[i].fullNumber = data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                        var fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                        data[i].fullNumber = fullNumber;
                         data[i].cashProfit_real = parseInt(data[i]['cashReceive']) - (parseInt(data[i]['cashPreDelivery']) + parseInt(data[i]['cost']));
                     }
                     transportView.table = $('#table-data').DataTable({
@@ -1217,7 +1218,9 @@
                     pushDataTable(transportView.table);
                 },
                 fillCurrentObjectToForm: function () {
-                    $("input[id='vehicle_id']").val(transportView.current["vehicles_areaCode"] + '-' + transportView.current["vehicles_vehicleNumber"]);
+                    var fullNumber = (transportView.current["vehicles_areaCode"] == null || transportView.current["vehicles_vehicleNumber"] == null) ? "" : transportView.current["vehicles_areaCode"] + '-' + transportView.current["vehicles_vehicleNumber"];
+
+                    $("input[id='vehicle_id']").val(fullNumber);
                     $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicles_id"]);
                     $("input[id='customer_id']").val(transportView.current["customers_fullName"]);
                     $("#customer_id").attr('data-customerId', transportView.current["customers_id"]);
@@ -1245,8 +1248,9 @@
                     $("select[id='status_transport']").val(transportView.current["status_transport"]);
                     $("textarea[id='costNote']").val(transportView.current["costNote"]);
 
-                    transportView.transportType = (transportView.current["transportType"] === 0) ? false : true;
-                    $("input[id='transportType']").prop('checked', transportView.transportType);
+                    transportView.transportType = transportView.current["transportType"];
+                    var status = (transportView.current["transportType"] === 0) ? false : true;
+                    $("input[id=transportType]").attr('checked', status);
 
                     var strVoucherName = "";
                     for (var i = 0; i < transportView.arrayVoucher.length; i++) {
@@ -1438,7 +1442,7 @@
                             _id: transportView.idDelete
                         };
                     } else {
-                        if(transportView.transportType === false){
+                        if(transportView.transportType === 0){
                             transportView.formValidate();
                             if (!$("#frmControl").valid()) {
                                 $("form#frmControl").find("label[class=error]").css("color", "red");
@@ -1477,7 +1481,8 @@
                         if (jqXHR.status == 201) {
                             switch (transportView.action) {
                                 case 'add':
-                                    data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                    var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                    data['transport'].fullNumber = fullNumber;
                                     data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
                                     transportView.dataTransport.push(data['transport']);
 
@@ -1491,7 +1496,8 @@
                                     });
                                     var indexOfOld = _.indexOf(transportView.dataTransport, Old);
 
-                                    data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                    var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                    data['transport'].fullNumber = fullNumber;
                                     data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
                                     transportView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
@@ -1628,6 +1634,7 @@
                         console.log(data);
                         if (jqXHR.status == 201) {
                             $("input[id='cashRevenue']").val(data['postage']);
+                            $("input[id='cashDelivery']").val(data['cashDelivery']);
                             formatCurrency(".currency");
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");

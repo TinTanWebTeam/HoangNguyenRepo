@@ -846,7 +846,6 @@ class CustomerManagementController extends Controller
                         ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
                         ->where('transports.id', '=', $transportUpdate->id)
                         ->first();
-                    dd($transport);
 
                     $voucherTransport = VoucherTransport::where('transport_id', $transportUpdate->id)->get();
 
@@ -927,10 +926,12 @@ class CustomerManagementController extends Controller
             ->orderBy('applyDate', 'desc')->first();
 
         $postage = ($postageDetail == null) ? 0 : $postageDetail->postage;
+        $cashDelivery = ($postageDetail == null) ? 0 : $postageDetail->cashDelivery;
 
         $response = [
             'msg'     => 'Get postage success',
-            'postage' => $postage
+            'postage' => $postage,
+            'cashDelivery' => $cashDelivery
         ];
         return response()->json($response, 201);
     }
