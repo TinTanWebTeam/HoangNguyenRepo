@@ -93,11 +93,11 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="garages_name"><b>Nhà xe</b></label>
                                     <div class="row">
-                                        <div class="col-sm-10 col-xs-10">
+                                        <div class="col-sm-9 col-xs-9">
                                             <input type="text" class="form-control" id="garages_name" data-garageId=""
                                                    name="garages_name">
                                         </div>
-                                        <div class="col-sm-2 col-xs-2">
+                                        <div class="col-sm-3 col-xs-3">
                                             <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
                                                  onclick="vehicleInsideView.displayModal('show', '#modal-addGarage')">
                                                 <i class="glyphicon glyphicon-plus"></i>
@@ -110,12 +110,12 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="vehicleType_id"><b>Loại xe</b></label>
                                     <div class="row">
-                                        <div class="col-sm-10 col-xs-10">
+                                        <div class="col-sm-9 col-xs-9">
                                             <select class="form-control" id="vehicleTypes_name"
                                                     name="vehicleTypes_name">
                                             </select>
                                         </div>
-                                        <div class="col-sm-2 col-xs-2">
+                                        <div class="col-sm-3 col-xs-3">
                                             <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
                                                  onclick="vehicleInsideView.displayModal('show', '#modal-addVehicleType')">
                                                 <i class="glyphicon glyphicon-plus"></i>
@@ -146,27 +146,33 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-4 col-sm-4">
                                 <div class="form-group form-md-line-input ">
                                     <label for="size"><b>Kích thước</b></label>
                                     <input type="number" class="form-control" id="size" name="size">
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-4 col-sm-4">
                                 <div class="form-group form-md-line-input">
                                     <label for="weight"><b>Trọng tải</b></label>
                                     <input type="number" class="form-control" id="weight" name="weight">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12">
+                            <div class="col-md-4 col-sm-4">
                                 <div class="form-group form-md-line-input">
                                     <label for="driver"><b>Tài xế</b></label>
                                     <input type="text" class="form-control" id="driver" name="driver">
                                 </div>
                             </div>
                         </div>
+                        {{--<div class="row">--}}
+                            {{--<div class="col-md-12 col-sm-12">--}}
+                                {{--<div class="form-group form-md-line-input">--}}
+                                    {{--<label for="driver"><b>Tài xế</b></label>--}}
+                                    {{--<input type="text" class="form-control" id="driver" name="driver">--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-actions noborder">

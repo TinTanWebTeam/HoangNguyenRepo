@@ -27,7 +27,9 @@ class VehicleManagementController extends Controller
         $vehicles = \DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')
+            ->select('vehicles.*'
+                , 'vehicleTypes.name as vehicleTypes_name'
+                , 'garages.name as garages_name')
             ->where('vehicles.active', 1)
             ->orderBy('vehicles.id', 'desc')
             ->get();
@@ -35,7 +37,7 @@ class VehicleManagementController extends Controller
             'msg'          => 'Get data vehicle success',
             'vehicles'     => $vehicles,
             'vehicleTypes' => $vehicleTypes,
-            'drivers' => $driver
+            'drivers'      => $driver
         ];
         return response()->json($response, 200);
     }
@@ -145,9 +147,9 @@ class VehicleManagementController extends Controller
     {
 //        $garages = Garage::all();
         $garages = \DB::table('garages')
-            ->select('garages.*','garageTypes.name as garageTypes')
-            ->join('garageTypes','garages.garageType_id','=','garageTypes.id')
-            ->where('garages.active',1)
+            ->select('garages.*', 'garageTypes.name as garageTypes')
+            ->join('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
+            ->where('garages.active', 1)
             ->get();
 
         $garageTypes = GarageType::all();
