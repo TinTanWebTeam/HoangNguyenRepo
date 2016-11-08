@@ -275,6 +275,7 @@
                             columns: [
                                 {
                                     data: "id",
+                                    visible: false
                                 },
                                 {
                                     data: "applyDate",
@@ -296,6 +297,7 @@
                                     data: "note"
                                 },
                                 {
+                                    visible: false,
                                     render: function (data, type, full, meta) {
                                         var tr = '';
                                         tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
@@ -307,7 +309,7 @@
                                     }
                                 }
                             ],
-                            order: [[0, "desc"]],
+                            order: [[1, "asc"]],
                             dom: "Bfrtip",
                             buttons: [
                                 {
@@ -350,7 +352,6 @@
                                     text: "Ẩn cột"
                                 }
                             ]
-
                         });
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
