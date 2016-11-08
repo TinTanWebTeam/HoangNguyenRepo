@@ -24,24 +24,24 @@ class CostManagementController extends Controller
         return view('subviews.Cost.FuelCost');
     }
 
-    public function getListDataVehicle()
-    {
-//        $tableVehicle = DB::table('vehicles')
-//            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-//            ->where('vehicles.active', 1)
-//            ->select('vehicles.*', 'vehicleTypes.name as vehicleType')
+//    public function getListDataVehicle()
+//    {
+////        $tableVehicle = DB::table('vehicles')
+////            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+////            ->where('vehicles.active', 1)
+////            ->select('vehicles.*', 'vehicleTypes.name as vehicleType')
+////            ->get();
+//        $vehicle = DB::table('vehicles')
+//            ->where('active', 1)
 //            ->get();
-        $vehicle = DB::table('vehicles')
-            ->where('active', 1)
-            ->get();
-        $response = [
-            //'tableVehicle' => $tableVehicle
-            'tableVehicle' => $vehicle
-        ];
-        return response()->json($response, 200);
-
-
-    }
+//        $response = [
+//            //'tableVehicle' => $tableVehicle
+//            'tableVehicle' => $vehicle
+//        ];
+//        return response()->json($response, 200);
+//
+//
+//    }
 
     public function getListDataOptionGarageAndVehicle()
     {
@@ -97,7 +97,7 @@ class CostManagementController extends Controller
             'tableCost'      => $tableCost,
             'tablePrice'     => $tablePrice,
             'tableCostPrice' => $tableCostPrice,
-            'dataVehicle' => $tableVehicle,
+            'dataVehicle'    => $tableVehicle,
 
         ];
         return response()->json($response, 200);
@@ -377,6 +377,7 @@ class CostManagementController extends Controller
 
     public function getDataPetroleumCost()
     {
+        $tableVehicle = Vehicle::all();
         $tablePrice = DB::table('prices')
             ->select('prices.id', 'prices.price')
             ->orderBy('prices.created_at', 'desc')
@@ -404,7 +405,8 @@ class CostManagementController extends Controller
         $response = [
             'msg'           => 'Get data cost success',
             'petroleumCost' => $petroleumCost,
-            'tablePrice'    => $tablePrice
+            'tablePrice'    => $tablePrice,
+            'dataVehicle'   => $tableVehicle
 
         ];
         return response()->json($response, 200);
@@ -539,6 +541,7 @@ class CostManagementController extends Controller
 
     public function getDataParkingCost()
     {
+        $tableVehicle = Vehicle::all();
         $tablePrice = DB::table('prices')
             ->select('prices.id', 'prices.price')
             ->orderBy('prices.created_at', 'desc')
@@ -565,8 +568,8 @@ class CostManagementController extends Controller
         $response = [
             'msg'              => 'Get data ParkingCost success',
             'tableParkingCost' => $parkingCosts,
-            'tablePrice'       => $tablePrice
-
+            'tablePrice'       => $tablePrice,
+            'dataVehicle'      => $tableVehicle,
 
         ];
         return response()->json($response, 200);
@@ -713,7 +716,7 @@ class CostManagementController extends Controller
 
     public function getDataOtherCost()
     {
-
+        $tableVehicle = Vehicle::all();
         $otherCost = \DB::table('costs')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
             ->join('prices', 'prices.id', '=', 'costs.price_id')
@@ -735,6 +738,7 @@ class CostManagementController extends Controller
         $response = [
             'msg'            => 'Get data other cost success',
             'tableOtherCost' => $otherCost,
+            'dataVehicle'    => $tableVehicle,
 
 
         ];

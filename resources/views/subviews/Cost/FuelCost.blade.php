@@ -477,9 +477,8 @@
                             fuelCostView.fillDataToDatatable(data['tableCost']);
                             fuelCostView.tablePrice = data['tablePrice'];
                             fuelCostView.inputPrice(data['tablePrice']);
-//                            fuelCostView.tableVehicle = data['tableVehicle'];
                             fuelCostView.tableVehicle = data['dataVehicle'];
-
+                            fuelCostView.renderAutoCompleteSearch();
                         } else {
                             fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -520,7 +519,6 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
-                    fuelCostView.renderAutoCompleteSearch();
                     fuelCostView.renderDateTimePicker();
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
@@ -528,14 +526,12 @@
 
                 },
                 renderAutoCompleteSearch: function () {
-
                     var vehicle = _.map(fuelCostView.tableVehicle, function (o) {
                         return o.areaCode + '-' + o.vehicleNumber;
                     });
                     $( "#vehicle_id" ).autocomplete({
                         source: vehicle
                     });
-
                 },
                 inputPrice: function () {
                     $("input[id='price']").val(fuelCostView.tablePrice.price);
@@ -822,37 +818,6 @@
                         }
                     }
                 },
-//                loadListVehicles: function () {
-//                    $.ajax({
-//                        url: url + 'get-list-vehicle/getVehicle',
-//                        type: "GET",
-//                        dataType: "json"
-//                    }).done(function (data, textStatus, jqXHR) {
-//                        if (jqXHR.status == 200) {
-//                            if (fuelCostView.tableVehicle != null) {
-//                                fuelCostView.tableVehicle.destroy();
-//                            }
-//                            fuelCostView.tableVehicle = $('#table-vehicles').DataTable({
-//                                language: languageOptions,
-//                                data: data['tableVehicle'],
-//                                columns: [
-//                                    {data: 'id'},
-//                                    {data: 'areaCode'},
-//                                    {data: 'vehicleNumber'},
-//                                    {data: 'size'},
-//                                    {data: 'weight'},
-//                                    {data: 'vehicleType'}
-//                                ],
-//                                order: [[0, "desc"]]
-//                            })
-//                        } else {
-//                            fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-//                        }
-//                    }).fail(function (jqXHR, textStatus, errorThrown) {
-//                        fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-//                    });
-//                    fuelCostView.displayModal("show", "#modal-searchVehicle")
-//                },
                 loadListGarageAndVehicleType: function () {
                     fuelCostView.displayModal('show', '#modal-addVehicle');
                     $.ajax({

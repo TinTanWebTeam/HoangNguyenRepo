@@ -20,6 +20,7 @@
     div.col-lg-12 {
         height: 40px;
     }
+
     #divControl .panel-body {
         height: 344px;
     }
@@ -55,7 +56,8 @@
                         <li class="active">Khác</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="otherCostView.addNewOtherCost()">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="otherCostView.addNewOtherCost()">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
                     </div>
@@ -105,11 +107,9 @@
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
                                                 <input type="text" data-id=""
-                                                       ondblclick="otherCostView.loadListVehicles()"
                                                        class="form-control"
-                                                       id="vehicle_id" readonly
-                                                       name="vehicle_id"
-                                                       placeholder="Nhấp đôi để chọn">
+                                                       id="vehicle_id"
+                                                       name="vehicle_id">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
@@ -209,7 +209,6 @@
     </div>
 </div>
 <!-- end Modal list garages -->
-
 
 
 <!-- Modal add Vehicle -->
@@ -338,8 +337,6 @@
                         otherCostView.action = null;
                         otherCostView.idDelete = null;
                     }
-
-
                 },
                 showNotification: function (type, msg) {
                     switch (type) {
@@ -434,15 +431,14 @@
                         if (jqXHR.status == 200) {
                             otherCostView.tableOtherCost = data['tableOtherCost'];
                             otherCostView.fillDataToDatatable(data['tableOtherCost']);
-
-
+                            otherCostView.tableVehicle = data['dataVehicle'];
+                            otherCostView.renderAutoCompleteSearch();
                         } else {
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
                     toastr.options = {
                         "closeButton": true,
                         "debug": false,
@@ -461,11 +457,19 @@
                         "hideMethod": "fadeOut"
                     };
                     $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme:"dark"
+                        theme: "dark"
                     });
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     defaultZero("#costPrice");
+                },
+                renderAutoCompleteSearch: function () {
+                    var vehicle = _.map(otherCostView.tableVehicle, function (o) {
+                        return o.areaCode + '-' + o.vehicleNumber;
+                    });
+                    $("#vehicle_id").autocomplete({
+                        source: vehicle
+                    });
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -516,7 +520,7 @@
                     $("textarea[id='note']").val('');
                     $("input[id='cost']").val('');
                 },
-                cancelVehicle:function () {
+                cancelVehicle: function () {
                     $("input[id='areaCode']").val('');
                     $("input[id='vehicleNumber']").val('');
                     $("input[id='areaCode']").val('');
@@ -702,38 +706,6 @@
                     }
 
                 },
-                loadListVehicles: function () {
-                    $.ajax({
-                        url: url + 'get-list-vehicle/getVehicle',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            if (otherCostView.tableVehicle != null) {
-                                otherCostView.tableVehicle.destroy();
-                            }
-                            otherCostView.tableVehicle = $('#table-vehicles').DataTable({
-                                language: languageOptions,
-                                data: data['tableVehicle'],
-                                columns: [
-                                    {data: 'id'},
-                                    {data: 'areaCode'},
-                                    {data: 'vehicleNumber'},
-                                    {data: 'size'},
-                                    {data: 'weight'},
-                                    {data: 'vehicleType'}
-                                ],
-                                order: [[0, "desc"]]
-                            })
-                        } else {
-                            otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                    otherCostView.displayModal("show", "#modal-searchVehicle")
-                },
-
                 loadListGarageAndVehicleType: function () {
                     otherCostView.displayModal('show', '#modal-addVehicle');
                     $.ajax({

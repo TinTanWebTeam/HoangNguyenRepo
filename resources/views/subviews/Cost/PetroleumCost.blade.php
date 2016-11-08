@@ -104,14 +104,9 @@
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
                                                 <input type="text" data-id=""
-                                                       ondblclick="petroleumCostView.loadListVehicles()"
                                                        class="form-control"
-                                                       id="vehicle_id" readonly
-                                                       name="vehicle_id"
-                                                       placeholder="Nhấp đôi để chọn">
-                                                <label id="vehicle_id" class="error" style="display: none; color: red">Vui
-                                                    lòng
-                                                    chọn xe</label>
+                                                       id="vehicle_id"
+                                                       name="vehicle_id">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
@@ -122,7 +117,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="dateFuel"><b>Ngày đổ</b></label>
@@ -532,38 +526,6 @@
                     petroleumCostView.show();
 
                 },
-                loadListVehicles: function () {
-                    $.ajax({
-                        url: url + 'get-list-vehicle/getVehicle',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            if (petroleumCostView.tableVehicle != null) {
-                                petroleumCostView.tableVehicle.destroy();
-                            }
-                            petroleumCostView.tableVehicle = $('#table-vehicles').DataTable({
-                                language: languageOptions,
-                                data: data['tableVehicle'],
-                                columns: [
-                                    {data: 'id'},
-                                    {data: 'areaCode'},
-                                    {data: 'vehicleNumber'},
-                                    {data: 'size'},
-                                    {data: 'weight'},
-                                    {data: 'vehicleType'}
-                                ],
-                                order: [[0, "desc"]]
-                            })
-                        } else {
-                            petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                    petroleumCostView.displayModal("show", "#modal-searchVehicle")
-                },
-
                 addPetroleum: function () {
                     $("#divControl").find(".titleControl").html("Thêm mới phí thay nhớt");
                     petroleumCostView.renderDateTimePicker();
@@ -584,6 +546,10 @@
                             petroleumCostView.fillDataToDatatable(data['petroleumCost']);
                             petroleumCostView.tablePrice = data['tablePrice'];
                             petroleumCostView.inputPrice(data['tablePrice']);
+                            petroleumCostView.tableVehicle = data['dataVehicle'];
+
+                            petroleumCostView.renderAutoCompleteSearch();
+
                         } else {
                             petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -631,8 +597,14 @@
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     defaultZero("#costPrice");
-
-
+                },
+                renderAutoCompleteSearch: function () {
+                    var vehicle = _.map(petroleumCostView.tableVehicle, function (o) {
+                        return o.areaCode + '-' + o.vehicleNumber;
+                    });
+                    $( "#vehicle_id" ).autocomplete({
+                        source: vehicle
+                    });
                 },
                 renderDateTimePicker: function () {
                     $('#dateFuel').datepicker({

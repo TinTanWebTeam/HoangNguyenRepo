@@ -107,11 +107,9 @@
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
                                                 <input type="text" data-id=""
-                                                       ondblclick="parkingCostView.loadListVehicles()"
                                                        class="form-control"
-                                                       id="vehicle_id" readonly
-                                                       name="vehicle_id"
-                                                       placeholder="Nhấp đôi để chọn">
+                                                       id="vehicle_id"
+                                                       name="vehicle_id">
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
@@ -565,6 +563,8 @@
                             parkingCostView.fillDataToDatatable(data['tableParkingCost']);
                             parkingCostView.tablePrice = data['tablePrice'];
                             parkingCostView.inputPrice(data['tablePrice']);
+                            parkingCostView.tableVehicle = data['dataVehicle'];
+                            parkingCostView.renderAutoCompleteSearch();
                         } else {
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -620,6 +620,14 @@
                     formatCurrency(".currency");
                     defaultZero("#costPrice");
 
+                },
+                renderAutoCompleteSearch: function () {
+                    var vehicle = _.map(parkingCostView.tableVehicle, function (o) {
+                        return o.areaCode + '-' + o.vehicleNumber;
+                    });
+                    $( "#vehicle_id" ).autocomplete({
+                        source: vehicle
+                    });
                 },
                 renderDateTimePicker: function () {
                     $('#dateCheckOut').datepicker({
@@ -969,37 +977,7 @@
                     }
 
                 },
-                loadListVehicles: function () {
-                    $.ajax({
-                        url: url + 'get-list-vehicle/getVehicle',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            if (parkingCostView.tableVehicle != null) {
-                                parkingCostView.tableVehicle.destroy();
-                            }
-                            parkingCostView.tableVehicle = $('#table-vehicles').DataTable({
-                                language: languageOptions,
-                                data: data['tableVehicle'],
-                                columns: [
-                                    {data: 'id'},
-                                    {data: 'areaCode'},
-                                    {data: 'vehicleNumber'},
-                                    {data: 'size'},
-                                    {data: 'weight'},
-                                    {data: 'vehicleType'}
-                                ],
-                                order: [[0, "desc"]]
-                            })
-                        } else {
-                            parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                    parkingCostView.displayModal("show", "#modal-searchVehicle")
-                },
+
                 loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')

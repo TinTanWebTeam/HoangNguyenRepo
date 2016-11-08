@@ -18,7 +18,7 @@ class DriverManagementController extends Controller
 
     public function getDataDriver()
     {
-        $dataDrivers = \DB::table('driverVehicles')
+        $dataDrivers = \DB::table('drivers')
             ->select(
                 'drivers.*',
                 'drivers.licenseDriverType as driverType',
@@ -29,11 +29,11 @@ class DriverManagementController extends Controller
                 'garages.name as garage',
                 'garageTypes.name as garageTypes'
             )
-            ->join('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
-            ->join('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
-            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->join('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
+            ->leftJoin('driverVehicles', 'drivers.id', '=', 'driverVehicles.driver_id')
+            ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+            ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+            ->leftJoin('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
             ->where('drivers.active', 1)
             ->get();
         $response = [
@@ -106,7 +106,7 @@ class DriverManagementController extends Controller
                     return response()->json(['msg' => 'Create failed'], 404);
 
                 }
-                $dataAddDriver = \DB::table('driverVehicles')
+                $dataAddDriver = \DB::table('drivers')
                     ->select(
                         'drivers.*',
                         'drivers.licenseDriverType as driverType',
@@ -117,11 +117,11 @@ class DriverManagementController extends Controller
                         'garages.name as garage',
                         'garageTypes.name as garageTypes'
                     )
-                    ->join('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
-                    ->join('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
-                    ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-                    ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-                    ->join('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
+                    ->leftJoin('driverVehicles', 'drivers.id', '=', 'driverVehicles.driver_id')
+                    ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+                    ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                    ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+                    ->leftJoin('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
                     ->where('drivers.active', 1)
                     ->where('drivers.id', $driverNew->id)
                     ->first();
@@ -148,7 +148,7 @@ class DriverManagementController extends Controller
                 if (!$driverUpdate->update()) {
                     return response()->json(['msg' => 'Update failed'], 404);
                 }
-                $dataUpdateDriver = \DB::table('driverVehicles')
+                $dataUpdateDriver = \DB::table('drivers')
                     ->select(
                         'drivers.*',
                         'drivers.licenseDriverType as driverType',
@@ -159,11 +159,11 @@ class DriverManagementController extends Controller
                         'garages.name as garage',
                         'garageTypes.name as garageTypes'
                     )
-                    ->join('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
-                    ->join('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
-                    ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-                    ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-                    ->join('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
+                    ->leftJoin('driverVehicles', 'drivers.id', '=', 'driverVehicles.driver_id')
+                    ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+                    ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                    ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+                    ->leftJoin('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
                     ->where('drivers.active', 1)
                     ->where('drivers.id', $request->input('_object')['id'])
                     ->first();

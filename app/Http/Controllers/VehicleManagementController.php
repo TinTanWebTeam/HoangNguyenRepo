@@ -48,6 +48,7 @@ class VehicleManagementController extends Controller
         $vehicleNumber = null;
         $size = null;
         $weight = null;
+        $owner = null;
 
         $action = $request->input('_action');
         if ($action != 'delete') {
@@ -62,6 +63,7 @@ class VehicleManagementController extends Controller
             $vehicleNumber = $request->input('_vehicle')['vehicleNumber'];
             $size = $request->input('_vehicle')['size'];
             $weight = $request->input('_vehicle')['weight'];
+            $owner = $request->input('_vehicle')['owner'];
         }
 
         switch ($action) {
@@ -97,6 +99,7 @@ class VehicleManagementController extends Controller
                 $vehicleUpdate->vehicleNumber = $vehicleNumber;
                 $vehicleUpdate->size = $size;
                 $vehicleUpdate->weight = $weight;
+                $vehicleUpdate->owner = $owner;
                 if ($vehicleUpdate->update()) {
                     $vehicle = \DB::table('vehicles')
                         ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
@@ -104,7 +107,6 @@ class VehicleManagementController extends Controller
                         ->where('vehicles.id', $vehicleUpdate->id)
                         ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')
                         ->first();
-
                     $response = [
                         'msg'     => 'Updated vehicle',
                         'vehicle' => $vehicle
@@ -116,7 +118,6 @@ class VehicleManagementController extends Controller
             case 'delete':
                 $vehicleDelete = Vehicle::findOrFail($request->input('_id'));
                 $vehicleDelete->active = 0;
-
                 if ($vehicleDelete->update()) {
                     $response = [
                         'msg' => 'Deleted vehicle'

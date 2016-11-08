@@ -107,7 +107,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/other-cost', 'CostManagementController@getDataOtherCost');
 
         /*Get List Vehicle*/
-        Route::get('/get-list-vehicle/getVehicle', 'CostManagementController@getListDataVehicle');
         Route::get('/get-list-option/Garage-Vehicle', 'CostManagementController@getListDataOptionGarageAndVehicle');
         /*Post Create Vehicle + PriceNew*/
         Route::post('/create-price-new/modify', 'CostManagementController@postModifyPriceNew');
