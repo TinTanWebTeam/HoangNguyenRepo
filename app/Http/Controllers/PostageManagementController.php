@@ -95,8 +95,8 @@ class PostageManagementController extends Controller
             DB::beginTransaction();
             switch ($action) {
                 case 'add':
-                    $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', desc)->first();
-                    $postageBase = $postageOld->postage;
+                    $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
+                    $postageBase = ($postageOld) ? $postageOld->postage : 0;
 
                     //Check exists Customer
                     $postageNew = new Postage();
@@ -124,8 +124,8 @@ class PostageManagementController extends Controller
                     return response()->json($response, 201);
                     break;
                 case 'update':
-                    $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', desc)->first();
-                    $postageBase = $postageOld->postage;
+                    $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
+                    $postageBase = ($postageOld) ? $postageOld->postage : 0;
 
                     //Add Postage
                     $postageNew = new Postage();
@@ -141,7 +141,7 @@ class PostageManagementController extends Controller
                     $postageNew->createdBy = $createdBy;
                     $postageNew->updatedBy = $updatedBy;
                     $postageNew->customer_id = $customer_id;
-                    $postageNew->fuel_id = $fuelId;
+                    $postageNew->fuel_id = $fuel_id;
                     $postageNew->changeByFuel = 0;
                     if (!$postageNew->save()) {
                         DB::rollBack();
