@@ -104,13 +104,15 @@
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="receivePlace"><b>Nơi nhận</b></label>
-                                                    <input type="text" class="form-control" id="receivePlace" name="receivePlace">
+                                                    <input type="text" class="form-control" id="receivePlace"
+                                                           name="receivePlace">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="deliveryPlace"><b>Nơi giao</b></label>
-                                                    <input type="text" class="form-control" name="deliveryPlace" id="deliveryPlace">
+                                                    <input type="text" class="form-control" name="deliveryPlace"
+                                                           id="deliveryPlace">
                                                 </div>
                                             </div>
                                         </div>
@@ -118,13 +120,15 @@
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input ">
                                                     <label for="createdDate"><b>Ngày tạo</b></label>
-                                                    <input type="text" class="date ignore form-control" id="createdDate" name="createdDate">
+                                                    <input type="text" class="date ignore form-control" id="createdDate"
+                                                           name="createdDate">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="applyDate"><b>Ngày áp dụng</b></label>
-                                                    <input type="text" class="date ignore form-control" id="applyDate" name="applyDate">
+                                                    <input type="text" class="date ignore form-control" id="applyDate"
+                                                           name="applyDate">
                                                 </div>
                                             </div>
                                         </div>
@@ -140,13 +144,15 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
                                             <label for="postage"><b>Cước phí</b></label>
-                                            <input type="text" class="form-control currency" id="postage" name="postage">
+                                            <input type="text" class="form-control currency" id="postage"
+                                                   name="postage">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
                                             <label for="cashDelivery"><b>Phí giao xe</b></label>
-                                            <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery">
+                                            <input type="text" class="form-control currency" id="cashDelivery"
+                                                   name="cashDelivery">
                                         </div>
                                     </div>
                                 </div>
@@ -157,14 +163,16 @@
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="oils_price"><b>Giá dầu</b></label>
-                                                    <input type="text" class="form-control currency" name="oils_price" id="oils_price" disabled>
+                                                    <input type="text" class="form-control currency" name="oils_price"
+                                                           id="oils_price" disabled>
                                                     <input type="hidden" name="fuel_id" id="fuel_id">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="oils_applyDate"><b>Ngày áp dụng giá dầu</b></label>
-                                                    <input type="text" class="date ignore form-control" name="oils_applyDate" id="oils_applyDate" disabled>
+                                                    <input type="text" class="date ignore form-control"
+                                                           name="oils_applyDate" id="oils_applyDate" disabled>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -391,6 +399,9 @@
                 },
 
                 fillDataToDatatable: function (data) {
+                    if(postageView.table != null)
+                        postageView.table.destroy();
+
                     postageView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -467,7 +478,7 @@
                     })
                 },
                 fillDataToDatatablePostageDetail: function (data) {
-                    if(postageView.tablePostageDetail != null)
+                    if (postageView.tablePostageDetail != null)
                         postageView.tablePostageDetail.destroy();
 
                     postageView.tablePostageDetail = $('#table-postageDetail').DataTable({
@@ -491,7 +502,7 @@
                                 data: 'changeByFuel',
                                 render: function (data, type, full, meta) {
                                     var tr = "";
-                                    if(full.changeById == 0)
+                                    if (full.changeById == 0)
                                         tr = "Thủ công";
                                     else
                                         tr = "Tự động"
@@ -569,7 +580,7 @@
                     $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
                 },
                 addPostage: function () {
-                    if(postageView.tablePostageDetail != null)
+                    if (postageView.tablePostageDetail != null)
                         postageView.tablePostageDetail.clear().draw();
 
                     $("input[id=oils_price]").val(0);
@@ -593,7 +604,7 @@
                     $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa cước phí này?");
                     tr = '<div class="row">';
                     tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
-                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="postageView.deletePostage('+ id +')">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="postageView.deletePostage(' + id + ')">';
                     tr += 'Đồng ý';
                     tr += '</button>';
                     tr += '<button type="button" class="btn default" onclick="postageView.displayModal(\'hide\', \'#modal-notification\')">';
@@ -604,11 +615,11 @@
                     $("#modal-notification").find(".modal-body").html(tr);
                     postageView.displayModal('show', '#modal-notification');
                 },
-                getLatestFuel: function(){
-                    var fuel = _.maxBy(postageView.dataFuel, function(o) {
+                getLatestFuel: function () {
+                    var fuel = _.maxBy(postageView.dataFuel, function (o) {
                         return o.applyDate;
                     });
-                    if(typeof fuel === 'undefined'){
+                    if (typeof fuel === 'undefined') {
                         postageView.dataFuelLastest = null;
                     }
                     postageView.dataFuelLastest = fuel;
@@ -667,37 +678,35 @@
                             console.log(data);
                             switch (postageView.action) {
                                 case 'add':
-                                    postageView.dataPostageFiltered.push(data['postage']);
-                                    postageView.dataPostage.push(data['postageDetail']);
+                                    postageView.dataPostageFiltered = data['postageFiltered'];
+                                    postageView.dataPostage = data['postageFull'];
+                                    postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+
+                                    var custId = parseInt($("#customer_id").attr('data-customerId'));
+                                    var data = _.filter(postageView.dataPostage, function(o){
+                                        return o.customer_id == custId;
+                                    });
+                                    postageView.fillDataToDatatablePostageDetail(data);
 
                                     showNotification("success", "Thêm thành công!");
                                     break;
                                 case 'update':
-                                    var Old = _.find(postageView.dataPostage, function (o) {
-                                        return o.id == sendToServer._postage.id;
-                                    });
-                                    var indexOfOld = _.indexOf(postageView.dataPostage, Old);
-
-                                    postageView.dataPostage.splice(indexOfOld, 1, data['postage']);
-                                    postageView.dataPostageDetail.push(data['postageDetail']);
+                                    debugger;
+                                    postageView.dataPostageFiltered = data['postageFiltered'];
+                                    postageView.dataPostage = data['postageFull'];
+                                    postageView.fillDataToDatatable(postageView.dataPostageFiltered);
 
                                     showNotification("success", "Cập nhật thành công!");
                                     postageView.hideControl();
                                     break;
                                 case 'delete':
-                                    var Old = _.find(postageView.dataPostage, function (o) {
-                                        return o.id == sendToServer._id;
-                                    });
-                                    var indexOfOld = _.indexOf(postageView.dataPostage, Old);
-                                    postageView.dataPostage.splice(indexOfOld, 1);
+
                                     showNotification("success", "Xóa thành công!");
                                     postageView.displayModal("hide", "#modal-notification");
                                     break;
                                 default:
                                     break;
                             }
-                            postageView.table.clear().rows.add(postageView.dataPostage).draw();
-                            postageView.tablePostageDetail.clear().rows.add().draw();
                             postageView.clearInput();
                         } else if (jqXHR.status == 203) {
                             showNotification("error", "Khách hàng này đã có cước phí!");
