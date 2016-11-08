@@ -56,6 +56,8 @@
                                 <th>Cước phí</th>
                                 <th>Tháng</th>
                                 <th>Khách hàng</th>
+                                <th>Nơi nhận</th>
+                                <th>Nơi giao</th>
                                 <th>Ghi chú</th>
                                 <th>Sửa</th>
                             </tr>
@@ -418,6 +420,8 @@
                                 }
                             },
                             {data: 'customers_fullName'},
+                            {data: 'receivePlace'},
+                            {data: 'deliveryPlace'},
                             {data: 'note'},
                             {
                                 render: function (data, type, full, meta) {
@@ -425,9 +429,6 @@
                                     tr += '<div class="btn btn-success btn-circle" onclick="postageView.editPostage(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
-//                                    tr += '<div class="btn btn-danger  btn-circle" onclick="postageView.deletePostageConfirm(' + full.id + ')">';
-//                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
-//                                    tr += '</div>';
                                     return tr;
                                 }
                             }
@@ -485,7 +486,10 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'id'},
+                            {
+                                data: 'id',
+                                visible: false
+                            },
                             {
                                 data: 'postage',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
@@ -495,17 +499,20 @@
                             {
                                 data: 'applyDate',
                                 render: function (data, type, full, meta) {
-                                    return moment(data).format("MM/YYYY");
+                                    if(data != null)
+                                        return moment(data).format("DD/MM/YYYY");
+                                    else
+                                        return "";
                                 }
                             },
                             {
                                 data: 'changeByFuel',
                                 render: function (data, type, full, meta) {
                                     var tr = "";
-                                    if (full.changeById == 0)
-                                        tr = "Thủ công";
+                                    if (full.changeByFuel == 0)
+                                        tr = "Nhập tay";
                                     else
-                                        tr = "Tự động"
+                                        tr = "Giá dầu tăng"
                                     return tr;
                                 }
                             }
@@ -631,6 +638,7 @@
                             customer_id: "required",
                             postage: "required"
                         },
+                        ignore: ".ignore",
                         messages: {
                             customer_id: "Vui lòng chọn khách hàng",
                             postage: "Vui lòng nhập cước phí"

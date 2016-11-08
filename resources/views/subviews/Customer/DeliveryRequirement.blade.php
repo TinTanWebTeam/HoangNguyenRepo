@@ -819,7 +819,19 @@
                             $("#customer_id").attr("data-customerId", '');
                         } else {
                             $("#customer_id").attr("data-customerId", customer.id);
+
+                            transportView.postDataPostageOfCustomer();
                         }
+                    });
+
+                    $("#receivePlace").focusout(function () {
+                        transportView.postDataPostageOfCustomer();
+                    });
+                    $("#deliveryPlace").focusout(function () {
+                        transportView.postDataPostageOfCustomer();
+                    });
+                    $("#receiveDate").focusout(function () {
+                        transportView.postDataPostageOfCustomer();
                     });
                 },
                 renderEventCheckbox: function(cb){
@@ -1584,13 +1596,27 @@
                     }
                 },
 
-                postDataPostageOfCustomer: function (customerId, receivePlace, deliveryPlace, createdDate) {
+                postDataPostageOfCustomer: function () {
+                    if($("#customer_id").attr('data-customerId') == '')
+                        return;
+                    if($("#receivePlace").val() == '')
+                        return;
+                    if($("#deliveryPlace").val() == '')
+                        return;
+                    if($("#receiveDate").val() == '')
+                        return;
+
+                    var customerId = $("#customer_id").attr('data-customerId');
+                    var receivePlace = $("#receivePlace").val().trim();
+                    var deliveryPlace = $("#deliveryPlace").val().trim();
+                    var receiveDate = $("#receiveDate").val();
+
                     var sendToServer = {
                         _token: _token,
-                        _customterId: customerId,
+                        _customerId: customerId,
                         _receivePlace: receivePlace,
                         _deliveryPlace: deliveryPlace,
-                        _createdDate: createdDate
+                        _receiveDate: receiveDate
                     };
                     $.ajax({
                         url: url + 'customer/postage',

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Cost;
 use App\CostPrice;
 use App\Customer;
 
@@ -10,8 +9,6 @@ use App\CustomerType;
 use App\InvoiceCustomer;
 use App\InvoiceCustomerDetail;
 use App\Postage;
-use App\PostageDetail;
-use App\Price;
 use App\Product;
 
 use App\StaffCustomer;
@@ -23,7 +20,6 @@ use DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-use App\Http\Requests;
 use League\Flysystem\Exception;
 
 class CustomerManagementController extends Controller
@@ -919,15 +915,17 @@ class CustomerManagementController extends Controller
         $customerId = $request->input('_customerId');
         $receivePlace = $request->input('_receivePlace');
         $deliveryPlace = $request->input('_deliveryPlace');
-        $createdDate = $request->input('_createdDate');
+        $receiveDate = $request->input('_receiveDate');
+        $receiveDate = Carbon::createFromFormat('d-m-Y', $receiveDate)->toDateString();
 
-        $postageDetail = PostageDetail::where([
+        $postageDetail = Postage::where([
             ['customer_id', $customerId],
             ['receivePlace', $receivePlace],
             ['deliveryPlace', $deliveryPlace]
         ])
-            ->where(\DB::raw('DATE(applyDate)'), '>', $createdDate)
-            ->orderBy('createdDate', 'desc')->first();
+            ->where(\DB::raw('DATE(applyDate)'), '<=', $receiveDate)
+            ->orderBy('applyDate', 'desc')->first();
+
         $postage = ($postageDetail == null) ? 0 : $postageDetail->postage;
 
         $response = [

@@ -19,31 +19,7 @@ class PostageManagementController extends Controller
 
     public function getDataPostage()
     {
-        $postageFiltered = DB::select("     
-            select p.*, customers.fullName as customers_fullName
-            from postages p
-            INNER JOIN customers ON customers.id = p.customer_id
-            INNER JOIN
-            (
-                select MAX(t.applyDate) as maxApplyDate, t.customer_id
-                from (select * from postages order by applyDate desc) as t
-                group by t.customer_id
-            ) as t1 ON p.customer_id = t1.customer_id AND t1.maxApplyDate = p.applyDate
-        ");
-
-        $postageFull = \DB::table('postages')
-            ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
-            ->select('postages.*', 'customers.fullName as customers_fullName')
-            ->get();
-
-        $fuels = \DB::table('fuels')->where('type', 'oil')->get();
-
-        $response = [
-            'msg'            => 'Get success',
-            'postageFull'    => $postageFull,
-            'postageFiltered'=> $postageFiltered,
-            'fuels'          => $fuels
-        ];
+        $response = $this->getData();
         return response()->json($response, 200);
     }
 
@@ -85,7 +61,7 @@ class PostageManagementController extends Controller
             $cashDelivery = $request->input('_postage')['cashDelivery'];
 
             $applyDate = $request->input('_postage')['applyDate'];
-            $applyDate = Carbon::createFromFormat('d-m-Y', $applyDate)->toDateTimeString();
+            $applyDate = Carbon::createFromFormat('d-m-Y', $applyDate);
 
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
@@ -124,30 +100,37 @@ class PostageManagementController extends Controller
                     return response()->json($response, 201);
                     break;
                 case 'update':
-                    $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
-                    $postageBase = ($postageOld) ? $postageOld->postage : 0;
+                    $maxApplyDate = Carbon::createFromFormat('Y-m-d', Postage::where('customer_id', $customer_id)->get()->max('applyDate'));
 
-                    //Add Postage
-                    $postageNew = new Postage();
-                    $postageNew->postage = $postage;
-                    $postageNew->postageBase = $postageBase;
-                    $postageNew->createdDate = $createdDate;
-                    $postageNew->applyDate = $applyDate;
-                    $postageNew->receivePlace = $receivePlace;
-                    $postageNew->deliveryPlace = $deliveryPlace;
-                    $postageNew->cashDelivery = $cashDelivery;
-                    $postageNew->note = $note;
-                    $postageNew->active = 1;
-                    $postageNew->createdBy = $createdBy;
-                    $postageNew->updatedBy = $updatedBy;
-                    $postageNew->customer_id = $customer_id;
-                    $postageNew->fuel_id = $fuel_id;
-                    $postageNew->changeByFuel = 0;
-                    if (!$postageNew->save()) {
-                        DB::rollBack();
-                        return response()->json(['msg' => 'Create Postage failed'], 404);
+                    if($maxApplyDate != null && $applyDate->diffInDays($maxApplyDate, false) < 0){
+                        $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
+                        $postageBase = ($postageOld) ? $postageOld->postage : 0;
+
+                        //Add Postage
+                        $postageNew = new Postage();
+                        $postageNew->postage = $postage;
+                        $postageNew->postageBase = $postageBase;
+                        $postageNew->createdDate = $createdDate;
+                        $postageNew->applyDate = $applyDate;
+                        $postageNew->receivePlace = $receivePlace;
+                        $postageNew->deliveryPlace = $deliveryPlace;
+                        $postageNew->cashDelivery = $cashDelivery;
+                        $postageNew->note = $note;
+                        $postageNew->active = 1;
+                        $postageNew->createdBy = $createdBy;
+                        $postageNew->updatedBy = $updatedBy;
+                        $postageNew->customer_id = $customer_id;
+                        $postageNew->fuel_id = $fuel_id;
+                        $postageNew->changeByFuel = 0;
+                        if (!$postageNew->save()) {
+                            DB::rollBack();
+                            return response()->json(['msg' => 'Create Postage failed'], 404);
+                        }
+                        DB::commit();
+                    } else {
+                        return response()->json(['msg' => 'ApplyDate error'], 404);
                     }
-                    DB::commit();
+
                     //Response
                     $response = $this->getData();
                     return response()->json($response, 201);
@@ -172,9 +155,9 @@ class PostageManagementController extends Controller
             INNER JOIN customers ON customers.id = p.customer_id
             INNER JOIN
             (
-                select MAX(t.applyDate) as maxApplyDate, t.customer_id
+                select MAX(t.applyDate) as maxApplyDate, t.customer_id, t.receivePlace, t.deliveryPlace
                 from (select * from postages order by applyDate desc) as t
-                group by t.customer_id
+                group by t.customer_id, t.receivePlace, t.deliveryPlace
             ) as t1 ON p.customer_id = t1.customer_id AND t1.maxApplyDate = p.applyDate
         ");
 
