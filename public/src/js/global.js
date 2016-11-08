@@ -267,6 +267,17 @@ function renderAutoCompleteSearch(inputId, dataSource) {
     });
 }
 
+var arrayDataTable = [];
+function pushDataTable(tableName){
+    arrayDataTable.push(tableName);
+}
+
+function removeDataTable(){
+    for(table in arrayDataTable){
+        table.destroy();
+    }
+}
+
 
 
 

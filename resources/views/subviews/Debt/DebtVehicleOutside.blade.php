@@ -652,6 +652,9 @@
                                 }
                             }
                         ],
+                        fixedHeader: {
+                            header: true
+                        },
                         dom: 'T<"clear">Bfrtip',
                         tableTools: {
                             "sRowSelect": "multi",
@@ -848,6 +851,8 @@
                 },
 
                 loadData: function () {
+                    if(transportView.table != null)
+                        transportView.table.destroy();
                     $.ajax({
                         url: url + 'debt-garage/transports',
                         type: "GET",
@@ -887,6 +892,8 @@
                     defaultZero("#VAT");
                     defaultZero("#hasVAT");
                     defaultZero("#paidAmt");
+
+
                 },
                 fillCurrentObjectToForm: function () {
                     $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);

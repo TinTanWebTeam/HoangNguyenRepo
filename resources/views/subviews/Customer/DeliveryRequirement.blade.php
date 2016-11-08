@@ -1043,6 +1043,8 @@
                 },
 
                 fillDataToDatatable: function (data) {
+                    removeDataTable();
+
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
                         data[i].cashProfit_real = parseInt(data[i]['cashReceive']) - (parseInt(data[i]['cashPreDelivery']) + parseInt(data[i]['cost']));
@@ -1196,6 +1198,8 @@
                         ]
                     });
                     $("#table-data").css("width", "auto");
+
+                    pushDataTable(transportView.table);
                 },
                 fillCurrentObjectToForm: function () {
                     $("input[id='vehicle_id']").val(transportView.current["vehicles_areaCode"] + '-' + transportView.current["vehicles_vehicleNumber"]);

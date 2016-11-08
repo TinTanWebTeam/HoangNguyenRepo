@@ -691,7 +691,6 @@
                                     showNotification("success", "Thêm thành công!");
                                     break;
                                 case 'update':
-                                    debugger;
                                     postageView.dataPostageFiltered = data['postageFiltered'];
                                     postageView.dataPostage = data['postageFull'];
                                     postageView.fillDataToDatatable(postageView.dataPostageFiltered);
