@@ -70,6 +70,7 @@ class FuelManagementController extends Controller
                         foreach ($postagesToChange as $postage) {
                             $postageReference = Postage::where('receivePlace',$postage->receivePlace)
                                 ->where('deliveryPlace',$postage->deliveryPlace)
+                                ->where('customer_id',$customer->id)
                                 ->orderBy('applyDate','desc')
                                 ->first();
                             $postageNew = new Postage();
