@@ -598,17 +598,21 @@
                 },
 
                 fillDataToDatatable: function (data) {
+                    removeDataTable();
+
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
                         data[i].debt = data[i]['cashRevenue'] - data[i]['cashReceive'];
                         data[i].cashProfit_real = parseInt(data[i]['cashReceive']) - (parseInt(data[i]['cashPreDelivery']) + parseInt(data[i]['cost']));
                     }
-
                     debtCustomerView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'id'},
+                            {
+                                data: 'id',
+                                visible: false
+                            },
                             {data: 'customers_fullName'},
                             {data: 'invoiceCode'},
                             {data: 'fullNumber'},
@@ -653,6 +657,9 @@
                                 }
                             }
                         ],
+                        fixedHeader: {
+                            header: true
+                        },
                         dom: 'T<"clear">Bfrtip',
                         tableTools: {
                             "sRowSelect": "multi",
@@ -699,7 +706,10 @@
                                 text: 'Ẩn cột'
                             }
                         ]
-                    })
+                    });
+                    $("#table-data").css("width", "auto");
+
+                    pushDataTable(debtCustomerView.table);
                 },
                 fillDataToDatatableInvoiceCustomer: function (data) {
                     for (var i = 0; i < data.length; i++) {

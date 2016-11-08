@@ -840,8 +840,8 @@
                             transportView.dataVoucher = data['vouchers'];
                             transportView.dataStatus = data['statuses'];
                             transportView.loadSelectBox(transportView.dataStatus, 'status_transport', 'status');
-                            transportView.dataCostPrice = data['costPrices'];
-                            transportView.loadSelectBox(transportView.dataCostPrice, 'costPrices_id', 'name');
+//                            transportView.dataCostPrice = data['costPrices'];
+//                            transportView.loadSelectBox(transportView.dataCostPrice, 'costPrices_id', 'name');
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1053,7 +1053,10 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'id'},
+                            {
+                                data: 'id',
+                                visible: false
+                            },
                             {data: 'fullNumber'},
                             {data: 'products_name'},
                             {data: 'receivePlace'},

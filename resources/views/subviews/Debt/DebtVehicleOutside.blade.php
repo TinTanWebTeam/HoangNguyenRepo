@@ -598,16 +598,20 @@
                 },
 
                 fillDataToDatatable: function (data) {
+                    removeDataTable();
+
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
                         data[i].debt = parseInt(data[i]['cashDelivery']) - parseInt(data[i]['cashPreDelivery']);
                     }
-
                     debtGarageView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'id'},
+                            {
+                                data: 'id',
+                                visible: false
+                            },
                             {data: 'garages_name'},
                             {data: 'invoiceCode'},
                             {data: 'fullNumber'},
@@ -702,7 +706,9 @@
                             }
                         ]
                     });
-                    $("#table-data").css("width", "100%");
+                    $("#table-data").css("width", "auto");
+
+                    pushDataTable(debtGarageView.table);
                 },
                 fillDataToDatatableInvoiceGarage: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -851,8 +857,8 @@
                 },
 
                 loadData: function () {
-                    if(transportView.table != null)
-                        transportView.table.destroy();
+                    if(debtGarageView.table != null)
+                        debtGarageView.table.destroy();
                     $.ajax({
                         url: url + 'debt-garage/transports',
                         type: "GET",

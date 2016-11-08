@@ -273,9 +273,10 @@ function pushDataTable(tableName){
 }
 
 function removeDataTable(){
-    for(table in arrayDataTable){
-        table.destroy();
-    }
+    if(arrayDataTable.length != 0)
+        for(var i = 0; i< arrayDataTable.length; i++){
+            arrayDataTable[i].destroy();
+        }
 }
 
 
