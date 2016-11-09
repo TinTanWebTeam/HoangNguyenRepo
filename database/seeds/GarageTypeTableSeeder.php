@@ -12,7 +12,7 @@ class GarageTypeTableSeeder extends Seeder
     public function run()
     {
         $array_name = [
-            'Nhà xe trong',
+            'Nhà xe công ty',
             'Nhà xe ngoài'
         ];
 

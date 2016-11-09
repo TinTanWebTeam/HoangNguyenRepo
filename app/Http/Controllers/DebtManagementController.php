@@ -24,19 +24,22 @@ class DebtManagementController extends Controller
     public function getDataDebtCustomer()
     {
         $transports = \DB::table('transports')
-            ->select('transports.*', 'products.name as products_name',
-                'customers.id as customers_id', 'customers.fullName as customers_fullName',
-                'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
-                'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
+            ->select('transports.*',
+                'products.name as products_name',
+                'customers.fullName as customers_fullName',
+                'vehicles.areaCode as vehicles_areaCode',
+                'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                'costs.cost', 'costs.note as costs_note',
                 'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
-                'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                'statuses_tran.status as status_transport_',
+                'statuses_cust.status as status_customer_',
                 'statuses_gar.status as status_garage_',
                 'invoiceCustomers.invoiceCode'
             )
-            ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-            ->leftJoin('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
+            ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+            ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
             ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
             ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
@@ -90,27 +93,33 @@ class DebtManagementController extends Controller
 
             if ($transportUpdate->update()) {
                 //Response
-                $transport = DB::table('transports')
-                    ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
-                        'customers.id as customers_id', 'customers.fullName as customers_fullName',
-                        'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
-                        'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
+                $transport = \DB::table('transports')
+                    ->select('transports.*',
+                        'products.name as products_name',
+                        'customers.fullName as customers_fullName',
+                        'vehicles.areaCode as vehicles_areaCode',
+                        'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                        'costs.cost', 'costs.note as costs_note',
                         'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
-                        'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                        'statuses_tran.status as status_transport_',
+                        'statuses_cust.status as status_customer_',
                         'statuses_gar.status as status_garage_',
                         'invoiceCustomers.invoiceCode'
                     )
-                    ->join('costs', 'costs.transport_id', '=', 'transports.id')
-                    ->join('products', 'products.id', '=', 'transports.product_id')
-                    ->join('customers', 'customers.id', '=', 'transports.customer_id')
-                    ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                    ->join('prices', 'prices.id', '=', 'costs.price_id')
-                    ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-                    ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-                    ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-                    ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                    ->leftJoin('products', 'products.id', '=', 'transports.product_id')
+                    ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+                    ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
+                    ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
+                    ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+                    ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+                    ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+                    ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
                     ->leftJoin('invoiceCustomers', 'invoiceCustomers.id', '=', 'transports.invoiceCustomer_id')
-                    ->where('transports.id', '=', $transportUpdate->id)
+                    ->where([
+                        ['transports.active', '=', 1],
+                        ['transports.id', '=', $transportUpdate->id]
+                    ])
                     ->first();
 
                 $response = [
@@ -206,8 +215,8 @@ class DebtManagementController extends Controller
                 DB::commit();
 
                 $invoiceCustomer = DB::table('invoiceCustomers')
-                    ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
-                    ->join('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->leftJoin('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                    ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
                     ->where([
                         ['invoiceCustomers.id', '=', $invoiceCustomer->id],
                         ['invoiceCustomers.active', '=', '1']
@@ -268,8 +277,8 @@ class DebtManagementController extends Controller
                 DB::commit();
 
                 $invoiceCustomer = DB::table('invoiceCustomers')
-                    ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
-                    ->join('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->leftJoin('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                    ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
                     ->where([
                         ['invoiceCustomers.id', '=', $invoiceCustomer->id],
                         ['invoiceCustomers.active', '=', '1']
@@ -445,43 +454,48 @@ class DebtManagementController extends Controller
     public function getDataDebtGarage()
     {
         $transports = \DB::table('transports')
-            ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
-                'customers.id as customers_id', 'customers.fullName as customers_fullName',
-                'garages.id as garages_id', 'garages.name as garages_name',
-                'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
-                'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
+            ->select('transports.*',
+                'products.name as products_name',
+                'customers.fullName as customers_fullName',
+                'garages.name as garages_name',
+                'vehicles.areaCode as vehicles_areaCode',
+                'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                'costs.cost', 'costs.note as costs_note',
                 'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                 'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
                 'statuses_gar.status as status_garage_',
                 'invoiceGarages.invoiceCode'
             )
-            ->join('costs', 'costs.transport_id', '=', 'transports.id')
-            ->join('products', 'products.id', '=', 'transports.product_id')
-            ->join('customers', 'customers.id', '=', 'transports.customer_id')
-            ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-            ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
-            ->join('prices', 'prices.id', '=', 'costs.price_id')
-            ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-            ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-            ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-            ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+            ->leftJoin('products', 'products.id', '=', 'transports.product_id')
+            ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+            ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+            ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
+            ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
+            ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
+            ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+            ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+            ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+            ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
             ->leftJoin('invoiceGarages', 'invoiceGarages.id', '=', 'transports.invoiceGarage_id')
-//            ->whereRaw('transports.cashReceive < transports.cashRevenue')
             ->where([
-                ['transports.active', '=', '1'],
-                ['garages.id', '<>', '1']
+                ['transports.active', '=', 1],
+                ['transports.product_id', '<>', 0],
+                ['transports.vehicle_id', '<>', 0],
+                ['transports.customer_id', '<>', 0]
             ])
             ->get();
 
         $invoiceGarages = DB::table('invoiceGarages')
             ->select('invoiceGarages.*', 'garages.name as garages_name')
-            ->join('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
-            ->join('costs', 'costs.transport_id', '=', 'transports.id')
-            ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-            ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
+            ->leftJoin('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
+            ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+            ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
             ->where([
-                ['invoiceGarages.active', '=', '1'],
-                ['garages.id', '<>', '1']
+                ['invoiceGarages.active', 1],
+                ['transports.active', '=', 1],
+                ['transports.product_id', '<>', 0],
+                ['transports.vehicle_id', '<>', 0],
+                ['transports.customer_id', '<>', 0]
             ])
             ->get();
 
@@ -489,7 +503,7 @@ class DebtManagementController extends Controller
             ->get();
 
         $printHistories = DB::table('printHistories')
-            ->join('users', 'users.id', '=', 'printHistories.updatedBy')
+            ->leftJoin('users', 'users.id', '=', 'printHistories.updatedBy')
             ->select('printHistories.*', 'users.fullName as users_fullName')
             ->get();
 
@@ -522,30 +536,34 @@ class DebtManagementController extends Controller
             if ($transportUpdate->update()) {
                 //Response
                 $transport = \DB::table('transports')
-                    ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
-                        'customers.id as customers_id', 'customers.fullName as customers_fullName',
-                        'garages.id as garages_id', 'garages.name as garages_name',
-                        'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
-                        'vehicles.vehicleNumber as vehicles_vehicleNumber', 'costs.cost', 'costs.note as costs_note',
+                    ->select('transports.*',
+                        'products.name as products_name',
+                        'customers.fullName as customers_fullName',
+                        'garages.name as garages_name',
+                        'vehicles.areaCode as vehicles_areaCode',
+                        'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                        'costs.cost', 'costs.note as costs_note',
                         'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                         'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
                         'statuses_gar.status as status_garage_',
                         'invoiceGarages.invoiceCode'
                     )
-                    ->join('costs', 'costs.transport_id', '=', 'transports.id')
-                    ->join('products', 'products.id', '=', 'transports.product_id')
-                    ->join('customers', 'customers.id', '=', 'transports.customer_id')
-                    ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                    ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
-                    ->join('prices', 'prices.id', '=', 'costs.price_id')
-                    ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-                    ->join('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-                    ->join('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-                    ->join('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                    ->leftJoin('products', 'products.id', '=', 'transports.product_id')
+                    ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+                    ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
+                    ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
+                    ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
+                    ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+                    ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+                    ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+                    ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
                     ->leftJoin('invoiceGarages', 'invoiceGarages.id', '=', 'transports.invoiceGarage_id')
                     ->where([
-                        ['transports.active', '=', '1'],
-                        ['garages.id', '<>', '1'],
+                        ['transports.active', '=', 1],
+                        ['transports.product_id', '<>', 0],
+                        ['transports.vehicle_id', '<>', 0],
+                        ['transports.customer_id', '<>', 0],
                         ['transports.id', '=', $transportUpdate->id]
                     ])
                     ->first();
@@ -644,14 +662,17 @@ class DebtManagementController extends Controller
 
                 $invoiceGarage = DB::table('invoiceGarages')
                     ->select('invoiceGarages.*', 'garages.name as garages_name')
-                    ->join('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
-                    ->join('costs', 'costs.transport_id', '=', 'transports.id')
-                    ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                    ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
+                    ->leftJoin('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+                    ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
                     ->where([
-                        ['invoiceGarages.active', '=', '1'],
-                        ['garages.id', '<>', '1'],
+                        ['invoiceGarages.active', '=', 1],
                         ['invoiceGarages.id', '=', $invoiceGarage->id],
+                        ['garages.id', '<>', 1],
+                        ['transports.active', '=', 1],
+                        ['transports.product_id', '<>', 0],
+                        ['transports.vehicle_id', '<>', 0],
+                        ['transports.customer_id', '<>', 0]
                     ])
                     ->first();
 
@@ -709,14 +730,17 @@ class DebtManagementController extends Controller
 
                 $invoiceGarage = DB::table('invoiceGarages')
                     ->select('invoiceGarages.*', 'garages.name as garages_name')
-                    ->join('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
-                    ->join('costs', 'costs.transport_id', '=', 'transports.id')
-                    ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                    ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
+                    ->leftJoin('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+                    ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
                     ->where([
-                        ['invoiceGarages.active', '=', '1'],
-                        ['garages.id', '<>', '1'],
+                        ['invoiceGarages.active', '=', 1],
                         ['invoiceGarages.id', '=', $invoiceGarage->id],
+                        ['garages.id', '<>', 1],
+                        ['transports.active', '=', 1],
+                        ['transports.product_id', '<>', 0],
+                        ['transports.vehicle_id', '<>', 0],
+                        ['transports.customer_id', '<>', 0]
                     ])
                     ->first();
 
@@ -822,14 +846,17 @@ class DebtManagementController extends Controller
                 //Response
                 $invoiceGarage = DB::table('invoiceGarages')
                     ->select('invoiceGarages.*', 'garages.name as garages_name')
-                    ->join('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
-                    ->join('costs', 'costs.transport_id', '=', 'transports.id')
-                    ->join('vehicles', 'vehicles.id', '=', 'costs.vehicle_id')
-                    ->join('garages', 'garages.id', '=', 'vehicles.garage_id')
+                    ->leftJoin('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+                    ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
                     ->where([
-                        ['invoiceGarages.active', '=', '1'],
-                        ['garages.id', '<>', '1'],
+                        ['invoiceGarages.active', '=', 1],
                         ['invoiceGarages.id', '=', $invoiceGarage->id],
+                        ['garages.id', '<>', 1],
+                        ['transports.active', '=', 1],
+                        ['transports.product_id', '<>', 0],
+                        ['transports.vehicle_id', '<>', 0],
+                        ['transports.customer_id', '<>', 0]
                     ])
                     ->first();
 

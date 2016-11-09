@@ -35,7 +35,7 @@
                     <ol class="breadcrumb">
                         <li><a href="javascript:;">Trang chủ</a></li>
                         <li><a href="javascript:;">QL công nợ</a></li>
-                        <li class="active">Nhà xe ngoài</li>
+                        <li class="active">Nhà xe</li>
                     </ol>
                     <div class="menu-toggle pull-right fixed">
                         <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn"
@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="ui-widget">
-                                <input type="text" class="form-control" id="garaName_transport" name="garaName_transport" placeholder="Nhập tên nhà xe ngoài">
+                                <input type="text" class="form-control" id="garaName_transport" name="garaName_transport" placeholder="Nhập tên nhà xe">
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                                     <label for="statusMoney" class="form-control">Trạng thái:</label>
                                 </div>
                                 <div class="col-md-5">
-                                    <select class="form-control" id="statusMoney" onchange="debtGarageView.searchTransport(this)">
+                                    <select class="form-control" id="statusMoney" onchange="debtGarageView.searchTransport(this); debtGarageView.selectAll()">
                                         <option value="All">Tất cả</option>
                                         <option value="NotPay">Chưa trả</option>
                                         <option value="PrePay">Trả trước</option>
@@ -97,7 +97,7 @@
                                 <div class="col-md-4">
                                     <div class="radio">
                                         <button id="btnSearchTransport" class="btn btn-sm btn-info marginRight"
-                                                onclick="debtGarageView.searchTransport();$('#ToolTables_table-data_0').click()">
+                                                onclick="debtGarageView.searchTransport();debtGarageView.selectAll()">
                                             <i class="fa fa-search" aria-hidden="true"></i> Tìm
                                         </button>
                                         <button class="btn btn-sm btn-default" onclick="debtGarageView.clearSearch('transport');$('#ToolTables_table-data_1').click()">
@@ -115,7 +115,7 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
-                                        <th>Nhà xe ngoài</th>
+                                        <th>Nhà xe</th>
                                         <th>Mã HĐ</th>
                                         <th>Số xe</th>
                                         <th>Nơi giao</th>
@@ -138,14 +138,14 @@
 
 
                     <hr>
-                    <p class="lead text-primary text-left"><strong>Hóa đơn nhà xe ngoài</strong></p>
+                    <p class="lead text-primary text-left"><strong>Hóa đơn nhà xe</strong></p>
                     <div class="row">
                         <div class="col-md-6" id="dateSearchInvoice">
                             <input type="text" class="date start"/> đến
                             <input type="text" class="date end"/>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="garaName_invoice" name="garaName_transport" placeholder="Nhập tên nhà xe ngoài">
+                            <input type="text" class="form-control" id="garaName_invoice" name="garaName_transport" placeholder="Nhập tên nhà xe">
                         </div>
                     </div>
                     <div class="row">
@@ -177,7 +177,7 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
-                                        <th>Nhà xe ngoài</th>
+                                        <th>Nhà xe</th>
                                         <th>Mã HĐ</th>
                                         <th>Ngày xuất</th>
                                         <th>Ngày HĐ</th>
@@ -534,12 +534,7 @@
                 renderEventRadioInput: function() {
                     $('input[type="radio"][name=rdoTransport]').on('change', function(e) {
                         debtGarageView.searchTransport(e.currentTarget.defaultValue);
-
-                        //                    if(e.currentTarget.defaultValue == 'All'){
-                        //                        $('.menu-toggle').fadeOut();
-                        //                    } else {
-                        //                        $('.menu-toggle').fadeIn();
-                        //                    }
+                        debtGarageView.selectAll();
                     });
 
                     $('input[type="radio"][name=rdoInvoice]').on('change', function(e) {
@@ -572,17 +567,17 @@
                     $("#table-data").find("tbody").on('click', 'tr td', function () {
                         var td = $(this);
                         var tr = $(this).parent();
-                        if(tr.find('td:eq(1)').text() == td.text()){
+                        if(tr.find('td:eq(0)').text() == td.text()){
                             $("input[id=garaName_transport]").val(td.text());
                             debtGarageView.searchTransport();
-                            $('#ToolTables_table-data_0').click();
+                            debtGarageView.selectAll();
                         }
                     });
 
                     $("#table-garageInvoice").find("tbody").on('click', 'tr td', function () {
                         var td = $(this);
                         var tr = $(this).parent();
-                        if(tr.find('td:eq(1)').text() == td.text()){
+                        if(tr.find('td:eq(0)').text() == td.text()){
                             $("input[id=garaName_invoice]").val(td.text());
                             debtGarageView.searchInvoice();
                         }
@@ -601,7 +596,7 @@
                     removeDataTable();
 
                     for (var i = 0; i < data.length; i++) {
-                        data[i].fullNumber = data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+                        data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
                         data[i].debt = parseInt(data[i]['cashDelivery']) - parseInt(data[i]['cashPreDelivery']);
                     }
                     debtGarageView.table = $('#table-data').DataTable({
@@ -718,7 +713,10 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'id'},
+                            {
+                                data: 'id',
+                                visible: false
+                            },
                             {data: 'garages_name'},
                             {data: 'invoiceCode'},
                             {
@@ -879,7 +877,6 @@
                             debtGarageView.invoiceCode = data['invoiceCode'];
 
                             debtGarageView.searchTransport();
-                            debtGarageView.deselectAll();
                             debtGarageView.searchInvoice();
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -1327,7 +1324,7 @@
                     debtGarageView.array_transportId = [];
                     debtGarageView.array_transportId = _.map(array, 'id');
 
-                    array_garageId = _.map(array, 'garages_id');
+                    array_garageId = _.map(array, 'garage_id');
                     array_garageId = _.uniq(array_garageId);
 
                     array_invoiceCode = _.map(array, 'invoiceCode');
@@ -1453,6 +1450,7 @@
                                     debtGarageView.dataSearch = [];
                                     debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
                                     debtGarageView.tagsGarageNameTransport = [];
+                                    debtGarageView.searchTransport();
 
                                     debtGarageView.dataSearchInvoiceGarage = debtGarageView.dataInvoiceGarage;
                                     debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataSearchInvoiceGarage).draw();
@@ -1552,8 +1550,6 @@
 
                     debtGarageView.dataSearch = found;
                     debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
-
-                    debtGarageView.selectAll();
 
                     //fill data to listSearch
                     debtGarageView.tagsGarageNameTransport = _.map(debtGarageView.dataSearch, 'garages_name');
