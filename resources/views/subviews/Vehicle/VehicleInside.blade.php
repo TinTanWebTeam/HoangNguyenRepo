@@ -165,14 +165,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{--<div class="row">--}}
-                            {{--<div class="col-md-12 col-sm-12">--}}
-                                {{--<div class="form-group form-md-line-input">--}}
-                                    {{--<label for="driver"><b>Tài xế</b></label>--}}
-                                    {{--<input type="text" class="form-control" id="driver" name="driver">--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-actions noborder">
@@ -367,7 +359,7 @@
                 action: null,
                 idDelete: null,
                 dataDrivers: null,
-                tagsGarageName: [],
+                tagsGarageName: null,
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -449,11 +441,6 @@
                         theme: "dark"
                     });
                 },
-                renderAutoCompleteSearch: function () {
-                    $("#garages_name").autocomplete({
-                        source: vehicleInsideView.tagsGarageName
-                    });
-                },
                 renderEventFocusOut: function () {
                     $("#garages_name").focusout(function () {
                         var garageName = this.value;
@@ -481,6 +468,8 @@
                             vehicleInsideView.tableVehicleType = data['vehicleTypes'];
                             vehicleInsideView.loadSelectBox(data['vehicleTypes']);
                             vehicleInsideView.dataDrivers = data['drivers'];
+                            vehicleInsideView.tagsGarageName = data['garages'];
+                            vehicleInsideView.renderAutoCompleteSearch();
 
                         } else {
                             vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -488,19 +477,22 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
-                    vehicleInsideView.loadListGarage();
                     vehicleInsideView.renderEventFocusOut();
                     vehicleInsideView.renderEventClickTableModal();
                     vehicleInsideView.renderScrollbar();
-                    vehicleInsideView.renderAutoCompleteSearch();
                 },
-                renderAutoCompleteSearch: function(){
+                renderAutoCompleteSearch: function () {
                     var nameDriver = _.map(vehicleInsideView.dataDrivers, function (o) {
                         return o.fullName;
                     });
-                    $( "#driver" ).autocomplete({
+                    var GarageName = _.map(vehicleInsideView.tagsGarageName, function (o) {
+                        return o.name;
+                    });
+                    $("#driver").autocomplete({
                         source: nameDriver
+                    });
+                    $("#garages_name").autocomplete({
+                        source: GarageName
                     });
                 },
                 localSearch: function () {
@@ -524,24 +516,6 @@
                         el.value = lstVehicleType[i]['id'];
                         select.appendChild(el);
                     }
-                },
-                loadListGarage: function () {
-                    $.ajax({
-                        url: url + 'vehicle-outside/garages',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            vehicleInsideView.dataGarage = data['garages'];
-                            vehicleInsideView.tagsGarageName = _.map(vehicleInsideView.dataGarage, 'name');
-                            vehicleInsideView.tagsGarageName = _.union(vehicleInsideView.tagsGarageName);
-                            vehicleInsideView.renderAutoCompleteSearch();
-                        } else {
-                            garageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        garageView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {

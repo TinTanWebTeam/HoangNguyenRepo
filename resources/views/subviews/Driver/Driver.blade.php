@@ -365,15 +365,11 @@
 
                 },
                 fillDataToDatatable: function (data) {
-
-
                     for (var i = 0; i < data.length; i++) {
-                        console.log(data[i]['id']);
                         data[i].fullNumber = data[i]['areaCode'] + "-" + data[i]['vehicleNumber'];
-                        if (data[i]['areaCode'] == "") {
-                            data[i].fullNumber = 'chua co';
+                        if (data[i].fullNumber == '') {
+                            return '';
                         }
-                        console.log(data[i].fullNumber);
                     }
 
                     driverView.table = $('#table-data').DataTable({
@@ -397,7 +393,9 @@
                                 }
                             },
                             {data: 'governmentId'},
-                            {data: 'fullNumber'},
+                            {
+                                data: 'fullNumber'
+                            },
                             {data: 'vehicle_types'},
                             {data: 'garage'},
                             {data: 'garageTypes'},

@@ -24,6 +24,7 @@ class VehicleManagementController extends Controller
     {
         $vehicleTypes = VehicleType::all();
         $driver = Driver::all();
+        $garages = Garage::all();
         $vehicles = \DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
@@ -37,7 +38,8 @@ class VehicleManagementController extends Controller
             'msg'          => 'Get data vehicle success',
             'vehicles'     => $vehicles,
             'vehicleTypes' => $vehicleTypes,
-            'drivers'      => $driver
+            'drivers'      => $driver,
+            'garages'      => $garages
         ];
         return response()->json($response, 200);
     }
