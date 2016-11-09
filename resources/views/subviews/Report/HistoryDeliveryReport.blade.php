@@ -122,9 +122,9 @@
                 tableDeliveryMonth: null,
                 tableOptionYear: null,
                 current: null,
-                clearInput:function () {
-                     $('input[id=dateStart]').val('');
-                     $('input[id=dateEnd]').val('');
+                clearInput: function () {
+                    $('input[id=dateStart]').val('');
+                    $('input[id=dateEnd]').val('');
                 },
                 loadData: function () {
                     $.ajax({
@@ -144,14 +144,11 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         historyDeliveryReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-
                     historyDeliveryReportView.table = $('#table-data').DataTable({
                         language: languageOptions
                     });
-
                     historyDeliveryReportView.loadChart();
                     historyDeliveryReportView.renderDateTimePicker();
-
                     $("#table-data-year").find("tbody").on('click', 'tr', function () {
                         var month = $(this).find('td:eq(0)')[0].innerText;
                         historyDeliveryReportView.loadDetailDelivery(month);
@@ -196,19 +193,22 @@
                         columns: [
                             {data: 'fullName'},
                             {data: 'total_delivery'},
-                            {data: 'total_Revenue',
+                            {
+                                data: 'total_Revenue',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
-                            {data: 'total_Receive',
+                            {
+                                data: 'total_Receive',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
-                            {data: 'total_debt',
+                            {
+                                data: 'total_debt',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             }
 
                         ]
 
-                    })
+                    });
                 },
                 showNotification: function (type, msg) {
                     switch (type) {
@@ -293,8 +293,8 @@
                 },
                 selectYearNow: function () {
                     var yearNow = moment().year();
-                    yearOption = _.find( historyDeliveryReportView.tableOptionYear, function (o) {
-                        return  moment(o.receiveDate).format("YYYY") == yearNow;
+                    yearOption = _.find(historyDeliveryReportView.tableOptionYear, function (o) {
+                        return moment(o.receiveDate).format("YYYY") == yearNow;
                     });
                     if (typeof yearOption === 'undefined')
                         return;
@@ -346,14 +346,14 @@
 
                                 ]
 
-                            })
+                            });
                 },
                 searchDateToDate: function () {
                     var dateStart = $('input[id=dateStart]').val();
                     var dateEnd = $('input[id=dateEnd]').val();
-                    if(dateStart == "" || dateEnd == "" ){
+                    if (dateStart == "" || dateEnd == "") {
                         historyDeliveryReportView.showNotification("warning", "Vui lòng chọn ngày cần tìm !");
-                    }else {
+                    } else {
                         var sendToServer = null;
                         sendToServer = {
                             _token: _token,
