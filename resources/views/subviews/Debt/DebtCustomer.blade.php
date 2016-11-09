@@ -121,7 +121,6 @@
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
                                         <th>Doanh thu</th>
-                                        <th>Lợi nhuận<br>thực tế</th>
                                         <th>Nợ</th>
                                         <th>Người nhận</th>
                                         <th>Ngày nhận</th>
@@ -572,7 +571,17 @@
                     $("#table-data").find("tbody").on('click', 'tr td', function () {
                         var td = $(this);
                         var tr = $(this).parent();
-                        if(tr.find('td:eq(1)').text() == td.text()){
+                        var transportId = $(tr).find('td').last().find('div.text-center').attr('data-transportId');
+
+                        var transport = _.find(debtCustomerView.dataTransport, function(o){
+                            return o.id == transportId;
+                        });
+                        if(typeof transport === 'undefined')
+                            return;
+                        if(transport.transportType === 1)
+                            return;
+
+                        if(tr.find('td:eq(0)').text() == td.text()){
                             $("input[id=custName_transport]").val(td.text());
                             debtCustomerView.searchTransport();
                             $('#ToolTables_table-data_0').click();
@@ -599,12 +608,18 @@
 
                 fillDataToDatatable: function (data) {
                     removeDataTable();
-
                     for (var i = 0; i < data.length; i++) {
-                        data[i].fullNumber = data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+                        if(data[i]['transportType'] === 1){
+                            data[i].fullNumber = data[i]['vehicle_name'];
+                            data[i].products_name = data[i]['product_name'];
+                            data[i].customers_fullName = data[i]['customer_name'];
+                        } else {
+                            var fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                            data[i].fullNumber = fullNumber;
+                        }
                         data[i].debt = data[i]['cashRevenue'] - data[i]['cashReceive'];
-                        data[i].cashProfit_real = parseInt(data[i]['cashReceive']) - (parseInt(data[i]['cashPreDelivery']) + parseInt(data[i]['cost']));
                     }
+
                     debtCustomerView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -620,10 +635,6 @@
                             {data: 'voucherNumber'},
                             {
                                 data: 'cashRevenue',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
-                            },
-                            {
-                                data: 'cashProfit_real',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
@@ -648,7 +659,7 @@
                                         color = 'btn-primary';
 
                                     var tr = '';
-                                    tr += '<div class="text-center">';
+                                    tr += '<div class="text-center" data-transportId="'+full.id+'">';
                                     tr += "<div class='btn btn-circle "+color+"' title='Trả đủ' onclick='debtCustomerView.autoEditTransportConfirm("+full.id+")'>";
                                     tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                     tr += '</div>';
@@ -950,6 +961,7 @@
                         debtCustomerView.showControl(flag);
                         debtCustomerView.action = "new";
                         prePaid = 0; totalPay = 0;
+                        console.log(debtCustomerView.array_transportId);
                         for(i = 0; i < debtCustomerView.array_transportId.length; i++ ){
                             currentRow = _.find(debtCustomerView.dataTransport, function(o){
                                 return o.id == debtCustomerView.array_transportId[i];
@@ -1595,7 +1607,10 @@
                         return data;
 
                     found = _.filter(data, function(o){
-                        return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                        if(o.customers_fullName == null)
+                            return false;
+                        else
+                            return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
                     });
                     return found;
                 },

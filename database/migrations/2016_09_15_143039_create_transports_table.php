@@ -45,6 +45,9 @@ class CreateTransportsTable extends Migration
             $table->decimal('parking')->default(0)->comment('Neo đêm');
             $table->decimal('fine')->default(0)->comment('Công an');
             $table->boolean('transportType')->default(0)->comment('Loại đơn hàng');
+            $table->string('vehicle_name')->nullable()->comment('Số xe cho đơn hàng khống');;
+            $table->string('product_name')->nullable()->comment('Sản phẩm cho đơn hàng khống');
+            $table->string('customer_name')->nullable()->comment('Khách hàng cho đơn hàng khống');
             $table->timestamps();
         });
     }

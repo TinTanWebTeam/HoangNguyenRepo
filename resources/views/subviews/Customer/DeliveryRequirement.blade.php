@@ -670,7 +670,7 @@
                 tagsProductName: [],
                 tagsCustomerName: [],
                 tagsVehicleName: [],
-                transportType: false,
+                transportType: 0,
 
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -696,13 +696,10 @@
                 clearInput: function () {
                     $("input[id='vehicle_id']").val('');
                     $("#vehicle_id").attr("data-vehicleId", "");
-
                     $("input[id='customer_id']").val('');
                     $("#customer_id").attr("data-customerId", "");
-
                     $("input[id='product_name']").val('');
                     $("#product_name").attr("data-productId", "");
-
                     $("input[id='quantumProduct']").val('');
                     $("input[id='weight']").val('');
                     $("input[id='cashRevenue']").val(0);
@@ -715,12 +712,14 @@
                     $("input[id='voucherNumber']").val('');
                     $("input[id='voucherQuantumProduct']").val('');
                     $("textarea[id='note']").val('');
-
                     $("input[id='voucher_transport']").val('');
                     $("input[id='voucher_transport']").attr("voucher_transport", "");
-
                     $("input[id='cost']").val(0);
-                    $("textarea[id='costs_note']").val('');
+                    $("input[id=carrying]").val(0);
+                    $("input[id=parking]").val(0);
+                    $("input[id=fine]").val(0);
+                    $("textarea[id=costNote]").val('');
+                    $("input[id=transportType]").attr('checked', false);
 
                     transportView.arrayVoucher = [];
                 },
@@ -1058,9 +1057,14 @@
                     removeDataTable();
 
                     for (var i = 0; i < data.length; i++) {
-                        var fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
-                        data[i].fullNumber = fullNumber;
-                        data[i].cashProfit_real = parseInt(data[i]['cashReceive']) - (parseInt(data[i]['cashPreDelivery']) + parseInt(data[i]['cost']));
+                        if(data[i]['transportType'] === 1){
+                            data[i].fullNumber = data[i]['vehicle_name'];
+                            data[i].products_name = data[i]['product_name'];
+                            data[i].customers_fullName = data[i]['customer_name'];
+                        } else {
+                            var fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                            data[i].fullNumber = fullNumber;
+                        }
                     }
                     transportView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -1074,7 +1078,7 @@
                             {data: 'products_name'},
                             {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
-                            {data: 'customers_fullName', width: "15%"},
+                            {data: 'customers_fullName'},
                             {
                                 data: 'cashRevenue',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
@@ -1218,14 +1222,26 @@
                     pushDataTable(transportView.table);
                 },
                 fillCurrentObjectToForm: function () {
-                    var fullNumber = (transportView.current["vehicles_areaCode"] == null || transportView.current["vehicles_vehicleNumber"] == null) ? "" : transportView.current["vehicles_areaCode"] + '-' + transportView.current["vehicles_vehicleNumber"];
+                    transportView.transportType = transportView.current["transportType"];
+                    var status = (transportView.transportType === 0) ? false : true;
+                    $("input[id=transportType]").attr('checked', status);
 
-                    $("input[id='vehicle_id']").val(fullNumber);
-                    $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicles_id"]);
-                    $("input[id='customer_id']").val(transportView.current["customers_fullName"]);
-                    $("#customer_id").attr('data-customerId', transportView.current["customers_id"]);
-                    $("input[id='product_name']").val(transportView.current["products_name"]);
-                    $("#product_name").attr("data-productId", transportView.current["id"]);
+                    if(transportView.transportType === 1){
+                        $("input[id='vehicle_id']").val(transportView.current["vehicle_name"]);
+                        $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicle_id"]);
+                        $("input[id='customer_id']").val(transportView.current["customer_name"]);
+                        $("#customer_id").attr('data-customerId', transportView.current["customer_id"]);
+                        $("input[id='product_name']").val(transportView.current["product_name"]);
+                        $("#product_name").attr("data-productId", transportView.current["product_id"]);
+                    } else {
+                        var fullNumber = (transportView.current["vehicles_areaCode"] == null || transportView.current["vehicles_vehicleNumber"] == null) ? "" : transportView.current["vehicles_areaCode"] + '-' + transportView.current["vehicles_vehicleNumber"];
+                        $("input[id='vehicle_id']").val(fullNumber);
+                        $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicle_id"]);
+                        $("input[id='customer_id']").val(transportView.current["customers_fullName"]);
+                        $("#customer_id").attr('data-customerId', transportView.current["customer_id"]);
+                        $("input[id='product_name']").val(transportView.current["products_name"]);
+                        $("#product_name").attr("data-productId", transportView.current["product_id"]);
+                    }
 
                     $("input[id='quantumProduct']").val(transportView.current["quantumProduct"]);
                     $("input[id='weight']").val(transportView.current["weight"]);
@@ -1248,10 +1264,6 @@
                     $("select[id='status_transport']").val(transportView.current["status_transport"]);
                     $("textarea[id='costNote']").val(transportView.current["costNote"]);
 
-                    transportView.transportType = transportView.current["transportType"];
-                    var status = (transportView.current["transportType"] === 0) ? false : true;
-                    $("input[id=transportType]").attr('checked', status);
-
                     var strVoucherName = "";
                     for (var i = 0; i < transportView.arrayVoucher.length; i++) {
                         var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
@@ -1265,8 +1277,8 @@
                 fillFormDataToCurrentObject: function () {
                     if (transportView.action == 'add') {
                         transportView.current = {
-                            vehicles_id: $("#vehicle_id").attr("data-vehicleId"),
-                            customers_id: $("#customer_id").attr("data-customerId"),
+                            vehicle_id: $("#vehicle_id").attr("data-vehicleId"),
+                            customer_id: $("#customer_id").attr("data-customerId"),
                             product_id: $("#product_name").attr("data-productId"),
                             quantumProduct: $("input[id='quantumProduct']").val(),
                             weight: $("input[id='weight']").val(),
@@ -1289,8 +1301,8 @@
                             transportType: transportView.transportType
                         };
                     } else if (transportView.action == 'update') {
-                        transportView.current.vehicles_id = $("#vehicle_id").attr("data-vehicleId");
-                        transportView.current.customers_id = $("#customer_id").attr("data-customerId");
+                        transportView.current.vehicle_id = $("#vehicle_id").attr("data-vehicleId");
+                        transportView.current.customer_id = $("#customer_id").attr("data-customerId");
                         transportView.current.product_id = $("#product_name").attr("data-productId");
                         transportView.current.quantumProduct = $("input[id='quantumProduct']").val();
                         transportView.current.weight = $("input[id='weight']").val();
@@ -1311,6 +1323,11 @@
                         transportView.current.costNote = $("textarea[id='costNote']").val();
                         transportView.current.voucher_transport = transportView.arrayVoucher;
                         transportView.current.transportType = transportView.transportType;
+                    }
+                    if(transportView.transportType === 1){
+                        transportView.current.vehicle_name = $("input[id='vehicle_id']").val();
+                        transportView.current.customer_name = $("input[id='customer_id']").val();
+                        transportView.current.product_name = $("input[id='product_name']").val();
                     }
                 },
 
@@ -1481,9 +1498,15 @@
                         if (jqXHR.status == 201) {
                             switch (transportView.action) {
                                 case 'add':
-                                    var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
-                                    data['transport'].fullNumber = fullNumber;
-                                    data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
+                                    if(data['transport']['transportType'] === 1){
+                                        data['transport'].fullNumber = data['transport']['vehicle_name'];
+                                        data['transport'].products_name = data['transport']['product_name'];
+                                        data['transport'].customers_fullName = data['transport']['customer_name'];
+                                    } else {
+                                        var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                        data['transport'].fullNumber = fullNumber;
+                                    }
+
                                     transportView.dataTransport.push(data['transport']);
 
                                     transportView.dataVoucherTransport = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
@@ -1496,9 +1519,14 @@
                                     });
                                     var indexOfOld = _.indexOf(transportView.dataTransport, Old);
 
-                                    var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
-                                    data['transport'].fullNumber = fullNumber;
-                                    data['transport'].cashProfit_real = parseInt(data['transport']['cashReceive']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
+                                    if(data['transport']['transportType'] === 1){
+                                        data['transport'].fullNumber = data['transport']['vehicle_name'];
+                                        data['transport'].products_name = data['transport']['product_name'];
+                                        data['transport'].customers_fullName = data['transport']['customer_name'];
+                                    } else {
+                                        var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
+                                        data['transport'].fullNumber = fullNumber;
+                                    }
                                     transportView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
                                     _.remove(transportView.dataVoucherTransport, function (currentObject) {

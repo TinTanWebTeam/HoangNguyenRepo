@@ -557,11 +557,13 @@ class CustomerManagementController extends Controller
     public function getDataTransport()
     {
         $transports = DB::table('transports')
-            ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
-                'customers.id as customers_id', 'customers.fullName as customers_fullName',
-                'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
+            ->select('transports.*',
+                'products.name as products_name',
+                'customers.fullName as customers_fullName',
+                'vehicles.areaCode as vehicles_areaCode',
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                'statuses_tran.status as status_transport_',
+                'statuses_cust.status as status_customer_',
                 'statuses_gar.status as status_garage_'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
@@ -617,6 +619,9 @@ class CustomerManagementController extends Controller
         $invoiceGarage_id = null;
         $costNote = null;
         $transportType = null;
+        $vehicle_name = null;
+        $customer_name = null;
+        $product_name = null;
 
         $array_voucherTransport = [];
 
@@ -639,22 +644,24 @@ class CustomerManagementController extends Controller
             $voucherNumber = $request->input('_transport')['voucherNumber'];
             $voucherQuantumProduct = $request->input('_transport')['voucherQuantumProduct'];
             $receiver = $request->input('_transport')['receiver'];
-
             $receiveDate = $request->input('_transport')['receiveDate'];
             $receiveDate = Carbon::createFromFormat('d-m-Y', $receiveDate)->toDateTimeString();
-
             $receivePlace = $request->input('_transport')['receivePlace'];
             $deliveryPlace = $request->input('_transport')['deliveryPlace'];
             $note = $request->input('_transport')['note'];
             $status_transport = $request->input('_transport')['status_transport'];
             $status_customer = ($cashRevenue == $cashReceive) ? 6 : 5;
             $status_garage = 8;
-            $vehicle_id = $request->input('_transport')['vehicles_id'];
+            $vehicle_id = $request->input('_transport')['vehicle_id'];
             $product_id = $request->input('_transport')['product_id'];
-            $customer_id = $request->input('_transport')['customers_id'];
-
+            $customer_id = $request->input('_transport')['customer_id'];
             $costNote = $request->input('_transport')['costNote'];
             $transportType = $request->input('_transport')['transportType'];
+            if($transportType == 1){
+                $vehicle_name = $request->input('_transport')['vehicle_name'];
+                $customer_name = $request->input('_transport')['customer_name'];
+                $product_name = $request->input('_transport')['product_name'];
+            }
             if (array_key_exists('voucher_transport', $request->input('_transport'))) {
                 $array_voucherTransport = $request->input('_transport')['voucher_transport'];
             }
@@ -694,6 +701,11 @@ class CustomerManagementController extends Controller
                     $transportNew->transportType = $transportType;
                     $transportNew->costNote = $costNote;
                     $transportNew->vehicle_id = $vehicle_id;
+                    if($transportType == 1){
+                        $transportNew->vehicle_name = $vehicle_name;
+                        $transportNew->customer_name = $customer_name;
+                        $transportNew->product_name = $product_name;
+                    }
 
                     if (!$transportNew->save()) {
                         DB::rollBack();
@@ -714,11 +726,13 @@ class CustomerManagementController extends Controller
 
                     //Response
                     $transport = DB::table('transports')
-                        ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
-                            'customers.id as customers_id', 'customers.fullName as customers_fullName',
-                            'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
+                        ->select('transports.*',
+                            'products.name as products_name',
+                            'customers.fullName as customers_fullName',
+                            'vehicles.areaCode as vehicles_areaCode',
                             'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                            'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                            'statuses_tran.status as status_transport_',
+                            'statuses_cust.status as status_customer_',
                             'statuses_gar.status as status_garage_'
                         )
                         ->leftJoin('products', 'products.id', '=', 'transports.product_id')
@@ -760,9 +774,7 @@ class CustomerManagementController extends Controller
                     $transportUpdate->receiveDate = $receiveDate;
                     $transportUpdate->receivePlace = $receivePlace;
                     $transportUpdate->deliveryPlace = $deliveryPlace;
-
                     $createdBy = $transportUpdate->updatedBy;
-
                     $transportUpdate->updatedBy = \Auth::user()->id;
                     $transportUpdate->note = $note;
                     $transportUpdate->status_transport = $status_transport;
@@ -772,8 +784,12 @@ class CustomerManagementController extends Controller
                     $transportUpdate->customer_id = $customer_id;
                     $transportUpdate->costNote = $costNote;
                     $transportUpdate->vehicle_id = $vehicle_id;
-//                    $transportUpdate->invoiceCustomer_id = $invoiceCustomer_id;
-//                    $transportUpdate->invoiceGarage_id = $invoiceGarage_id;
+
+                    if($transportType == 1){
+                        $transportUpdate->vehicle_name = $vehicle_name;
+                        $transportUpdate->customer_name = $customer_name;
+                        $transportUpdate->product_name = $product_name;
+                    }
 
                     if (!$transportUpdate->update()) {
                         DB::rollBack();
@@ -831,11 +847,13 @@ class CustomerManagementController extends Controller
 
                     //Response
                     $transport = DB::table('transports')
-                        ->select('transports.*', 'products.id as products_id', 'products.name as products_name',
-                            'customers.id as customers_id', 'customers.fullName as customers_fullName',
-                            'vehicles.id as vehicles_id', 'vehicles.areaCode as vehicles_areaCode',
+                        ->select('transports.*',
+                            'products.name as products_name',
+                            'customers.fullName as customers_fullName',
+                            'vehicles.areaCode as vehicles_areaCode',
                             'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                            'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                            'statuses_tran.status as status_transport_',
+                            'statuses_cust.status as status_customer_',
                             'statuses_gar.status as status_garage_'
                         )
                         ->leftJoin('products', 'products.id', '=', 'transports.product_id')
