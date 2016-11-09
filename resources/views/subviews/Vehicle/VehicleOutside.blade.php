@@ -435,9 +435,7 @@
                                 return ;
                             }
                         }
-
                         garageView.fillFormDataToCurrentObject();
-
                         var sendToServer = {
                             _token: _token,
                             _action: garageView.action,

@@ -366,12 +366,8 @@
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        data[i].fullNumber = data[i]['areaCode'] + "-" + data[i]['vehicleNumber'];
-                        if (data[i].fullNumber == '') {
-                            return '';
-                        }
+                        data[i].fullNumber = (data[i]['areaCode'] == null || data[i]['vehicleNumber'] == null) ? "" : data[i]['areaCode'] + "-" + data[i]['vehicleNumber'];
                     }
-
                     driverView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -393,9 +389,7 @@
                                 }
                             },
                             {data: 'governmentId'},
-                            {
-                                data: 'fullNumber'
-                            },
+                            {data: 'fullNumber'},
                             {data: 'vehicle_types'},
                             {data: 'garage'},
                             {data: 'garageTypes'},
@@ -429,7 +423,6 @@
                                 number: true
                             },
                             driverType: "required"
-
                         },
                         ignore: ".ignore",
                         messages: {

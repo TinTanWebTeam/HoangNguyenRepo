@@ -59,6 +59,7 @@
                                 <th>Nhà xe</th>
                                 <th>Kích thước</th>
                                 <th>Trọng tải</th>
+                                <th>Tài xế</th>
                                 <th>Sửa/ Xóa</th>
                             </tr>
                             </thead>
@@ -161,7 +162,7 @@
                             <div class="col-md-4 col-sm-4">
                                 <div class="form-group form-md-line-input">
                                     <label for="driver"><b>Tài xế</b></label>
-                                    <input type="text" class="form-control" id="driver" name="driver">
+                                    <input type="text" class="form-control" data-driverId="" id="driver" name="driver">
                                 </div>
                             </div>
                         </div>
@@ -231,8 +232,9 @@
                     </button>
                     <h4 class="modal-title">Thêm nhà xe</h4>
                 </div>
+
                 <div class="modal-body">
-                    <form id="frmGarage">
+                    <form id="frmGarage" onsubmit="return false;" >
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
@@ -242,6 +244,16 @@
                                            name="Garage_name">
                                 </div>
                             </div>
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group form-md-line-input">
+                                    <label for="garageType_id"><b>Loại nhà xe</b></label>
+                                    <select name="garageType_id" id="garageType_id" class="form-control">
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
                                     <label for="contactor"><b>Người liên hệ</b></label>
@@ -250,8 +262,6 @@
                                            name="contactor">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input ">
                                     <label for="phone"><b>Số điện thoại</b></label>
@@ -260,12 +270,14 @@
                                            name="phone">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="address"><b>Địa chỉ</b></label>
-                                    <input type="text" class="form-control"
-                                           id="address"
-                                           name="address">
+                                    <textarea type="text" class="form-control"
+                                              id="address"
+                                              name="address" rows="2"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -303,7 +315,7 @@
                     <h4 class="modal-title">Thêm loại xe</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="frmVehicleType">
+                    <form id="frmVehicleType"  onsubmit="return false;" >
                         <div class="row ">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
@@ -355,11 +367,13 @@
                 tableVehicleType: null,
                 tableVehicle: null,
                 dataGarage: null,
+                dataGarageType: null,
                 current: null,
                 action: null,
                 idDelete: null,
                 dataDrivers: null,
-                tagsGarageName: null,
+                tagsGarageName: [],
+                tagsDriverName: [],
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -404,9 +418,10 @@
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
                     $("input[id='garages_name']").val('');
-                    $("#garages_name").attr('data-id', '');
+                    $("input[id='driver']").val('');
+                    $("#garages_name").attr('data-garageId', '');
+                    $("#driver").attr('data-driverId', '');
                     vehicleInsideView.current = null;
-
                     $("input[id='VehicleType_name']").val('');
                     $("textarea[id='description']").val('');
 
@@ -417,13 +432,10 @@
                     $("input[id='owner']").val('');
                 },
                 clearInputFormGarage: function () {
-                    $("input[id='VehicleType_name']").val('');
-                    $("textarea[id='description']").val('');
-
                     $("input[id='Garage_name']").val('');
                     $("input[id='contactor']").val('');
                     $("input[id='phone']").val('');
-                    $("input[id='address']").val('');
+                    $("textarea[id='address']").val('');
                 },
                 clearInputFormVehicleType: function () {
                     $("input[id='VehicleType_name']").val('');
@@ -431,7 +443,7 @@
                 },
                 renderEventClickTableModal: function () {
                     $("#table-garage").find("tbody").on('click', 'tr', function () {
-                        $('#garages_name').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#garages_name').attr('data-garageId', $(this).find('td:first')[0].innerText);
                         $('#garages_name').val($(this).find('td:eq(1)')[0].innerText);
                         vehicleInsideView.displayModal("hide", "#modal-garage");
                     });
@@ -439,21 +451,6 @@
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
-                    });
-                },
-                renderEventFocusOut: function () {
-                    $("#garages_name").focusout(function () {
-                        var garageName = this.value;
-                        if (garageName == '') return;
-                        var garage = _.find(vehicleInsideView.dataGarage, function (o) {
-                            return o.name == garageName;
-                        });
-                        if (typeof garage === "undefined") {
-                            vehicleInsideView.displayModal("show", "#modal-addGarage");
-                            $("input[id=Garage_name]").val(garageName);
-                        } else {
-                            $("#garages_name").attr("data-garageId", garage.id);
-                        }
                     });
                 },
                 loadData: function () {
@@ -468,32 +465,54 @@
                             vehicleInsideView.tableVehicleType = data['vehicleTypes'];
                             vehicleInsideView.loadSelectBox(data['vehicleTypes']);
                             vehicleInsideView.dataDrivers = data['drivers'];
-                            vehicleInsideView.tagsGarageName = data['garages'];
+                            vehicleInsideView.dataGarage = data['vehicles'];
+                            vehicleInsideView.dataGarageType = data['garages'];
+                            vehicleInsideView.loadSelectBoxTypeGarage(data['garages']);
                             vehicleInsideView.renderAutoCompleteSearch();
-
                         } else {
                             vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-                    vehicleInsideView.renderEventFocusOut();
                     vehicleInsideView.renderEventClickTableModal();
                     vehicleInsideView.renderScrollbar();
                 },
                 renderAutoCompleteSearch: function () {
-                    var nameDriver = _.map(vehicleInsideView.dataDrivers, function (o) {
-                        return o.fullName;
-                    });
-                    var GarageName = _.map(vehicleInsideView.tagsGarageName, function (o) {
-                        return o.name;
-                    });
-                    $("#driver").autocomplete({
-                        source: nameDriver
-                    });
-                    $("#garages_name").autocomplete({
-                        source: GarageName
-                    });
+                    vehicleInsideView.tagsGarageName = _.map(vehicleInsideView.dataGarage, 'garages_name');
+                    vehicleInsideView.tagsGarageName = _.union(vehicleInsideView.tagsGarageName);
+                    renderAutoCompleteSearch('#garages_name', vehicleInsideView.tagsGarageName,$("#garages_name").focusout(function () {
+                        var garageName = this.value;
+                        if (garageName == '') return;
+                        var garage = _.find(vehicleInsideView.dataGarage, function (o) {
+                            return o.garages_name == garageName ;
+                        });
+                        if (typeof garage === "undefined") {
+                            vehicleInsideView.displayModal("show", "#modal-addGarage");
+                            $("input[id=Garage_name]").val(garageName);
+                        } else {
+                            $("#garages_name").attr("data-garageId", garage.garage_id);
+                        }
+                    }));
+                    vehicleInsideView.tagsDriverName = _.map(vehicleInsideView.dataDrivers, 'fullName');
+                    vehicleInsideView.tagsDriverName = _.union(vehicleInsideView.tagsDriverName);
+                    renderAutoCompleteSearch('#driver', vehicleInsideView.tagsDriverName,$("#driver").focusout(function () {
+
+                        var driverName = this.value;
+                        if (driverName == ''){
+                            $("#driver").attr("data-driverId",'');
+                            return;
+                        }
+                        var driver =_.find(vehicleInsideView.dataDrivers,function (o) {
+                            return o.fullName == driverName;
+                        });
+                        if (typeof driver === "undefined") {
+                            $("input[id=driver]").val('');
+                            $("#driver").attr("data-driverId",'');
+                        } else {
+                            $("#driver").attr("data-driverId", driver.id);
+                        }
+                    }));
                 },
                 localSearch: function () {
                     var dataSearch = _.filter(vehicleInsideView.tableVehicle, function (o) {
@@ -517,11 +536,26 @@
                         select.appendChild(el);
                     }
                 },
+                loadSelectBoxTypeGarage: function (TypeGarage) {
+                    //reset selectbox
+                    $('#garageType_id')
+                            .find('option')
+                            .remove()
+                            .end();
+                    //fill option to selectbox
+                    var select = document.getElementById("garageType_id");
+                    for (var i = 0; i < TypeGarage.length; i++) {
+                        var opt = TypeGarage[i]['name'];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = TypeGarage[i]['id'];
+                        select.appendChild(el);
+                    }
+                },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['areaCode'] + '-' + data[i]['vehicleNumber'];
                     }
-
                     vehicleInsideView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -533,6 +567,7 @@
                             {data: 'garages_name'},
                             {data: 'size'},
                             {data: 'weight'},
+                            {data: 'driverName'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -603,12 +638,16 @@
                     $("input[id='weight']").val(vehicleInsideView.current["weight"]);
                     $("select[id='vehicleTypes_name']").val(vehicleInsideView.current["vehicleType_id"]);
                     $("input[id='garages_name']").val(vehicleInsideView.current["garages_name"]);
-                    $("#garages_name").attr('data-id', vehicleInsideView.current["garage_id"]);
+                    $("input[id='driver']").val(vehicleInsideView.current["driverName"]);
+                    $("#garages_name").attr('data-garageId', vehicleInsideView.current["garage_id"]);
+                    $("#driver").attr('data-driverId', vehicleInsideView.current["driver_id"]);
+
                 },
                 fillFormDataToCurrentObject: function () {
                     if (vehicleInsideView.action == 'add') {
                         vehicleInsideView.current = {
-                            garage_id: $('#garages_name').attr('data-id'),
+                            garage_id: $('#garages_name').attr('data-garageId'),
+                            driver_id: $('#driver').attr('data-driverId'),
                             vehicleType_id: $('#vehicleTypes_name').val(),
                             vehicleNumber: $("input[id='vehicleNumber']").val(),
                             areaCode: $("input[id='areaCode']").val(),
@@ -617,7 +656,8 @@
                             weight: $("input[id='weight']").val()
                         };
                     } else if (vehicleInsideView.action == 'update') {
-                        vehicleInsideView.current.garage_id = $('#garages_name').attr('data-id');
+                        vehicleInsideView.current.garage_id = $('#garages_name').attr('data-garageId');
+                        vehicleInsideView.current.driver_id = $('#driver').attr('data-driverId');
                         vehicleInsideView.current.vehicleType_id = $('#vehicleTypes_name').val();
                         vehicleInsideView.current.vehicleNumber = $("input[id='vehicleNumber']").val();
                         vehicleInsideView.current.areaCode = $("input[id='areaCode']").val();
@@ -697,14 +737,12 @@
                     vehicleInsideView.formValidate();
                     if ($("#frmControl").valid()) {
                         if (vehicleInsideView.action != 'delete') {
-                            if ($("#garages_name").attr('data-id') == '') {
+                            if ($("#garages_name").attr('data-garageId') == '') {
                                 vehicleInsideView.showNotification('warning', 'Vui lòng chọn một nhà xe có trong danh sách.');
                                 return;
                             }
                         }
-
                         vehicleInsideView.fillFormDataToCurrentObject();
-
                         var sendToServer = {
                             _token: _token,
                             _action: vehicleInsideView.action,
@@ -727,6 +765,7 @@
                                         vehicleInsideView.showNotification("success", "Thêm thành công!");
                                         break;
                                     case 'update':
+
                                         var vehicleOld = _.find(vehicleInsideView.tableVehicle, function (o) {
                                             return o.id == sendToServer._vehicle.id;
                                         });
@@ -767,7 +806,8 @@
                             name: $("input[id='Garage_name']").val(),
                             contactor: $("input[id='contactor']").val(),
                             phone: $("input[id='phone']").val(),
-                            address: $("input[id='address']").val()
+                            address: $("textarea[id='address']").val(),
+                            garageType_id: $("select[id='garageType_id']").val()
                         };
 
                         var sendToServer = {
@@ -785,7 +825,6 @@
                                 vehicleInsideView.showNotification("success", "Thêm thành công!");
                                 vehicleInsideView.displayModal("hide", "#modal-addGarage");
                                 vehicleInsideView.clearInput();
-                                //
                                 $("input[id='garages_name']").val(data["garage"]["name"]);
                                 $("#garages_name").attr('data-garageId', data["garage"]["id"]);
                             } else {
