@@ -443,6 +443,7 @@
                     }
                 },
                 addDriver: function () {
+                    driverView.renderDateTimePicker();
                     $("#divControl").find(".titleControl").html("Thêm mới tài xế");
                     driverView.action = 'add';
                     driverView.showControl();
