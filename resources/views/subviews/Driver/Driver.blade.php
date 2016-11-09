@@ -144,7 +144,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="birthday"><b>Năm sinh</b></label>
-                                        <input type="text" class="form-control date ignore"
+                                        <input type="text" class="date form-control ignore"
                                                id="birthday"
                                                name="birthday">
                                     </div>
@@ -310,9 +310,8 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
-                    driverView.renderDateTimePicker();
                     driverView.renderScrollbar();
-
+                    driverView.renderDateTimePicker();
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -329,6 +328,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    $('#birthday').datepicker("setDate", new Date());
                     $('#issueDateId').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
@@ -344,7 +344,6 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#birthday').datepicker("setDate", new Date());
                     $('#issueDateId').datepicker("setDate", new Date());
                     $('#issueDateDriver').datepicker("setDate", new Date());
                     $('#expireDateDriver').datepicker("setDate", new Date());

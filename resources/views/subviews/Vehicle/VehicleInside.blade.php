@@ -424,11 +424,10 @@
                     vehicleInsideView.current = null;
                     $("input[id='VehicleType_name']").val('');
                     $("textarea[id='description']").val('');
-
                     $("input[id='Garage_name']").val('');
                     $("input[id='contactor']").val('');
                     $("input[id='phone']").val('');
-                    $("input[id='address']").val('');
+                    $("textarea[id='address']").val('');
                     $("input[id='owner']").val('');
                 },
                 clearInputFormGarage: function () {

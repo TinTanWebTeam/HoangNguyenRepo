@@ -98,10 +98,15 @@ class VehicleManagementController extends Controller
                     $vehicle = \DB::table('vehicles')
                         ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
                         ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+                        ->join('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
+                        ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
+                        ->select('vehicles.*'
+                            , 'vehicleTypes.name as vehicleTypes_name'
+                            , 'garages.name as garages_name'
+                            , 'drivers.fullName as driverName'
+                            , 'drivers.id as driver_id')
                         ->where('vehicles.id', $vehicleNew->id)
-                        ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name')
                         ->first();
-
                     $response = [
                         'msg'     => 'Created vehicle',
                         'vehicle' => $vehicle
