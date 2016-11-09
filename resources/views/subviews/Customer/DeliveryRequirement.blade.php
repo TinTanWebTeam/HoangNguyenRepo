@@ -132,25 +132,25 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="customer_id"><b>Khách hàng</b></label>
+                                            <label for="customer_id" class="red"><b>Khách hàng</b></label>
                                             <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Nhập tên khách hàng" data-customerId="">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="receivePlace"><b>Nơi nhận</b></label>
+                                            <label for="receivePlace" class="red"><b>Nơi nhận</b></label>
                                             <input type="text" class="form-control" id="receivePlace" name="receivePlace">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="deliveryPlace"><b>Nơi giao</b></label>
+                                            <label for="deliveryPlace" class="red"><b>Nơi giao</b></label>
                                             <input type="text" class="form-control" id="deliveryPlace" name="deliveryPlace">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="receiveDate"><b>Ngày nhận</b></label>
+                                            <label for="receiveDate" class="red"><b>Ngày nhận</b></label>
                                             <input type="text" class="date form-control ignore" id="receiveDate" name="receiveDate">
                                         </div>
                                     </div>
@@ -158,7 +158,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
-                                            <label for="vehicle_id"><b>Xe</b></label>
+                                            <label for="vehicle_id" class="red"><b>Xe</b></label>
                                             <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" placeholder="Nhập số xe" data-vehicleId="">
                                         </div>
                                     </div>
@@ -200,19 +200,19 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="cashRevenue"><b>Doanh thu</b></label>
+                                            <label for="cashRevenue" class="red"><b>Doanh thu</b></label>
                                             <input type="text" class="form-control currency" id="cashRevenue" name="cashRevenue">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
-                                            <label for="cashDelivery"><b>Giao xe</b></label>
+                                            <label for="cashDelivery" class="red"><b>Giao xe</b></label>
                                             <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
-                                            <label for="cashReceive"><b>Nhận</b></label>
+                                            <label for="cashReceive" class="red"><b>Nhận</b></label>
                                             <input type="text" class="form-control currency" id="cashReceive" name="cashReceive">
                                         </div>
                                     </div>

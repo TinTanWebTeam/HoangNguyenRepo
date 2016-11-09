@@ -256,7 +256,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="VAT"><b>VAT (%)</b></label>
+                                            <label for="VAT" class="red"><b>VAT (%)</b></label>
                                             <input type="number" class="form-control defaultZero"
                                                    id="VAT" name="VAT"
                                                    onkeyup="debtGarageView.computeHasVAT(this.value, event)">
@@ -264,7 +264,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="hasVAT"><b>Có VAT</b></label>
+                                            <label for="hasVAT" class="red"><b>Có VAT</b></label>
                                             <input type="text" class="form-control currency defaultZero"
                                                    id="hasVAT" name="hasVAT"
                                                    onkeyup="debtGarageView.computeVAT(this.value)">
@@ -274,7 +274,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="paidAmt"><b>Tiền trả</b></label>
+                                            <label for="paidAmt" class="red"><b>Tiền trả</b></label>
                                             <input type="text" class="form-control currency defaultZero"
                                                    id="paidAmt" name="paidAmt"
                                                    onkeyup="debtGarageView.computeDebt(this.value)">

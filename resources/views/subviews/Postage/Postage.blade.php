@@ -92,7 +92,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group form-md-line-input">
-                                            <label for="customer_id"><b>Khách hàng</b></label>
+                                            <label for="customer_id"class="red"><b>Khách hàng</b></label>
                                             <input type="text" class="form-control" id="customer_id"
                                                    name="customer_id"
                                                    placeholder="Nhập tên khách hàng"
@@ -105,14 +105,14 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="receivePlace"><b>Nơi nhận</b></label>
+                                                    <label for="receivePlace" class="red"><b>Nơi nhận</b></label>
                                                     <input type="text" class="form-control" id="receivePlace"
                                                            name="receivePlace">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="deliveryPlace"><b>Nơi giao</b></label>
+                                                    <label for="deliveryPlace" class="red"><b>Nơi giao</b></label>
                                                     <input type="text" class="form-control" name="deliveryPlace"
                                                            id="deliveryPlace">
                                                 </div>
@@ -128,7 +128,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="applyDate"><b>Ngày áp dụng</b></label>
+                                                    <label for="applyDate"class="red"><b>Ngày áp dụng</b></label>
                                                     <input type="text" class="date ignore form-control" id="applyDate"
                                                            name="applyDate">
                                                 </div>
@@ -145,14 +145,14 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
-                                            <label for="postage"><b>Cước phí</b></label>
+                                            <label for="postage" class="red"><b>Cước phí</b></label>
                                             <input type="text" class="form-control currency" id="postage"
                                                    name="postage">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
-                                            <label for="cashDelivery"><b>Phí giao xe</b></label>
+                                            <label for="cashDelivery" class="red"><b>Phí giao xe</b></label>
                                             <input type="text" class="form-control currency" id="cashDelivery"
                                                    name="cashDelivery">
                                         </div>
