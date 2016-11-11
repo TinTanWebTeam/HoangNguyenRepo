@@ -24,8 +24,9 @@ class VehicleManagementController extends Controller
     public function getDataVehicle()
     {
         $vehicleTypes = VehicleType::all();
-        $garages = GarageType::all();
+        $garageType = GarageType::all();
         $driver = Driver::all();
+        $garages = Garage::all();
         $vehicles = \DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
@@ -44,7 +45,8 @@ class VehicleManagementController extends Controller
             'vehicles'     => $vehicles,
             'vehicleTypes' => $vehicleTypes,
             'drivers'      => $driver,
-            'garages'      => $garages
+            'garageTypes'      => $garageType,
+            'garages'      => $garages,
         ];
         return response()->json($response, 200);
     }

@@ -277,7 +277,6 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            console.log(data['dataDrivers']);
                             driverView.dataDrivers = data['dataDrivers'];
                             driverView.fillDataToDatatable(data['dataDrivers']);
                         } else {
@@ -553,7 +552,7 @@
                                 if (jqXHR.status == 201) {
                                     switch (driverView.action) {
                                         case 'add':
-                                            data['dataAddDriver'].fullNumber = data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']["vehicleNumber"];
+                                            data['dataAddDriver'].fullNumber = (data['dataAddDriver']['areaCode'] == null || data['dataAddDriver']['vehicleNumber'] == null) ? "" : data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']['vehicleNumber'];
                                             if (data['dataAddDriver'].fullNumber == null) {
                                                 data['dataAddDriver'].fullNumber = 'chứa có xe'
                                             }
@@ -561,8 +560,7 @@
                                             showNotification("success", "Thêm thành công!");
                                             break;
                                         case 'update':
-
-                                            data['dataUpdateDriver'].fullNumber = data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']["vehicleNumber"];
+                                            data['dataUpdateDriver'].fullNumber = (data['dataUpdateDriver']['areaCode'] == null || data['dataUpdateDriver']['vehicleNumber'] == null) ? "" : data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']['vehicleNumber'];
                                             if (data['dataUpdateDriver'].fullNumber == null) {
                                                 data['dataUpdateDriver'].fullNumber = 'chứa có xe'
                                             }

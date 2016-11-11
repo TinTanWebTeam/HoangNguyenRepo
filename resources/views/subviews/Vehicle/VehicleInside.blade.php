@@ -464,10 +464,11 @@
                             vehicleInsideView.tableVehicleType = data['vehicleTypes'];
                             vehicleInsideView.loadSelectBox(data['vehicleTypes']);
                             vehicleInsideView.dataDrivers = data['drivers'];
-                            vehicleInsideView.dataGarage = data['vehicles'];
-                            vehicleInsideView.dataGarageType = data['garages'];
-                            vehicleInsideView.loadSelectBoxTypeGarage(data['garages']);
+                            vehicleInsideView.dataGarage = data['garages'];
+                            vehicleInsideView.dataGarageType = data['garageTypes'];
+                            vehicleInsideView.loadSelectBoxTypeGarage(data['garageTypes']);
                             vehicleInsideView.renderAutoCompleteSearch();
+
                         } else {
                             vehicleInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -478,19 +479,19 @@
                     vehicleInsideView.renderScrollbar();
                 },
                 renderAutoCompleteSearch: function () {
-                    vehicleInsideView.tagsGarageName = _.map(vehicleInsideView.dataGarage, 'garages_name');
+                    vehicleInsideView.tagsGarageName = _.map(vehicleInsideView.dataGarage, 'name');
                     vehicleInsideView.tagsGarageName = _.union(vehicleInsideView.tagsGarageName);
                     renderAutoCompleteSearch('#garages_name', vehicleInsideView.tagsGarageName,$("#garages_name").focusout(function () {
                         var garageName = this.value;
                         if (garageName == '') return;
                         var garage = _.find(vehicleInsideView.dataGarage, function (o) {
-                            return o.garages_name == garageName ;
+                            return o.name == garageName ;
                         });
                         if (typeof garage === "undefined") {
                             vehicleInsideView.displayModal("show", "#modal-addGarage");
                             $("input[id=Garage_name]").val(garageName);
                         } else {
-                            $("#garages_name").attr("data-garageId", garage.garage_id);
+                            $("#garages_name").attr("data-garageId", garage.id);
                         }
                     }));
                     vehicleInsideView.tagsDriverName = _.map(vehicleInsideView.dataDrivers, 'fullName');
