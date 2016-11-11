@@ -7,6 +7,7 @@ use App\InvoiceCustomerDetail;
 use App\InvoiceGarage;
 use App\InvoiceGarageDetail;
 use App\Transport;
+use App\TransportInvoice;
 use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
@@ -179,11 +180,13 @@ class DebtManagementController extends Controller
 
             try {
                 DB::beginTransaction();
+                //Insert Invoice
                 if (!$invoiceCustomer->save()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Create new Invoice fail!'], 404);
                 }
 
+                //Insert InvoiceDetail
                 $invoiceCustomerDetail = new InvoiceCustomerDetail();
                 $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
                 $invoiceCustomerDetail->paidAmt = $request->input('_invoiceCustomer')['paidAmt'];
@@ -200,16 +203,29 @@ class DebtManagementController extends Controller
                     return response()->json(['msg' => 'Create InvoiceCustomerDetail fail!'], 404);
                 }
 
+                //Update InvoiceCustomer_id for Transport
                 foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
                     $transportUpdate->invoiceCustomer_id = $invoiceCustomer->id;
                     $transportUpdate->status_customer = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
 
-                    if (!$transportUpdate->save()) {
+                    if (!$transportUpdate->update()) {
                         DB::rollBack();
                         return response()->json(['msg' => 'Update transport fail!'], 404);
                     }
+                }
+
+                //Insert TransportInvoice
+                $transportInvoice = new TransportInvoice();
+                $transportInvoice->transport_id = $transportUpdate->id;
+                $transportInvoice->invoiceCustomer_id = $invoiceCustomer->id;
+                $transportInvoice->createdBy = \Auth::user()->id;
+                $transportInvoice->updatedBy = \Auth::user()->id;
+
+                if(!$transportInvoice->save()){
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Create transportInvoice fail!'], 404);
                 }
 
                 DB::commit();
@@ -253,11 +269,13 @@ class DebtManagementController extends Controller
 
             try {
                 DB::beginTransaction();
+                //Update Invoice
                 if (!$invoiceCustomer->update()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Update Invoice fail!'], 404);
                 }
 
+                //Insert InvoiceDetail
                 $invoiceCustomerDetail = new InvoiceCustomerDetail();
                 $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
                 $invoiceCustomerDetail->paidAmt = $request->input('_invoiceCustomer')['paidAmt'];
@@ -273,6 +291,8 @@ class DebtManagementController extends Controller
                     DB::rollBack();
                     return response()->json(['msg' => 'Create InvoiceCustomerDetail fail!'], 404);
                 }
+
+                //Nothing happen with TransportInvoice
 
                 DB::commit();
 
@@ -308,6 +328,17 @@ class DebtManagementController extends Controller
         }
         try {
             DB::beginTransaction();
+            //Delete TransportInvoice
+            $array_transportInvoice = TransportInvoice::where('invoiceCustomer_id', $invoiceCustomerId)->get();
+            if(count($array_transportInvoice) > 0){
+                foreach ($array_transportInvoice as $transportInvoice) {
+                    if (!$transportInvoice->delete()) {
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Delete TransportInvoice fail.'], 404);
+                    }
+                }
+            }
+
             //Delete InvoiceCustomerDetail
             $array_invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomerId)->get();
             $array_invoiceCustomerDetailId = null;
@@ -403,6 +434,7 @@ class DebtManagementController extends Controller
                     'invoiceCustomerDetail' => $invoiceCustomerDetailId
                 ];
             } else {
+
                 //Delete InvoiceCustomer
                 $invoiceCustomer = InvoiceCustomer::find($invoiceCustomer_id);
                 if(!$invoiceCustomer){
@@ -412,6 +444,17 @@ class DebtManagementController extends Controller
                 if (!$invoiceCustomer->delete()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Delete InvoiceCustomer fail.'], 404);
+                }
+
+                //Delete TransportInvoice
+                $array_transportInvoice = TransportInvoice::where('invoiceCustomer_id', $invoiceCustomer->id)->get();
+                if(count($array_transportInvoice) > 0){
+                    foreach ($array_transportInvoice as $transportInvoice) {
+                        if (!$transportInvoice->delete()) {
+                            DB::rollBack();
+                            return response()->json(['msg' => 'Delete TransportInvoice fail.'], 404);
+                        }
+                    }
                 }
 
                 //Response
@@ -624,11 +667,13 @@ class DebtManagementController extends Controller
 
             try {
                 DB::beginTransaction();
+                //Insert InvoiceGarage
                 if (!$invoiceGarage->save()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Create new Invoice fail!'], 404);
                 }
 
+                //Insert InvoiceGarageDetail
                 $invoiceGarageDetail = new InvoiceGarageDetail();
                 $invoiceGarageDetail->invoiceGarage_id = $invoiceGarage->id;
                 $invoiceGarageDetail->paidAmt = $request->input('_invoiceGarage')['paidAmt'];
@@ -645,16 +690,29 @@ class DebtManagementController extends Controller
                     return response()->json(['msg' => 'Create InvoiceGarageDetail fail!'], 404);
                 }
 
+                //Update InvoiceGarage_id for Transport
                 foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
                     $transportUpdate->invoiceGarage_id = $invoiceGarage->id;
                     $transportUpdate->status_garage = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
 
-                    if (!$transportUpdate->save()) {
+                    if (!$transportUpdate->update()) {
                         DB::rollBack();
                         return response()->json(['msg' => 'Update transport fail!'], 404);
                     }
+                }
+
+                //Insert TransportInvoice
+                $transportInvoice = new TransportInvoice();
+                $transportInvoice->transport_id = $transportUpdate->id;
+                $transportInvoice->invoiceGarage_id = $invoiceGarage->id;
+                $transportInvoice->createdBy = \Auth::user()->id;
+                $transportInvoice->updatedBy = \Auth::user()->id;
+
+                if(!$transportInvoice->save()){
+                    DB::rollBack();
+                    return response()->json(['msg' => 'Create transportInvoice fail!'], 404);
                 }
 
                 DB::commit();
@@ -703,11 +761,13 @@ class DebtManagementController extends Controller
 
             try {
                 DB::beginTransaction();
+                //Update Invoice
                 if (!$invoiceGarage->update()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Update Invoice fail!'], 404);
                 }
 
+                //Insert InvoiceDtail
                 $invoiceGarageDetail = new InvoiceGarageDetail();
                 $invoiceGarageDetail->invoiceGarage_id = $invoiceGarage->id;
                 $invoiceGarageDetail->paidAmt = $request->input('_invoiceGarage')['paidAmt'];
@@ -723,6 +783,8 @@ class DebtManagementController extends Controller
                     DB::rollBack();
                     return response()->json(['msg' => 'Create InvoiceGarageDetail fail!'], 404);
                 }
+
+                //Nothing happen with TransportInvoice
 
                 DB::commit();
 
@@ -763,6 +825,17 @@ class DebtManagementController extends Controller
         }
         try {
             DB::beginTransaction();
+            //Delete TransportInvoice
+            $array_transportInvoice = TransportInvoice::where('invoiceGarage_id', $invoiceGarageId)->get();
+            if(count($array_transportInvoice) > 0){
+                foreach ($array_transportInvoice as $transportInvoice) {
+                    if (!$transportInvoice->delete()) {
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Delete TransportInvoice fail.'], 404);
+                    }
+                }
+            }
+
             //Delete InvoiceGarageDetail
             $array_invoiceGarageDetail = InvoiceGarageDetail::where('invoiceGarage_id', $invoiceGarageId)->get();
             $array_invoiceGarageDetailId = null;
@@ -871,6 +944,17 @@ class DebtManagementController extends Controller
                 if (!$invoiceGarage->delete()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Delete InvoiceGarage fail.'], 404);
+                }
+
+                //Delete TransportInvoice
+                $array_transportInvoice = TransportInvoice::where('invoiceGarage_id', $invoiceGarage->id)->get();
+                if(count($array_transportInvoice) > 0){
+                    foreach ($array_transportInvoice as $transportInvoice) {
+                        if (!$transportInvoice->delete()) {
+                            DB::rollBack();
+                            return response()->json(['msg' => 'Delete TransportInvoice fail.'], 404);
+                        }
+                    }
                 }
 
                 //Response

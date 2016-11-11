@@ -726,7 +726,7 @@
                             }
                             postageView.clearInput();
                         } else if (jqXHR.status == 203) {
-                            showNotification("error", "Khách hàng này đã có cước phí!");
+                            showNotification("warning", data['msg']);
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }

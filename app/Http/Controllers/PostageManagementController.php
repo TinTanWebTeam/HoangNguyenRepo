@@ -128,7 +128,7 @@ class PostageManagementController extends Controller
                         }
                         DB::commit();
                     } else {
-                        return response()->json(['msg' => 'ApplyDate error'], 404);
+                        return response()->json(['msg' => 'Ngày áp dụng phải lớn hơn ngày áp dụng trước đó!'], 203);
                     }
 
                     //Response
