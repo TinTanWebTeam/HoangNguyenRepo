@@ -133,25 +133,29 @@
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="customer_id" class="red"><b>Khách hàng</b></label>
-                                            <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Nhập tên khách hàng" data-customerId="">
+                                            <input type="text" class="form-control" id="customer_id" name="customer_id"
+                                                   placeholder="Nhập tên khách hàng" data-customerId="">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="receivePlace" class="red"><b>Nơi nhận</b></label>
-                                            <input type="text" class="form-control" id="receivePlace" name="receivePlace">
+                                            <input type="text" class="form-control" id="receivePlace"
+                                                   name="receivePlace">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="deliveryPlace" class="red"><b>Nơi giao</b></label>
-                                            <input type="text" class="form-control" id="deliveryPlace" name="deliveryPlace">
+                                            <input type="text" class="form-control" id="deliveryPlace"
+                                                   name="deliveryPlace">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="receiveDate" class="red"><b>Ngày nhận</b></label>
-                                            <input type="text" class="date form-control ignore" id="receiveDate" name="receiveDate">
+                                            <input type="text" class="date form-control ignore" id="receiveDate"
+                                                   name="receiveDate">
                                         </div>
                                     </div>
                                 </div>
@@ -159,14 +163,17 @@
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="vehicle_id" class="red"><b>Xe</b></label>
-                                            <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" placeholder="Nhập số xe" data-vehicleId="">
+                                            <input type="text" class="form-control" id="vehicle_id" name="vehicle_id"
+                                                   placeholder="Nhập số xe" data-vehicleId="">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input ">
                                             <label for="product_name"><b>Hàng</b></label>
                                             <div class="ui-widget">
-                                                <input type="text" class="form-control" id="product_name" name="product_name" data-productId="" placeholder="Nhập tên hàng">
+                                                <input type="text" class="form-control" id="product_name"
+                                                       name="product_name" data-productId=""
+                                                       placeholder="Nhập tên hàng">
                                             </div>
                                         </div>
                                     </div>
@@ -179,19 +186,23 @@
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="quantumProduct"><b>Số lượng hàng</b></label>
-                                            <input type="number" class="form-control" id="quantumProduct" name="quantumProduct">
+                                            <input type="number" class="form-control" id="quantumProduct"
+                                                   name="quantumProduct">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group form-md-line-input">
-                                    <div style="position: absolute; display: block; z-index: 3; right: 5%;" class="pull-right">
+                                    <div style="position: absolute; display: block; z-index: 3; right: 5%;"
+                                         class="pull-right">
                                         <strong>HĐ khống</strong>&nbsp;
-                                        <input type="checkbox" id="transportType" name="transportType" onchange="transportView.renderEventCheckbox(this)">
+                                        <input type="checkbox" id="transportType" name="transportType"
+                                               onchange="transportView.renderEventCheckbox(this)">
                                     </div>
                                     <label for="note"><b>Ghi chú đơn hàng</b></label>
-                                    <textarea type="text" class="form-control" id="note" name="note" rows="4"></textarea>
+                                    <textarea type="text" class="form-control" id="note" name="note"
+                                              rows="4"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -201,19 +212,22 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="cashRevenue" class="red"><b>Doanh thu</b></label>
-                                            <input type="text" class="form-control currency" id="cashRevenue" name="cashRevenue">
+                                            <input type="text" class="form-control currency" id="cashRevenue"
+                                                   name="cashRevenue">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="cashDelivery" class="red"><b>Giao xe</b></label>
-                                            <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery">
+                                            <input type="text" class="form-control currency" id="cashDelivery"
+                                                   name="cashDelivery">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="cashReceive" class="red"><b>Nhận</b></label>
-                                            <input type="text" class="form-control currency" id="cashReceive" name="cashReceive">
+                                            <input type="text" class="form-control currency" id="cashReceive"
+                                                   name="cashReceive">
                                         </div>
                                     </div>
                                 </div>
@@ -221,13 +235,15 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="carrying"><b>Bốc xếp</b></label>
-                                            <input type="text" name="carrying" id="carrying" class="form-control currency">
+                                            <input type="text" name="carrying" id="carrying"
+                                                   class="form-control currency">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="parking"><b>Neo đêm</b></label>
-                                            <input type="text" name="parking" id="parking" class="form-control currency">
+                                            <input type="text" name="parking" id="parking"
+                                                   class="form-control currency">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -241,7 +257,8 @@
                             <div class="col-md-4">
                                 <div class="form-group form-md-line-input">
                                     <label for="costNote"><b>Ghi chú chi phí</b></label>
-                                    <textarea type="text" class="form-control" id="costNote" name="costNote" rows="4"></textarea>
+                                    <textarea type="text" class="form-control" id="costNote" name="costNote"
+                                              rows="4"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +272,8 @@
                             <div class="col-md-3">
                                 <div class="form-group form-md-line-input">
                                     <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
-                                    <input type="number" class="form-control" id="voucherQuantumProduct" name="voucherQuantumProduct">
+                                    <input type="number" class="form-control" id="voucherQuantumProduct"
+                                           name="voucherQuantumProduct">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -277,8 +295,12 @@
                                     <label for=""></label>
                                     <div class="form-actions">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-primary marginRight" onclick="transportView.save()">Hoàn tất</button>
-                                            <button type="button" class="btn default" onclick="transportView.clearInput()">Nhập lại</button>
+                                            <button type="button" class="btn btn-primary marginRight"
+                                                    onclick="transportView.save()">Hoàn tất
+                                            </button>
+                                            <button type="button" class="btn default"
+                                                    onclick="transportView.clearInput()">Nhập lại
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -771,7 +793,7 @@
                 },
                 renderEventFocusOut: function () {
                     $("#product_name").focusout(function () {
-                        if(transportView.transportType === 1)
+                        if (transportView.transportType === 1)
                             return;
                         productName = this.value;
                         if (productName == '') return;
@@ -787,7 +809,7 @@
                         }
                     });
                     $("#vehicle_id").focusout(function () {
-                        if(transportView.transportType === 1)
+                        if (transportView.transportType === 1)
                             return;
                         fullNumber = this.value;
                         if (fullNumber == '') return;
@@ -804,7 +826,7 @@
                         }
                     });
                     $("#customer_id").focusout(function () {
-                        if(transportView.transportType === 1)
+                        if (transportView.transportType === 1)
                             return;
                         custName = this.value;
                         if (custName == '') return;
@@ -833,7 +855,7 @@
                         transportView.postDataPostageOfCustomer();
                     });
                 },
-                renderEventCheckbox: function(cb){
+                renderEventCheckbox: function (cb) {
                     transportView.transportType = (cb.checked) ? 1 : 0;
                 },
 
@@ -1057,7 +1079,7 @@
                     removeDataTable();
 
                     for (var i = 0; i < data.length; i++) {
-                        if(data[i]['transportType'] === 1){
+                        if (data[i]['transportType'] === 1) {
                             data[i].fullNumber = data[i]['vehicle_name'];
                             data[i].products_name = data[i]['product_name'];
                             data[i].customers_fullName = data[i]['customer_name'];
@@ -1162,10 +1184,10 @@
                             }
                         ],
                         columnDefs: [
-                            { responsivePriority: 1, targets: -1 },
-                            { responsivePriority: 1, targets: -2 },
+                            {responsivePriority: 1, targets: -1},
+                            {responsivePriority: 1, targets: -2},
                             {
-                                "targets": [ 8 ],
+                                "targets": [8],
                                 "visible": false
                             }
                         ],
@@ -1226,7 +1248,7 @@
                     var status = (transportView.transportType === 0) ? false : true;
                     $("input[id=transportType]").attr('checked', status);
 
-                    if(transportView.transportType === 1){
+                    if (transportView.transportType === 1) {
                         $("input[id='vehicle_id']").val(transportView.current["vehicle_name"]);
                         $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicle_id"]);
                         $("input[id='customer_id']").val(transportView.current["customer_name"]);
@@ -1324,7 +1346,7 @@
                         transportView.current.voucher_transport = transportView.arrayVoucher;
                         transportView.current.transportType = transportView.transportType;
                     }
-                    if(transportView.transportType === 1){
+                    if (transportView.transportType === 1) {
                         transportView.current.vehicle_name = $("input[id='vehicle_id']").val();
                         transportView.current.customer_name = $("input[id='customer_id']").val();
                         transportView.current.product_name = $("input[id='product_name']").val();
@@ -1459,7 +1481,7 @@
                             _id: transportView.idDelete
                         };
                     } else {
-                        if(transportView.transportType === 0){
+                        if (transportView.transportType === 0) {
                             transportView.formValidate();
                             if (!$("#frmControl").valid()) {
                                 $("form#frmControl").find("label[class=error]").css("color", "red");
@@ -1498,7 +1520,7 @@
                         if (jqXHR.status == 201) {
                             switch (transportView.action) {
                                 case 'add':
-                                    if(data['transport']['transportType'] === 1){
+                                    if (data['transport']['transportType'] === 1) {
                                         data['transport'].fullNumber = data['transport']['vehicle_name'];
                                         data['transport'].products_name = data['transport']['product_name'];
                                         data['transport'].customers_fullName = data['transport']['customer_name'];
@@ -1519,7 +1541,7 @@
                                     });
                                     var indexOfOld = _.indexOf(transportView.dataTransport, Old);
 
-                                    if(data['transport']['transportType'] === 1){
+                                    if (data['transport']['transportType'] === 1) {
                                         data['transport'].fullNumber = data['transport']['vehicle_name'];
                                         data['transport'].products_name = data['transport']['product_name'];
                                         data['transport'].customers_fullName = data['transport']['customer_name'];
@@ -1631,13 +1653,13 @@
                 },
 
                 postDataPostageOfCustomer: function () {
-                    if($("#customer_id").attr('data-customerId') == '')
+                    if ($("#customer_id").attr('data-customerId') == '')
                         return;
-                    if($("#receivePlace").val() == '')
+                    if ($("#receivePlace").val() == '')
                         return;
-                    if($("#deliveryPlace").val() == '')
+                    if ($("#deliveryPlace").val() == '')
                         return;
-                    if($("#receiveDate").val() == '')
+                    if ($("#receiveDate").val() == '')
                         return;
 
                     var customerId = $("#customer_id").attr('data-customerId');

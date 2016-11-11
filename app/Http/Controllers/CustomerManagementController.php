@@ -82,7 +82,7 @@ class CustomerManagementController extends Controller
 
         $action = $request->input('_action');
         if ($action != 'delete') {
-            $validator = ValidateController::ValidateCustomer($request->input('_customer'),$action);
+            $validator = ValidateController::ValidateCustomer($request->input('_customer'), $action);
             if ($validator->fails()) {
                 return $validator->errors();
 //                return response()->json(['msg' => 'Input data fail'], 404);
@@ -661,7 +661,7 @@ class CustomerManagementController extends Controller
             $customer_id = $request->input('_transport')['customer_id'];
             $costNote = $request->input('_transport')['costNote'];
             $transportType = $request->input('_transport')['transportType'];
-            if($transportType == 1){
+            if ($transportType == 1) {
                 $vehicle_name = $request->input('_transport')['vehicle_name'];
                 $customer_name = $request->input('_transport')['customer_name'];
                 $product_name = $request->input('_transport')['product_name'];
@@ -705,7 +705,7 @@ class CustomerManagementController extends Controller
                     $transportNew->transportType = $transportType;
                     $transportNew->costNote = $costNote;
                     $transportNew->vehicle_id = $vehicle_id;
-                    if($transportType == 1){
+                    if ($transportType == 1) {
                         $transportNew->vehicle_name = $vehicle_name;
                         $transportNew->customer_name = $customer_name;
                         $transportNew->product_name = $product_name;
@@ -789,7 +789,7 @@ class CustomerManagementController extends Controller
                     $transportUpdate->costNote = $costNote;
                     $transportUpdate->vehicle_id = $vehicle_id;
 
-                    if($transportType == 1){
+                    if ($transportType == 1) {
                         $transportUpdate->vehicle_name = $vehicle_name;
                         $transportUpdate->customer_name = $customer_name;
                         $transportUpdate->product_name = $product_name;
@@ -951,12 +951,13 @@ class CustomerManagementController extends Controller
         $cashDelivery = ($postageDetail == null) ? 0 : $postageDetail->cashDelivery;
 
         $response = [
-            'msg'     => 'Get postage success',
-            'postage' => $postage,
+            'msg'          => 'Get postage success',
+            'postage'      => $postage,
             'cashDelivery' => $cashDelivery
         ];
         return response()->json($response, 201);
     }
+
     public function getDataVehicle()
     {
         $vehicleTypes = VehicleType::all();
@@ -981,7 +982,7 @@ class CustomerManagementController extends Controller
             'vehicles'     => $vehicles,
             'vehicleTypes' => $vehicleTypes,
             'drivers'      => $driver,
-            'garageTypes'      => $garageType,
+            'garageTypes'  => $garageType,
             'garages'      => $garages,
         ];
         return response()->json($response, 200);

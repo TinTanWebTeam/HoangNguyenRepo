@@ -45,7 +45,7 @@ class VehicleManagementController extends Controller
             'vehicles'     => $vehicles,
             'vehicleTypes' => $vehicleTypes,
             'drivers'      => $driver,
-            'garageTypes'      => $garageType,
+            'garageTypes'  => $garageType,
             'garages'      => $garages,
         ];
         return response()->json($response, 200);
@@ -118,7 +118,7 @@ class VehicleManagementController extends Controller
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case 'update':
-               // dd($request->input('_vehicle')['id']);
+                // dd($request->input('_vehicle')['id']);
                 $vehicleUpdate = Vehicle::findOrFail($request->input('_vehicle')['id']);
                 $vehicleUpdate->vehicleType_id = $vehicleType_id;
                 $vehicleUpdate->garage_id = $garage_id;
