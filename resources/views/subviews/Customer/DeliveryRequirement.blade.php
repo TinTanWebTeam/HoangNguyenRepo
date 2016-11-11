@@ -883,7 +883,7 @@
                 },
                 loadListVehicle: function () {
                     $.ajax({
-                        url: url + 'vehicle-inside/vehicles',
+                        url: url + 'customer/vehicles',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomerType;
 use App\Postage;
 use App\PostageDetail;
 use Carbon\Carbon;
@@ -175,5 +176,26 @@ class PostageManagementController extends Controller
             'fuels'          => $fuels
         ];
         return $response;
+    }
+    public function getDataCustomer()
+    {
+        $staffCustomers = DB::table('staffCustomers')
+            ->select('staffCustomers.*')
+            ->join('customers', 'customers.id', '=', 'staffCustomers.customer_id')
+            ->where('staffCustomers.active', 1)
+            ->get();
+        $customers = DB::table('customers')
+            ->select('customers.*', 'customerTypes.name as customerTypes_name')
+            ->join('customerTypes', 'customerTypes.id', '=', 'customers.customerType_id')
+            ->where('customers.active', '=', '1')
+            ->get();
+        $customerTypes = CustomerType::all();
+        $response = [
+            'msg'           => 'Get list all Customer',
+            'customers'     => $customers,
+            'customerTypes' => $customerTypes,
+            'dataStaff'     => $staffCustomers,
+        ];
+        return response()->json($response, 200);
     }
 }

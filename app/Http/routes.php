@@ -70,6 +70,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/customer/postage', 'CustomerManagementController@postDataPostageOfCustomer');
 
 
+        Route::get('/customer/vehicles', 'CustomerManagementController@getDataVehicle');
+
+
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         //get View
@@ -144,6 +147,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/postage/postages', 'PostageManagementController@getDataPostage');
 
         Route::post('/postage/modify', 'PostageManagementController@postModifyPostage');
+        Route::get('/postage/customers', 'PostageManagementController@getDataCustomer');
     });
     //QL giá nhiên liệu
     Route::group(['middleware' => 'FuelManagement', 'prefix' => 'fuel-price'], function () {

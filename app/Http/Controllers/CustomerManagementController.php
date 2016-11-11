@@ -6,6 +6,9 @@ use App\CostPrice;
 use App\Customer;
 
 use App\CustomerType;
+use App\Driver;
+use App\Garage;
+use App\GarageType;
 use App\InvoiceCustomer;
 use App\InvoiceCustomerDetail;
 use App\Postage;
@@ -14,6 +17,7 @@ use App\Product;
 use App\StaffCustomer;
 use App\Status;
 use App\Transport;
+use App\VehicleType;
 use App\Voucher;
 use App\VoucherTransport;
 use DB;
@@ -952,5 +956,34 @@ class CustomerManagementController extends Controller
             'cashDelivery' => $cashDelivery
         ];
         return response()->json($response, 201);
+    }
+    public function getDataVehicle()
+    {
+        $vehicleTypes = VehicleType::all();
+        $garageType = GarageType::all();
+        $driver = Driver::all();
+        $garages = Garage::all();
+        $vehicles = \DB::table('vehicles')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+            ->join('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
+            ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
+            ->select('vehicles.*'
+                , 'vehicleTypes.name as vehicleTypes_name'
+                , 'garages.name as garages_name'
+                , 'drivers.fullName as driverName'
+                , 'drivers.id as driver_id')
+            ->where('vehicles.active', 1)
+            ->orderBy('vehicles.id', 'desc')
+            ->get();
+        $response = [
+            'msg'          => 'Get data vehicle success',
+            'vehicles'     => $vehicles,
+            'vehicleTypes' => $vehicleTypes,
+            'drivers'      => $driver,
+            'garageTypes'      => $garageType,
+            'garages'      => $garages,
+        ];
+        return response()->json($response, 200);
     }
 }

@@ -383,7 +383,7 @@
                 },
                 loadListCustomer: function () {
                     $.ajax({
-                        url: url + 'customer/customers',
+                        url: url + 'postage/customers',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
