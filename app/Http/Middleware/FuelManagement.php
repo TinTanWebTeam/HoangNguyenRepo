@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Role;
 use Closure;
 
 class FuelManagement
