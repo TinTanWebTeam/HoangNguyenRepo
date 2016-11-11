@@ -34,8 +34,7 @@ class DebtManagementController extends Controller
                 'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                 'statuses_tran.status as status_transport_',
                 'statuses_cust.status as status_customer_',
-                'statuses_gar.status as status_garage_',
-                'invoiceCustomers.invoiceCode'
+                'statuses_gar.status as status_garage_'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -46,16 +45,14 @@ class DebtManagementController extends Controller
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-            ->leftJoin('invoiceCustomers', 'invoiceCustomers.id', '=', 'transports.invoiceCustomer_id')
-//            ->whereRaw('transports.cashReceive < transports.cashRevenue')
-            ->where('transports.active', '=', '1')
+            ->where('transports.active', 1)
             ->get();
 
         $invoiceCustomers = DB::table('invoiceCustomers')
             ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
             ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
             ->join('customers', 'customers.id', '=', 'transports.customer_id')
-            ->where('invoiceCustomers.active', '=', '1')
+            ->where('invoiceCustomers.active', 1)
             ->get();
 
         $invoiceCustomerDetails = DB::table('invoiceCustomerDetails')
@@ -68,13 +65,16 @@ class DebtManagementController extends Controller
 
         $invoiceCode = $this->generateInvoiceCode('customer');
 
+        $transportInvoices = DB::table('transportInvoices')->get();
+
         $response = [
             'msg'                    => 'Get list all Transport',
             'transports'             => $transports,
             'invoiceCustomers'       => $invoiceCustomers,
             'invoiceCustomerDetails' => $invoiceCustomerDetails,
             'printHistories'         => $printHistories,
-            'invoiceCode'            => $invoiceCode
+            'invoiceCode'            => $invoiceCode,
+            'transportInvoices'      => $transportInvoices
         ];
         return response()->json($response, 200);
     }
@@ -145,6 +145,40 @@ class DebtManagementController extends Controller
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
 
+            //Kiem tra xem cac transport nay da xuat hoa don chua
+            //Neu da xuat hoa don thi kiem tra xem ma cac hoa don do co giong nhau khong
+            //Neu giong nhau tien hanh them hoa don them lan nua
+
+            //Kiểm tra xem đã xuất hđ hay chưa
+            $kt = false;
+            $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)->get();
+            if(count($array_transportInvoice) > 0)
+                $kt = true;
+
+            //Nếu đã xuất hóa đơn
+            if($kt){
+                $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])->pluck('invoiceCustomer_id');
+                if($arrayInvoice == null) {
+                    return response()->json(['msg' => 'Không tìm thấy arrayInvoice'], 203);
+                };
+                $array_match = true;
+                foreach($arrayInvoice as $invoiceId){
+                    $arrayTransport = TransportInvoice::where('invoiceCustomer_id', $invoiceId)->pluck('transport_id');
+                    if($arrayTransport == null) {
+                        return response()->json(['msg' => 'Không tìm thấy arrayTransport'], 203);
+                    }
+                    $collectTransportStock = collect($array_transportId);
+                    $diff = $collectTransportStock->diff($arrayTransport);
+                    if(count($diff->all()) > 0){
+                        //khac nhau
+                        $array_match = false;
+                    }
+                }
+                if(!$array_match){
+                    return response()->json(['msg' => 'Các đơn hàng đã chọn không khớp nhau.'], 203);
+                }
+            }
+
             $invoiceCustomer = new InvoiceCustomer();
 
             $invoiceCode = $this->generateInvoiceCode('customer');
@@ -173,6 +207,7 @@ class DebtManagementController extends Controller
 
             $invoiceCustomer->note = $request->input('_invoiceCustomer')['note'];
             $invoiceCustomer->totalPay = $request->input('_invoiceCustomer')['totalPay'];
+            $invoiceCustomer->totalTransport = $request->input('_invoiceCustomer')['totalTransport'];
             $invoiceCustomer->prePaid = $request->input('_invoiceCustomer')['prePaid'];
             $invoiceCustomer->totalPaid = $request->input('_invoiceCustomer')['paidAmt'];
             $invoiceCustomer->createdBy = \Auth::user()->id;
