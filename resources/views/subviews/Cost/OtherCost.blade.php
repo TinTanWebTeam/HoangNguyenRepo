@@ -319,6 +319,7 @@
                 tableVehicleNew: null,
                 idDelete: null,
                 current: null,
+                tagsVehicle: [],
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -464,12 +465,26 @@
                     defaultZero("#costPrice");
                 },
                 renderAutoCompleteSearch: function () {
-                    var vehicle = _.map(otherCostView.tableVehicle, function (o) {
+                    otherCostView.tagsVehicle = _.map(otherCostView.tableVehicle, function (o) {
                         return o.areaCode + '-' + o.vehicleNumber;
                     });
-                    $("#vehicle_id").autocomplete({
-                        source: vehicle
-                    });
+                    otherCostView.tagsVehicle = _.union(otherCostView.tagsVehicle);
+
+                    renderAutoCompleteSearch('#vehicle_id', otherCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
+                        var vehicleName = this.value;
+                        if (vehicleName == '') return;
+                        var vehicle = _.find(otherCostView.tableVehicle, function (o) {
+                            return o.areaCode + '-' + o.vehicleNumber == vehicleName;
+                        });
+                        if (typeof vehicle === "undefined") {
+                            otherCostView.loadListGarageAndVehicleType();
+                            otherCostView.displayModal("show", "#modal-addVehicle");
+                            $("input[id=areaCode]").focus();
+                        } else {
+                            $("#vehicle_id").attr("data-id", vehicle.id);
+                        }
+                    }));
+
                 },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {

@@ -139,7 +139,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-md-12 ">
                             <div class="row">
                                 <div class="col-md-6 ">
@@ -201,7 +200,8 @@
                                             onclick="petroleumCostView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="petroleumCostView.cancel()">Nhập lại
+                                    <button type="button" class="btn default" onclick="petroleumCostView.cancel()">Nhập
+                                        lại
                                     </button>
                                 </div>
                             </div>
@@ -420,6 +420,7 @@
                 tableVehicleNew: null,
                 idDelete: null,
                 current: null,
+                tagsVehicle: [],
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -547,8 +548,8 @@
                             petroleumCostView.tablePrice = data['tablePrice'];
                             petroleumCostView.inputPrice(data['tablePrice']);
                             petroleumCostView.tableVehicle = data['dataVehicle'];
-
                             petroleumCostView.renderAutoCompleteSearch();
+
 
                         } else {
                             petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -599,12 +600,26 @@
                     defaultZero("#costPrice");
                 },
                 renderAutoCompleteSearch: function () {
-                    var vehicle = _.map(petroleumCostView.tableVehicle, function (o) {
+                    petroleumCostView.tagsVehicle = _.map(petroleumCostView.tableVehicle, function (o) {
                         return o.areaCode + '-' + o.vehicleNumber;
                     });
-                    $( "#vehicle_id" ).autocomplete({
-                        source: vehicle
-                    });
+                    petroleumCostView.tagsVehicle = _.union(petroleumCostView.tagsVehicle);
+
+                    renderAutoCompleteSearch('#vehicle_id', petroleumCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
+                        var vehicleName = this.value;
+                        if (vehicleName == '') return;
+                        var vehicle = _.find(petroleumCostView.tableVehicle, function (o) {
+                            return o.areaCode + '-' + o.vehicleNumber == vehicleName;
+                        });
+                        if (typeof vehicle === "undefined") {
+                            petroleumCostView.loadListGarageAndVehicleType();
+                            petroleumCostView.displayModal("show", "#modal-addVehicle");
+                            $("input[id=areaCode]").focus();
+                        } else {
+                            $("#vehicle_id").attr("data-id", vehicle.id);
+                        }
+                    }));
+
                 },
                 renderDateTimePicker: function () {
                     $('#dateFuel').datepicker({
@@ -653,6 +668,7 @@
                     $("input[id='noted']").val(petroleumCostView.current["note"]);
                     $("input[id='price']").val(petroleumCostView.current["prices_price"]);
                     $("#price").attr('data-priceId', petroleumCostView.current["price_id"]);
+                    $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     formatCurrency(".currency");
 
                 },
@@ -705,7 +721,6 @@
                         order: [[1, "desc"]]
                     })
                 },
-
                 ValidatePetrol: function () {
                     $("#formPetroleum").validate({
                         rules: {
@@ -728,7 +743,6 @@
                         }
                     });
                 },
-
                 save: function () {
                     var sendToServer = null;
                     if (petroleumCostView.action == 'delete') {
@@ -811,8 +825,6 @@
                         }
                     }
                 },
-
-
                 loadListGarageAndVehicleType: function () {
                     petroleumCostView.displayModal('show', '#modal-addVehicle');
                     $.ajax({

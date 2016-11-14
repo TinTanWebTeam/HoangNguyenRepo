@@ -238,9 +238,9 @@
                 </form>
             </div>
         </div>
-    </div> <!-- end #frmControl -->
+    </div>
 </div>
-
+<!-- end #frmControl -->
 
 <!-- Modal add CostPrice -->
 <div class="row">
@@ -443,6 +443,7 @@
                 tableVehicleNew: null,
                 idDelete: null,
                 current: null,
+                tagsVehicle: [],
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -622,12 +623,26 @@
 
                 },
                 renderAutoCompleteSearch: function () {
-                    var vehicle = _.map(parkingCostView.tableVehicle, function (o) {
+                    parkingCostView.tagsVehicle = _.map(parkingCostView.tableVehicle, function (o) {
                         return o.areaCode + '-' + o.vehicleNumber;
                     });
-                    $( "#vehicle_id" ).autocomplete({
-                        source: vehicle
-                    });
+                    parkingCostView.tagsVehicle = _.union(parkingCostView.tagsVehicle);
+                    renderAutoCompleteSearch('#vehicle_id', parkingCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
+                        var vehicleName = this.value;
+                        if (vehicleName == '') return;
+                        var vehicle = _.find(parkingCostView.tableVehicle, function (o) {
+                            return o.areaCode + '-' + o.vehicleNumber == vehicleName;
+                        });
+                        if (typeof vehicle === "undefined") {
+                            alert('a');
+                            parkingCostView.loadListGarageAndVehicleType();
+                            parkingCostView.displayModal("show", "#modal-addVehicle");
+                            $("input[id=areaCode]").focus();
+                        } else {
+                            $("#vehicle_id").attr("data-id", vehicle.id);
+                        }
+                    }));
+
                 },
                 renderDateTimePicker: function () {
                     $('#dateCheckOut').datepicker({

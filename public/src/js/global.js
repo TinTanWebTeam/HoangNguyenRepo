@@ -239,6 +239,14 @@ function defaultZero(id){
     });
 }
 
+function defaultOne(id){
+    $(id).focusout(function(){
+        if($(this).val() == ''){
+            $(id).val(1);
+        }
+    });
+}
+
 function verifyProject(){
     // var dayDeploy = moment([2016, 9, 1]);
     // var dayExpire = moment();

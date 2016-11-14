@@ -396,7 +396,7 @@
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
-                                                               onclick="fuelCostView.addVehicles()">
+                                                onclick="fuelCostView.addVehicles()">
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
@@ -431,6 +431,7 @@
                 tableVehicleType: null,
                 tableVehicleNew: null,
                 current: null,
+                tagsVehicle: [],
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -526,12 +527,25 @@
 
                 },
                 renderAutoCompleteSearch: function () {
-                    var vehicle = _.map(fuelCostView.tableVehicle, function (o) {
+                    fuelCostView.tagsVehicle = _.map(fuelCostView.tableVehicle, function (o) {
                         return o.areaCode + '-' + o.vehicleNumber;
                     });
-                    $( "#vehicle_id" ).autocomplete({
-                        source: vehicle
-                    });
+                    fuelCostView.tagsVehicle = _.union(fuelCostView.tagsVehicle);
+                    renderAutoCompleteSearch('#vehicle_id', fuelCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
+                        var vehicleName = this.value;
+                        if (vehicleName == '') return;
+                        var vehicle = _.find(fuelCostView.tableVehicle, function (o) {
+                            return o.areaCode + '-' + o.vehicleNumber == vehicleName;
+                        });
+                        if (typeof vehicle === "undefined") {
+                            fuelCostView.loadListGarageAndVehicleType();
+                            fuelCostView.displayModal("show", "#modal-addVehicle");
+                            $("input[id=areaCode]").focus();
+                        } else {
+                            $("#vehicle_id").attr("data-id", vehicle.id);
+                        }
+                    }));
+
                 },
                 inputPrice: function () {
                     $("input[id='price']").val(fuelCostView.tablePrice.price);
@@ -587,7 +601,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#dateFuel').datepicker("setDate", new Date());
+//                    $('#dateFuel').datepicker("setDate", new Date());
                     $('#timeFuel').timepicker('setTime', new Date());
                 },
                 fillFormDataToCurrentObject: function () {

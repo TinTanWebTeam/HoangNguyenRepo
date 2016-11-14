@@ -24,25 +24,6 @@ class CostManagementController extends Controller
         return view('subviews.Cost.FuelCost');
     }
 
-//    public function getListDataVehicle()
-//    {
-////        $tableVehicle = DB::table('vehicles')
-////            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-////            ->where('vehicles.active', 1)
-////            ->select('vehicles.*', 'vehicleTypes.name as vehicleType')
-////            ->get();
-//        $vehicle = DB::table('vehicles')
-//            ->where('active', 1)
-//            ->get();
-//        $response = [
-//            //'tableVehicle' => $tableVehicle
-//            'tableVehicle' => $vehicle
-//        ];
-//        return response()->json($response, 200);
-//
-//
-//    }
-
     public function getListDataOptionGarageAndVehicle()
     {
         $tableVehicleType = VehicleType::all();
@@ -108,7 +89,7 @@ class CostManagementController extends Controller
     {
         $prices_price = null;
         $literNumber = null;
-        $vehicle = null;
+        $vehicle_id = null;
         $totalCost = null;
         $datetime = null;
         $note = null;
@@ -122,7 +103,7 @@ class CostManagementController extends Controller
             $prices_price = str_replace(',', '', $request->get('_object')['prices_price']);
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
-            $vehicle = $request->get('_object')['vehicle_id'];
+            $vehicle_id = $request->get('_object')['vehicle_id'];
             $totalCost = $literNumber * $prices_price;
             $dateFuel = $request->get('_object')['dateFuel'];
             $timeFuel = $request->get('_object')['timeFuel'];
@@ -146,7 +127,7 @@ class CostManagementController extends Controller
                     $fuelCostsNew->updatedBy = Auth::user()->id;
                     $fuelCostsNew->note = $noted;
                     $fuelCostsNew->price_id = $prices_id;
-                    $fuelCostsNew->vehicle_id = $vehicle;
+                    $fuelCostsNew->vehicle_id = $vehicle_id;
                     if ($fuelCostsNew->save()) {
                         $costs = \DB::table('costs')
                             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
@@ -183,7 +164,7 @@ class CostManagementController extends Controller
                     $fuelCostsUpdate->cost = $totalCost;
                     $fuelCostsUpdate->dateRefuel = $datetime;
                     $fuelCostsUpdate->note = $noted;
-                    $fuelCostsUpdate->vehicle_id = $vehicle;
+                    $fuelCostsUpdate->vehicle_id = $vehicle_id;
                     $fuelCostsUpdate->price_id = $prices_id;
                     $fuelCostsUpdate->updatedBy = Auth::user()->id;
                     if ($fuelCostsUpdate->update()) {
@@ -418,10 +399,10 @@ class CostManagementController extends Controller
     {
         $prices_price = null;
         $literNumber = null;
-        $vehicle = null;
         $totalCost = null;
         $datetime = null;
         $note = null;
+        $vehicle_id = null;
         $action = $request->get('_action');
         if ($action != 'delete') {
             $validator = ValidateController::ValidatePetroleum($request->get('_object'));
@@ -433,7 +414,7 @@ class CostManagementController extends Controller
             $prices_price = str_replace(',', '', $request->get('_object')['prices_price']);
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
-            $vehicle = $request->get('_object')['vehicle_id'];
+            $vehicle_id = $request->get('_object')['vehicle_id'];
             $totalCost = $literNumber * $prices_price;
             $dateFuel = $request->get('_object')['dateFuel'];
             $timeFuel = $request->get('_object')['timeFuel'];
@@ -451,7 +432,7 @@ class CostManagementController extends Controller
                 $petroleumNew->updatedBy = Auth::user()->id;
                 $petroleumNew->note = $noted;
                 $petroleumNew->price_id = $prices_id;
-                $petroleumNew->vehicle_id = $vehicle;
+                $petroleumNew->vehicle_id = $vehicle_id;
 
                 if ($petroleumNew->save()) {
                     $tablePetrolNew = \DB::table('costs')
@@ -479,13 +460,12 @@ class CostManagementController extends Controller
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case "update":
-
                 $petroleumUpdate = Cost::findOrFail($request->get('_object')['id']);
                 $petroleumUpdate->literNumber = $literNumber;
                 $petroleumUpdate->cost = $totalCost;
                 $petroleumUpdate->dateRefuel = $datetime;
                 $petroleumUpdate->note = $noted;
-                $petroleumUpdate->vehicle_id = $vehicle;
+                $petroleumUpdate->vehicle_id = $vehicle_id;
                 $petroleumUpdate->price_id = $prices_id;
                 $petroleumUpdate->updatedBy = Auth::user()->id;
 
