@@ -36,8 +36,6 @@ class CreateTransportsTable extends Migration
             $table->integer('vehicle_id')->nullable();
             $table->integer('product_id')->nullable();
             $table->integer('customer_id')->nullable();
-            $table->integer('invoiceCustomer_id')->nullable();
-            $table->integer('invoiceGarage_id')->nullable();
             $table->integer('status_transport')->nullable()->comment('Trạng thái đơn hàng');
             $table->integer('status_customer')->nullable()->comment('Trạng thái công nợ khách hàng');
             $table->integer('status_garage')->nullable()->comment('Trạng thái công nợ nhà xe');

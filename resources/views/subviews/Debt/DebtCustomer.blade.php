@@ -954,9 +954,11 @@
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
                     if (flag == 0) {
-                        if (!debtCustomerView.validateListTransport()) {
+                        var dataAfterValidate = debtCustomerView.validateListTransport();
+
+                        if (dataAfterValidate['status'] === 0) {
                             $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                            $("#modal-notification").find(".modal-body").html("Những đơn hàng đã chọn không hợp lệ!");
+                            $("#modal-notification").find(".modal-body").html(dataAfterValidate['msg']);
                             debtCustomerView.displayModal('show', '#modal-notification');
                             return;
                         }
@@ -965,7 +967,6 @@
                         debtCustomerView.action = "new";
                         prePaid = 0;
                         totalPay = 0;
-                        console.log(debtCustomerView.array_transportId);
                         for (i = 0; i < debtCustomerView.array_transportId.length; i++) {
                             currentRow = _.find(debtCustomerView.dataTransport, function (o) {
                                 return o.id == debtCustomerView.array_transportId[i];
@@ -977,13 +978,23 @@
                             }
                         }
 
-                        $("input[id=totalPay]").val(totalPay);
-                        $("input[id=totalPay]").attr('data-totalTransport', totalPay);
-                        $("input[id=prePaid]").val(prePaid);
+                        if(dataAfterValidate['status'] === 1){ //First
+                            $("input[id=totalPay]").val(totalPay);
+                            $("input[id=totalPay]").attr('data-totalTransport', totalPay);
+                            $("input[id=prePaid]").val(prePaid);
 
-                        debt = totalPay - prePaid;
-                        $("input[id=debt]").val(debt);
-                        $("input[id=debt-real]").val(debt);
+                            debt = totalPay - prePaid;
+                            $("input[id=debt]").val(debt);
+                            $("input[id=debt-real]").val(debt);
+                        } else if(dataAfterValidate['status'] === 2){ //Exported
+                            $("input[id=totalPay]").attr('data-totalTransport', totalPay);
+                            totalPay = dataAfterValidate['totalPay'];
+                            $("input[id=totalPay]").val(totalPay);
+                            $("input[id=prePaid]").val(prePaid);
+
+                            $("input[id=debt]").val(totalPay);
+                            $("input[id=debt-real]").val(totalPay);
+                        }
                         $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
 
                         //set default value
@@ -996,7 +1007,7 @@
                         $("input[id=VAT]").val(10);
                         debtCustomerView.computeHasVAT(10);
 
-                        //remove readly input
+                        //remove readonly input
                         $("input[id=invoiceCode]").prop('readonly', false);
                         $("input[id=VAT]").prop('readonly', false);
                         $("input[id=hasVAT]").prop('readonly', false);
@@ -1346,13 +1357,46 @@
                     array_customerId = _.uniq(array_customerId);
 
                     if (array_customerId.length == 1 && debtCustomerView.array_transportId.length > 0) {
-
                         //Kiem tra xem nhung don hang nay da xuat hoa don chua
                         //Neu xuat roi thi load totalPay con lai len
 
-                        return true;
+                        var sendToServer = {
+                            _token: _token,
+                            _array_transportId: debtCustomerView.array_transportId
+                        };
+
+                        var result = null;
+                        $.ajax({
+                            url: url + 'debt-customer/validate',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer,
+                            async: false
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                result = data;
+                            } else if (jqXHR.status == 203) {
+                                showNotification("error", data['msg']);
+                            } else {
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            var data = {
+                                'status': 0,
+                                'totalPay': 0,
+                                'msg': 'Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.'
+                            };
+                            result = data;
+                        });
+                        return result;
                     } else {
-                        return false;
+                        var result = {
+                            'status': 0,
+                            'totalPay': 0,
+                            'msg': 'Khách hàng hoặc đơn hàng không hợp lệ!'
+                        };
+                        return result;
                     }
                 },
                 validateForm: function () {
@@ -1729,14 +1773,14 @@
                     $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
                     formatCurrency(".currency");
                 },
-                computeWhenTotalpayChange: function(totalPay){
+                computeWhenTotalpayChange: function (totalPay) {
                     console.log(totalPay);
                     totalPay = convertStringToNumber(totalPay);
                     console.log(totalPay);
 
                     totalTransport = parseInt($('input[id=totalPay]').attr('data-totalTransport'));
 
-                    if(totalPay > totalTransport){
+                    if (totalPay > totalTransport) {
                         showNotification('warning', 'Số tiền trên hóa đơn không được lớn hơn tổng tiền của các đơn hàng.');
                         totalPay = totalTransport;
                         $("input[id=totalPay]").val(totalPay);
@@ -1744,9 +1788,9 @@
 
                     vat = parseInt($("input[id=VAT]").val());
                     paidAmt = parseInt($("input[id=paidAmt]").val());
-                    $("input[id=debt-real]").val(totalPay  + (totalPay * vat/100));
+                    $("input[id=debt-real]").val(totalPay + (totalPay * vat / 100));
                     $("input[id=notVAT]").val(totalPay);
-                    $("input[id=hasVAT]").val(totalPay  + (totalPay * vat/100));
+                    $("input[id=hasVAT]").val(totalPay + (totalPay * vat / 100));
                     $("input[id=debt]").val(totalPay - paidAmt);
                     formatCurrency(".currency");
                 }

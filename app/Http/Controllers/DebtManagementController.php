@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Garage;
 use App\InvoiceCustomer;
 use App\InvoiceCustomerDetail;
 use App\InvoiceGarage;
@@ -16,6 +17,19 @@ use League\Flysystem\Exception;
 
 class DebtManagementController extends Controller
 {
+    //Generate invoiceCode
+    public function generateInvoiceCode($type)
+    {
+        if ($type == 'customer')
+            $invoiceCode = "IC" . date('ymd');
+        else
+            $invoiceCode = "IG" . date('ymd');
+
+        $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode . '%')->get()->count() + 1;
+        $invoiceCode .= substr("00" . $stt, -3);
+        return $invoiceCode;
+    }
+
     //Customer
     public function getViewDebtCustomer()
     {
@@ -50,8 +64,9 @@ class DebtManagementController extends Controller
 
         $invoiceCustomers = DB::table('invoiceCustomers')
             ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
-            ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
-            ->join('customers', 'customers.id', '=', 'transports.customer_id')
+            ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+            ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
+            ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
             ->where('invoiceCustomers.active', 1)
             ->get();
 
@@ -59,7 +74,7 @@ class DebtManagementController extends Controller
             ->get();
 
         $printHistories = DB::table('printHistories')
-            ->join('users', 'users.id', '=', 'printHistories.updatedBy')
+            ->leftJoin('users', 'users.id', '=', 'printHistories.updatedBy')
             ->select('printHistories.*', 'users.fullName as users_fullName')
             ->get();
 
@@ -104,8 +119,7 @@ class DebtManagementController extends Controller
                         'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                         'statuses_tran.status as status_transport_',
                         'statuses_cust.status as status_customer_',
-                        'statuses_gar.status as status_garage_',
-                        'invoiceCustomers.invoiceCode'
+                        'statuses_gar.status as status_garage_'
                     )
                     ->leftJoin('products', 'products.id', '=', 'transports.product_id')
                     ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -116,7 +130,6 @@ class DebtManagementController extends Controller
                     ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                     ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
                     ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-                    ->leftJoin('invoiceCustomers', 'invoiceCustomers.id', '=', 'transports.invoiceCustomer_id')
                     ->where([
                         ['transports.active', '=', 1],
                         ['transports.id', '=', $transportUpdate->id]
@@ -139,6 +152,72 @@ class DebtManagementController extends Controller
     }
 
     //Invoice Customer
+    public function postValidateTransportCustomer(Request $request)
+    {
+        $array_transportId = $request->input('_array_transportId');
+
+        //Kiểm tra cùng khách hàng
+        $arrayCustomer = Transport::whereIn('id', $array_transportId)->pluck('customer_id');
+        $collection = collect($arrayCustomer);
+        $unique = $collection->unique();
+        if(count($unique->values()->all()) != 1){
+            return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có khách hàng không giống nhau.'], 203);
+        }
+
+        //Kiểm tra xem đã xuất hđ hay chưa
+        $kt = false;
+        $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)
+            ->where('invoiceCustomer_id', '<>', null)
+            ->get();
+        if(count($array_transportInvoice) > 0)
+            $kt = true;
+
+        //Nếu đã xuất hóa đơn
+        if($kt){
+            $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])
+                ->where('invoiceCustomer_id', '<>', null)
+                ->pluck('invoiceCustomer_id');
+            if($arrayInvoice == null) {
+                return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayInvoice'], 203);
+            };
+            $array_match = true;
+            foreach($arrayInvoice as $invoiceId){
+                $arrayTransport = TransportInvoice::where('invoiceCustomer_id', $invoiceId)
+                    ->where('invoiceCustomer_id', '<>', null)
+                    ->pluck('transport_id');
+                if($arrayTransport == null) {
+                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayTransport'], 203);
+                }
+                $collectTransportStock = collect($array_transportId);
+                $diff = $collectTransportStock->diff($arrayTransport);
+                if(count($diff->all()) > 0){
+                    //khac nhau
+                    $array_match = false;
+                }
+            }
+            if($array_match){
+                $invoices = InvoiceCustomer::find($arrayInvoice[0])->get();
+                if($invoices == null)
+                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy invoices'], 203);
+                $totalTransport = $invoices[0]->totalTransport;
+                $totalPay = 0;
+                foreach($invoices as $invoice){
+                    $totalPay += $invoice->totalPay;
+                }
+                $totalPay = $totalTransport - $totalPay;
+                if($totalPay == 0){
+                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'], 203);
+                }
+                return response()->json(['status' => 2, 'totalPay' => $totalPay, 'msg' => 'Các đơn hàng khớp nhau'], 200);
+            }
+            else{
+                return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng không khớp nhau.'], 203);
+            }
+        } else {
+            return response()->json(['status' => 1, 'totalPay' => 0, 'msg' => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'], 200);
+        }
+    }
+
     public function postModifyInvoiceCustomer(Request $request)
     {
         $action = $request->input('_action');
@@ -241,7 +320,6 @@ class DebtManagementController extends Controller
                 //Update InvoiceCustomer_id for Transport
                 foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
-                    $transportUpdate->invoiceCustomer_id = $invoiceCustomer->id;
                     $transportUpdate->status_customer = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
 
@@ -249,28 +327,29 @@ class DebtManagementController extends Controller
                         DB::rollBack();
                         return response()->json(['msg' => 'Update transport fail!'], 404);
                     }
-                }
 
-                //Insert TransportInvoice
-                $transportInvoice = new TransportInvoice();
-                $transportInvoice->transport_id = $transportUpdate->id;
-                $transportInvoice->invoiceCustomer_id = $invoiceCustomer->id;
-                $transportInvoice->createdBy = \Auth::user()->id;
-                $transportInvoice->updatedBy = \Auth::user()->id;
+                    //Insert TransportInvoice
+                    $transportInvoice = new TransportInvoice();
+                    $transportInvoice->transport_id = $transportUpdate->id;
+                    $transportInvoice->invoiceCustomer_id = $invoiceCustomer->id;
+                    $transportInvoice->createdBy = \Auth::user()->id;
+                    $transportInvoice->updatedBy = \Auth::user()->id;
 
-                if(!$transportInvoice->save()){
-                    DB::rollBack();
-                    return response()->json(['msg' => 'Create transportInvoice fail!'], 404);
+                    if(!$transportInvoice->save()){
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Create transportInvoice fail!'], 404);
+                    }
                 }
 
                 DB::commit();
 
                 $invoiceCustomer = DB::table('invoiceCustomers')
-                    ->leftJoin('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
                     ->where([
                         ['invoiceCustomers.id', '=', $invoiceCustomer->id],
-                        ['invoiceCustomers.active', '=', '1']
+                        ['invoiceCustomers.active', '=', 1]
                     ])
                     ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
                     ->first();
@@ -332,11 +411,12 @@ class DebtManagementController extends Controller
                 DB::commit();
 
                 $invoiceCustomer = DB::table('invoiceCustomers')
-                    ->leftJoin('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
                     ->where([
                         ['invoiceCustomers.id', '=', $invoiceCustomer->id],
-                        ['invoiceCustomers.active', '=', '1']
+                        ['invoiceCustomers.active', '=', 1]
                     ])
                     ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
                     ->first();
@@ -454,10 +534,11 @@ class DebtManagementController extends Controller
                 //Response
                 $invoiceCustomer = DB::table('invoiceCustomers')
                     ->select('invoiceCustomers.*', 'customers.fullName')
-                    ->join('transports', 'transports.invoiceCustomer_id', '=', 'invoiceCustomers.id')
-                    ->join('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
+                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
+                    ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
                     ->where([
-                        ['invoiceCustomers.active', '=', '1'],
+                        ['invoiceCustomers.active', '=', 1],
                         ['invoiceCustomers.id', '=', $invoiceCustomer->id]
                     ])
                     ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
@@ -508,19 +589,6 @@ class DebtManagementController extends Controller
         }
     }
 
-    //Generate invoiceCode
-    public function generateInvoiceCode($type)
-    {
-        if ($type == 'customer')
-            $invoiceCode = "IC" . date('ymd');
-        else
-            $invoiceCode = "IG" . date('ymd');
-
-        $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode . '%')->get()->count() + 1;
-        $invoiceCode .= substr("00" . $stt, -3);
-        return $invoiceCode;
-    }
-
     ###############################
 
     //Garage
@@ -541,8 +609,7 @@ class DebtManagementController extends Controller
                 'costs.cost', 'costs.note as costs_note',
                 'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                 'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
-                'statuses_gar.status as status_garage_',
-                'invoiceGarages.invoiceCode'
+                'statuses_gar.status as status_garage_'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -554,7 +621,6 @@ class DebtManagementController extends Controller
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-            ->leftJoin('invoiceGarages', 'invoiceGarages.id', '=', 'transports.invoiceGarage_id')
             ->where([
                 ['transports.active', '=', 1],
                 ['transports.product_id', '<>', 0],
@@ -565,7 +631,8 @@ class DebtManagementController extends Controller
 
         $invoiceGarages = DB::table('invoiceGarages')
             ->select('invoiceGarages.*', 'garages.name as garages_name')
-            ->leftJoin('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
+            ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
+            ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
             ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
             ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
             ->where([
@@ -626,8 +693,7 @@ class DebtManagementController extends Controller
                     'costs.cost', 'costs.note as costs_note',
                     'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                     'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
-                    'statuses_gar.status as status_garage_',
-                    'invoiceGarages.invoiceCode'
+                    'statuses_gar.status as status_garage_'
                 )
                 ->leftJoin('products', 'products.id', '=', 'transports.product_id')
                 ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -639,7 +705,6 @@ class DebtManagementController extends Controller
                 ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                 ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
                 ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-                ->leftJoin('invoiceGarages', 'invoiceGarages.id', '=', 'transports.invoiceGarage_id')
                 ->where([
                     ['transports.active', '=', 1],
                     ['transports.product_id', '<>', 0],
@@ -661,11 +726,113 @@ class DebtManagementController extends Controller
     }
 
     //Invoice Garage
+    public function postValidateTransportGarage(Request $request)
+    {
+        $array_transportId = $request->input('_array_transportId');
+
+        //Kiểm tra cùng nhà xe
+        $arrayVehicle = Transport::whereIn('id', $array_transportId)->pluck('vehicle_id');
+        $arrayGarage = Garage::whereIn('id', $arrayVehicle)->pluck('id');
+        $collection = collect($arrayGarage);
+        $unique = $collection->unique();
+        if(count($unique->values()->all()) != 1){
+            return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có nhà xe không giống nhau.'], 203);
+        }
+
+        //Kiểm tra xem đã xuất hđ hay chưa
+        $kt = false;
+        $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)
+            ->where('invoiceGarage_id', '<>', null)
+            ->get();
+        if(count($array_transportInvoice) > 0)
+            $kt = true;
+
+        //Nếu đã xuất hóa đơn
+        if($kt){
+            $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])
+                ->where('invoiceGarage_id', '<>', null)
+                ->pluck('invoiceGarage_id');
+            if($arrayInvoice == null) {
+                return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayInvoice'], 203);
+            };
+            $array_match = true;
+            foreach($arrayInvoice as $invoiceId){
+                $arrayTransport = TransportInvoice::where('invoiceGarage_id', $invoiceId)
+                    ->where('invoiceGarage_id', '<>', null)
+                    ->pluck('transport_id');
+                if($arrayTransport == null) {
+                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayTransport'], 203);
+                }
+                $collectTransportStock = collect($array_transportId);
+                $diff = $collectTransportStock->diff($arrayTransport);
+                if(count($diff->all()) > 0){
+                    //khac nhau
+                    $array_match = false;
+                }
+            }
+            if($array_match){
+                $invoices = InvoiceGarage::find($arrayInvoice[0])->get();
+                if($invoices == null)
+                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy invoices'], 203);
+
+                $totalTransport = $invoices[0]->totalTransport;
+                $totalPay = 0;
+                foreach($invoices as $invoice){
+                    $totalPay += $invoice->totalPay;
+                }
+                $totalPay = $totalTransport - $totalPay;
+                if($totalPay == 0){
+                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'], 203);
+                }
+                return response()->json(['status' => 2, 'totalPay' => $totalPay, 'msg' => 'Các đơn hàng khớp nhau'], 200);
+            }
+            else{
+                return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng không khớp nhau.'], 203);
+            }
+        } else {
+            return response()->json(['status' => 1, 'totalPay' => 0, 'msg' => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'], 200);
+        }
+    }
+
     public function postModifyInvoiceGarage(Request $request)
     {
         $action = $request->input('_action');
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
+
+            //Kiem tra xem cac transport nay da xuat hoa don chua
+            //Neu da xuat hoa don thi kiem tra xem ma cac hoa don do co giong nhau khong
+            //Neu giong nhau tien hanh them hoa don them lan nua
+
+            //Kiểm tra xem đã xuất hđ hay chưa
+            $kt = false;
+            $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)->get();
+            if(count($array_transportInvoice) > 0)
+                $kt = true;
+
+            //Nếu đã xuất hóa đơn
+            if($kt){
+                $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])->pluck('invoiceGarage_id');
+                if($arrayInvoice == null) {
+                    return response()->json(['msg' => 'Không tìm thấy arrayInvoice'], 203);
+                };
+                $array_match = true;
+                foreach($arrayInvoice as $invoiceId){
+                    $arrayTransport = TransportInvoice::where('invoiceGarage_id', $invoiceId)->pluck('transport_id');
+                    if($arrayTransport == null) {
+                        return response()->json(['msg' => 'Không tìm thấy arrayTransport'], 203);
+                    }
+                    $collectTransportStock = collect($array_transportId);
+                    $diff = $collectTransportStock->diff($arrayTransport);
+                    if(count($diff->all()) > 0){
+                        //khac nhau
+                        $array_match = false;
+                    }
+                }
+                if(!$array_match){
+                    return response()->json(['msg' => 'Các đơn hàng đã chọn không khớp nhau.'], 203);
+                }
+            }
 
             $invoiceGarage = new InvoiceGarage();
 
@@ -695,6 +862,7 @@ class DebtManagementController extends Controller
 
             $invoiceGarage->note = $request->input('_invoiceGarage')['note'];
             $invoiceGarage->totalPay = $request->input('_invoiceGarage')['totalPay'];
+            $invoiceGarage->totalTransport = $request->input('_invoiceGarage')['totalTransport'];
             $invoiceGarage->prePaid = $request->input('_invoiceGarage')['prePaid'];
             $invoiceGarage->totalPaid = $request->input('_invoiceGarage')['paidAmt'];
             $invoiceGarage->createdBy = \Auth::user()->id;
@@ -728,7 +896,6 @@ class DebtManagementController extends Controller
                 //Update InvoiceGarage_id for Transport
                 foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
-                    $transportUpdate->invoiceGarage_id = $invoiceGarage->id;
                     $transportUpdate->status_garage = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
 
@@ -736,25 +903,26 @@ class DebtManagementController extends Controller
                         DB::rollBack();
                         return response()->json(['msg' => 'Update transport fail!'], 404);
                     }
-                }
 
-                //Insert TransportInvoice
-                $transportInvoice = new TransportInvoice();
-                $transportInvoice->transport_id = $transportUpdate->id;
-                $transportInvoice->invoiceGarage_id = $invoiceGarage->id;
-                $transportInvoice->createdBy = \Auth::user()->id;
-                $transportInvoice->updatedBy = \Auth::user()->id;
+                    //Insert TransportInvoice
+                    $transportInvoice = new TransportInvoice();
+                    $transportInvoice->transport_id = $transportUpdate->id;
+                    $transportInvoice->invoiceGarage_id = $invoiceGarage->id;
+                    $transportInvoice->createdBy = \Auth::user()->id;
+                    $transportInvoice->updatedBy = \Auth::user()->id;
 
-                if(!$transportInvoice->save()){
-                    DB::rollBack();
-                    return response()->json(['msg' => 'Create transportInvoice fail!'], 404);
+                    if(!$transportInvoice->save()){
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Create transportInvoice fail!'], 404);
+                    }
                 }
 
                 DB::commit();
 
                 $invoiceGarage = DB::table('invoiceGarages')
                     ->select('invoiceGarages.*', 'garages.name as garages_name')
-                    ->leftJoin('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
                     ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
                     ->where([
@@ -802,7 +970,7 @@ class DebtManagementController extends Controller
                     return response()->json(['msg' => 'Update Invoice fail!'], 404);
                 }
 
-                //Insert InvoiceDtail
+                //Insert InvoiceDetail
                 $invoiceGarageDetail = new InvoiceGarageDetail();
                 $invoiceGarageDetail->invoiceGarage_id = $invoiceGarage->id;
                 $invoiceGarageDetail->paidAmt = $request->input('_invoiceGarage')['paidAmt'];
@@ -825,7 +993,8 @@ class DebtManagementController extends Controller
 
                 $invoiceGarage = DB::table('invoiceGarages')
                     ->select('invoiceGarages.*', 'garages.name as garages_name')
-                    ->leftJoin('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
                     ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
                     ->where([
@@ -951,7 +1120,8 @@ class DebtManagementController extends Controller
                 //Response
                 $invoiceGarage = DB::table('invoiceGarages')
                     ->select('invoiceGarages.*', 'garages.name as garages_name')
-                    ->leftJoin('transports', 'transports.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
+                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
                     ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
                     ->where([
