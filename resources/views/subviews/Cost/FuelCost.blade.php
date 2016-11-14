@@ -831,12 +831,7 @@
                     }
                 },
                 loadListGarageAndVehicleType: function () {
-                    fuelCostView.displayModal('show', '#modal-addVehicle',function () {
-
-                        $('input[id=areaCode]').val('');
-                        $('input[id=areaCode]').focus();
-                    });
-
+                    fuelCostView.displayModal('show', '#modal-addVehicle');
                     $.ajax({
                         url: url + 'get-list-option/Garage-Vehicle',
                         type: "GET",
