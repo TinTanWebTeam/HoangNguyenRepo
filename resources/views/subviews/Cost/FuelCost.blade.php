@@ -539,8 +539,6 @@
                         });
                         if (typeof vehicle === "undefined") {
                             fuelCostView.loadListGarageAndVehicleType();
-                            fuelCostView.displayModal("show", "#modal-addVehicle");
-                            $("input[id=areaCode]").focus();
                         } else {
                             $("#vehicle_id").attr("data-id", vehicle.id);
                         }
@@ -833,7 +831,12 @@
                     }
                 },
                 loadListGarageAndVehicleType: function () {
-                    fuelCostView.displayModal('show', '#modal-addVehicle');
+                    fuelCostView.displayModal('show', '#modal-addVehicle',function () {
+
+                        $('input[id=areaCode]').val('');
+                        $('input[id=areaCode]').focus();
+                    });
+
                     $.ajax({
                         url: url + 'get-list-option/Garage-Vehicle',
                         type: "GET",

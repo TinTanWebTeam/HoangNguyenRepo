@@ -606,6 +606,7 @@
                     petroleumCostView.tagsVehicle = _.union(petroleumCostView.tagsVehicle);
 
                     renderAutoCompleteSearch('#vehicle_id', petroleumCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
+
                         var vehicleName = this.value;
                         if (vehicleName == '') return;
                         var vehicle = _.find(petroleumCostView.tableVehicle, function (o) {

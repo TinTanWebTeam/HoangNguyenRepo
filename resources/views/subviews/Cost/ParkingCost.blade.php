@@ -113,7 +113,7 @@
                                             </div>
                                             <div class="col-sm-2 col-xs-2">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
-                                                     onclick="parkingCostView.createVehicle()">
+                                                     onclick="parkingCostView.loadListGarageAndVehicleType()">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </div>
                                             </div>
@@ -623,6 +623,7 @@
 
                 },
                 renderAutoCompleteSearch: function () {
+
                     parkingCostView.tagsVehicle = _.map(parkingCostView.tableVehicle, function (o) {
                         return o.areaCode + '-' + o.vehicleNumber;
                     });
@@ -634,10 +635,8 @@
                             return o.areaCode + '-' + o.vehicleNumber == vehicleName;
                         });
                         if (typeof vehicle === "undefined") {
-                            alert('a');
+                            $("input[id='areaCode']").focus();
                             parkingCostView.loadListGarageAndVehicleType();
-                            parkingCostView.displayModal("show", "#modal-addVehicle");
-                            $("input[id=areaCode]").focus();
                         } else {
                             $("#vehicle_id").attr("data-id", vehicle.id);
                         }
@@ -878,7 +877,7 @@
                         order: [[1, "desc"]]
                     })
                 },
-                createVehicle: function () {
+                loadListGarageAndVehicleType: function () {
                     parkingCostView.displayModal('show', '#modal-addVehicle');
                     $.ajax({
                         url: url + 'get-list-option/Garage-Vehicle',
@@ -900,6 +899,7 @@
                     });
 
                 },
+
                 cancelVehicle: function () {
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
