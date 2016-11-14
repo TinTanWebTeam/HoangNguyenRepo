@@ -659,6 +659,7 @@
                         fixedHeader: {
                             header: true
                         },
+                        order: [[0, "desc"]],
                         dom: 'T<"clear">Bfrtip',
                         tableTools: {
                             "sRowSelect": "multi",
@@ -1764,10 +1765,7 @@
                     formatCurrency(".currency");
                 },
                 computeWhenTotalpayChange: function (totalPay) {
-                    console.log(totalPay);
                     totalPay = convertStringToNumber(totalPay);
-                    console.log(totalPay);
-
                     totalTransport = parseInt($('input[id=totalPay]').attr('data-totalTransport'));
 
                     if (totalPay > totalTransport) {
@@ -1777,7 +1775,7 @@
                     }
 
                     vat = parseInt($("input[id=VAT]").val());
-                    paidAmt = parseInt($("input[id=paidAmt]").val());
+                    paidAmt = asNumberFromCurrency("#paidAmt");
                     $("input[id=debt-real]").val(totalPay + (totalPay * vat / 100));
                     $("input[id=notVAT]").val(totalPay);
                     $("input[id=hasVAT]").val(totalPay + (totalPay * vat / 100));

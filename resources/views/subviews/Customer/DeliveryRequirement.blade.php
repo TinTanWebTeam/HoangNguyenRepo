@@ -226,8 +226,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="cashReceive" class="red"><b>Nhận</b></label>
-                                            <input type="text" class="form-control currency" id="cashReceive"
-                                                   name="cashReceive">
+                                            <input type="text" class="form-control currency" id="cashReceive" name="cashReceive"
+                                                onkeyup="transportView.computeWhenCashReceiveChange(this.value)">
                                         </div>
                                     </div>
                                 </div>
@@ -1718,6 +1718,19 @@
                     $(transportView.table.$('tr', {"filter": "applied"}).each(function () {
                         console.log($(this).find("td:eq(1)").text());
                     }));
+                },
+
+                computeWhenCashReceiveChange: function (cashReceive) {
+                    cashReceive = convertStringToNumber(cashReceive);
+                    var cashRevenue = asNumberFromCurrency("#cashRevenue");
+
+                    if (cashReceive > cashRevenue) {
+                        showNotification('warning', 'Số tiền nhận từ khách hàng không được lớn hơn doanh thu của đơn hàng.');
+                        cashReceive = cashRevenue;
+                        $("input[id=cashReceive]").val(cashReceive);
+                        $("input[id=cashRevenue]").val(cashReceive);
+                        formatCurrency(".currency");
+                    }
                 }
             };
             transportView.loadData();

@@ -619,8 +619,6 @@ class CustomerManagementController extends Controller
         $vehicle_id = null;
         $product_id = null;
         $customer_id = null;
-        $invoiceCustomer_id = null;
-        $invoiceGarage_id = null;
         $costNote = null;
         $transportType = null;
         $vehicle_name = null;
@@ -700,8 +698,6 @@ class CustomerManagementController extends Controller
                     $transportNew->status_garage = $status_garage;
                     $transportNew->product_id = $product_id;
                     $transportNew->customer_id = $customer_id;
-                    $transportNew->invoiceCustomer_id = $invoiceCustomer_id;
-                    $transportNew->invoiceGarage_id = $invoiceGarage_id;
                     $transportNew->transportType = $transportType;
                     $transportNew->costNote = $costNote;
                     $transportNew->vehicle_id = $vehicle_id;
@@ -825,29 +821,29 @@ class CustomerManagementController extends Controller
                     }
 
                     //Update InvoiceCustomer for Transport
-                    if ($transportUpdate->invoiceCustomer_id != null) {
-                        $invoiceCustomer = InvoiceCustomer::find($transportUpdate->invoiceCustomer_id);
-                        $invoiceCustomer->totalPay = $invoiceCustomer->totalPay - $kp_cashRevenue + $transportUpdate->cashRevenue;
-                        $invoiceCustomer->prePaid = $invoiceCustomer->prePaid - $kp_cashReceive + $transportUpdate->cashReceive;
-                        $invoiceCustomer->totalPaid = $invoiceCustomer->totalPay - $invoiceCustomer->prePaid;
-                        $invoiceCustomer->notVAT = $invoiceCustomer->totalPay;
-                        $invoiceCustomer->hasVAT = $invoiceCustomer->notVAT * $invoiceCustomer->VAT / 100;
-                        $invoiceCustomer->updatedBy = \Auth::user()->id;
-                        if (!$invoiceCustomer->update()) {
-                            DB::rollBack();
-                            return response()->json(['msg' => 'Update InvoiceCustomer failed'], 404);
-                        }
-
-                        $invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomer->id)->orderBy('created_at', 'desc')->first();
-                        $invoiceCustomerDetail->paidAmt = $invoiceCustomerDetail->paidAmt + ($transportUpdate->cashReceive - $kp_cashReceive);
-                        $invoiceCustomerDetail->payDate = date('Y-m-d H:i');
-                        $invoiceCustomerDetail->modify = true;
-                        $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
-                        if (!$invoiceCustomerDetail->update()) {
-                            DB::rollBack();
-                            return response()->json(['msg' => 'Update InvoiceCustomerDetail failed'], 404);
-                        }
-                    }
+//                    if ($transportUpdate->invoiceCustomer_id != null) {
+//                        $invoiceCustomer = InvoiceCustomer::find($transportUpdate->invoiceCustomer_id);
+//                        $invoiceCustomer->totalPay = $invoiceCustomer->totalPay - $kp_cashRevenue + $transportUpdate->cashRevenue;
+//                        $invoiceCustomer->prePaid = $invoiceCustomer->prePaid - $kp_cashReceive + $transportUpdate->cashReceive;
+//                        $invoiceCustomer->totalPaid = $invoiceCustomer->totalPay - $invoiceCustomer->prePaid;
+//                        $invoiceCustomer->notVAT = $invoiceCustomer->totalPay;
+//                        $invoiceCustomer->hasVAT = $invoiceCustomer->notVAT * $invoiceCustomer->VAT / 100;
+//                        $invoiceCustomer->updatedBy = \Auth::user()->id;
+//                        if (!$invoiceCustomer->update()) {
+//                            DB::rollBack();
+//                            return response()->json(['msg' => 'Update InvoiceCustomer failed'], 404);
+//                        }
+//
+//                        $invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomer->id)->orderBy('created_at', 'desc')->first();
+//                        $invoiceCustomerDetail->paidAmt = $invoiceCustomerDetail->paidAmt + ($transportUpdate->cashReceive - $kp_cashReceive);
+//                        $invoiceCustomerDetail->payDate = date('Y-m-d H:i');
+//                        $invoiceCustomerDetail->modify = true;
+//                        $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
+//                        if (!$invoiceCustomerDetail->update()) {
+//                            DB::rollBack();
+//                            return response()->json(['msg' => 'Update InvoiceCustomerDetail failed'], 404);
+//                        }
+//                    }
 
                     //Response
                     $transport = DB::table('transports')
