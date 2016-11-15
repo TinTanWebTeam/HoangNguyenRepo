@@ -123,8 +123,7 @@
                                         <th>Số xe</th>
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
-                                        <th>Tiền giao</th>
-                                        <th>Giao trước</th>
+                                        <th>Giao xe</th>
                                         <th>Nợ</th>
                                         <th>Người nhận</th>
                                         <th>Ngày nhận</th>
@@ -619,10 +618,6 @@
                             {data: 'voucherNumber'},
                             {
                                 data: 'cashDelivery',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
-                            },
-                            {
-                                data: 'cashPreDelivery',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
@@ -1547,6 +1542,7 @@
 
                                     var prePaid = parseInt(sendToServer._invoiceGarage['paidAmt']);
                                     var debtReal = asNumberFromCurrency("#debt-real") - prePaid;
+                                    debtReal = (debtReal < 0) ? 0 : debtReal;
                                     $("input[id=debt]").val(debtReal);
                                     $("input[id=debt-real]").val(debtReal);
                                     $("#paidAmt").focus();
@@ -1725,12 +1721,14 @@
                 },
 
                 computeDebt: function (paidAmt) {
-                    console.log(paidAmt);
                     paidAmt = convertStringToNumber(paidAmt);
-                    console.log(paidAmt);
-
                     var debtReal = asNumberFromCurrency("#debt-real");
-                    debt = debtReal - paidAmt;
+                    if (paidAmt > debtReal) {
+                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
+                        paidAmt = debtReal;
+                        $("input[id=paidAmt]").val(paidAmt);
+                    }
+                    var debt = debtReal - paidAmt;
                     debt = (debt < 0) ? 0 : debt;
                     $("input[id=debt]").val(debt);
                     formatCurrency(".currency");

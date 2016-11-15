@@ -125,6 +125,7 @@
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
                                         <th>Doanh thu</th>
+                                        <th>Nhận</th>
                                         <th>Nợ</th>
                                         <th>Người nhận</th>
                                         <th>Ngày nhận</th>
@@ -226,6 +227,102 @@
                         <form role="form" id="frmInvoice">
                             <div class="form-body">
                                 <div class="row">
+                                    <div class="col-md-12">
+                                        <fieldset>
+                                            <legend>Giá trị tổng chuyến giao:</legend>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>Tổng tiền</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>Trả trước</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>Còn lại</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>Còn lại thực tế</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <fieldset>
+                                            <legend>Giá trị tổng hóa đơn:</legend>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input">
+                                                        <div style="position: absolute; display: block; z-index: 3; right: 5%;"
+                                                             class="pull-right">
+                                                            <strong>Trả trước</strong>&nbsp;
+                                                            <input type="checkbox" id="" name=""
+                                                                   onchange="">
+                                                        </div>
+                                                        <label for=""><b>Tổng tiền</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>Tiền xuất hóa đơn</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>VAT</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>Co VAT</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>Tien tra</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for=""><b>Con no</b></label>
+                                                        <input type="text" class="form-control currency" name="" id=""
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="invoiceCode"><b>Mã hóa đơn</b></label>
@@ -236,26 +333,10 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="totalPay"><b>Tổng tiền</b></label>
+                                            <label for="totalPay"><b>Xuất hóa đơn</b></label>
                                             <input type="text" class="form-control currency"
                                                    id="totalPay" name="totalPay" data-totalTransport=""
                                                    onkeyup="debtCustomerView.computeWhenTotalpayChange(this.value)">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="debt-real"><b>Còn nợ</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="debt-real" name="debt-real" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row ">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="notVAT"><b>Chưa VAT</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="notVAT" name="notVAT" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -266,6 +347,8 @@
                                                    onkeyup="debtCustomerView.computeHasVAT(this.value, event)">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row ">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="hasVAT" class="red"><b>Có VAT</b></label>
@@ -274,14 +357,36 @@
                                                    onkeyup="debtCustomerView.computeVAT(this.value)">
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="prePaid"><b>Trả trước</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="prePaid" name="prePaid" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debt-real"><b>Còn nợ</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="debt-real" name="debt-real" readonly>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="paidAmt" class="red"><b>Tiền trả</b></label>
+                                            <label for="paidAmt" class="red"><b>Trả trên hóa đơn</b></label>
                                             <input type="text" class="form-control currency defaultZero"
                                                    id="paidAmt" name="paidAmt"
                                                    onkeyup="debtCustomerView.computeDebt(this.value)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="paidAmtReal" class="red"><b>Tiền trả thực tế</b></label>
+                                            <input type="text" class="form-control currency defaultZero"
+                                                   id="paidAmtReal" name="paidAmtReal"
+                                                   onkeyup="">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -291,11 +396,11 @@
                                                    id="debt" name="debt" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4" style="display:none">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="prePaid"><b>Trả trước</b></label>
+                                            <label for="notVAT"><b>Chưa VAT</b></label>
                                             <input type="text" class="form-control currency"
-                                                   id="prePaid" name="prePaid" readonly>
+                                                   id="notVAT" name="notVAT" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -465,7 +570,7 @@
 
                 showControl: function (flag) {
                     if (flag == 0) {
-                        $('#divInvoice').css("width", "40%");
+                        $('#divInvoice').css("width", "60%");
                         $("#tbl-history").hide();
                         $("#frm-control").removeClass("col-md-6").addClass("col-md-12");
                     } else {
@@ -633,6 +738,10 @@
                             {data: 'voucherNumber'},
                             {
                                 data: 'cashRevenue',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'cashReceive',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
@@ -978,9 +1087,8 @@
                                 prePaid += parseInt(currentRow['cashReceive']);
                             }
                         }
-                        debugger;
 
-                        if(dataAfterValidate['status'] === 1){ //First
+                        if (dataAfterValidate['status'] === 1) { //First
                             $("input[id=totalPay]").val(totalPay);
                             $("input[id=totalPay]").attr('data-totalTransport', totalPay);
                             $("input[id=prePaid]").val(prePaid);
@@ -988,7 +1096,7 @@
                             debt = totalPay - prePaid;
                             $("input[id=debt]").val(debt);
                             $("input[id=debt-real]").val(debt);
-                        } else if(dataAfterValidate['status'] === 2){ //Exported
+                        } else if (dataAfterValidate['status'] === 2) { //Exported
                             $("input[id=totalPay]").attr('data-totalTransport', totalPay);
                             totalPay = dataAfterValidate['totalPay'];
                             $("input[id=totalPay]").val(totalPay);
@@ -1556,6 +1664,7 @@
 
                                     var prePaid = parseInt(sendToServer._invoiceCustomer['paidAmt']);
                                     var debtReal = asNumberFromCurrency("#debt-real") - prePaid;
+                                    debtReal = (debtReal < 0) ? 0 : debtReal;
                                     $("input[id=debt]").val(debtReal);
                                     $("input[id=debt-real]").val(debtReal);
                                     $("#paidAmt").focus();
@@ -1736,12 +1845,14 @@
                 },
 
                 computeDebt: function (paidAmt) {
-                    console.log(paidAmt);
                     paidAmt = convertStringToNumber(paidAmt);
-                    console.log(paidAmt);
-
                     var debtReal = asNumberFromCurrency("#debt-real");
-                    debt = debtReal - paidAmt;
+                    if (paidAmt > debtReal) {
+                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
+                        paidAmt = debtReal;
+                        $("input[id=paidAmt]").val(paidAmt);
+                    }
+                    var debt = debtReal - paidAmt;
                     debt = (debt < 0) ? 0 : debt;
                     $("input[id=debt]").val(debt);
                     formatCurrency(".currency");
@@ -1776,11 +1887,17 @@
                     formatCurrency(".currency");
                 },
                 computeWhenTotalpayChange: function (totalPay) {
-                    totalPay = convertStringToNumber(totalPay);
-                    totalTransport = parseInt($('input[id=totalPay]').attr('data-totalTransport'));
+                    var totalPay = convertStringToNumber(totalPay);
+                    var totalTransport = parseInt($('input[id=totalPay]').attr('data-totalTransport'));
+                    var prePaid = asNumberFromCurrency("#prePaid");
 
                     if (totalPay > totalTransport) {
                         showNotification('warning', 'Số tiền trên hóa đơn không được lớn hơn tổng tiền của các đơn hàng.');
+                        totalPay = totalTransport;
+                        $("input[id=totalPay]").val(totalPay);
+                    }
+                    if (totalPay < prePaid) {
+                        showNotification('warning', 'Số tiền trên hóa đơn không được bé hơn số tiền đã trả trước.');
                         totalPay = totalTransport;
                         $("input[id=totalPay]").val(totalPay);
                     }
