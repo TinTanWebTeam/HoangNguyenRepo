@@ -15,6 +15,8 @@ class CreateCostsTable extends Migration
         Schema::create('costs', function (Blueprint $table) {
             $table->increments('id');
             $table->decimal('cost',18,0)->default(0);
+            $table->decimal('hasVat',18,0)->default(0);
+            $table->float('vat')->default(0);
             $table->float('literNumber')->nullable();
             $table->dateTime('dateCheckIn')->nullable();
             $table->dateTime('dateCheckOut')->nullable();

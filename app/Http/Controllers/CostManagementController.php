@@ -87,12 +87,16 @@ class CostManagementController extends Controller
 
     public function postModifyFuelCost(Request $request)
     {
+
         $prices_price = null;
         $literNumber = null;
         $vehicle_id = null;
         $totalCost = null;
         $datetime = null;
         $note = null;
+        $vat = null;
+        $hasVat = null;
+        $notVat = null;
         $action = $request->get('_action');
         if ($action != 'delete') {
             $validator = ValidateController::ValidateCost($request->input('_object'));
@@ -104,16 +108,19 @@ class CostManagementController extends Controller
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle_id = $request->get('_object')['vehicle_id'];
-            $totalCost = $literNumber * $prices_price;
             $dateFuel = $request->get('_object')['dateFuel'];
             $timeFuel = $request->get('_object')['timeFuel'];
-
+            $vat = $request->get('_object')['vat'];
+            $hasVat = $literNumber * $prices_price;
+            $notVat = $hasVat/1.1;
+            $totalCost = $hasVat-($notVat*($vat/100));
             if (Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel) !== false) {
                 $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
             } else {
                 return response()->json(['msg' => 'date invalid'], 207);
             }
             $noted = $request->get('_object')['noted'];
+
         }
 
         switch ($action) {
@@ -121,6 +128,7 @@ class CostManagementController extends Controller
                 try {
                     $fuelCostsNew = new Cost();
                     $fuelCostsNew->cost = $totalCost;
+                    $fuelCostsNew->hasVat = $hasVat;
                     $fuelCostsNew->literNumber = $literNumber;
                     $fuelCostsNew->dateRefuel = $datetime;
                     $fuelCostsNew->createdBy = Auth::user()->id;
@@ -128,6 +136,7 @@ class CostManagementController extends Controller
                     $fuelCostsNew->note = $noted;
                     $fuelCostsNew->price_id = $prices_id;
                     $fuelCostsNew->vehicle_id = $vehicle_id;
+                    $fuelCostsNew->vat = $vat;
                     if ($fuelCostsNew->save()) {
                         $costs = \DB::table('costs')
                             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
@@ -162,10 +171,12 @@ class CostManagementController extends Controller
                     $fuelCostsUpdate = Cost::findOrFail($request->get('_object')['id']);
                     $fuelCostsUpdate->literNumber = $literNumber;
                     $fuelCostsUpdate->cost = $totalCost;
+                    $fuelCostsUpdate->hasVat = $hasVat;
                     $fuelCostsUpdate->dateRefuel = $datetime;
                     $fuelCostsUpdate->note = $noted;
                     $fuelCostsUpdate->vehicle_id = $vehicle_id;
                     $fuelCostsUpdate->price_id = $prices_id;
+                    $fuelCostsUpdate->vat = $vat;
                     $fuelCostsUpdate->updatedBy = Auth::user()->id;
                     if ($fuelCostsUpdate->update()) {
 
@@ -403,6 +414,9 @@ class CostManagementController extends Controller
         $datetime = null;
         $note = null;
         $vehicle_id = null;
+        $vat = null;
+        $hasVat = null;
+        $notVat = null;
         $action = $request->get('_action');
         if ($action != 'delete') {
             $validator = ValidateController::ValidatePetroleum($request->get('_object'));
@@ -415,9 +429,12 @@ class CostManagementController extends Controller
             $prices_id = $request->get('_object')['prices_id'];
             $literNumber = $request->get('_object')['literNumber'];
             $vehicle_id = $request->get('_object')['vehicle_id'];
-            $totalCost = $literNumber * $prices_price;
             $dateFuel = $request->get('_object')['dateFuel'];
             $timeFuel = $request->get('_object')['timeFuel'];
+            $vat = $request->get('_object')['vat'];
+            $hasVat = $literNumber * $prices_price;
+            $notVat = $hasVat/1.1;
+            $totalCost = $hasVat-($notVat*($vat/100));
             $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
             $noted = $request->get('_object')['noted'];
         }
@@ -426,6 +443,8 @@ class CostManagementController extends Controller
             case "add":
                 $petroleumNew = new Cost();
                 $petroleumNew->cost = $totalCost;
+                $petroleumNew->vat = $vat;
+                $petroleumNew->hasVat = $hasVat;
                 $petroleumNew->literNumber = $literNumber;
                 $petroleumNew->dateRefuel = $datetime;
                 $petroleumNew->createdBy = Auth::user()->id;
@@ -463,6 +482,8 @@ class CostManagementController extends Controller
                 $petroleumUpdate = Cost::findOrFail($request->get('_object')['id']);
                 $petroleumUpdate->literNumber = $literNumber;
                 $petroleumUpdate->cost = $totalCost;
+                $petroleumUpdate->vat = $vat;
+                $petroleumUpdate->hasVat = $hasVat;
                 $petroleumUpdate->dateRefuel = $datetime;
                 $petroleumUpdate->note = $noted;
                 $petroleumUpdate->vehicle_id = $vehicle_id;

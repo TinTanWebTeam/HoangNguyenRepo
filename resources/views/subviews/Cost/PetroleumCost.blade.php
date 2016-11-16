@@ -68,8 +68,9 @@
                             <th>Thời gian đổ</th>
                             <th>Số lít</th>
                             <th>Đơn giá</th>
-                            <th>Tổng chi phí</th>
-                            <th>Ghi chú</th>
+                            <th>Khấu trừ %(trước VAT)</th>
+                            <th>Thành tiền</th>
+                            <th>Tiền trả</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
@@ -98,7 +99,7 @@
                     <div class="form-body">
                         <div class="col-md-12 ">
                             <div class="row" id='datetimepicker'>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
                                         <div class="row">
@@ -117,7 +118,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="dateFuel"><b>Ngày đổ</b></label>
                                         <input id="dateFuel" name="dateFuel" type="text"
@@ -128,7 +129,7 @@
                                     </div>
 
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="timeFuel"><b>Giờ đổ</b></label>
                                         <input id="timeFuel" name="timeFuel" type="text" class="time form-control"
@@ -141,22 +142,22 @@
                         </div>
                         <div class="col-md-12 ">
                             <div class="row">
-                                <div class="col-md-6 ">
+                                <div class="col-md-4 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="literNumber"><b>Số lít</b></label>
                                         <input type="number" class="form-control"
                                                id="literNumber"
                                                name="literNumber"
                                                onkeyup="petroleumCostView.totalPrice()">
-                                        <label id="literNumber" class="error" style="display: none; color: red">Vui lòng
-                                            nhập số lít</label>
+
                                     </div>
+
                                 </div>
-                                <div class="col-sm-6 col-xs-6">
+                                <div class="col-sm-4 col-xs-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="price"><b>Đơn giá</b></label>
                                         <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
+                                            <div class="col-sm-9 col-xs-9">
                                                 <input type="text" class="form-control currency"
                                                        id="price" readonly
                                                        name="price" data-priceId=""
@@ -171,19 +172,42 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="hasVat"><b>Thành tiền</b></label>
+                                        <div class="row">
+                                            <div class="col-sm-10 col-xs-10">
+                                                <input type="text" class="form-control currency"
+                                                       id="hasVat"
+                                                       name="hasVat"
+                                                       onkeyup="petroleumCostView.lit()">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-12 ">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
-                                        <label for="totalprice"><b>Tổng chi phí</b></label>
-                                        <input type="text" class="form-control currency"
-                                               id="totalprice" readonly
-                                               name="totalprice">
+                                        <label for="vat"><b>Khấu trừ %(trước VAT)</b></label>
+                                        <input type="number" class="form-control"
+                                               onkeyup="petroleumCostView.totalPrice()"
+                                               id="vat"
+                                               name="vat">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="totalPrice"><b>Tiền trả</b></label>
+                                        <input type="text" class="form-control currency"
+                                               id="totalPrice" readonly
+                                               name="totalPrice">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="noted"><b>Ghi chú</b></label>
                                         <input type="text" class="form-control"
@@ -435,31 +459,42 @@
                 clearValidation: function () {
                     $('label[class=error]').hide();
                 },
-                totalPrice: function () {
-                    var lit = $("input[id=literNumber]").val();
-                    var price = $("input[id=price]").val();
-                    price = price.replace(',', '');
-                    var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(totalPrice);
+                lit: function () {
+                    price = asNumberFromCurrency('#price');
+                    hasVat = asNumberFromCurrency('#hasVat');
+                    lit = hasVat / price;
+                    $("input[id=literNumber]").val(lit);
+                    notVat = hasVat / 1.1;
+                    total = hasVat-(notVat *(vat/100));
+                    $("input[id=totalPrice]").val(total);
                     formatCurrency(".currency");
-
+                },
+                totalPrice: function () {
+                    lit = $("input[id=literNumber]").val();
+                    price = asNumberFromCurrency('#price');
+                    vat = $("input[id=vat]").val();
+                    if(vat >100){
+                        vat= 100;
+                        $("input[id=vat]").val(vat);
+                    }
+                    hasVat = lit * price;
+                    notVat = hasVat / 1.1;
+                    $("input[id=hasVat]").val(hasVat);
+                    total = hasVat-(notVat *(vat/100));
+                    $("input[id=totalPrice]").val(total);
+                    formatCurrency(".currency");
                 },
                 clearInput: function () {
-
-                    /* form addCost*/
                     $("input[id='vehicle_id']").val('');
                     $("#vehicle_id").attr('data-id', '');
-                    $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
-                    $("input[id='totalprice']").val('');
-                    $("input[id='dateFuel']").val('');
-                    $("input[id='timeFuel']").val('');
+                    petroleumCostView.totalDefault();
+
                 },
                 clearInputPrice: function () {
                     /* Form addPrice*/
                     $("input[id='costPrice']").val('');
-                    $("input[id='literNumber']").val('');
-                    $("input[id='totalprice']").val('');
+
                 },
                 clearInputVehicle: function () {
                     /* Form addVehicle*/
@@ -598,6 +633,10 @@
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     defaultZero("#costPrice");
+                    defaultZero("#vat");
+                    defaultZero("#hasVat");
+                    defaultZero("#notVat");
+                    defaultOne("#literNumber");
                 },
                 renderAutoCompleteSearch: function () {
                     petroleumCostView.tagsVehicle = _.map(petroleumCostView.tableVehicle, function (o) {
@@ -641,7 +680,9 @@
                             literNumber: $("input[id='literNumber']").val(),
                             prices_price: $("input[id='price']").val(),
                             prices_id: $("#price").attr('data-priceId'),
-                            noted: $("input[id='noted']").val()
+                            noted: $("input[id='noted']").val(),
+                            vat: $("input[id='vat']").val(),
+                            hasVat: $("input[id='hasVat']").val()
 
                         };
                     } else if (petroleumCostView.action == 'update') {
@@ -653,7 +694,17 @@
                         petroleumCostView.current.timeFuel = $("input[id='timeFuel']").val();
                         petroleumCostView.current.noted = $("input[id='noted']").val();
                         petroleumCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
+                        petroleumCostView.current.vat = $("input[id='vat']").val();
+                        petroleumCostView.current.hasVat = $("input[id='hasVat']").val();
+
                     }
+                },
+                totalDefault: function () {
+                    $("input[id=literNumber]").val('1');
+                    $("input[id=vat]").val(0);
+                    $("input[id=notVat]").val(0);
+                    $("input[id=hasVat]").val(0);
+                    petroleumCostView.totalPrice();
                 },
                 fillCurrentObjectToForm: function () {
                     var dateFuel = moment(petroleumCostView.current["dateRefuel"], "YYYY-MM-DD");
@@ -697,10 +748,16 @@
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {
-                                data: 'totalCost',
+                                data: 'vat'
+                            },
+                            {
+                                data: 'hasVat',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
-                            {data: 'noteCost'},
+                            {
+                                data: 'cost',
+                                render: $.fn.dataTable.render.number(",", ",", 0)
+                            },
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -971,6 +1028,7 @@
                 inputPrice: function () {
                     $("input[id='price']").val(petroleumCostView.tablePrice.price);
                     $("#price").attr('data-priceId', petroleumCostView.tablePrice.id);
+                    petroleumCostView.totalDefault();
                     formatCurrency(".currency");
                 },
                 ValidateCostPrice: function () {
