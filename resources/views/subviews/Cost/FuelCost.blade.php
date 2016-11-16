@@ -573,7 +573,6 @@
                     $("#price").attr('data-priceId', fuelCostView.tablePrice.id);
                     fuelCostView.totalDefault();
                     formatCurrency(".currency");
-
                 },
                 cancel: function () {
                     if (fuelCostView.action == 'add') {
