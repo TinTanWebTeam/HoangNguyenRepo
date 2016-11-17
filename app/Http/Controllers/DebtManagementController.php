@@ -275,35 +275,41 @@ class DebtManagementController extends Controller
                     return response()->json($response, 203);
                 }
 
-                $totalTransport = $invoice->totalTransport;
-                $prePaid = $invoice->prePaid;;
+                $totalTransport = (int)$invoice->totalTransport; // 7tr
+                $prePaid = (int)$invoice->prePaid; // 5tr
                 $totalPay = 0;
 
                 foreach($invoices as $invoice_item){
                     $totalPay += $invoice_item->totalPay;
-                }
-                $totalPay = $totalTransport - $totalPay;
+                } // 6tr
 
-                if($statusPrePaid == 1)
-                    $totalPay -= $prePaid;
-
-                if($totalPay == 0){
-                    $response = [
-                        'status' => 0,
-                        'totalPay' => 0,
-                        'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'
-                    ];
-                    return response()->json($response, 203);
+                if($statusPrePaid == 1){
+                    $totalPay = $totalTransport - $totalPay;
+                } else {
+                    $totalPay = $totalTransport - $prePaid - $totalPay;
                 }
+
+//                if($totalPay == 0){
+//                    $response = [
+//                        'status' => 0,
+//                        'totalPay' => 0,
+//                        'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'
+//                    ];
+//                    return response()->json($response, 203);
+//                }
 
                 #Tính debt-real (Nợ thực tế)
                 $totalPaid = InvoiceCustomerDetail::whereIn('invoiceCustomer_id', $arrayInvoice)->pluck('paidAmt');
                 $sum_totalPaid = array_sum($totalPaid->toArray());
-                $debtReal = $totalTransport - $prePaid - $sum_totalPaid;
-                dd($debtReal);
+                if($statusPrePaid == 1){
+                    $debtReal = $totalTransport - $prePaid - $sum_totalPaid;
+                } else {
+                    $debtReal = $totalTransport - $sum_totalPaid;
+                }
 
                 $response = [
                     'status' => 2,
+                    'totalTransport' => $totalTransport,
                     'totalPay' => $totalPay,
                     'prePaid' => $prePaid,
                     'debtReal' => $debtReal,

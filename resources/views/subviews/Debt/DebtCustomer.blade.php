@@ -1019,7 +1019,7 @@
 
                         totalTransport: asNumberFromCurrency("#totalTransport"),
                         prePaid: asNumberFromCurrency("#cashReceive"),
-                        totalPay: asNumberFromCurrency("#totalPay"),
+                        totalPay: asNumberFromCurrency("#totalPay-real"),
                         VAT: parseFloat($("input[id='VAT']").val()),
                         hasVAT: asNumberFromCurrency("#hasVAT"),
                         paidAmt: asNumberFromCurrency("#paidAmt"),
@@ -1085,6 +1085,7 @@
                                 }
                                 break;
                             case 2 : //Exported
+                                    debugger;
                                 $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
                                 debtCustomerView.showControl(flag);
                                 debtCustomerView.action = "new";
@@ -1093,12 +1094,12 @@
                                     $("input[id=statusPrePaid]").attr('disabled', false);
                                     $("input[id=statusPrePaid]").attr('checked', true);
 
-                                    var _totalTransport = dataAfterValidate['totalPay'];
+                                    var _totalTransport = dataAfterValidate['totalTransport'];
                                     var _cashReceive = dataAfterValidate['prePaid'];
                                     var _payNeed = _totalTransport - _cashReceive;
                                     var _debt = _totalTransport;
                                     var _debtReal = dataAfterValidate['debtReal'];
-                                    var _totalPay = _debtReal;
+                                    var _totalPay = dataAfterValidate['totalPay'];
                                     var _totalPayReal = _totalPay + _cashReceive;
                                     var _vat = 10;
                                     var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
@@ -1109,17 +1110,17 @@
                                     $("input[id=statusPrePaid]").attr('disabled', true);
                                     $("input[id=statusPrePaid]").attr('checked', false);
 
-                                    var _totalTransport = dataAfterValidate['totalPay'];
+                                    var _totalTransport = dataAfterValidate['totalTransport'];
                                     var _cashReceive = dataAfterValidate['prePaid'];
                                     var _payNeed = _totalTransport - _cashReceive;
                                     var _debt = _totalTransport;
                                     var _debtReal = dataAfterValidate['debtReal'];
                                     var _totalPay = _debtReal;
-                                    var _totalPayReal = _totalPay + _cashReceive;
+                                    var _totalPayReal = _totalPay;
                                     var _vat = 10;
                                     var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
-                                    var _paidAmt = _hasVat - _cashReceive;
-                                    var _debtInvoice = _hasVat - _cashReceive - _paidAmt;
+                                    var _paidAmt = _hasVat;
+                                    var _debtInvoice = _hasVat - _paidAmt;
                                     debtCustomerView.statusPrePaid = 0;
                                 }
                                 break;
