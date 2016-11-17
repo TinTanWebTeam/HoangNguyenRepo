@@ -235,6 +235,7 @@
                 current: null,
                 action: null,
                 idDelete: null,
+                tagsGovernmentId:[],
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -534,61 +535,67 @@
                             driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        driverView.validateDriver();
-                        if ($("#frmDriver").valid()) {
-                            driverView.fillFormDataToCurrentObject();
-                            sendToServer = {
-                                _token: _token,
-                                _action: driverView.action,
-                                _object: driverView.current
-                            };
-
-                            $.ajax({
-                                url: url + 'driver/modify',
-                                type: "POST",
-                                dataType: "json",
-                                data: sendToServer
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (jqXHR.status == 201) {
-                                    switch (driverView.action) {
-                                        case 'add':
-                                            data['dataAddDriver'].fullNumber = (data['dataAddDriver']['areaCode'] == null || data['dataAddDriver']['vehicleNumber'] == null) ? "" : data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']['vehicleNumber'];
-                                            if (data['dataAddDriver'].fullNumber == null) {
-                                                data['dataAddDriver'].fullNumber = 'chứa có xe'
-                                            }
-                                            driverView.dataDrivers.push(data['dataAddDriver']);
-                                            showNotification("success", "Thêm thành công!");
-                                            break;
-                                        case 'update':
-                                            data['dataUpdateDriver'].fullNumber = (data['dataUpdateDriver']['areaCode'] == null || data['dataUpdateDriver']['vehicleNumber'] == null) ? "" : data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']['vehicleNumber'];
-                                            if (data['dataUpdateDriver'].fullNumber == null) {
-                                                data['dataUpdateDriver'].fullNumber = 'chứa có xe'
-                                            }
-                                            var driverOld = _.find(driverView.dataDrivers, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var indexOfDriverOld = _.indexOf(driverView.dataDrivers, driverOld);
-//                                            driverView.dataDrivers.splice(indexOfDriverOld, 1, data['dataUpdateDriver'][0]);
-                                            driverView.dataDrivers.splice(indexOfDriverOld, 1, data['dataUpdateDriver']);
-                                            showNotification("success", "Cập nhật thành công!");
-                                            driverView.hideControl();
-                                            break;
-                                        default:
-                                            break;
+                        var governmentId = _.map(driverView.dataDrivers, function (o) {
+                            return o.governmentId;
+                        });
+                        if (_.indexOf(governmentId, $("input[id=governmentId]").val()) > 0) {
+                            showNotification("error", "CMND đã tồn tại!");
+                        }else {
+                            driverView.validateDriver();
+                            if ($("#frmDriver").valid()) {
+                                driverView.fillFormDataToCurrentObject();
+                                sendToServer = {
+                                    _token: _token,
+                                    _action: driverView.action,
+                                    _object: driverView.current
+                                };
+                                $.ajax({
+                                    url: url + 'driver/modify',
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: sendToServer
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        switch (driverView.action) {
+                                            case 'add':
+                                                data['dataAddDriver'].fullNumber = (data['dataAddDriver']['areaCode'] == null || data['dataAddDriver']['vehicleNumber'] == null) ? "" : data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']['vehicleNumber'];
+                                                if (data['dataAddDriver'].fullNumber == null) {
+                                                    data['dataAddDriver'].fullNumber = 'chứa có xe'
+                                                }
+                                                driverView.dataDrivers.push(data['dataAddDriver']);
+                                                showNotification("success", "Thêm thành công!");
+                                                break;
+                                            case 'update':
+                                                data['dataUpdateDriver'].fullNumber = (data['dataUpdateDriver']['areaCode'] == null || data['dataUpdateDriver']['vehicleNumber'] == null) ? "" : data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']['vehicleNumber'];
+                                                if (data['dataUpdateDriver'].fullNumber == null) {
+                                                    data['dataUpdateDriver'].fullNumber = 'chứa có xe'
+                                                }
+                                                var driverOld = _.find(driverView.dataDrivers, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var indexOfDriverOld = _.indexOf(driverView.dataDrivers, driverOld);
+                                                driverView.dataDrivers.splice(indexOfDriverOld, 1, data['dataUpdateDriver']);
+                                                showNotification("success", "Cập nhật thành công!");
+                                                driverView.hideControl();
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        driverView.table.clear().rows.add(driverView.dataDrivers).draw();
+                                        driverView.clearInput();
+                                    } else {
+                                        driverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                     }
-                                    driverView.table.clear().rows.add(driverView.dataDrivers).draw();
-                                    driverView.clearInput();
-                                } else {
-                                    driverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
 
 
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                            });
-                        } else {
-                            $("form#frmDriver").find("label[class=error]").css("color", "red");
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                });
+                            } else {
+                                $("form#frmDriver").find("label[class=error]").css("color", "red");
+                            }
                         }
+
                     }
                 }
 

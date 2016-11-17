@@ -22,7 +22,7 @@
     }
 
     #divControl .panel-body {
-        height: 322px;
+        height: 320px;
     }
 </style>
 
@@ -75,8 +75,9 @@
                             <th>Thời gian đổ</th>
                             <th>Số lít</th>
                             <th>Đơn giá</th>
-                            <th>Tổng chi phí</th>
-                            <th>Ghi chú</th>
+                            <th>Khấu trừ %(trước VAT)</th>
+                            <th>Thành tiền</th>
+                            <th>Tiền trả</th>
                             <th>Sửa/ Xóa</th>
                         </tr>
                         </thead>
@@ -91,7 +92,7 @@
 </div>
 <!-- end .row -->
 
-
+<!-- Start #frmControl -->
 <div class="row">
     <div id="divControl" class="col-md-offset-4 col-md-8">
         <div class="panel panel-primary box-shadow">
@@ -106,7 +107,7 @@
                     <div class="form-body">
                         <div class="col-md-12 ">
                             <div class="row" id='datetimepicker'>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
                                         <div class="row">
@@ -128,7 +129,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="dateFuel"><b>Ngày đổ</b></label>
                                         <input type="text" id="dateFuel" name="dateFuel"
@@ -138,7 +139,7 @@
                                     </div>
 
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="timeFuel"><b>Giờ đổ</b></label>
                                         <input id="timeFuel" name="timeFuel" type="text" class="time form-control"
@@ -148,25 +149,24 @@
 
                             </div>
                         </div>
-
                         <div class="col-md-12 ">
                             <div class="row">
-                                <div class="col-md-6 ">
+                                <div class="col-md-4 ">
                                     <div class="form-group form-md-line-input">
                                         <label for="literNumber"><b>Số lít</b></label>
                                         <input type="number" class="form-control"
                                                id="literNumber"
                                                name="literNumber"
-                                               onkeyup="fuelCostView.totalPrice(this)">
+                                               onkeyup="fuelCostView.totalPrice()">
 
                                     </div>
 
                                 </div>
-                                <div class="col-sm-6 col-xs-6">
+                                <div class="col-sm-4 col-xs-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="price"><b>Đơn giá</b></label>
                                         <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
+                                            <div class="col-sm-9 col-xs-9">
                                                 <input type="text" class="form-control currency"
                                                        id="price" readonly
                                                        name="price" data-priceId=""
@@ -181,19 +181,42 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="hasVat"><b>Thành tiền</b></label>
+                                        <div class="row">
+                                            <div class="col-sm-10 col-xs-10">
+                                                <input type="text" class="form-control currency"
+                                                       id="hasVat"
+                                                       name="hasVat"
+                                                       onkeyup="fuelCostView.lit()">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-12 ">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
-                                        <label for="totalprice"><b>Tổng chi phí</b></label>
-                                        <input type="text" class="form-control currency"
-                                               id="totalprice" readonly
-                                               name="totalprice">
+                                        <label for="vat"><b>Khấu trừ %(trước VAT)</b></label>
+                                        <input type="number" class="form-control"
+                                               onkeyup="fuelCostView.totalPrice()"
+                                               id="vat"
+                                               name="vat">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="totalPrice"><b>Tiền trả</b></label>
+                                        <input type="text" class="form-control currency"
+                                               id="totalPrice" readonly
+                                               name="totalPrice">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="noted"><b>Ghi chú</b></label>
                                         <input type="text" class="form-control"
@@ -222,8 +245,6 @@
         </div>
     </div>
 </div>
-
-
 <!-- end #frmControl -->
 
 
@@ -431,7 +452,6 @@
                 tableVehicleType: null,
                 tableVehicleNew: null,
                 current: null,
-                tagsVehicle: [],
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -524,7 +544,10 @@
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     defaultZero("#costPrice");
-
+                    defaultZero("#vat");
+                    defaultZero("#hasVat");
+                    defaultZero("#notVat");
+                    defaultOne("#literNumber");
                 },
                 renderAutoCompleteSearch: function () {
                     fuelCostView.tagsVehicle = _.map(fuelCostView.tableVehicle, function (o) {
@@ -548,8 +571,8 @@
                 inputPrice: function () {
                     $("input[id='price']").val(fuelCostView.tablePrice.price);
                     $("#price").attr('data-priceId', fuelCostView.tablePrice.id);
+                    fuelCostView.totalDefault();
                     formatCurrency(".currency");
-
                 },
                 cancel: function () {
                     if (fuelCostView.action == 'add') {
@@ -586,9 +609,11 @@
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(totalPrice);
                     $("input[id='noted']").val(fuelCostView.current["note"]);
                     $("input[id='price']").val(fuelCostView.current["prices_price"]);
+                    $("input[id='vat']").val(fuelCostView.current["vat"]);
+                    $("input[id='notVat']").val(totalPrice);
+                    $("input[id='hasVat']").val(fuelCostView.current["hasVat"]);
                     $("#price").attr('data-priceId', fuelCostView.current["price_id"]);
                     formatCurrency(".currency");
 
@@ -599,12 +624,11 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-//                    $('#dateFuel').datepicker("setDate", new Date());
+                    $('#dateFuel').datepicker("setDate", new Date());
                     $('#timeFuel').timepicker('setTime', new Date());
                 },
                 fillFormDataToCurrentObject: function () {
                     if (fuelCostView.action == 'add') {
-
                         fuelCostView.current = {
                             vehicle_id: $("#vehicle_id").attr('data-id'),
                             dateFuel: $("input[id='dateFuel']").val(),
@@ -613,7 +637,9 @@
                             literNumber: $("input[id='literNumber']").val(),
                             prices_price: $("input[id='price']").val(),
                             prices_id: $("#price").attr('data-priceId'),
-                            noted: $("input[id='noted']").val()
+                            noted: $("input[id='noted']").val(),
+                            vat: $("input[id='vat']").val(),
+                            hasVat: $("input[id='hasVat']").val()
                         };
 
                     } else if (fuelCostView.action == 'update') {
@@ -626,6 +652,8 @@
                         fuelCostView.current.timeFuel = $("input[id='timeFuel']").val();
                         fuelCostView.current.noted = $("input[id='noted']").val();
                         fuelCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
+                        fuelCostView.current.vat = $("input[id='vat']").val();
+                        fuelCostView.current.hasVat = $("input[id='hasVat']").val();
                     }
                 },
                 clearValidation: function () {
@@ -635,17 +663,18 @@
                     /* form addCost*/
                     $("input[id='vehicle_id']").val('');
                     $("#vehicle_id").attr('data-id', '');
-                    $("input[id='literNumber']").val('');
                     $("input[id='noted']").val('');
-                    $("input[id='totalprice']").val('');
+                    fuelCostView.totalDefault();
 
                 },
+
                 clearInputVehicle: function () {
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
                     $("input[id='vehicleNumber']").val('');
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
+                    fuelCostView.totalDefault();
                 },
                 addNewFuelCost: function () {
                     fuelCostView.renderDateTimePicker();
@@ -653,7 +682,7 @@
                     fuelCostView.action = 'add';
                     fuelCostView.inputPrice();
                     fuelCostView.show();
-
+                    fuelCostView.clearInput();
                 },
                 editFuelCost: function (id) {
                     $("#divControl").find(".titleControl").html("Cập nhật chi phi");
@@ -690,10 +719,16 @@
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
                             {
+                                data: 'vat'
+                            },
+                            {
+                                data: 'hasVat',
+                                render: $.fn.dataTable.render.number(",", ",", 0)
+                            },
+                            {
                                 data: 'totalCost',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
-                            {data: 'noteCost'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -714,14 +749,39 @@
                         order: [[1, "desc"]]
                     })
                 },
-                totalPrice: function () {
-                    var lit = $("input[id=literNumber]").val();
-                    var price = $("input[id=price]").val();
-                    price = price.replace(',', '');
-                    var totalPrice = lit * price;
-                    $("input[id=totalprice]").val(totalPrice);
-                    formatCurrency(".currency");
+                totalDefault: function () {
+                    $("input[id=literNumber]").val('1');
+                    $("input[id=vat]").val(3);
+                    $("input[id=notVat]").val(0);
+                    $("input[id=hasVat]").val(0);
+                    fuelCostView.totalPrice();
+                },
+                lit: function () {
 
+                    price = asNumberFromCurrency('#price');
+                    hasVat = asNumberFromCurrency('#hasVat');
+                    lit = hasVat / price;
+                    $("input[id=literNumber]").val(lit);
+                    notVat = hasVat / 1.1;
+                    total = hasVat-(notVat *(vat/100));
+                    $("input[id=totalPrice]").val(total);
+                    formatCurrency(".currency");
+                },
+                totalPrice: function () {
+
+                    lit = $("input[id=literNumber]").val();
+                    price = asNumberFromCurrency('#price');
+                    vat = $("input[id=vat]").val();
+                    if(vat >100){
+                        vat= 100;
+                        $("input[id=vat]").val(vat);
+                    }
+                    hasVat = lit * price;
+                    notVat = hasVat / 1.1;
+                    $("input[id=hasVat]").val(hasVat);
+                    total = hasVat-(notVat *(vat/100));
+                    $("input[id=totalPrice]").val(total);
+                    formatCurrency(".currency");
                 },
                 ValidateCost: function () {
                     $("#formFuelCost").validate({
@@ -946,7 +1006,6 @@
                     $("input[id='weight']").val('');
                     fuelCostView.clearValidation();
                 },
-
                 loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
@@ -982,8 +1041,6 @@
                 clearInputPrice: function () {
                     /* Form addPrice*/
                     $("input[id='costPrice']").val('');
-                    $("input[id='literNumber']").val('');
-                    $("input[id='totalprice']").val('');
                 },
                 savePriceType: function () {
                     if ($("input[id='costPrice']").val() == 0) {
