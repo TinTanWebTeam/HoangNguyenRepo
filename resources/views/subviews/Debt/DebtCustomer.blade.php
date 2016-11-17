@@ -2,7 +2,7 @@
     #divInvoice {
         z-index: 3;
         position: fixed;
-        top: 15%;
+        top: 53px;
         display: none;
         right: 0;
         width: 80%;
@@ -10,7 +10,7 @@
     }
 
     #divInvoice .panel-body {
-        height: 501px;
+        height: 579px;
     }
 
     div.col-lg-12 {
@@ -229,36 +229,43 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <fieldset>
-                                            <legend>Giá trị tổng chuyến giao:</legend>
-                                            <div class="row">
+                                            <legend>
+                                                Giá trị thanh toán:
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <span style="font-size: 13px;">Nợ thực tế: </span>
+                                                <input type="text" class="currency" size="10"
+                                                       id="debt-real" name="debt-real" readonly>
+                                            </legend>
+                                            <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for=""><b>Tổng tiền</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                        <label for="totalTransport"><b>Tổng tiền đơn hàng</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               name="totalTransport" id="totalTransport" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="cashReceive"><b>Đã nhận</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               id="cashReceive" name="cashReceive" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for=""><b>Trả trước</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                        <label for="debt-real"><b>Cần thanh toán</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               id="payNeed" name="payNeed" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for=""><b>Còn lại</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="debt"><b>Có thể xuất hóa đơn</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               id="debt" name="debt" readonly>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for=""><b>Còn lại thực tế</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
-                                                    </div>
-                                                </div>
+
                                             </div>
                                         </fieldset>
                                     </div>
@@ -266,173 +273,102 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <fieldset>
-                                            <legend>Giá trị tổng hóa đơn:</legend>
-                                            <div class="row">
+                                            <legend>Hóa đơn:
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <span style="font-size: 13px;">Thêm tiền đã nhận: </span>
+                                                <input type="checkbox" id="statusPrePaid" name="statusPrePaid"
+                                                       onchange="debtCustomerView.renderEventCheckbox(this)">
+                                            </legend>
+                                            <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
-                                                        <div style="position: absolute; display: block; z-index: 3; right: 5%;"
-                                                             class="pull-right">
-                                                            <strong>Trả trước</strong>&nbsp;
-                                                            <input type="checkbox" id="" name=""
-                                                                   onchange="">
-                                                        </div>
-                                                        <label for=""><b>Tổng tiền</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                        <label for="totalPay"><b>Xuất hóa đơn</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               id="totalPay" name="totalPay" data-totalTransport=""
+                                                               onkeyup="debtCustomerView.computeWhenChangeTotalPay(this.value)">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for=""><b>Tiền xuất hóa đơn</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                        <label for="totalPay-real"><b>Xuất hóa đơn thực tế</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               name="totalPay-real" id="totalPay-real" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for=""><b>VAT</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="VAT" class="red"><b>VAT (%)</b></label>
+                                                        <input type="number" class="form-control defaultZero"
+                                                               id="VAT" name="VAT"
+                                                               onkeyup="debtCustomerView.computeWhenChangeVat(this.value)">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for=""><b>Co VAT</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="hasVAT" class="red"><b>Có VAT</b></label>
+                                                        <input type="text" class="form-control currency defaultZero"
+                                                               id="hasVAT" name="hasVAT"
+                                                               onkeyup="debtCustomerView.computeWhenChangeHasVat(this.value)">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-4">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for=""><b>Tien tra</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="paidAmt" class="red"><b>Trả trên hóa đơn</b></label>
+                                                        <input type="text" class="form-control currency defaultZero"
+                                                               id="paidAmt" name="paidAmt"
+                                                               onkeyup="debtCustomerView.computeWhenChangePaidAmt(this.value)">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for=""><b>Con no</b></label>
-                                                        <input type="text" class="form-control currency" name="" id=""
-                                                               disabled>
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="debtInvoice"><b>Còn nợ lại</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               id="debtInvoice" name="debtInvoice" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="invoiceCode"><b>Mã hóa đơn</b></label>
+                                                        <input type="text" class="form-control"
+                                                               id="invoiceCode"
+                                                               name="invoiceCode">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="exportDate"><b>Ngày xuất</b></label>
+                                                        <input type="text" class="date form-control ignore"
+                                                               id="exportDate" name="exportDate">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="invoiceDate"><b>Ngày hóa đơn</b></label>
+                                                        <input type="text" class="date form-control ignore"
+                                                               id="invoiceDate" name="invoiceDate">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="payDate"><b>Ngày trả</b></label>
+                                                        <input type="text" class="date form-control ignore"
+                                                               id="payDate" name="payDate">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-12">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="note"><b>Ghi chú</b></label>
+                                                        <textarea class="form-control" id="note" name="note" rows="2"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
                                         </fieldset>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="invoiceCode"><b>Mã hóa đơn</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="invoiceCode"
-                                                   name="invoiceCode">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="totalPay"><b>Xuất hóa đơn</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="totalPay" name="totalPay" data-totalTransport=""
-                                                   onkeyup="debtCustomerView.computeWhenTotalpayChange(this.value)">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="VAT" class="red"><b>VAT (%)</b></label>
-                                            <input type="number" class="form-control defaultZero"
-                                                   id="VAT" name="VAT"
-                                                   onkeyup="debtCustomerView.computeHasVAT(this.value, event)">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row ">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="hasVAT" class="red"><b>Có VAT</b></label>
-                                            <input type="text" class="form-control currency defaultZero"
-                                                   id="hasVAT" name="hasVAT"
-                                                   onkeyup="debtCustomerView.computeVAT(this.value)">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="prePaid"><b>Trả trước</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="prePaid" name="prePaid" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="debt-real"><b>Còn nợ</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="debt-real" name="debt-real" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="paidAmt" class="red"><b>Trả trên hóa đơn</b></label>
-                                            <input type="text" class="form-control currency defaultZero"
-                                                   id="paidAmt" name="paidAmt"
-                                                   onkeyup="debtCustomerView.computeDebt(this.value)">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="paidAmtReal" class="red"><b>Tiền trả thực tế</b></label>
-                                            <input type="text" class="form-control currency defaultZero"
-                                                   id="paidAmtReal" name="paidAmtReal"
-                                                   onkeyup="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="debt"><b>Còn nợ lại</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="debt" name="debt" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4" style="display:none">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="notVAT"><b>Chưa VAT</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="notVAT" name="notVAT" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row ">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="exportDate"><b>Ngày xuất</b></label>
-                                            <input type="text" class="date form-control ignore"
-                                                   id="exportDate" name="exportDate">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="invoiceDate"><b>Ngày hóa đơn</b></label>
-                                            <input type="text" class="date form-control ignore"
-                                                   id="invoiceDate" name="invoiceDate">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="payDate"><b>Ngày trả</b></label>
-                                            <input type="text" class="date form-control ignore"
-                                                   id="payDate" name="payDate">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="note"><b>Ghi chú</b></label>
-                                            <textarea class="form-control" id="note" name="note" rows="2"></textarea>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -567,6 +503,7 @@
                 invoiceCode: null, //Get invoiceCode newest form Server
                 tagsCustomerNameTransport: [], //for search
                 tagsCustomerNameInvoice: [], //for search
+                statusPrePaid: 0,
 
                 showControl: function (flag) {
                     if (flag == 0) {
@@ -593,17 +530,21 @@
                 },
                 clearInput: function () {
                     $("input[id='invoiceCode']").val('');
-                    $("input[id='totalPay']").val('');
-                    $("input[id='VAT']").val('');
-                    $("input[id='notVAT']").val('');
-                    $("input[id='hasVAT']").val('');
+                    $("textarea[id='note']").val('');
                     $("input[id='exportDate]").val('');
                     $("input[id='invoiceDate]").val('');
                     $("input[id='payDate]").val('');
+
+                    $("input[id='totalTransport']").val('');
+                    $("input[id='cashReceive']").val('');
                     $("input[id='debt']").val('');
                     $("input[id='debt-real']").val('');
+                    $("input[id='totalPay']").val('');
+                    $("input[id='totalPay-real']").val('');
+                    $("input[id='VAT']").val('');
+                    $("input[id='hasVAT']").val('');
                     $("input[id='paidAmt']").val('');
-                    $("textarea[id='note']").val('');
+                    $("input[id='debtInvoice']").val('');
                 },
                 retype: function () {
                     $("input[id='invoiceCode']").val('');
@@ -708,6 +649,34 @@
                             return o.id == invoiceCustomerDetailId;
                         });
                     });
+                },
+                renderEventCheckbox: function (cb) {
+                    debtCustomerView.statusPrePaid = (cb.checked) ? 1 : 0;
+
+                    var totalPay = asNumberFromCurrency("#totalPay");
+                    var cashReceive = asNumberFromCurrency("#cashReceive");
+                    var vat = parseFloat($("input[id=VAT]").val());
+                    var paidAmt = asNumberFromCurrency("#paidAmt");
+
+                    if(debtCustomerView.statusPrePaid === 1){
+                        var totalPayReal = totalPay + cashReceive;
+                    } else {
+                        var totalPayReal = totalPay;
+                    }
+
+                    var hasVat = totalPayReal + (totalPayReal * vat / 100);
+
+                    if(debtCustomerView.statusPrePaid === 1) {
+                        var debtInvoice = hasVat - paidAmt - cashReceive;
+                    } else {
+                        var debtInvoice = hasVat - paidAmt;
+                    }
+
+                    debtInvoice = (debtInvoice < 0) ? 0 : debtInvoice;
+
+                    $("input[id=totalPay-real]").val(totalPayReal);
+                    $("input[id=hasVAT]").val(hasVat);
+                    $("input[id=debtInvoice]").val(debtInvoice);
                 },
 
                 fillDataToDatatable: function (data) {
@@ -1016,6 +985,7 @@
                     debtCustomerView.renderEventRowClick();
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
+                    defaultZero("#totalPay");
                     defaultZero("#VAT");
                     defaultZero("#hasVAT");
                     defaultZero("#paidAmt");
@@ -1025,7 +995,6 @@
                     $("input[id='totalPay']").val(debtCustomerView.currentInvoiceCustomer["totalPay"]);
                     $("input[id='totalPay']").attr('data-totalTransport', debtCustomerView.currentInvoiceCustomer["totalPay"]);
                     $("input[id='VAT']").val(debtCustomerView.currentInvoiceCustomer["VAT"]);
-                    $("input[id='notVAT']").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
                     $("input[id='hasVAT']").val(debtCustomerView.currentInvoiceCustomer["hasVAT"]);
 
                     var exportDate = moment(debtCustomerView.currentInvoiceCustomer["exportDate"], "YYYY-MM-DD");
@@ -1047,75 +1016,128 @@
                     debtCustomerView.currentInvoiceCustomer = {
                         id: debtCustomerView.invoiceCustomerId,
                         invoiceCode: $("input[id='invoiceCode']").val(),
-                        VAT: $("input[id='VAT']").val(),
-                        notVAT: asNumberFromCurrency("#notVAT"),
+
+                        totalTransport: asNumberFromCurrency("#totalTransport"),
+                        prePaid: asNumberFromCurrency("#cashReceive"),
+                        totalPay: asNumberFromCurrency("#totalPay"),
+                        VAT: parseFloat($("input[id='VAT']").val()),
                         hasVAT: asNumberFromCurrency("#hasVAT"),
+                        paidAmt: asNumberFromCurrency("#paidAmt"),
+
                         exportDate: $("input[id='exportDate']").val(),
                         invoiceDate: $("input[id='invoiceDate']").val(),
                         payDate: $("input[id='payDate']").val(),
                         note: $("textarea[id='note']").val(),
-                        totalPay: asNumberFromCurrency("#totalPay"),
-                        totalTransport: $("input[id=totalPay]").attr('data-totalTransport'),
-                        prePaid: asNumberFromCurrency("#prePaid"),
-                        debt: asNumberFromCurrency("#debt-real"),
-                        paidAmt: asNumberFromCurrency("#paidAmt")
+                        statusPrePaid: debtCustomerView.statusPrePaid,
                     }
                 },
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
                     if (flag == 0) {
+
                         var dataAfterValidate = debtCustomerView.validateListTransport();
+                        console.log(dataAfterValidate);
 
-                        if (dataAfterValidate['status'] === 0) {
-                            $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                            $("#modal-notification").find(".modal-body").html(dataAfterValidate['msg']);
-                            debtCustomerView.displayModal('show', '#modal-notification');
-                            return;
+                        switch (dataAfterValidate['status']){
+                            case 0 : //Unvalid
+                                $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                                $("#modal-notification").find(".modal-body").html(dataAfterValidate['msg']);
+                                debtCustomerView.displayModal('show', '#modal-notification');
+                                return;
+                                break;
+                            case 1 : //First
+                                $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
+                                debtCustomerView.showControl(flag);
+                                debtCustomerView.action = "new";
+                                //co the su dung tien tra truoc
+                                if(dataAfterValidate['statusPrePaid'] === 0) {
+                                    $("input[id=statusPrePaid]").attr('disable', false);
+                                    $("input[id=statusPrePaid]").attr('checked', true);
+
+                                    var _totalTransport = dataAfterValidate['totalPay'];
+                                    var _cashReceive = dataAfterValidate['prePaid'];
+                                    var _payNeed = _totalTransport - _cashReceive;
+                                    var _debt = _totalTransport;
+                                    var _debtReal = _debt - _cashReceive;
+                                    var _totalPay = _debtReal;
+                                    var _totalPayReal = _totalPay + _cashReceive;
+                                    var _vat = 10;
+                                    var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
+                                    var _paidAmt = _hasVat - _cashReceive;
+                                    var _debtInvoice = _hasVat - _cashReceive - _paidAmt;
+                                    debtCustomerView.statusPrePaid = 1;
+                                } else { //ko the su dung tien tra truoc
+                                    $("input[id=statusPrePaid]").attr('disabled', true);
+                                    $("input[id=statusPrePaid]").attr('checked', false);
+
+                                    var _totalTransport = dataAfterValidate['totalPay'];
+                                    var _cashReceive = dataAfterValidate['prePaid'];
+                                    var _payNeed = _totalTransport - _cashReceive;
+                                    var _debt = _totalTransport;
+                                    var _debtReal = _debt - _cashReceive;
+                                    var _totalPay = _debtReal;
+                                    var _totalPayReal = _totalPay + _cashReceive;
+                                    var _vat = 10;
+                                    var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
+                                    var _paidAmt = _hasVat - _cashReceive;
+                                    var _debtInvoice = _hasVat - _cashReceive - _paidAmt;
+                                    debtCustomerView.statusPrePaid = 0;
+                                }
+                                break;
+                            case 2 : //Exported
+                                $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
+                                debtCustomerView.showControl(flag);
+                                debtCustomerView.action = "new";
+                                //co the su dung tien tra truoc
+                                if(dataAfterValidate['statusPrePaid'] === 0) {
+                                    $("input[id=statusPrePaid]").attr('disabled', false);
+                                    $("input[id=statusPrePaid]").attr('checked', true);
+
+                                    var _totalTransport = dataAfterValidate['totalPay'];
+                                    var _cashReceive = dataAfterValidate['prePaid'];
+                                    var _payNeed = _totalTransport - _cashReceive;
+                                    var _debt = _totalTransport;
+                                    var _debtReal = dataAfterValidate['debtReal'];
+                                    var _totalPay = _debtReal;
+                                    var _totalPayReal = _totalPay + _cashReceive;
+                                    var _vat = 10;
+                                    var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
+                                    var _paidAmt = _hasVat - _cashReceive;
+                                    var _debtInvoice = _hasVat - _cashReceive - _paidAmt;
+                                    debtCustomerView.statusPrePaid = 1;
+                                } else { //ko the su dung tien tra truoc
+                                    $("input[id=statusPrePaid]").attr('disabled', true);
+                                    $("input[id=statusPrePaid]").attr('checked', false);
+
+                                    var _totalTransport = dataAfterValidate['totalPay'];
+                                    var _cashReceive = dataAfterValidate['prePaid'];
+                                    var _payNeed = _totalTransport - _cashReceive;
+                                    var _debt = _totalTransport;
+                                    var _debtReal = dataAfterValidate['debtReal'];
+                                    var _totalPay = _debtReal;
+                                    var _totalPayReal = _totalPay + _cashReceive;
+                                    var _vat = 10;
+                                    var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
+                                    var _paidAmt = _hasVat - _cashReceive;
+                                    var _debtInvoice = _hasVat - _cashReceive - _paidAmt;
+                                    debtCustomerView.statusPrePaid = 0;
+                                }
+                                break;
                         }
-                        $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
-                        debtCustomerView.showControl(flag);
-                        debtCustomerView.action = "new";
-                        prePaid = 0;
-                        totalPay = 0;
-                        for (i = 0; i < debtCustomerView.array_transportId.length; i++) {
-                            currentRow = _.find(debtCustomerView.dataTransport, function (o) {
-                                return o.id == debtCustomerView.array_transportId[i];
-                            });
 
-                            if (typeof currentRow !== 'undefined') {
-                                totalPay += parseInt(currentRow['cashRevenue']);
-                                prePaid += parseInt(currentRow['cashReceive']);
-                            }
-                        }
+                        $("input[id=totalTransport]").val(_totalTransport);
+                        $("input[id=cashReceive]").val(_cashReceive);
+                        $("input[id=payNeed]").val(_payNeed);
+                        $("input[id=debt]").val(_debt);
+                        $("input[id=debt-real]").val(_debtReal);
+                        $("input[id=totalPay]").val(_totalPay);
+                        $("input[id=totalPay-real]").val(_totalPayReal);
+                        $("input[id=VAT]").val(_vat);
+                        $("input[id=hasVAT]").val(_hasVat);
+                        $("input[id=paidAmt]").val(_paidAmt);
+                        $("input[id=debtInvoice]").val(_debtInvoice);
 
-                        if (dataAfterValidate['status'] === 1) { //First
-                            $("input[id=totalPay]").val(totalPay);
-                            $("input[id=totalPay]").attr('data-totalTransport', totalPay);
-                            $("input[id=prePaid]").val(prePaid);
-
-                            debt = totalPay - prePaid;
-                            $("input[id=debt]").val(debt);
-                            $("input[id=debt-real]").val(debt);
-                        } else if (dataAfterValidate['status'] === 2) { //Exported
-                            $("input[id=totalPay]").attr('data-totalTransport', totalPay);
-                            totalPay = dataAfterValidate['totalPay'];
-                            $("input[id=totalPay]").val(totalPay);
-                            $("input[id=prePaid]").val(prePaid);
-
-                            $("input[id=debt]").val(totalPay);
-                            $("input[id=debt-real]").val(totalPay);
-                        }
                         $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
-
-                        //set default value
-                        $("input[id=notVAT]").val(totalPay);
-                        $("input[id=VAT]").val(0);
-                        $("input[id=hasVAT]").val(totalPay);
-                        $("input[id=paidAmt]").val(0);
-
-                        //set default VAT=10%
-                        $("input[id=VAT]").val(10);
-                        debtCustomerView.computeHasVAT(10);
 
                         //remove readonly input
                         $("input[id=invoiceCode]").prop('readonly', false);
@@ -1131,22 +1153,22 @@
                         debtCustomerView.action = "edit";
                         debtCustomerView.invoiceCustomerId = invoiceCustomer_id;
                         //fill data to table InvoiceCustomerDetail
-                        var data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
+                        var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
                             return o.invoiceCustomer_id == invoiceCustomer_id;
                         });
-                        if (typeof data === 'undefined') return;
-                        debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(data);
+                        if (typeof dataDetail === 'undefined') return;
+                        debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
 
                         //fill data to table PrintHistory
-                        var data2 = [];
-                        for (var i = 0; i < data.length; i++) {
+                        var dataHistory = [];
+                        for (var i = 0; i < dataDetail.length; i++) {
                             var found = _.find(debtCustomerView.dataPrintHistory, function (o) {
-                                return o.invoiceCustomerDetail_id == data[i]['id'];
+                                return o.invoiceCustomerDetail_id == dataDetail[i]['id'];
                             });
                             if (typeof found !== 'undefined')
-                                data2.push(found);
+                                dataHistory.push(found);
                         }
-                        debtCustomerView.fillDataToDatatablePrintHistory(data2);
+                        debtCustomerView.fillDataToDatatablePrintHistory(dataHistory);
 
                         //load data to input
                         var rowInvoiceCustomer = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
@@ -1154,24 +1176,55 @@
                         });
                         if (typeof rowInvoiceCustomer === 'undefined') return;
 
-                        var totalPay = parseInt(rowInvoiceCustomer['totalPay']);
-                        var hasVAT = parseInt(rowInvoiceCustomer['hasVAT']);
-                        var totalPaid = parseInt(rowInvoiceCustomer['totalPaid']);
-                        var prePaid = parseInt(rowInvoiceCustomer['prePaid']);
-                        var debt = hasVAT - (totalPaid + prePaid);
-                        $("input[id=totalPay]").val(totalPay);
-                        $("input[id=totalPay]").attr('data-totalTransport', parseInt(rowInvoiceCustomer['totalTransport']));
-                        $("input[id=debt]").val(debt);
-                        $("input[id=debt-real]").val(debt);
+                        //
+                        var _cashReceive = parseInt(rowInvoiceCustomer['prePaid']);
+                        console.log(dataDetail);
+                        var _payNeed = "";
+                        return;
+                        var _statusPrePaid = parseInt(rowInvoiceCustomer['statusPrePaid']);
+                        if(_statusPrePaid === 1){
+                            $("input[id=statusPrePaid]").attr('disabled', true);
+                            $("input[id=statusPrePaid]").attr('checked', false);
+                            debtCustomerView.statusPrePaid = 0;
+                        }
+                        else{
+                            if(_cashReceive > 0){
+                                $("input[id=statusPrePaid]").attr('disabled', false);
+                                $("input[id=statusPrePaid]").attr('checked', true);
+                                debtCustomerView.statusPrePaid = 1;
+                            } else {
+                                $("input[id=statusPrePaid]").attr('disabled', true);
+                                $("input[id=statusPrePaid]").attr('checked', false);
+                                debtCustomerView.statusPrePaid = 0;
+                            }
+                        }
 
+                        var _totalTransport = parseInt(rowInvoiceCustomer['totalTransport']);
+
+                        var _debt = parseInt(rowInvoiceCustomer['debt']);
+                        var _debtReal = _debt;
+
+                        var _totalPay = _debt;
+                        var _totalPayReal = _totalPay;
+                        var _vat = 10;
+                        var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
+                        var _paidAmt = _hasVat;//parseInt(rowInvoiceCustomer['totalPaid']);
+                        var _debtInvoice = _hasVat - _paidAmt;
+
+                        $("input[id=totalTransport]").val(_totalTransport);
+                        $("input[id=cashReceive]").val(_cashReceive);
+                        $("input[id=payNeed]").val(_payNeed);
+                        $("input[id=debt]").val(_debt);
+                        $("input[id=debt-real]").val(_debtReal);
+                        $("input[id=statusPrePaid]").attr('checked', true);
+                        $("input[id=totalPay]").val(_totalPay);
+                        $("input[id=totalPay-real]").val(_totalPayReal);
+                        $("input[id=VAT]").val(_vat);
+                        $("input[id=hasVAT]").val(_hasVat);
+                        $("input[id=paidAmt]").val(_paidAmt);
+                        $("input[id=debtInvoice]").val(_debtInvoice);
                         $("input[id=invoiceCode]").val(rowInvoiceCustomer['invoiceCode']);
-                        $("input[id=VAT]").val(rowInvoiceCustomer['VAT']);
-                        $("input[id=notVAT]").val(rowInvoiceCustomer['notVAT']);
-                        $("input[id=hasVAT]").val(hasVAT);
-                        $("input[id=prePaid]").val(prePaid);
-
-                        //set default value
-                        $("input[id=paidAmt]").val(0);
+                        //
 
                         //add readly input
                         $("input[id=invoiceCode]").prop('readonly', true);
@@ -1844,70 +1897,100 @@
                     return found;
                 },
 
-                computeDebt: function (paidAmt) {
-                    paidAmt = convertStringToNumber(paidAmt);
-                    var debtReal = asNumberFromCurrency("#debt-real");
-                    if (paidAmt > debtReal) {
-                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
-                        paidAmt = debtReal;
-                        $("input[id=paidAmt]").val(paidAmt);
-                    }
-                    var debt = debtReal - paidAmt;
-                    debt = (debt < 0) ? 0 : debt;
-                    $("input[id=debt]").val(debt);
-                    formatCurrency(".currency");
-                },
-                computeVAT: function (hasVat) {
-                    console.log(hasVat);
-                    hasVat = convertStringToNumber(hasVat);
-                    console.log(hasVat);
-                    var notVat = asNumberFromCurrency("#notVAT");
-                    var vat = ((hasVat - notVat) / notVat) * 100;
-                    $("input[id=VAT]").val(vat);
-
-                    var prePaid = asNumberFromCurrency("#prePaid");
-                    var paidAmt = asNumberFromCurrency("#paidAmt");
-                    $("input[id=debt-real]").val(hasVat - prePaid);
-                    $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
-                    formatCurrency(".currency");
-                },
-                computeHasVAT: function (vat, e) {
-//                    if((e.keyCode == 8 || e.keyCode == 46) && (vat == 0 || vat == '')) return;
-
-                    console.log(vat);
-                    if (vat == '') vat = 0;
-                    var notVat = asNumberFromCurrency('#notVAT');
-                    var hasVat = notVat + ((vat / 100) * notVat);
-                    $("input[id=hasVAT]").val(hasVat);
-
-                    var prePaid = asNumberFromCurrency('#prePaid');
-                    var paidAmt = asNumberFromCurrency('#paidAmt');
-                    $("input[id=debt-real]").val(hasVat - prePaid);
-                    $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
-                    formatCurrency(".currency");
-                },
-                computeWhenTotalpayChange: function (totalPay) {
+                computeWhenChangeTotalPay: function (totalPay) {
                     var totalPay = convertStringToNumber(totalPay);
-                    var totalTransport = parseInt($('input[id=totalPay]').attr('data-totalTransport'));
-                    var prePaid = asNumberFromCurrency("#prePaid");
+                    var debt = asNumberFromCurrency("#debt");
+                    var totalTransport = asNumberFromCurrency("#totalTransport");
+                    var cashReceive = asNumberFromCurrency("#cashReceive");
+                    var paidAmt = asNumberFromCurrency("#paidAmt");
+                    var vat = parseFloat($("#VAT").val());
 
-                    if (totalPay > totalTransport) {
-                        showNotification('warning', 'Số tiền trên hóa đơn không được lớn hơn tổng tiền của các đơn hàng.');
-                        totalPay = totalTransport;
-                        $("input[id=totalPay]").val(totalPay);
-                    }
-                    if (totalPay < prePaid) {
-                        showNotification('warning', 'Số tiền trên hóa đơn không được bé hơn số tiền đã trả trước.');
-                        totalPay = totalTransport;
-                        $("input[id=totalPay]").val(totalPay);
+                    if(debtCustomerView.statusPrePaid === 1) {
+                        if (totalPay > debt) {
+                            showNotification('warning', 'Số tiền trả không được lớn hơn tiền cần thanh toán.');
+                            totalPay = debt;
+                            var totalPayReal = totalTransport;
+                        } else {
+                            var totalPayReal = totalPay + cashReceive;
+                        }
+                    } else {
+                        if (totalPay > totalTransport) {
+                            showNotification('warning', 'Số tiền trả không được lớn hơn tổng tiền đơn hàng.');
+                            totalPay = totalTransport;
+                        }
+                        var totalPayReal = totalPay;
                     }
 
-                    vat = parseInt($("input[id=VAT]").val());
-                    paidAmt = asNumberFromCurrency("#paidAmt");
-                    $("input[id=debt-real]").val(totalPay + (totalPay * vat / 100));
-                    $("input[id=notVAT]").val(totalPay);
-                    $("input[id=hasVAT]").val(totalPay + (totalPay * vat / 100));
-                    $("input[id=debt]").val(totalPay - paidAmt);
+                    var hasVat = totalPayReal + (totalPayReal * vat / 100);
+                    if(debtCustomerView.statusPrePaid === 1) {
+                        var debtInvoice = hasVat - paidAmt - cashReceive;
+                    } else {
+                        var debtInvoice = hasVat - paidAmt;
+                    }
+
+                    debtInvoice = (debtInvoice < 0) ? 0 : debtInvoice;
+
+                    $("input[id=totalPay]").val(totalPay);
+                    $("input[id=totalPay-real]").val(totalPayReal);
+                    $("input[id=hasVAT]").val(hasVat);
+                    $("input[id=debtInvoice]").val(debtInvoice);
+                    formatCurrency(".currency");
+                },
+                computeWhenChangeVat: function (vat) {
+                    if (vat == '')
+                        vat = 0;
+
+                    var totalPayReal = asNumberFromCurrency("#totalPay-real");
+                    var paidAmt = asNumberFromCurrency("#paidAmt");
+                    var cashReceive = asNumberFromCurrency("#cashReceive");
+
+                    var hasVat = totalPayReal + (totalPayReal * vat / 100);
+                    if(debtCustomerView.statusPrePaid === 1) {
+                        var debtInvoice = hasVat - paidAmt - cashReceive;
+                    } else {
+                        var debtInvoice = hasVat - paidAmt;
+                    }
+                    debtInvoice = (debtInvoice < 0) ? 0 : debtInvoice;
+
+                    $("input[id=hasVAT]").val(hasVat);
+                    $("input[id=debtInvoice]").val(debtInvoice);
+                    formatCurrency(".currency");
+                },
+                computeWhenChangeHasVat: function (hasVat) {
+                    hasVat = convertStringToNumber(hasVat);
+
+                    var totalPayReal = asNumberFromCurrency("#totalPay-real");
+                    var paidAmt = asNumberFromCurrency("#paidAmt");
+                    var cashReceive = asNumberFromCurrency("#cashReceive");
+
+                    var vat = (hasVat - totalPayReal) * 100 / totalPayReal;
+
+                    if(debtCustomerView.statusPrePaid === 1) {
+                        var debtInvoice = hasVat - paidAmt - cashReceive;
+                    } else {
+                        var debtInvoice = hasVat - paidAmt;
+                    }
+                    debtInvoice = (debtInvoice < 0) ? 0 : debtInvoice;
+
+
+                    $("input[id=VAT]").val(vat);
+                    $("input[id=debtInvoice]").val(debtInvoice);
+                    formatCurrency(".currency");
+                },
+                computeWhenChangePaidAmt: function (paidAmt) {
+                    paidAmt = convertStringToNumber(paidAmt);
+
+                    var cashReceive = asNumberFromCurrency("#cashReceive");
+                    var hasVat = asNumberFromCurrency("#hasVAT");
+
+                    if(debtCustomerView.statusPrePaid === 1) {
+                        var debtInvoice = hasVat - paidAmt - cashReceive;
+                    } else {
+                        var debtInvoice = hasVat - paidAmt;
+                    }
+                    debtInvoice = (debtInvoice < 0) ? 0 : debtInvoice;
+
+                    $("input[id=debtInvoice]").val(debtInvoice);
                     formatCurrency(".currency");
                 }
             };

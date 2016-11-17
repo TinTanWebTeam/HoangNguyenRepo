@@ -156,15 +156,19 @@ class DebtManagementController extends Controller
     {
         $array_transportId = $request->input('_array_transportId');
 
-        //Kiểm tra cùng khách hàng
+        #Kiểm tra cùng khách hàng
         $arrayCustomer = Transport::whereIn('id', $array_transportId)->pluck('customer_id');
         $collection = collect($arrayCustomer);
         $unique = $collection->unique();
         if(count($unique->values()->all()) != 1){
-            return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có khách hàng không giống nhau.'], 203);
+            $response = [
+                'status' => 0,
+                'msg' => 'Các đơn hàng có khách hàng không giống nhau.'
+            ];
+            return response()->json($response, 203);
         }
 
-        //Kiểm tra xem đã xuất hđ hay chưa
+        #Kiểm tra đơn hàng đã xuất hđ hay chưa
         $kt = false;
         $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)
             ->where('invoiceCustomer_id', '<>', null)
@@ -172,13 +176,42 @@ class DebtManagementController extends Controller
         if(count($array_transportInvoice) > 0)
             $kt = true;
 
+        //Nếu chưa xuất hóa đơn lần nào
+        if(!$kt){
+            $arr_transport = Transport::whereIn('id', $array_transportId)->get();
+            $totalPay = $arr_transport->pluck('cashRevenue');
+            $sum_totalPay = array_sum($totalPay->toArray());
+
+            $prePaid = $arr_transport->pluck('cashReceive');
+            $sum_prePaid = array_sum($prePaid->toArray());
+            //Tiền trả trước > 0, cho dùng checkbox
+            if($sum_prePaid > 0)
+                $statusPrePaid = 0;
+            //Tiền trả trước <= 0, ko cho dùng checkbox
+            else
+                $statusPrePaid = 1;
+            $response = [
+                'status' => 1,
+                'totalPay' => $sum_totalPay,
+                'prePaid' => $sum_prePaid,
+                'statusPrePaid' => $statusPrePaid,
+                'msg' => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'
+            ];
+            return response()->json($response, 200);
+        }
         //Nếu đã xuất hóa đơn
-        if($kt){
+        else {
+            #Kiểm tra xem các đơn hàng đã chọn và các đơn hàng ở database có khớp nhau không?
             $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])
                 ->where('invoiceCustomer_id', '<>', null)
                 ->pluck('invoiceCustomer_id');
             if($arrayInvoice == null) {
-                return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayInvoice'], 203);
+                $response = [
+                    'status' => 0,
+                    'totalPay' => 0,
+                    'msg' => 'Không tìm thấy arrayInvoice'
+                ];
+                return response()->json($response, 203);
             };
             $array_match = true;
             foreach($arrayInvoice as $invoiceId){
@@ -186,7 +219,12 @@ class DebtManagementController extends Controller
                     ->where('invoiceCustomer_id', '<>', null)
                     ->pluck('transport_id');
                 if($arrayTransport == null) {
-                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayTransport'], 203);
+                    $response = [
+                        'status' => 0,
+                        'totalPay' => 0,
+                        'msg' => 'Không tìm thấy arrayTransport'
+                    ];
+                    return response()->json($response, 203);
                 }
                 $collectTransportStock = collect($array_transportId);
                 $diff = $collectTransportStock->diff($arrayTransport);
@@ -195,32 +233,110 @@ class DebtManagementController extends Controller
                     $array_match = false;
                 }
             }
-            if($array_match){
-                $invoices = InvoiceCustomer::find($arrayInvoice[0])->get();
-                if($invoices == null)
-                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy invoices'], 203);
-                $totalTransport = $invoices[0]->totalTransport;
+            //Nếu các đơn hàng không khớp nhau
+            if(!$array_match){
+                $response = [
+                    'status' => 0,
+                    'totalPay' => 0,
+                    'msg' => 'Các đơn hàng không khớp nhau.'
+                ];
+                return response()->json($response, 203);
+            }
+            //Nếu các đơn hàng khớp nhau
+            else {
+                #Kiểm tra xem đã dùng trả trước hay chưa
+                $statusPrePaid = InvoiceCustomer::whereIn('id', $arrayInvoice)->pluck('statusPrePaid');
+                //Nếu đã dùng trả trước
+                if (in_array(1, $statusPrePaid->toArray())) {
+                    $statusPrePaid = 1;
+                }
+                //Nếu chưa dùng trả trước
+                else {
+                    #Kiểm tra tiền trả trước nếu bé hơn hoặc = 0 thì k cho dùng checkbox
+                    $prePaid = Transport::whereIn('id', $array_transportId)->pluck('cashReceive');
+                    $sum_prePaid = array_sum($prePaid->toArray());
+                    //Tiền trả trước > 0, cho dùng checkbox
+                    if($sum_prePaid > 0)
+                        $statusPrePaid = 0;
+                    //Tiền trả trước <= 0, ko cho dùng checkbox
+                    else
+                        $statusPrePaid = 1;
+                }
+
+                #Tính totalPay (Tổng tiền) cho lần tạo mới hóa đơn này
+                $invoice = InvoiceCustomer::find($arrayInvoice[0]);
+                $invoices = InvoiceCustomer::whereIn('id', $arrayInvoice)->get();
+                if($invoice == null){
+                    $response = [
+                        'status' => 0,
+                        'totalPay' => 0,
+                        'msg' => 'Không tìm thấy invoices'
+                    ];
+                    return response()->json($response, 203);
+                }
+
+                $totalTransport = $invoice->totalTransport;
+                $prePaid = $invoice->prePaid;;
                 $totalPay = 0;
-                foreach($invoices as $invoice){
-                    $totalPay += $invoice->totalPay;
+
+                foreach($invoices as $invoice_item){
+                    $totalPay += $invoice_item->totalPay;
                 }
                 $totalPay = $totalTransport - $totalPay;
+
+                if($statusPrePaid == 1)
+                    $totalPay -= $prePaid;
+
                 if($totalPay == 0){
-                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'], 203);
+                    $response = [
+                        'status' => 0,
+                        'totalPay' => 0,
+                        'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'
+                    ];
+                    return response()->json($response, 203);
                 }
-                return response()->json(['status' => 2, 'totalPay' => $totalPay, 'msg' => 'Các đơn hàng khớp nhau'], 200);
+
+                #Tính debt-real (Nợ thực tế)
+                $totalPaid = InvoiceCustomerDetail::whereIn('invoiceCustomer_id', $arrayInvoice)->pluck('paidAmt');
+                $sum_totalPaid = array_sum($totalPaid->toArray());
+                $debtReal = $totalTransport - $prePaid - $sum_totalPaid;
+                dd($debtReal);
+
+                $response = [
+                    'status' => 2,
+                    'totalPay' => $totalPay,
+                    'prePaid' => $prePaid,
+                    'debtReal' => $debtReal,
+                    'statusPrePaid' => $statusPrePaid,
+                    'msg' => 'Các đơn hàng khớp nhau'
+                ];
+                return response()->json($response, 200);
             }
-            else{
-                return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng không khớp nhau.'], 203);
-            }
-        } else {
-            return response()->json(['status' => 1, 'totalPay' => 0, 'msg' => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'], 200);
         }
     }
 
     public function postModifyInvoiceCustomer(Request $request)
     {
         $action = $request->input('_action');
+        $invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
+        $note = $request->input('_invoiceCustomer')['note'];
+        $totalTransport = $request->input('_invoiceCustomer')['totalTransport'];
+        $prePaid = $request->input('_invoiceCustomer')['prePaid'];
+        $totalPay = $request->input('_invoiceCustomer')['totalPay'];
+        $totalPaid = $request->input('_invoiceCustomer')['paidAmt'];
+        $vat = $request->input('_invoiceCustomer')['VAT'];
+        $hasVat = $request->input('_invoiceCustomer')['hasVAT'];
+        $exportDate = $request->input('_invoiceCustomer')['exportDate'];
+        $exportDate = Carbon::createFromFormat('d-m-Y', $exportDate)->toDateTimeString();
+        $invoiceDate = $request->input('_invoiceCustomer')['invoiceDate'];
+        $invoiceDate = Carbon::createFromFormat('d-m-Y', $invoiceDate)->toDateTimeString();
+        $payDate = $request->input('_invoiceCustomer')['payDate'];
+        $payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
+        $statusPrePaid = $request->input('_invoiceCustomer')['statusPrePaid'];
+
+        $createdBy = \Auth::user()->id;
+        $updatedBy = \Auth::user()->id;
+        $invoiceType = 0;
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
 
@@ -260,38 +376,30 @@ class DebtManagementController extends Controller
 
             $invoiceCustomer = new InvoiceCustomer();
 
-            $invoiceCode = $this->generateInvoiceCode('customer');
-            if ($request->input('_invoiceCustomer')['invoiceCode'] == '')
-                $invoiceCustomer->invoiceCode = $invoiceCode;
+            if ($invoiceCode == '')
+                $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('customer');
             else {
-                $invoiceCode = $request->input('_invoiceCustomer')['invoiceCode'];
                 if (InvoiceCustomer::where('invoiceCode', $invoiceCode)->get()->count() == 0)
                     $invoiceCustomer->invoiceCode = $invoiceCode;
                 else
                     return response()->json(['msg' => 'invoiceCode exists!'], 203);
             }
 
-            $invoiceCustomer->VAT = $request->input('_invoiceCustomer')['VAT'];
-            $invoiceCustomer->notVAT = $request->input('_invoiceCustomer')['notVAT'];
-            $invoiceCustomer->hasVAT = $request->input('_invoiceCustomer')['hasVAT'];
-
-            $exportDate = $request->input('_invoiceCustomer')['exportDate'];
-            $invoiceCustomer->exportDate = Carbon::createFromFormat('d-m-Y', $exportDate)->toDateTimeString();
-
-            $invoiceDate = $request->input('_invoiceCustomer')['invoiceDate'];
-            $invoiceCustomer->invoiceDate = Carbon::createFromFormat('d-m-Y', $invoiceDate)->toDateTimeString();
-
-            $payDate = $request->input('_invoiceCustomer')['payDate'];
-            $invoiceCustomer->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
-
-            $invoiceCustomer->note = $request->input('_invoiceCustomer')['note'];
-            $invoiceCustomer->totalPay = $request->input('_invoiceCustomer')['totalPay'];
-            $invoiceCustomer->totalTransport = $request->input('_invoiceCustomer')['totalTransport'];
-            $invoiceCustomer->prePaid = $request->input('_invoiceCustomer')['prePaid'];
-            $invoiceCustomer->totalPaid = $request->input('_invoiceCustomer')['paidAmt'];
-            $invoiceCustomer->createdBy = \Auth::user()->id;
-            $invoiceCustomer->updatedBy = \Auth::user()->id;
-
+            $invoiceCustomer->VAT = $vat;
+            $invoiceCustomer->notVAT = $totalPay;
+            $invoiceCustomer->hasVAT = $hasVat;
+            $invoiceCustomer->exportDate = $exportDate;
+            $invoiceCustomer->invoiceDate = $invoiceDate;
+            $invoiceCustomer->payDate = $payDate;
+            $invoiceCustomer->note = $note;
+            $invoiceCustomer->totalPay = $totalPay;
+            $invoiceCustomer->totalTransport = $totalTransport;
+            $invoiceCustomer->prePaid = $prePaid;
+            $invoiceCustomer->totalPaid = $totalPaid;
+            $invoiceCustomer->createdBy = $createdBy;
+            $invoiceCustomer->updatedBy = $updatedBy;
+            $invoiceCustomer->statusPrePaid = $statusPrePaid;
+            $invoiceCustomer->invoiceType = 0;
             try {
                 DB::beginTransaction();
                 //Insert Invoice
@@ -303,14 +411,14 @@ class DebtManagementController extends Controller
                 //Insert InvoiceDetail
                 $invoiceCustomerDetail = new InvoiceCustomerDetail();
                 $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
-                $invoiceCustomerDetail->paidAmt = $request->input('_invoiceCustomer')['paidAmt'];
+                $invoiceCustomerDetail->paidAmt = $totalPaid;
 
                 $payDate = $request->input('_invoiceCustomer')['payDate'];
-                $invoiceCustomerDetail->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
+                $invoiceCustomerDetail->payDate = $payDate;
 
                 $invoiceCustomerDetail->modify = false;
-                $invoiceCustomerDetail->createdBy = \Auth::user()->id;
-                $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
+                $invoiceCustomerDetail->createdBy = $createdBy;
+                $invoiceCustomerDetail->updatedBy = $updatedBy;
 
                 if (!$invoiceCustomerDetail->save()) {
                     DB::rollBack();
@@ -332,8 +440,8 @@ class DebtManagementController extends Controller
                     $transportInvoice = new TransportInvoice();
                     $transportInvoice->transport_id = $transportUpdate->id;
                     $transportInvoice->invoiceCustomer_id = $invoiceCustomer->id;
-                    $transportInvoice->createdBy = \Auth::user()->id;
-                    $transportInvoice->updatedBy = \Auth::user()->id;
+                    $transportInvoice->createdBy = $createdBy;
+                    $transportInvoice->updatedBy = $updatedBy;
 
                     if(!$transportInvoice->save()){
                         DB::rollBack();
@@ -367,19 +475,12 @@ class DebtManagementController extends Controller
             }
         } else {
             $invoiceCustomer = InvoiceCustomer::find($request->input('_invoiceCustomer')['id']);
-
-            $exportDate = $request->input('_invoiceCustomer')['exportDate'];
-            $invoiceCustomer->exportDate = Carbon::createFromFormat('d-m-Y', $exportDate)->toDateTimeString();
-
-            $invoiceDate = $request->input('_invoiceCustomer')['invoiceDate'];
-            $invoiceCustomer->invoiceDate = Carbon::createFromFormat('d-m-Y', $invoiceDate)->toDateTimeString();
-
-            $payDate = $request->input('_invoiceCustomer')['payDate'];
-            $invoiceCustomer->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
-
-            $invoiceCustomer->note = $request->input('_invoiceCustomer')['note'];
-            $invoiceCustomer->totalPaid += $request->input('_invoiceCustomer')['paidAmt'];
-            $invoiceCustomer->updatedBy = \Auth::user()->id;
+            $invoiceCustomer->exportDate = $exportDate;
+            $invoiceCustomer->invoiceDate = $invoiceDate;
+            $invoiceCustomer->payDate = $payDate;
+            $invoiceCustomer->note = $note;
+            $invoiceCustomer->totalPaid += $totalPaid;
+            $invoiceCustomer->updatedBy = $updatedBy;
 
             try {
                 DB::beginTransaction();
@@ -392,14 +493,12 @@ class DebtManagementController extends Controller
                 //Insert InvoiceDetail
                 $invoiceCustomerDetail = new InvoiceCustomerDetail();
                 $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
-                $invoiceCustomerDetail->paidAmt = $request->input('_invoiceCustomer')['paidAmt'];
-
-                $payDate = $request->input('_invoiceCustomer')['payDate'];
-                $invoiceCustomerDetail->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
+                $invoiceCustomerDetail->paidAmt = $totalPaid;
+                $invoiceCustomerDetail->payDate = $payDate;
 
                 $invoiceCustomerDetail->modify = false;
-                $invoiceCustomerDetail->createdBy = \Auth::user()->id;
-                $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
+                $invoiceCustomerDetail->createdBy = $createdBy;
+                $invoiceCustomerDetail->updatedBy = $updatedBy;
 
                 if (!$invoiceCustomerDetail->save()) {
                     DB::rollBack();
