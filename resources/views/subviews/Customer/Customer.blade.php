@@ -81,9 +81,9 @@
                         <table class="table table-bordered table-hover table-striped" id="table-data">
                             <thead>
                             <tr class="active">
-                                <th>Mã khách hàng</th>
-                                <th>Loại khách hàng</th>
-                                <th>Tên khách hàng</th>
+                                <th>Mã</th>
+                                <th>Loại</th>
+                                <th>Tên</th>
                                 <th>Mã số thuế</th>
                                 <th>Địa chỉ</th>
                                 <th>Số điện thoại</th>
@@ -225,7 +225,7 @@
                                                     Hoàn tất
                                                 </button>
                                                 <button type="button" class="btn default"
-                                                        onclick="customerView.clearInput()">
+                                                        onclick="customerView.cancel()">
                                                     Nhập lại
                                                 </button>
                                             </div>
@@ -239,7 +239,7 @@
 
             </div>
         </div>
-    </div> <!-- end #divControl -->
+    </div>
 </div>
 <!-- end Add customer -->
 
@@ -273,13 +273,13 @@
                                         <div class="form-group form-md-line-input ">
                                             <label for="customerType_id"><b>Loại khách hàng</b></label>
                                             <div class="row">
-                                                <div class="col-sm-10 col-xs-10">
+                                                <div class="col-sm-9 col-xs-9">
                                                     <select name="customerType" id="customerType"
                                                             class="form-control">
 
                                                     </select>
                                                 </div>
-                                                <div class="col-sm-2 col-xs-2">
+                                                <div class="col-sm-3 col-xs-3">
                                                     <div class="btn btn-primary btn-sm btn-circle"
                                                          title="Thêm loại khách hàng"
                                                          onclick="customerView.displayModal('show', '#modal-addCustomerType')">
@@ -367,7 +367,7 @@
                                                     Hoàn tất
                                                 </button>
                                                 <button type="button" class="btn default"
-                                                        onclick="customerView.clearInput()">
+                                                        onclick="customerView.cancel()">
                                                     Nhập lại
                                                 </button>
                                             </div>
@@ -571,7 +571,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true" onclick="customerView.cancelCustomerType()">×</span>
                     </button>
                     <h4 class="modal-title">Thêm loại khách hàng</h4>
                 </div>
@@ -597,7 +597,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-offset-8 col-md-4">
+                            <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight"
@@ -605,7 +605,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="customerView.displayModal('hide','#modal-addCustomerType')">Huỷ
+                                                onclick="customerView.cancelCustomerType()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -632,6 +632,14 @@
                 dataStaff: null,
                 idDelete: null,
                 currentStaff: null,
+                cancel: function () {
+                    if (customerView.action == 'add') {
+                        customerView.clearInput();
+                    } else {
+                        customerView.fillCurrentObjectToForm();
+
+                    }
+                },
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     if (customerView.action == 'add') {
@@ -761,7 +769,6 @@
                         select.appendChild(el);
                     }
                 },
-
                 fillDataToDatatableStaff: function (data) {
                     if (customerView.tableStaff != null) {
                         customerView.tableStaff.destroy();
@@ -804,7 +811,10 @@
                             {data: 'address'},
                             {data: 'phone'},
                             {data: 'email'},
-                            {data: 'note'},
+                            {
+                                data: 'note',
+                                visible: false
+                            },
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -906,7 +916,6 @@
                         customerView.current.customerType_id = $("select[id='customerType']").val();
                     }
                 },
-
                 fillDataStaffToForm: function (id) {
                     customerView.currentStaff = null;
                     customerView.currentStaff = _.clone(_.find(customerView.dataStaff, function (o) {
@@ -1233,12 +1242,10 @@
                         }
                     }
                 },
-
                 clearInputCustomerType: function () {
                     $("input[id='CustomerType_name']").val('');
                     $("textarea[id='description']").val('');
                 },
-
                 validateCustomerType: function () {
                     $("#frmCustomerType").validate({
                         rules: {
@@ -1248,6 +1255,10 @@
                             CustomerType_name: "Vui lòng nhập tên loại khách hàng"
                         }
                     });
+                },
+                cancelCustomerType:function () {
+                    $('input[id=CustomerType_name]').val('');
+                    $('textarea[id=description]').val('');
                 },
                 saveCustomerType: function () {
                     customerView.validateCustomerType();
@@ -1290,6 +1301,5 @@
         else {
             customerView.loadData();
         }
-    })
-    ;
+    });
 </script>

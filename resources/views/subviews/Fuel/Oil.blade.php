@@ -135,6 +135,7 @@
                 oilObject: null,
                 tableOilPrice: null,
                 dataForTableOilPrice: null,
+               
                 showFormControl: function () {
                     $(".menu-toggle").fadeOut();
                     $("#divControl").fadeIn(300);
@@ -248,7 +249,8 @@
                                 required: true
                             },
                             price: {
-                                required: true
+                                required: true,
+                                min:1.0
                             }
                         },
                         ignore: ".ignore",
@@ -257,7 +259,8 @@
                                 required: "Ngày áp dụng bắt buộc nhập"
                             },
                             price: {
-                                required: "Giá dầu bắt buộc nhập"
+                                required: "Giá dầu bắt buộc nhập",
+                                min: "asd"
                             }
                         }
                     });
@@ -294,7 +297,8 @@
                                     data: "updatedBy"
                                 },
                                 {
-                                    data: "note"
+                                    data: "note",
+                                    visible: false
                                 },
                                 {
                                     visible: false,

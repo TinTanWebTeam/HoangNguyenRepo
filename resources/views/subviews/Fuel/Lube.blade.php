@@ -119,7 +119,7 @@
                                 <button class="btn btn-primary marginRight" onclick="lubePriceView.save()">Hoàn tất
                                 </button>
                                 <button type="button" class="btn default" onclick="lubePriceView.hideFormControl()"
-                                        style="margin-right: 10px">Hủy
+                                        style="margin-right: 10px">Nhập lại
                                 </button>
                             </div>
                         </div>
@@ -153,7 +153,6 @@
                 clearValidation: function () {
                     $('label[class=error]').hide();
                 },
-
                 showFormForAddNew: function () {
                     lubePriceView.resetForm();
                     lubePriceView.renderDateTimePicker();
@@ -253,7 +252,8 @@
                                 required: true
                             },
                             price: {
-                                required: true
+                                required: true,
+                                min:1
                             }
                         },
                         ignore: ".ignore",
@@ -262,7 +262,8 @@
                                 required: "Ngày áp dụng bắt buộc nhập"
                             },
                             price: {
-                                required: "Giá dầu bắt buộc nhập"
+                                required: "Giá dầu bắt buộc nhập",
+                                min: "Giá dầu không được nhỏ hơn 1,000"
 
                             }
                         }
@@ -299,9 +300,9 @@
                                     data: "updatedBy"
                                 },
                                 {
-                                    data: "note"
+                                    data: "note",  visible: false
                                 },
-                                {
+                                {  visible: false,
                                     render: function (data, type, full, meta) {
                                         var tr = '';
                                         tr += '<div class="btn-del-edit" title="Chỉnh sửa">';

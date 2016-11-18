@@ -22,7 +22,7 @@
     }
 
     #divControl .panel-body {
-        height: 256px;
+        height: 260px;
     }
 
 </style>
@@ -70,7 +70,7 @@
             <div class="modal-body"><h5 id="modalPosition"></h5></div>
             <div class="modal-footer">
                 <button type="button" class="btn default" name="modalClose"
-                        onclick="PositionView.cancelValidatePosition()">Hủy
+                        onclick="PositionView.cancelValidatePosition()">Nhập lại
                 </button>
             </div>
         </div>

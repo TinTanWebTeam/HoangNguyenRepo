@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 30%;
+        top: 20%;
         display: none;
         right: 0;
         height: 60vh;
@@ -22,7 +22,7 @@
     }
 
     #divControl .panel-body {
-        height: 400px;
+        height: 430px;
     }
 </style>
 {{--start Modal delete Driver--}}
@@ -82,7 +82,7 @@
                                 <th>Số xe</th>
                                 <th>Loại xe</th>
                                 <th>Nhà xe</th>
-                                <th>Nhà xe</th>
+                                <th>Loại nhà xe</th>
                                 <th>Sửa/ Xóa</th>
                             </tr>
                             </thead>
@@ -209,7 +209,7 @@
                                             <button type="button" class="btn btn-primary marginRight"
                                                     onclick="driverView.save()">Hoàn tất
                                             </button>
-                                            <button type="button" class="btn default" onclick="driverView.clearInput()">
+                                            <button type="button" class="btn default" onclick="driverView.cancel()">
                                                 Nhập lại
                                             </button>
                                         </div>
@@ -236,6 +236,15 @@
                 action: null,
                 idDelete: null,
                 tagsGovernmentId:[],
+                cancel: function () {
+                    if (driverView.action == 'add') {
+                        driverView.clearInput();
+                        driverView.renderDateTimePicker();
+                    } else {
+                        driverView.fillCurrentObjectToForm();
+
+                    }
+                },
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -372,7 +381,10 @@
                         data: data,
                         columns: [
                             {data: 'fullName'},
-                            {data: 'address'},
+                            {
+                                data: 'address',
+                                visible: false
+                            },
                             {data: 'phone'},
                             {data: 'driverType'},
                             {
@@ -390,8 +402,8 @@
                             {data: 'governmentId'},
                             {data: 'fullNumber'},
                             {data: 'vehicle_types'},
-                            {data: 'garage'},
-                            {data: 'garageTypes'},
+                            {data: 'garage', visible: false},
+                            {data: 'garageTypes', visible: false},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';

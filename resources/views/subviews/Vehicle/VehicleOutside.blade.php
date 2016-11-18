@@ -136,7 +136,7 @@
                                 <div class="form-actions">
                                     <div class="form-group">
                                         <button type="button" class="btn btn-primary marginRight" onclick="garageView.save()">Hoàn tất</button>
-                                        <button type="button" class="btn default" onclick="garageView.clearInput()">Nhập lại</button>
+                                        <button type="button" class="btn default" onclick="garageView.cancel()">Nhập lại</button>
                                     </div>
                                 </div>
                             </div>
@@ -192,6 +192,13 @@
                 current: null,
                 action: null,
                 idDelete: null,
+                cancel: function () {
+                    if (garageView.action == 'add') {
+                        garageView.clearInput();
+                    } else {
+                        garageView.fillCurrentObjectToForm();
+                    }
+                },
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);

@@ -103,13 +103,13 @@
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
                                         <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
+                                            <div class="col-sm-9 col-xs-9">
                                                 <input type="text" data-id=""
                                                        class="form-control"
                                                        id="vehicle_id"
                                                        name="vehicle_id">
                                             </div>
-                                            <div class="col-sm-2 col-xs-2">
+                                            <div class="col-sm-3 col-xs-3">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
                                                      onclick="petroleumCostView.loadListGarageAndVehicleType()">
                                                     <i class="glyphicon glyphicon-plus"></i>
@@ -163,7 +163,7 @@
                                                        name="price" data-priceId=""
                                                 >
                                             </div>
-                                            <div class="col-sm-2 col-xs-2">
+                                            <div class="col-sm-3 col-xs-3">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
                                                      onclick="petroleumCostView.displayModal('show', '#modal-addCostPrice')">
                                                     <i class="glyphicon glyphicon-plus"></i>
@@ -712,13 +712,14 @@
                     $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
                     $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
                     var vehicle = petroleumCostView.current["vehicles_code"] + "-" + petroleumCostView.current["vehicles_vehicleNumber"];
-                    var totalPrice = petroleumCostView.current["literNumber"] * petroleumCostView.current["prices_price"];
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(petroleumCostView.current["literNumber"]);
-                    $("input[id='totalprice']").val(totalPrice);
                     $("input[id='noted']").val(petroleumCostView.current["note"]);
                     $("input[id='price']").val(petroleumCostView.current["prices_price"]);
+                    $("input[id='vat']").val(petroleumCostView.current["vat"]);
+                    $("input[id='hasVat']").val(petroleumCostView.current["hasVat"]);
+                    $("input[id='totalPrice']").val(petroleumCostView.current["totalCost"]);
                     $("#price").attr('data-priceId', petroleumCostView.current["price_id"]);
                     $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     formatCurrency(".currency");

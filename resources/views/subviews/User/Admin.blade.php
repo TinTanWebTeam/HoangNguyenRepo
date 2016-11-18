@@ -10,7 +10,7 @@
     }
 
     #divControl .panel-body {
-        height: 500px;
+        height: 470px;
     }
 
     div.col-lg-12 {

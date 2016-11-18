@@ -111,14 +111,14 @@
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
                                         <div class="row">
-                                            <div class="col-sm-10 col-xs-10">
+                                            <div class="col-sm-9 col-xs-9">
                                                 <input type="text" data-id=""
                                                        class="form-control"
                                                        id="vehicle_id"
                                                        name="vehicle_id">
 
                                             </div>
-                                            <div class="col-sm-2 col-xs-2">
+                                            <div class="col-sm-3 col-xs-3"  >
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
                                                      onclick="fuelCostView.loadListGarageAndVehicleType()">
                                                     <i class="glyphicon glyphicon-plus"></i>
@@ -133,8 +133,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label for="dateFuel"><b>Ngày đổ</b></label>
                                         <input type="text" id="dateFuel" name="dateFuel"
-                                               class="date form-control ignore"
-                                        />
+                                               class="date form-control ignore"/>
 
                                     </div>
 
@@ -172,7 +171,7 @@
                                                        name="price" data-priceId=""
                                                 >
                                             </div>
-                                            <div class="col-sm-2 col-xs-2">
+                                            <div class="col-sm-3 col-xs-3">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
                                                      onclick="fuelCostView.displayModal('show', '#modal-addCostPrice')">
                                                     <i class="glyphicon glyphicon-plus"></i>
@@ -248,42 +247,6 @@
 <!-- end #frmControl -->
 
 
-<!-- Modal list searchVehicle -->
-<div class="row">
-    <div id="modal-searchVehicle" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h5 class="modal-title">Danh sách xe</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table style="width: 100%" class="table table-hover" id="table-vehicles">
-                            <thead>
-                            <tr>
-                                <th>Stt</th>
-                                <th>Mã vùng</th>
-                                <th>Số xe</th>
-                                <th>Trọng tải</th>
-                                <th>Kích thước</th>
-                                <th>Loại xe</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal list garages -->
-
 <!-- Modal add CostPrice -->
 <div class="row">
     <div id="modal-addCostPrice" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
@@ -291,7 +254,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true" onclick="fuelCostView.cancelPriceType()">×</span>
                     </button>
                     <h5 class="modal-title">Thêm mới đơn giá</h5>
                 </div>
@@ -348,7 +311,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true" onclick="fuelCostView.cancelVehicle()">×</span>
                     </button>
                     <h5 class="modal-title">Thêm mới xe</h5>
                 </div>
@@ -580,6 +543,7 @@
                     } else {
                         fuelCostView.fillCurrentObjectToForm();
                     }
+
                 },
                 msgDelete: function (id) {
                     if (id) {
@@ -605,15 +569,15 @@
                     $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
                     $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
                     var vehicle = fuelCostView.current["vehicles_code"] + "-" + fuelCostView.current["vehicles_vehicleNumber"];
-                    var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
+//                    var totalPrice = fuelCostView.current["literNumber"] * fuelCostView.current["prices_price"];
                     $("input[id='vehicle_id']").val(vehicle);
                     $("#vehicle_id").attr('data-id', fuelCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(fuelCostView.current["literNumber"]);
                     $("input[id='noted']").val(fuelCostView.current["note"]);
                     $("input[id='price']").val(fuelCostView.current["prices_price"]);
                     $("input[id='vat']").val(fuelCostView.current["vat"]);
-                    $("input[id='notVat']").val(totalPrice);
                     $("input[id='hasVat']").val(fuelCostView.current["hasVat"]);
+                    $("input[id='totalPrice']").val(fuelCostView.current["totalCost"]);
                     $("#price").attr('data-priceId', fuelCostView.current["price_id"]);
                     formatCurrency(".currency");
 
@@ -1083,6 +1047,7 @@
                 },
                 cancelPriceType: function () {
                     $("input[id='costPrice']").val(0);
+                    $("textarea[id='description']").val('');
                 }
             };
             fuelCostView.loadData();

@@ -21,7 +21,7 @@
     }
 
     #divControl .panel-body {
-        height: 320px;
+        height: 330px;
     }
 </style>
 
@@ -175,7 +175,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="vehicleInsideView.clearInput()">Nhập lại
+                                                onclick="vehicleInsideView.cancel()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -310,7 +310,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true" onclick="vehicleInsideView.clearInputFormVehicleType()">×</span>
                     </button>
                     <h4 class="modal-title">Thêm loại xe</h4>
                 </div>
@@ -331,8 +331,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="description"><b>Mô tả</b></label>
                                     <textarea name="description" id="description" cols="10" rows="3"
-                                              class="form-control">
-                                </textarea>
+                                              class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -374,6 +373,13 @@
                 dataDrivers: null,
                 tagsGarageName: [],
                 tagsDriverName: [],
+                cancel: function () {
+                    if (vehicleInsideView.action == 'add') {
+                        vehicleInsideView.clearInput();
+                    } else {
+                        vehicleInsideView.fillCurrentObjectToForm();
+                    }
+                },
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -718,7 +724,7 @@
                             Garage_name: "Vui lòng nhập tên nhà xe",
                             contactor: "Vui lòng nhập tên người liên hệ",
                             phone: "Vui lòng nhập số điện thoại người liên hệ",
-                            address: "Vui lòng nhập điện chỉ nhà xe"
+                            address: "Vui lòng nhập địa chỉ nhà xe"
                         }
                     });
                 },
@@ -728,7 +734,7 @@
                             VehicleType_name: "required"
                         },
                         messages: {
-                            VehicleType_name: "Vui lòng nhập tên loại xe"
+                            VehicleType_name: "Vui lòng nhập loại xe"
                         }
                     });
                 },
@@ -858,8 +864,7 @@
                             if (jqXHR.status == 201) {
                                 vehicleInsideView.showNotification("success", "Thêm thành công!");
                                 vehicleInsideView.displayModal("hide", "#modal-addVehicleType");
-                                vehicleInsideView.clearInput();
-                                //
+                                vehicleInsideView.clearInputFormVehicleType();
                                 vehicleInsideView.tableVehicleType.push(data['vehicleType']);
                                 vehicleInsideView.loadSelectBox(vehicleInsideView.tableVehicleType);
                                 $("select[id='vehicleTypes_name']").val(data['vehicleType']['id']);

@@ -229,7 +229,7 @@
                                             onclick="parkingCostView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="parkingCostView.cancel()">Huỷ
+                                    <button type="button" class="btn default" onclick="parkingCostView.cancel()">Nhập lại
                                     </button>
                                 </div>
                             </div>
@@ -249,7 +249,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true" onclick="parkingCostView.cancelPriceType()">×</span>
                     </button>
                     <h5 class="modal-title">Thêm mới đơn giá</h5>
                 </div>
@@ -341,7 +341,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true" onclick="parkingCostView.cancelVehicle()">×</span>
                     </button>
                     <h5 class="modal-title">Thêm xe mới</h5>
                 </div>
