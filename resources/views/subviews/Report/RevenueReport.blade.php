@@ -129,6 +129,7 @@
                 tableRevenueMonth: null,
                 tableOptionYear: null,
                 current: null,
+                dataTest: [],
                 clearInput: function () {
                     $('input[id=dateStart]').val('');
                     $('input[id=dateEnd]').val('');
@@ -144,6 +145,8 @@
                             revenueReportView.fillDataToDataTableYear(data['tableReportMonth']);
                             revenueReportView.tableOptionYear = data['year'];
                             revenueReportView.loadSelectBoxYear(data['year']);
+                            revenueReportView.loadChart(data['test']);
+                            revenueReportView.dataTest = data['test'];
                             revenueReportView.selectYearNow();
                         } else {
                             revenueReportView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -217,7 +220,8 @@
                     }
                 },
 
-                loadChart: function () {
+                loadChart: function (data) {
+                    var a = data.map(Number);
                     $('#container').highcharts({
                         chart: {
                             type: 'column'
@@ -252,7 +256,7 @@
                         tooltip: {
                             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                            '<td style="padding:0"><b>{point.y:.1f} Vnd</b></td></tr>',
                             footerFormat: '</table>',
                             shared: true,
                             useHTML: true
@@ -266,11 +270,12 @@
                         series: [
                             {
                                 name: 'Doanh Thu',
-                                data: [80, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-
+//                                data: [80, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                                data: a
                             }, {
                                 name: 'Lợi Nhuận',
-                                data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+//                                data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+                                data: a
 
                             }
                         ]

@@ -296,6 +296,9 @@
                                     <input type="text" class="form-control currency"
                                            id="costPrice" value="0"
                                            name="costPrice">
+                                    <label class="error" style="color: red; display: none"><p>Giá tiền phải lớn hơn
+                                            0</p></label>
+
                                 </div>
                             </div>
                         </div>
@@ -445,6 +448,73 @@
                 idDelete: null,
                 current: null,
                 tagsVehicle: [],
+                loadData: function () {
+                    $.ajax({
+                        url: url + 'petroleum-cost/petroleum-cost',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            petroleumCostView.tablePetroleumCost = data['petroleumCost'];
+                            petroleumCostView.fillDataToDatatable(data['petroleumCost']);
+                            petroleumCostView.tablePrice = data['tablePrice'];
+                            petroleumCostView.inputPrice(data['tablePrice']);
+                            petroleumCostView.tableVehicle = data['dataVehicle'];
+                            petroleumCostView.renderAutoCompleteSearch();
+
+
+                        } else {
+                            petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+                    $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
+
+                    $('#datetimepicker .time').timepicker({
+                        'showDuration': true,
+                        'timeFormat': 'H:i'
+                    });
+
+                    $('#datetimepicker .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $("#table-vehicles").find("tbody").on('click', 'tr', function () {
+                        var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
+                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#vehicle_id').val(vehicle);
+                        petroleumCostView.displayModal("hide", "#modal-searchVehicle");
+                    });
+                    petroleumCostView.renderDateTimePicker();
+                    setEventFormatCurrency(".currency");
+                    formatCurrency(".currency");
+                    defaultZero("#costPrice");
+                    defaultZero("#vat");
+                    defaultZero("#hasVat");
+                    defaultZero("#notVat");
+                    defaultOne("#literNumber");
+                },
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -569,75 +639,10 @@
                     petroleumCostView.action = 'add';
                     petroleumCostView.inputPrice();
                     petroleumCostView.show();
+                    petroleumCostView.clearInput();
 
                 },
-                loadData: function () {
-                    $.ajax({
-                        url: url + 'petroleum-cost/petroleum-cost',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            petroleumCostView.tablePetroleumCost = data['petroleumCost'];
-                            petroleumCostView.fillDataToDatatable(data['petroleumCost']);
-                            petroleumCostView.tablePrice = data['tablePrice'];
-                            petroleumCostView.inputPrice(data['tablePrice']);
-                            petroleumCostView.tableVehicle = data['dataVehicle'];
-                            petroleumCostView.renderAutoCompleteSearch();
 
-
-                        } else {
-                            petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "300",
-                        "hideDuration": "1000",
-                        "timeOut": "2000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
-                    $("#divControl").find('.panel-body').mCustomScrollbar({
-                        theme: "dark"
-                    });
-
-                    $('#datetimepicker .time').timepicker({
-                        'showDuration': true,
-                        'timeFormat': 'H:i'
-                    });
-
-                    $('#datetimepicker .date').datepicker({
-                        'format': 'dd-mm-yyyy',
-                        'autoclose': true
-                    });
-                    $("#table-vehicles").find("tbody").on('click', 'tr', function () {
-                        var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
-                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
-                        $('#vehicle_id').val(vehicle);
-                        petroleumCostView.displayModal("hide", "#modal-searchVehicle");
-                    });
-                    petroleumCostView.renderDateTimePicker();
-                    setEventFormatCurrency(".currency");
-                    formatCurrency(".currency");
-                    defaultZero("#costPrice");
-                    defaultZero("#vat");
-                    defaultZero("#hasVat");
-                    defaultZero("#notVat");
-                    defaultOne("#literNumber");
-                },
                 renderAutoCompleteSearch: function () {
                     petroleumCostView.tagsVehicle = _.map(petroleumCostView.tableVehicle, function (o) {
                         return o.areaCode + '-' + o.vehicleNumber;
@@ -834,53 +839,57 @@
                         });
                     } else {
                         petroleumCostView.ValidatePetrol();
-                        if ($("#formPetroleum").valid()) {
-                            petroleumCostView.fillFormDataToCurrentObject();
-                            sendToServer = {
-                                _token: _token,
-                                _action: petroleumCostView.action,
-                                _object: petroleumCostView.current
-                            };
-
-                            $.ajax({
-                                url: url + 'petroleum/modify',
-                                type: "POST",
-                                dataType: "json",
-                                data: sendToServer
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (jqXHR.status == 201) {
-                                    switch (petroleumCostView.action) {
-                                        case 'add':
-                                            data['tablePetrolNew'][0].fullNumber = data['tablePetrolNew'][0]['vehicles_code'] + "-" + data['tablePetrolNew'][0]["vehicles_vehicleNumber"];
-                                            petroleumCostView.tablePetroleumCost.push(data['tablePetrolNew'][0]);
-                                            petroleumCostView.showNotification("success", "Thêm thành công!");
-                                            $("#price").attr('data-priceId', petroleumCostView.current["prices_id"]);
-                                            break;
-                                        case 'update':
-                                            data['tablePetrolUpdate'][0].fullNumber = data['tablePetrolUpdate'][0]['vehicles_code'] + "-" + data['tablePetrolUpdate'][0]["vehicles_vehicleNumber"];
-                                            var petrolOld = _.find(petroleumCostView.tablePetroleumCost, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var indexOfPetrolOld = _.indexOf(petroleumCostView.tablePetroleumCost, petrolOld);
-                                            petroleumCostView.tablePetroleumCost.splice(indexOfPetrolOld, 1, data['tablePetrolUpdate'][0]);
-                                            petroleumCostView.showNotification("success", "Cập nhật thành công!");
-                                            petroleumCostView.hide();
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    petroleumCostView.table.clear().rows.add(petroleumCostView.tablePetroleumCost).draw();
-                                    petroleumCostView.clearInput();
-                                    petroleumCostView.renderDateTimePicker();
-                                } else {
-                                    petroleumCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
-
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                            });
+                        if ($('input[id=price]').val() == 0) {
+                            showNotification("error", "Đơn giá phải lớn hơn 0");
                         } else {
-                            $("form#formPetroleum").find("label[class=error]").css("color", "red");
+                            if ($("#formPetroleum").valid()) {
+                                petroleumCostView.fillFormDataToCurrentObject();
+                                sendToServer = {
+                                    _token: _token,
+                                    _action: petroleumCostView.action,
+                                    _object: petroleumCostView.current
+                                };
+
+                                $.ajax({
+                                    url: url + 'petroleum/modify',
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: sendToServer
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        switch (petroleumCostView.action) {
+                                            case 'add':
+                                                data['tablePetrolNew'][0].fullNumber = data['tablePetrolNew'][0]['vehicles_code'] + "-" + data['tablePetrolNew'][0]["vehicles_vehicleNumber"];
+                                                petroleumCostView.tablePetroleumCost.push(data['tablePetrolNew'][0]);
+                                                petroleumCostView.showNotification("success", "Thêm thành công!");
+                                                $("#price").attr('data-priceId', petroleumCostView.current["prices_id"]);
+                                                break;
+                                            case 'update':
+                                                data['tablePetrolUpdate'][0].fullNumber = data['tablePetrolUpdate'][0]['vehicles_code'] + "-" + data['tablePetrolUpdate'][0]["vehicles_vehicleNumber"];
+                                                var petrolOld = _.find(petroleumCostView.tablePetroleumCost, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var indexOfPetrolOld = _.indexOf(petroleumCostView.tablePetroleumCost, petrolOld);
+                                                petroleumCostView.tablePetroleumCost.splice(indexOfPetrolOld, 1, data['tablePetrolUpdate'][0]);
+                                                petroleumCostView.showNotification("success", "Cập nhật thành công!");
+                                                petroleumCostView.hide();
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        petroleumCostView.table.clear().rows.add(petroleumCostView.tablePetroleumCost).draw();
+                                        petroleumCostView.clearInput();
+                                        petroleumCostView.renderDateTimePicker();
+                                    } else {
+                                        petroleumCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    }
+
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                });
+                            } else {
+                                $("form#formPetroleum").find("label[class=error]").css("color", "red");
+                            }
                         }
                     }
                 },
@@ -1027,10 +1036,14 @@
                 },
 
                 inputPrice: function () {
-                    $("input[id='price']").val(petroleumCostView.tablePrice.price);
-                    $("#price").attr('data-priceId', petroleumCostView.tablePrice.id);
-                    petroleumCostView.totalDefault();
-                    formatCurrency(".currency");
+                    if (petroleumCostView.tablePrice == null) {
+                        $("input[id='price']").val('0');
+                    } else {
+                        $("input[id='price']").val(petroleumCostView.tablePrice.price);
+                        $("#price").attr('data-priceId', petroleumCostView.tablePrice.id);
+                        petroleumCostView.totalDefault();
+                        formatCurrency(".currency");
+                    }
                 },
                 ValidateCostPrice: function () {
                     $("#formCostPrice").validate({
@@ -1051,39 +1064,44 @@
 
                 },
                 savePriceType: function () {
-                    petroleumCostView.ValidateCostPrice();
-                    var priceType = {
-                        price: asNumberFromCurrency('#costPrice'),
-                        note: $("textarea[id='description']").val()
-                    };
-                    var sendToServer = {
-                        _token: _token,
-                        _action: 'addPetroleum',
-                        _priceType: priceType
-                    };
-                    if ($("#formCostPrice").valid()) {
-                        $.ajax({
-                            url: url + 'create-price-new/modify',
-                            type: "POST",
-                            dataType: "json",
-                            data: sendToServer
-                        }).done(function (data, textStatus, jqXHR) {
-                            if (jqXHR.status == 201) {
-                                petroleumCostView.showNotification("success", "Thêm thành công!");
-                                petroleumCostView.displayModal("hide", "#modal-addCostPrice");
-                                petroleumCostView.tablePrice = data['prices'];
-                                petroleumCostView.inputPrice();
-                                petroleumCostView.clearInputPrice();
+                    if ($("input[id='costPrice']").val() == 0) {
+                        $("form#formCostPrice").find("label[class=error]").css("display", "block");
 
-                            } else {
-                                petroleumCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                            }
-                        }).fail(function (jqXHR, textStatus, errorThrown) {
-                            petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        });
                     } else {
-                        $("form#formCostPrice").find("label[class=error]").css("color", "red");
+                        petroleumCostView.ValidateCostPrice();
+                        var priceType = {
+                            price: asNumberFromCurrency('#costPrice'),
+                            note: $("textarea[id='description']").val()
+                        };
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'addPetroleum',
+                            _priceType: priceType
+                        };
+                        if ($("#formCostPrice").valid()) {
+                            $.ajax({
+                                url: url + 'create-price-new/modify',
+                                type: "POST",
+                                dataType: "json",
+                                data: sendToServer
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    petroleumCostView.showNotification("success", "Thêm thành công!");
+                                    petroleumCostView.displayModal("hide", "#modal-addCostPrice");
+                                    petroleumCostView.tablePrice = data['prices'];
+                                    petroleumCostView.inputPrice();
+                                    petroleumCostView.clearInputPrice();
+                                } else {
+                                    petroleumCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                petroleumCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            });
+                        } else {
+                            $("form#formCostPrice").find("label[class=error]").css("color", "red");
+                        }
                     }
+
                 },
                 cancelVehicle: function () {
                     /* Form addVehicle*/

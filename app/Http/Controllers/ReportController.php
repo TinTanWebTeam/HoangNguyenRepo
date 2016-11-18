@@ -30,11 +30,12 @@ class ReportController extends Controller
             ->select('receiveDate')
             ->groupBy(\DB::raw('YEAR(receiveDate)'))
             ->get();
-
+        $test = Transport::where('active', 1)->pluck('cashDelivery')->toArray();
         $response = [
             'msg'              => 'Get data report success',
             'tableReportMonth' => $tableReportYear,
-            'year'             => $year
+            'year'             => $year,
+            'test'             => $test
         ];
 
         return response()->json($response, 200);
@@ -49,8 +50,8 @@ class ReportController extends Controller
                 case "listMonths":
                     try {
                         $tableReportYear = \DB::table('transports')
-                            ->join('costs','transports.id','=','costs.transport_id')
-                            ->select('receiveDate','costs.cost',
+                            ->join('costs', 'transports.id', '=', 'costs.transport_id')
+                            ->select('receiveDate', 'costs.cost',
                                 \DB::raw('SUM(cashRevenue) as total_Revenue'),
                                 \DB::raw('SUM(cashReceive) as total_Receive'),
                                 \DB::raw('SUM(cashProfit) as total_Profit'),
@@ -75,8 +76,8 @@ class ReportController extends Controller
                     try {
                         $tableDetail = \DB::table('transports')
                             ->join('customers', 'transports.customer_id', '=', 'customers.id')
-                            ->join('costs','transports.id','=','costs.transport_id')
-                            ->select('transports.*','costs.cost','customers.fullName')
+                            ->join('costs', 'transports.id', '=', 'costs.transport_id')
+                            ->select('transports.*', 'costs.cost', 'customers.fullName')
                             ->where(\DB::raw('YEAR(receiveDate)'), '=', $request->get('_objectYear'))
                             ->where(\DB::raw('MONTH(receiveDate)'), '=', $request->get('_objectMonth'))
                             ->get();
@@ -168,7 +169,7 @@ class ReportController extends Controller
                         ->groupBy(\DB::raw('MONTH(receiveDate)'))
                         ->get();
                     $response = [
-                        'msg'              => 'Get data delivery success',
+                        'msg'                => 'Get data delivery success',
                         'tableDeliveryMonth' => $tableDeliveryYear,
                     ];
                     return response()->json($response, 200);
@@ -191,7 +192,7 @@ class ReportController extends Controller
                         ->groupBy(\DB::raw('customers.fullName'))
                         ->get();
                     $response = [
-                        'msg'              => 'Get data delivery success',
+                        'msg'               => 'Get data delivery success',
                         'tableDeliveryDays' => $tableDeliveryDays,
                     ];
                     return response()->json($response, 200);

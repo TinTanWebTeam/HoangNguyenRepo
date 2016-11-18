@@ -118,7 +118,7 @@
                                                        name="vehicle_id">
 
                                             </div>
-                                            <div class="col-sm-3 col-xs-3"  >
+                                            <div class="col-sm-3 col-xs-3">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm xe mới"
                                                      onclick="fuelCostView.loadListGarageAndVehicleType()">
                                                     <i class="glyphicon glyphicon-plus"></i>
@@ -532,10 +532,15 @@
 
                 },
                 inputPrice: function () {
-                    $("input[id='price']").val(fuelCostView.tablePrice.price);
-                    $("#price").attr('data-priceId', fuelCostView.tablePrice.id);
-                    fuelCostView.totalDefault();
-                    formatCurrency(".currency");
+                    if (fuelCostView.tablePrice == null) {
+                        $("input[id='price']").val('0');
+                    } else {
+                        $("input[id='price']").val(fuelCostView.tablePrice.price);
+                        $("#price").attr('data-priceId', fuelCostView.tablePrice.id);
+                        fuelCostView.totalDefault();
+                        formatCurrency(".currency");
+                    }
+
                 },
                 cancel: function () {
                     if (fuelCostView.action == 'add') {
@@ -631,7 +636,6 @@
                     fuelCostView.totalDefault();
 
                 },
-
                 clearInputVehicle: function () {
                     /* Form addVehicle*/
                     $("input[id='areaCode']").val('');
@@ -727,7 +731,7 @@
                     lit = hasVat / price;
                     $("input[id=literNumber]").val(lit);
                     notVat = hasVat / 1.1;
-                    total = hasVat-(notVat *(vat/100));
+                    total = hasVat - (notVat * (vat / 100));
                     $("input[id=totalPrice]").val(total);
                     formatCurrency(".currency");
                 },
@@ -736,14 +740,14 @@
                     lit = $("input[id=literNumber]").val();
                     price = asNumberFromCurrency('#price');
                     vat = $("input[id=vat]").val();
-                    if(vat >100){
-                        vat= 100;
+                    if (vat > 100) {
+                        vat = 100;
                         $("input[id=vat]").val(vat);
                     }
                     hasVat = lit * price;
                     notVat = hasVat / 1.1;
                     $("input[id=hasVat]").val(hasVat);
-                    total = hasVat-(notVat *(vat/100));
+                    total = hasVat - (notVat * (vat / 100));
                     $("input[id=totalPrice]").val(total);
                     formatCurrency(".currency");
                 },
@@ -769,7 +773,6 @@
                     });
                 },
                 save: function () {
-
                     var sendToServer = null;
                     if (fuelCostView.action == 'delete') {
                         sendToServer = {
@@ -777,7 +780,6 @@
                             _action: fuelCostView.action,
                             _object: fuelCostView.idDelete
                         };
-
                         $.ajax({
                             url: url + 'fuel-cost/modify',
                             type: "POST",
@@ -785,7 +787,6 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-
                                 var costOld = _.find(fuelCostView.tableCost, function (o) {
                                     return o.id == sendToServer._object;
                                 });
@@ -793,65 +794,69 @@
                                 fuelCostView.tableCost.splice(indexOfcostOld, 1);
                                 fuelCostView.showNotification("success", "Xóa thành công!");
                                 fuelCostView.displayModal("hide", "#modal-confirmDelete");
-
                             }
                             fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        fuelCostView.ValidateCost();
-                        if ($("#formFuelCost").valid()) {
-                            fuelCostView.fillFormDataToCurrentObject();
-                            sendToServer = {
-                                _token: _token,
-                                _action: fuelCostView.action,
-                                _object: fuelCostView.current
-                            };
-
-                            $.ajax({
-                                url: url + 'fuel-cost/modify',
-                                type: "POST",
-                                dataType: "json",
-                                data: sendToServer
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (jqXHR.status == 201) {
-                                    switch (fuelCostView.action) {
-                                        case 'add':
-                                            data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
-                                            fuelCostView.tableCost.push(data['tableCost'][0]);
-                                            fuelCostView.showNotification("success", "Thêm thành công!");
-                                            $("#price").attr('data-priceId', fuelCostView.current["prices_id"]);
-                                            break;
-                                        case 'update':
-                                            data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
-                                            var CostOld = _.find(fuelCostView.tableCost, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var indexOfVehicleOld = _.indexOf(fuelCostView.tableCost, CostOld);
-                                            fuelCostView.tableCost.splice(indexOfVehicleOld, 1, data['tableCost'][0]);
-                                            fuelCostView.showNotification("success", "Cập nhật thành công!");
-                                            fuelCostView.hide();
-                                            break;
-
-                                        default:
-                                            break;
-                                    }
-                                    fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
-                                    fuelCostView.clearInput();
-                                } else {
-                                    fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
-
-
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-
-                                fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-
-                            });
+                        if ($('input[id=price]').val() == 0) {
+                            showNotification("error", "Đơn giá phải lớn hơn 0");
                         } else {
-                            $("form#formFuelCost").find("label[class=error]").css("color", "red");
+                            fuelCostView.ValidateCost();
+                            if ($("#formFuelCost").valid()) {
+                                fuelCostView.fillFormDataToCurrentObject();
+                                sendToServer = {
+                                    _token: _token,
+                                    _action: fuelCostView.action,
+                                    _object: fuelCostView.current
+                                };
+
+                                $.ajax({
+                                    url: url + 'fuel-cost/modify',
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: sendToServer
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        switch (fuelCostView.action) {
+                                            case 'add':
+                                                data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
+                                                fuelCostView.tableCost.push(data['tableCost'][0]);
+                                                fuelCostView.showNotification("success", "Thêm thành công!");
+                                                $("#price").attr('data-priceId', fuelCostView.current["prices_id"]);
+                                                break;
+                                            case 'update':
+                                                data['tableCost'][0].fullNumber = data['tableCost'][0]['vehicles_code'] + "-" + data['tableCost'][0]["vehicles_vehicleNumber"];
+                                                var CostOld = _.find(fuelCostView.tableCost, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var indexOfVehicleOld = _.indexOf(fuelCostView.tableCost, CostOld);
+                                                fuelCostView.tableCost.splice(indexOfVehicleOld, 1, data['tableCost'][0]);
+                                                fuelCostView.showNotification("success", "Cập nhật thành công!");
+                                                fuelCostView.hide();
+                                                break;
+
+                                            default:
+                                                break;
+                                        }
+                                        fuelCostView.table.clear().rows.add(fuelCostView.tableCost).draw();
+                                        fuelCostView.clearInput();
+                                    } else {
+                                        fuelCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    }
+
+
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+
+                                    fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+
+                                });
+                            } else {
+                                $("form#formFuelCost").find("label[class=error]").css("color", "red");
+                            }
                         }
+
                     }
                 },
                 loadListGarageAndVehicleType: function () {
@@ -1004,7 +1009,7 @@
                 },
                 clearInputPrice: function () {
                     /* Form addPrice*/
-                    $("input[id='costPrice']").val('');
+                    $("input[id='costPrice']").val(0);
                 },
                 savePriceType: function () {
                     if ($("input[id='costPrice']").val() == 0) {

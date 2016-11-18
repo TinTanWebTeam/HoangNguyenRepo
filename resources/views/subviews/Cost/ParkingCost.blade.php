@@ -259,9 +259,12 @@
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
-                                    <input type="number" class="form-control currency"
+                                    <input type="text" class="form-control currency"
                                            id="costPrice" value="0"
                                            name="costPrice">
+                                    <label class="error" style="color: red; display: none"><p>Giá tiền phải lớn hơn
+                                            0</p></label>
+
                                 </div>
                             </div>
                         </div>
@@ -775,52 +778,56 @@
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        parkingCostView.ValidateParking();
-                        if ($("#formParkingCost").valid()) {
-                            parkingCostView.fillFormDataToCurrentObject();
-                            sendToServer = {
-                                _token: _token,
-                                _action: parkingCostView.action,
-                                _object: parkingCostView.current
-                            };
-
-                            $.ajax({
-                                url: url + 'parking-cost/modify',
-                                type: "POST",
-                                dataType: "json",
-                                data: sendToServer
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (jqXHR.status == 201) {
-                                    switch (parkingCostView.action) {
-                                        case 'add':
-                                            data['tableParkingNew'][0].fullNumber = data['tableParkingNew'][0]['vehicles_code'] + "-" + data['tableParkingNew'][0]["vehicles_vehicleNumber"];
-                                            parkingCostView.tableParkingCost.push(data['tableParkingNew'][0]);
-                                            parkingCostView.showNotification("success", "Thêm thành công!");
-                                            $("#price").attr('data-priceId', parkingCostView.current["prices_id"]);
-                                            break;
-                                        case 'update':
-                                            data['tableParkingUpdate'][0].fullNumber = data['tableParkingUpdate'][0]['vehicles_code'] + "-" + data['tableParkingUpdate'][0]["vehicles_vehicleNumber"];
-                                            var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var indexOfParkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
-                                            parkingCostView.tableParkingCost.splice(indexOfParkingOld, 1, data['tableParkingUpdate'][0]);
-                                            parkingCostView.showNotification("success", "Cập nhật thành công!");
-                                            parkingCostView.hide();
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    parkingCostView.table.clear().rows.add(parkingCostView.tableParkingCost).draw();
-                                    parkingCostView.clearInput();
-                                } else {
-                                    parkingCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                            });
+                        if ($('input[id=price]').val() == 0) {
+                            showNotification("error", "Đơn giá phải lớn hơn 0");
                         } else {
-                            $("form#formParkingCost").find("label[class=error]").css("color", "red");
+                            parkingCostView.ValidateParking();
+                            if ($("#formParkingCost").valid()) {
+                                parkingCostView.fillFormDataToCurrentObject();
+                                sendToServer = {
+                                    _token: _token,
+                                    _action: parkingCostView.action,
+                                    _object: parkingCostView.current
+                                };
+
+                                $.ajax({
+                                    url: url + 'parking-cost/modify',
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: sendToServer
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        switch (parkingCostView.action) {
+                                            case 'add':
+                                                data['tableParkingNew'][0].fullNumber = data['tableParkingNew'][0]['vehicles_code'] + "-" + data['tableParkingNew'][0]["vehicles_vehicleNumber"];
+                                                parkingCostView.tableParkingCost.push(data['tableParkingNew'][0]);
+                                                parkingCostView.showNotification("success", "Thêm thành công!");
+                                                $("#price").attr('data-priceId', parkingCostView.current["prices_id"]);
+                                                break;
+                                            case 'update':
+                                                data['tableParkingUpdate'][0].fullNumber = data['tableParkingUpdate'][0]['vehicles_code'] + "-" + data['tableParkingUpdate'][0]["vehicles_vehicleNumber"];
+                                                var parkingOld = _.find(parkingCostView.tableParkingCost, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var indexOfParkingOld = _.indexOf(parkingCostView.tableParkingCost, parkingOld);
+                                                parkingCostView.tableParkingCost.splice(indexOfParkingOld, 1, data['tableParkingUpdate'][0]);
+                                                parkingCostView.showNotification("success", "Cập nhật thành công!");
+                                                parkingCostView.hide();
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        parkingCostView.table.clear().rows.add(parkingCostView.tableParkingCost).draw();
+                                        parkingCostView.clearInput();
+                                    } else {
+                                        parkingCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                });
+                            } else {
+                                $("form#formParkingCost").find("label[class=error]").css("color", "red");
+                            }
                         }
                     }
                 },
@@ -1045,9 +1052,13 @@
                     });
                 },
                 inputPrice: function () {
-                    $("input[id='price']").val(parkingCostView.tablePrice.price);
-                    $("#price").attr('data-priceId', parkingCostView.tablePrice.id);
-                    formatCurrency(".currency");
+                    if (parkingCostView.tablePrice == null) {
+                        $("input[id='price']").val('0');
+                    } else {
+                        $("input[id='price']").val(parkingCostView.tablePrice.price);
+                        $("#price").attr('data-priceId', parkingCostView.tablePrice.id);
+                        formatCurrency(".currency");
+                    }
                 },
                 ValidateCostPrice: function () {
                     $("#formCostPrice").validate({
@@ -1070,38 +1081,43 @@
                     $("input[id='costPrice']").val(0);
                 },
                 savePriceType: function () {
-                    parkingCostView.ValidateCostPrice();
-                    var priceType = {
-                        price: asNumberFromCurrency('#costPrice'),
-                        note: $("textarea[id='description']").val()
-                    };
-                    var sendToServer = {
-                        _token: _token,
-                        _action: 'addParkingCost',
-                        _priceType: priceType
-                    };
-                    if ($("#formCostPrice").valid()) {
-                        $.ajax({
-                            url: url + 'create-price-new/modify',
-                            type: "POST",
-                            dataType: "json",
-                            data: sendToServer
-                        }).done(function (data, textStatus, jqXHR) {
-                            if (jqXHR.status == 201) {
-                                parkingCostView.showNotification("success", "Thêm thành công!");
-                                parkingCostView.displayModal("hide", "#modal-addCostPrice");
-                                parkingCostView.tablePrice = data['prices'];
-                                parkingCostView.inputPrice();
-                            } else {
-                                parkingCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                parkingCostView.clearInputPrice();
-                            }
-                        }).fail(function (jqXHR, textStatus, errorThrown) {
-                            parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        });
-                    } else {
-                        $("form#formCostPrice").find("label[class=error]").css("color", "red");
+                    if ($("input[id='costPrice']").val() == 0) {
+                        $("form#formCostPrice").find("label[class=error]").css("display", "block");
+                    }else {
+                        parkingCostView.ValidateCostPrice();
+                        var priceType = {
+                            price: asNumberFromCurrency('#costPrice'),
+                            note: $("textarea[id='description']").val()
+                        };
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'addParkingCost',
+                            _priceType: priceType
+                        };
+                        if ($("#formCostPrice").valid()) {
+                            $.ajax({
+                                url: url + 'create-price-new/modify',
+                                type: "POST",
+                                dataType: "json",
+                                data: sendToServer
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    parkingCostView.showNotification("success", "Thêm thành công!");
+                                    parkingCostView.displayModal("hide", "#modal-addCostPrice");
+                                    parkingCostView.tablePrice = data['prices'];
+                                    parkingCostView.inputPrice();
+                                } else {
+                                    parkingCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    parkingCostView.clearInputPrice();
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            });
+                        } else {
+                            $("form#formCostPrice").find("label[class=error]").css("color", "red");
+                        }
                     }
+
                 }
 
             };
@@ -1111,6 +1127,5 @@
             parkingCostView.loadData();
         }
 
-    })
-    ;
+    });
 </script>

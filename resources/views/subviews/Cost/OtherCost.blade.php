@@ -462,7 +462,8 @@
                     });
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
-                    defaultZero("#costPrice");
+                    defaultZero("#cost");
+
                 },
                 renderAutoCompleteSearch: function () {
                     otherCostView.tagsVehicle = _.map(otherCostView.tableVehicle, function (o) {
@@ -574,25 +575,13 @@
                     });
                 },
                 save: function () {
-                    otherCostView.ValidateOtherCost();
-                    otherCostView.fillFormDataToCurrentObject();
-                    if ($("#formOtherCost").valid()) {
-                        var sendToServer = {
+                    var sendToServer = null;
+                    if (otherCostView.action == 'delete') {
+                        sendToServer = {
                             _token: _token,
                             _action: otherCostView.action,
-                            _object: otherCostView.current
+                            _object: otherCostView.idDelete
                         };
-                        if (otherCostView.action != 'delete') {
-                            if ($("#vehicle_id").attr('data-id') == '') {
-                                otherCostView.showNotification('warning', 'Vui lòng chọn xe có trong danh sách.');
-                                return;
-                            }
-                        } else {
-                            sendToServer._object = {
-                                id: otherCostView.idDelete,
-                                vehicle_id: "delete"
-                            };
-                        }
                         $.ajax({
                             url: url + 'other-cost/modify',
                             type: "POST",
@@ -600,46 +589,72 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                switch (otherCostView.action) {
-                                    case 'add':
-                                        data['tableOtherCostNew'][0].fullNumber = data['tableOtherCostNew'][0]['vehicles_code'] + "-" + data['tableOtherCostNew'][0]["vehicles_vehicleNumber"];
-                                        otherCostView.tableOtherCost.push(data['tableOtherCostNew'][0]);
-                                        otherCostView.showNotification("success", "Thêm thành công!");
-                                        $("#price").attr('data-priceId', otherCostView.current["prices_id"]);
-                                        break;
-                                    case 'update':
+                                var costOld = _.find(otherCostView.tableOtherCost, function (o) {
+                                    return o.id == sendToServer._object;
+                                });
+                                var indexOfcostOld = _.indexOf(otherCostView.tableOtherCost, costOld);
+                                otherCostView.tableOtherCost.splice(indexOfcostOld, 1);
+                                otherCostView.showNotification("success", "Xóa thành công!");
+                                otherCostView.displayModal("hide", "#modal-confirmDelete");
 
-                                        data['tableOtherUpdate'][0].fullNumber = data['tableOtherUpdate'][0]['vehicles_code'] + "-" + data['tableOtherUpdate'][0]["vehicles_vehicleNumber"];
-                                        var CostOld = _.find(otherCostView.tableOtherCost, function (o) {
-                                            return o.id == sendToServer._object.id;
-                                        });
-                                        var indexOfVehicleOld = _.indexOf(otherCostView.tableOtherCost, CostOld);
-                                        otherCostView.tableOtherCost.splice(indexOfVehicleOld, 1, data['tableOtherUpdate'][0]);
-                                        otherCostView.showNotification("success", "Cập nhật thành công!");
-                                        otherCostView.hide();
-                                        break;
-                                    case 'delete':
-                                        var costOld = _.find(otherCostView.tableOtherCost, function (o) {
-                                            return o.id == sendToServer._object.id;
-                                        });
-                                        var indexOfcostOld = _.indexOf(otherCostView.tableOtherCost, costOld);
-                                        otherCostView.tableOtherCost.splice(indexOfcostOld, 1);
-                                        otherCostView.showNotification("success", "Xóa thành công!");
-                                        otherCostView.displayModal("hide", "#modal-confirmDelete");
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                otherCostView.table.clear().rows.add(otherCostView.tableOtherCost).draw();
-                                otherCostView.clearInput();
-                            } else {
-                                otherCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                             }
+                            otherCostView.table.clear().rows.add(otherCostView.tableOtherCost).draw();
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#formOtherCost").find("label[class=error]").css("color", "red");
+                        if ($('input[id=cost]').val() == 0) {
+                            showNotification("error", "Đơn giá phải lớn hơn 0");
+                        } else {
+                            otherCostView.ValidateOtherCost();
+                            if ($("#formOtherCost").valid()) {
+                                otherCostView.fillFormDataToCurrentObject();
+                                sendToServer = {
+                                    _token: _token,
+                                    _action: otherCostView.action,
+                                    _object: otherCostView.current
+                                };
+                                $.ajax({
+                                    url: url + 'other-cost/modify',
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: sendToServer
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        switch (otherCostView.action) {
+                                            case 'add':
+                                                data['tableOtherCostNew'].fullNumber = data['tableOtherCostNew']['vehicles_code'] + "-" + data['tableOtherCostNew']["vehicles_vehicleNumber"];
+                                                otherCostView.tableOtherCost.push(data['tableOtherCostNew']);
+                                                otherCostView.showNotification("success", "Thêm thành công!");
+                                                $("#price").attr('data-priceId', otherCostView.current["prices_id"]);
+                                                break;
+                                            case 'update':
+                                                data['tableOtherUpdate'].fullNumber = data['tableOtherUpdate']['vehicles_code'] + "-" + data['tableOtherUpdate']["vehicles_vehicleNumber"];
+                                                var CostOld = _.find(otherCostView.tableOtherCost, function (o) {
+                                                    return o.id == sendToServer._object.id;
+                                                });
+                                                var indexOfVehicleOld = _.indexOf(otherCostView.tableOtherCost, CostOld);
+                                                otherCostView.tableOtherCost.splice(indexOfVehicleOld, 1, data['tableOtherUpdate']);
+                                                otherCostView.showNotification("success", "Cập nhật thành công!");
+                                                otherCostView.hide();
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        otherCostView.table.clear().rows.add(otherCostView.tableOtherCost).draw();                                        otherCostView.clearInput();
+                                    } else {
+                                        otherCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    }
+
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                });
+                            } else {
+                                $("form#formOtherCost").find("label[class=error]").css("color", "red");
+
+                            }
+
+                        }
                     }
                 },
                 ValidateVehicle: function () {

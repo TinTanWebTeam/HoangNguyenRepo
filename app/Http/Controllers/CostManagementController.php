@@ -112,8 +112,8 @@ class CostManagementController extends Controller
             $timeFuel = $request->get('_object')['timeFuel'];
             $vat = $request->get('_object')['vat'];
             $hasVat = $literNumber * $prices_price;
-            $notVat = $hasVat/1.1;
-            $totalCost = $hasVat-($notVat*($vat/100));
+            $notVat = $hasVat / 1.1;
+            $totalCost = $hasVat - ($notVat * ($vat / 100));
             if (Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel) !== false) {
                 $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
             } else {
@@ -153,7 +153,6 @@ class CostManagementController extends Controller
                                 'vehicles.areaCode as vehicles_code',
                                 'vehicles.vehicleNumber as vehicles_vehicleNumber')
                             ->get();
-
                         $response = [
                             'msg'       => 'Created vehicle',
                             'tableCost' => $costs
@@ -433,8 +432,8 @@ class CostManagementController extends Controller
             $timeFuel = $request->get('_object')['timeFuel'];
             $vat = $request->get('_object')['vat'];
             $hasVat = $literNumber * $prices_price;
-            $notVat = $hasVat/1.1;
-            $totalCost = $hasVat-($notVat*($vat/100));
+            $notVat = $hasVat / 1.1;
+            $totalCost = $hasVat - ($notVat * ($vat / 100));
             $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateFuel . " " . $timeFuel)->toDateTimeString();
             $noted = $request->get('_object')['noted'];
         }
@@ -720,22 +719,17 @@ class CostManagementController extends Controller
         $tableVehicle = Vehicle::all();
         $otherCost = \DB::table('costs')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-            ->join('prices', 'prices.id', '=', 'costs.price_id')
-            ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
             ->where([
                 ['costs.active', 1],
-                ['prices.costPrice_id', 1],
+                ['costs.price_id', 0],
                 ['costs.transport_id', null]
             ])
             ->select(
-                'prices.price as prices_price',
                 'costs.*',
-                'costs.note as noteCost',
                 'vehicles.areaCode as vehicles_code',
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'vehicles.note as vehicleNote')
             ->get();
-
         $response = [
             'msg'            => 'Get data other cost success',
             'tableOtherCost' => $otherCost,
@@ -773,7 +767,7 @@ class CostManagementController extends Controller
                 $otherCostNew = new Cost();
                 $otherCostNew->cost = $cost;
                 $otherCostNew->note = $note;
-                $otherCostNew->price_id = 1;
+                // $otherCostNew->price_id = 1;
                 $otherCostNew->vehicle_id = $vehicle_id;
                 $otherCostNew->createdBy = Auth::user()->id;
                 $otherCostNew->updatedBy = Auth::user()->id;
@@ -781,16 +775,18 @@ class CostManagementController extends Controller
                 if ($otherCostNew->save()) {
                     $tableOtherCostNew = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-                        ->join('prices', 'prices.id', '=', 'costs.price_id')
-                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
-                        ->where('costs.active', 1)
-                        ->where('costs.id', $otherCostNew->id)
-                        ->where('prices.costPrice_id', 1)
+                        ->where([
+                            ['costs.id', $otherCostNew->id],
+                            ['costs.active', 1],
+                            ['costs.price_id', 0],
+                            ['costs.transport_id', null]
+                        ])
                         ->select(
                             'costs.*',
                             'vehicles.areaCode as vehicles_code',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber')
-                        ->get();
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                            'vehicles.note as vehicleNote')
+                        ->first();
                     $response = [
                         'msg'               => 'Created other Cost',
                         'tableOtherCostNew' => $tableOtherCostNew
@@ -808,17 +804,18 @@ class CostManagementController extends Controller
                 if ($otherCostUpdate->update()) {
                     $tableOtherUpdate = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-                        ->join('prices', 'prices.id', '=', 'costs.price_id')
-                        ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
-                        ->where('costs.active', 1)
-                        ->where('costs.id', $request->get('_object')['id'])
-                        ->where('prices.costPrice_id', 1)
+                        ->where([
+                            ['costs.id', $request->get('_object')['id']],
+                            ['costs.active', 1],
+                            ['costs.price_id', 0],
+                            ['costs.transport_id', null]
+                        ])
                         ->select(
                             'costs.*',
                             'vehicles.areaCode as vehicles_code',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber'
-                        )
-                        ->get();
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                            'vehicles.note as vehicleNote')
+                        ->first();
 
                     $response = [
                         'msg'              => 'Updated Other Cost',
@@ -829,7 +826,7 @@ class CostManagementController extends Controller
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case "delete":
-                $otherDelete = Cost::findOrFail($request->get('_object')['id']);
+                $otherDelete = Cost::findOrFail($request->get('_object'));
                 $otherDelete->active = 0;
                 if ($otherDelete->update()) {
                     $response = [
