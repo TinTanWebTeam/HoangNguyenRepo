@@ -36,13 +36,13 @@
 
                         </div>
                         <div class="col-md-5" style="padding-left: 0">
-                                <button onclick="revenueReportView.searchDateToDate()" id="btnSearchTransport"
-                                        class="btn btn-sm btn-info marginRight"><i
-                                            class="fa fa-search" aria-hidden="true"></i> Tìm
-                                </button>
-                                <button class="btn btn-sm btn-default" onclick="revenueReportView.clearInput()">
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
-                                </button>
+                            <button onclick="revenueReportView.searchDateToDate()" id="btnSearchTransport"
+                                    class="btn btn-sm btn-info marginRight"><i
+                                        class="fa fa-search" aria-hidden="true"></i> Tìm
+                            </button>
+                            <button class="btn btn-sm btn-default" onclick="revenueReportView.clearInput()">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                            </button>
 
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                 tableRevenueMonth: null,
                 tableOptionYear: null,
                 current: null,
-                clearInput:function () {
+                clearInput: function () {
                     $('input[id=dateStart]').val('');
                     $('input[id=dateEnd]').val('');
                 },
@@ -263,24 +263,26 @@
                                 borderWidth: 0
                             }
                         },
-                        series: [{
-                            name: 'Doanh Thu',
-                            data: [80, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                        series: [
+                            {
+                                name: 'Doanh Thu',
+                                data: [80, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
 
-                        }, {
-                            name: 'Lợi Nhuận',
-                            data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+                            }, {
+                                name: 'Lợi Nhuận',
+                                data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
 
-                        }]
+                            }
+                        ]
                     });
 
                 },
                 searchDateToDate: function () {
                     var dateStart = $('input[id=dateStart]').val();
                     var dateEnd = $('input[id=dateEnd]').val();
-                    if(dateStart == "" || dateEnd == "" ){
+                    if (dateStart == "" || dateEnd == "") {
                         revenueReportView.showNotification("warning", "Vui lòng chọn ngày cần tìm !");
-                    }else {
+                    } else {
                         var sendToServer = null;
                         sendToServer = {
                             _token: _token,
@@ -308,9 +310,9 @@
                 },
                 selectYearNow: function () {
                     var yearNow = moment().year();
-                    yearOption = _.find( revenueReportView.tableOptionYear, function (o) {
-                        return  moment(o.receiveDate).format("YYYY") == yearNow;
-                            });
+                    yearOption = _.find(revenueReportView.tableOptionYear, function (o) {
+                        return moment(o.receiveDate).format("YYYY") == yearNow;
+                    });
                     if (typeof yearOption === 'undefined')
                         return;
                     $("select[id='optionYear']").val(yearNow);
@@ -359,13 +361,16 @@
                                 }
                             },
                             {data: 'fullName'},
-                            {data: 'cashRevenue',
+                            {
+                                data: 'cashRevenue',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
-                            {data: 'cashProfit',
+                            {
+                                data: 'cashProfit',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             },
-                            {data: 'Profit_actual',
+                            {
+                                data: 'Profit_actual',
                                 render: $.fn.dataTable.render.number(",", ",", 0)
                             }
                         ]
