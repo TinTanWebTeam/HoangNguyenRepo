@@ -229,13 +229,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <fieldset>
-                                            <legend>
-                                                Giá trị thanh toán:
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <span style="font-size: 13px;">Nợ thực tế: </span>
-                                                <input type="text" class="currency" size="10"
-                                                       id="debt-real" name="debt-real" readonly>
-                                            </legend>
+                                            <legend>Giá trị thanh toán:</legend>
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
@@ -273,6 +267,36 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <fieldset>
+                                            <legend>Nợ:</legend>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="debtNotExportInvoice"><b>Nợ chưa xuất hóa đơn</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               name="debtNotExportInvoice" id="debtNotExportInvoice" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="debtExportInvoice"><b>Nợ hóa đơn</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               id="debtExportInvoice" name="debtExportInvoice" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="debt-real"><b>Nợ thực tế</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               id="debt-real" name="debt-real" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <fieldset>
                                             <legend>Hóa đơn:
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <span style="font-size: 13px;">Thêm tiền đã nhận: </span>
@@ -286,11 +310,12 @@
                                                         <input type="text" class="form-control currency"
                                                                id="totalPay" name="totalPay" data-totalTransport=""
                                                                onkeyup="debtCustomerView.computeWhenChangeTotalPay(this.value)">
+                                                        <input type="hidden" id="invoice_id" name="invoice_id">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="totalPay-real"><b>Xuất hóa đơn thực tế</b></label>
+                                                        <label for="totalPay-real"><b>Xuất HĐ thực tế</b></label>
                                                         <input type="text" class="form-control currency"
                                                                name="totalPay-real" id="totalPay-real" readonly>
                                                     </div>
@@ -504,6 +529,7 @@
                 tagsCustomerNameTransport: [], //for search
                 tagsCustomerNameInvoice: [], //for search
                 statusPrePaid: 0,
+                flagValidate: null,
 
                 showControl: function (flag) {
                     if (flag == 0) {
@@ -801,7 +827,11 @@
                 },
                 fillDataToDatatableInvoiceCustomer: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'] - data[i]['prePaid'];
+                        if(data[i]['statusPrePaid'] === 1){
+                            data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'] - data[i]['prePaid'];
+                        } else {
+                            data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'];
+                        }
                     }
                     debtCustomerView.tableInvoiceCustomer = $('#table-customerInvoice').DataTable({
                         language: languageOptions,
@@ -903,6 +933,10 @@
                                     return moment(data).format("DD/MM/YYYY");
                                 }
                             },
+//                            {
+//                                data: 'totalPay',
+//                                render: $.fn.dataTable.render.number(",", ".", 0)
+//                            },
                             {
                                 data: 'paidAmt',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
@@ -1034,6 +1068,7 @@
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
                     if (flag == 0) {
+                        debtCustomerView.flagValidate = 'new';
 
                         var dataAfterValidate = debtCustomerView.validateListTransport();
                         console.log(dataAfterValidate);
@@ -1051,15 +1086,17 @@
                                 debtCustomerView.action = "new";
                                 //co the su dung tien tra truoc
                                 if(dataAfterValidate['statusPrePaid'] === 0) {
-                                    $("input[id=statusPrePaid]").attr('disable', false);
-                                    $("input[id=statusPrePaid]").attr('checked', true);
+                                    $("input[id=statusPrePaid]").attr('disabled', false);
+                                    $("input[id=statusPrePaid]").prop('checked', true);
 
                                     var _totalTransport = dataAfterValidate['totalPay'];
                                     var _cashReceive = dataAfterValidate['prePaid'];
                                     var _payNeed = _totalTransport - _cashReceive;
                                     var _debt = _totalTransport;
-                                    var _debtReal = _debt - _cashReceive;
-                                    var _totalPay = _debtReal;
+                                    var _debtNotExportInvoice = _totalTransport;
+                                    var _debtExportInvoice = 0;
+                                    var _debtReal = _debtExportInvoice + _debtNotExportInvoice;
+                                    var _totalPay = _debtNotExportInvoice - _cashReceive;
                                     var _totalPayReal = _totalPay + _cashReceive;
                                     var _vat = 10;
                                     var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
@@ -1068,14 +1105,16 @@
                                     debtCustomerView.statusPrePaid = 1;
                                 } else { //ko the su dung tien tra truoc
                                     $("input[id=statusPrePaid]").attr('disabled', true);
-                                    $("input[id=statusPrePaid]").attr('checked', false);
+                                    $("input[id=statusPrePaid]").prop('checked', false);
 
                                     var _totalTransport = dataAfterValidate['totalPay'];
                                     var _cashReceive = dataAfterValidate['prePaid'];
                                     var _payNeed = _totalTransport - _cashReceive;
                                     var _debt = _totalTransport;
-                                    var _debtReal = _debt - _cashReceive;
-                                    var _totalPay = _debtReal;
+                                    var _debtNotExportInvoice = _totalTransport;
+                                    var _debtExportInvoice = 0;
+                                    var _debtReal = _debtExportInvoice + _debtNotExportInvoice;
+                                    var _totalPay = _debtNotExportInvoice - _cashReceive;
                                     var _totalPayReal = _totalPay + _cashReceive;
                                     var _vat = 10;
                                     var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
@@ -1092,13 +1131,31 @@
                                 //co the su dung tien tra truoc
                                 if(dataAfterValidate['statusPrePaid'] === 0) {
                                     $("input[id=statusPrePaid]").attr('disabled', false);
-                                    $("input[id=statusPrePaid]").attr('checked', true);
+                                    $("input[id=statusPrePaid]").prop('checked', true);
+
+                                    //find debtReal tong don hang
+                                    var arrayInvoiceId = _.filter(debtCustomerView.dataTransportInvoice, function(o){
+                                        return _.includes(debtCustomerView.array_transportId, o.transport_id);
+                                    });
+                                    arrayInvoiceId = _.map(arrayInvoiceId, 'invoiceCustomer_id');
+                                    var arrayInvoice = _.filter(debtCustomerView.dataInvoiceCustomer, function(o){
+                                        return _.includes(arrayInvoiceId, o.id);
+                                    });
+                                    var arrayInvoice_totalPaid = _.map(arrayInvoice, 'totalPaid');
+                                    var arrayInvoice_totalPay =_.map(arrayInvoice, 'totalPay');
+                                    var arrayInvoice_hasVat =_.map(arrayInvoice, 'hasVAT');
+                                    var sum_arrayInvoice_totalPaid = _.sum(arrayInvoice_totalPaid);
+                                    var sum_arrayInvoice_totalPay = _.sum(arrayInvoice_totalPay);
+                                    var sum_arrayInvoice_hasVat = _.sum(arrayInvoice_hasVat);
 
                                     var _totalTransport = dataAfterValidate['totalTransport'];
                                     var _cashReceive = dataAfterValidate['prePaid'];
                                     var _payNeed = _totalTransport - _cashReceive;
-                                    var _debt = _totalTransport;
-                                    var _debtReal = dataAfterValidate['debtReal'];
+                                    var _debt = _totalTransport - dataAfterValidate['totalPay'];
+                                    var _debtNotExportInvoice = _payNeed - sum_arrayInvoice_totalPay;
+                                    var _debtExportInvoice = sum_arrayInvoice_hasVat - sum_arrayInvoice_totalPaid;
+                                    var _debtReal = _debtExportInvoice + _debtNotExportInvoice;
+//                                    var _debtReal = dataAfterValidate['debtReal'];
                                     var _totalPay = dataAfterValidate['totalPay'];
                                     var _totalPayReal = _totalPay + _cashReceive;
                                     var _vat = 10;
@@ -1108,13 +1165,31 @@
                                     debtCustomerView.statusPrePaid = 1;
                                 } else { //ko the su dung tien tra truoc
                                     $("input[id=statusPrePaid]").attr('disabled', true);
-                                    $("input[id=statusPrePaid]").attr('checked', false);
+                                    $("input[id=statusPrePaid]").prop('checked', false);
+
+                                    //find debtReal tong don hang
+                                    var arrayInvoiceId = _.filter(debtCustomerView.dataTransportInvoice, function(o){
+                                        return _.includes(debtCustomerView.array_transportId, o.transport_id);
+                                    });
+                                    arrayInvoiceId = _.map(arrayInvoiceId, 'invoiceCustomer_id');
+                                    var arrayInvoice = _.filter(debtCustomerView.dataInvoiceCustomer, function(o){
+                                        return _.includes(arrayInvoiceId, o.id);
+                                    });
+                                    var arrayInvoice_totalPaid = _.map(arrayInvoice, 'totalPaid');
+                                    var arrayInvoice_totalPay =_.map(arrayInvoice, 'totalPay');
+                                    var arrayInvoice_hasVat =_.map(arrayInvoice, 'hasVAT');
+                                    var sum_arrayInvoice_totalPaid = _.sum(arrayInvoice_totalPaid);
+                                    var sum_arrayInvoice_totalPay = _.sum(arrayInvoice_totalPay);
+                                    var sum_arrayInvoice_hasVat = _.sum(arrayInvoice_hasVat);
 
                                     var _totalTransport = dataAfterValidate['totalTransport'];
                                     var _cashReceive = dataAfterValidate['prePaid'];
                                     var _payNeed = _totalTransport - _cashReceive;
-                                    var _debt = _totalTransport;
-                                    var _debtReal = dataAfterValidate['debtReal'];
+                                    var _debt = _totalTransport - dataAfterValidate['totalPay'];
+                                    var _debtNotExportInvoice = _payNeed - sum_arrayInvoice_totalPay;
+                                    var _debtExportInvoice = sum_arrayInvoice_hasVat - sum_arrayInvoice_totalPaid;
+                                    var _debtReal = _debtExportInvoice + _debtNotExportInvoice;
+//                                    var _debtReal = dataAfterValidate['debtReal'];
                                     var _totalPay = _debtReal;
                                     var _totalPayReal = _totalPay;
                                     var _vat = 10;
@@ -1126,6 +1201,7 @@
                                 break;
                         }
 
+                        $("input[id=invoice_id]").val('');
                         $("input[id=totalTransport]").val(_totalTransport);
                         $("input[id=cashReceive]").val(_cashReceive);
                         $("input[id=payNeed]").val(_payNeed);
@@ -1137,6 +1213,8 @@
                         $("input[id=hasVAT]").val(_hasVat);
                         $("input[id=paidAmt]").val(_paidAmt);
                         $("input[id=debtInvoice]").val(_debtInvoice);
+                        $("input[id=debtNotExportInvoice]").val(_debtNotExportInvoice);
+                        $("input[id=debtExportInvoice]").val(_debtExportInvoice);
 
                         $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
 
@@ -1147,6 +1225,8 @@
 
                         $("input[id=invoiceCode]").focus();
                     } else {
+                        debtCustomerView.flagValidate = 'detail';
+
                         if (typeof invoiceCustomer_id === 'undefined') return;
                         $("#divInvoice").find(".titleControl").html("Chi tiết hóa đơn");
                         debtCustomerView.showControl(flag);
@@ -1177,47 +1257,70 @@
                         });
                         if (typeof rowInvoiceCustomer === 'undefined') return;
 
+                        //find debtReal tong don hang
+                        var arrayTransportId = _.filter(debtCustomerView.dataTransportInvoice, function(o){
+                            return o.invoiceCustomer_id == invoiceCustomer_id;
+                        });
+                        arrayTransportId = _.map(arrayTransportId, 'transport_id');
+                        var arrayInvoiceId = _.filter(debtCustomerView.dataTransportInvoice, function(o){
+                            return _.includes(arrayTransportId, o.transport_id);
+                        });
+                        arrayInvoiceId = _.map(arrayInvoiceId, 'invoiceCustomer_id');
+                        var arrayInvoice = _.filter(debtCustomerView.dataInvoiceCustomer, function(o){
+                            return _.includes(arrayInvoiceId, o.id);
+                        });
+                        var arrayInvoice_totalPaid = _.map(arrayInvoice, 'totalPaid');
+                        var arrayInvoice_totalPay =_.map(arrayInvoice, 'totalPay');
+                        var arrayInvoice_hasVat =_.map(arrayInvoice, 'hasVAT');
+                        var sum_arrayInvoice_totalPaid = _.sum(arrayInvoice_totalPaid);
+                        var sum_arrayInvoice_totalPay = _.sum(arrayInvoice_totalPay);
+                        var sum_arrayInvoice_hasVat = _.sum(arrayInvoice_hasVat);
+
                         //
-                        var _cashReceive = parseInt(rowInvoiceCustomer['prePaid']);
-                        console.log(dataDetail);
-                        var _payNeed = "";
-                        return;
                         var _statusPrePaid = parseInt(rowInvoiceCustomer['statusPrePaid']);
+                        var _totalTransport = parseInt(rowInvoiceCustomer['totalTransport']);
+                        var _cashReceive = parseInt(rowInvoiceCustomer['prePaid']);
+                        var _payNeed = _totalTransport - _cashReceive;
+                        var _debt = _totalTransport;
+                        var _debtNotExportInvoice = _totalTransport - sum_arrayInvoice_totalPay;
+                        var _debtExportInvoice = sum_arrayInvoice_hasVat - sum_arrayInvoice_totalPaid;
+
+                        if(_statusPrePaid === 1){
+                            _debtExportInvoice -= _cashReceive;
+                        }
+                        var _debtReal = _debtExportInvoice + _debtNotExportInvoice;
+
+
                         if(_statusPrePaid === 1){
                             $("input[id=statusPrePaid]").attr('disabled', true);
-                            $("input[id=statusPrePaid]").attr('checked', false);
+                            $("input[id=statusPrePaid]").prop('checked', true);
                             debtCustomerView.statusPrePaid = 0;
                         }
                         else{
-                            if(_cashReceive > 0){
-                                $("input[id=statusPrePaid]").attr('disabled', false);
-                                $("input[id=statusPrePaid]").attr('checked', true);
-                                debtCustomerView.statusPrePaid = 1;
-                            } else {
-                                $("input[id=statusPrePaid]").attr('disabled', true);
-                                $("input[id=statusPrePaid]").attr('checked', false);
-                                debtCustomerView.statusPrePaid = 0;
-                            }
+                            $("input[id=statusPrePaid]").attr('disabled', true);
+                            $("input[id=statusPrePaid]").prop('checked', false);
+                            debtCustomerView.statusPrePaid = 1;
                         }
 
-                        var _totalTransport = parseInt(rowInvoiceCustomer['totalTransport']);
+                        if(_statusPrePaid == 1){
+                            var _totalPay = parseInt(rowInvoiceCustomer['hasVAT']) - parseInt(rowInvoiceCustomer['totalPaid']) - parseInt(rowInvoiceCustomer['prePaid']);
+                        } else {
+                            var _totalPay = parseInt(rowInvoiceCustomer['hasVAT']) - parseInt(rowInvoiceCustomer['totalPaid']);
+                        }
 
-                        var _debt = parseInt(rowInvoiceCustomer['debt']);
-                        var _debtReal = _debt;
-
-                        var _totalPay = _debt;
                         var _totalPayReal = _totalPay;
                         var _vat = 10;
                         var _hasVat = _totalPayReal + (_totalPayReal * _vat/100);
                         var _paidAmt = _hasVat;//parseInt(rowInvoiceCustomer['totalPaid']);
                         var _debtInvoice = _hasVat - _paidAmt;
 
+                        $("input[id=invoice_id]").val(parseInt(rowInvoiceCustomer['id']));
                         $("input[id=totalTransport]").val(_totalTransport);
                         $("input[id=cashReceive]").val(_cashReceive);
                         $("input[id=payNeed]").val(_payNeed);
                         $("input[id=debt]").val(_debt);
                         $("input[id=debt-real]").val(_debtReal);
-                        $("input[id=statusPrePaid]").attr('checked', true);
+                        $("input[id=statusPrePaid]").prop('checked', true);
                         $("input[id=totalPay]").val(_totalPay);
                         $("input[id=totalPay-real]").val(_totalPayReal);
                         $("input[id=VAT]").val(_vat);
@@ -1225,6 +1328,8 @@
                         $("input[id=paidAmt]").val(_paidAmt);
                         $("input[id=debtInvoice]").val(_debtInvoice);
                         $("input[id=invoiceCode]").val(rowInvoiceCustomer['invoiceCode']);
+                        $("input[id=debtNotExportInvoice]").val(_debtNotExportInvoice);
+                        $("input[id=debtExportInvoice]").val(_debtExportInvoice);
                         //
 
                         //add readly input
@@ -1652,7 +1757,12 @@
                                 var invoiceCustomer = data['invoiceCustomer'];
                                 var invoiceCustomerDetail = data['invoiceCustomerDetail'];
                                 debtCustomerView.invoiceCode = data['invoiceCode'];
-                                invoiceCustomer.debt = parseInt(invoiceCustomer['hasVAT']) - parseInt(invoiceCustomer['totalPaid']) - parseInt(invoiceCustomer['prePaid']);
+                                if(invoiceCustomer['statusPrePaid'] === 1){
+                                    invoiceCustomer.debt = parseInt(invoiceCustomer['hasVAT']) - parseInt(invoiceCustomer['totalPaid']) - parseInt(invoiceCustomer['prePaid']);
+                                } else {
+                                    invoiceCustomer.debt = parseInt(invoiceCustomer['hasVAT']) - parseInt(invoiceCustomer['totalPaid']);
+                                }
+
 
                                 if (debtCustomerView.action == 'new') {
                                     //Update InvoiceCustomer_Id for Transports
@@ -1900,27 +2010,44 @@
 
                 computeWhenChangeTotalPay: function (totalPay) {
                     var totalPay = convertStringToNumber(totalPay);
-                    var debt = asNumberFromCurrency("#debt");
+                    var debtReal = asNumberFromCurrency("#debt-real");
                     var totalTransport = asNumberFromCurrency("#totalTransport");
                     var cashReceive = asNumberFromCurrency("#cashReceive");
                     var paidAmt = asNumberFromCurrency("#paidAmt");
                     var vat = parseFloat($("#VAT").val());
+                    var invoice_id = $('#invoice_id').val();
 
-                    if(debtCustomerView.statusPrePaid === 1) {
-                        if (totalPay > debt) {
-                            showNotification('warning', 'Số tiền trả không được lớn hơn tiền cần thanh toán.');
-                            totalPay = debt;
-                            var totalPayReal = totalTransport;
+                    if(invoice_id == ''){
+                        if(debtCustomerView.statusPrePaid === 1) {
+                            if (totalPay > debtReal) {
+                                showNotification('warning', 'Số tiền trả không được lớn hơn tiền cần thanh toán.');
+                                totalPay = debtReal;
+                                var totalPayReal = totalTransport;
+                            } else {
+                                var totalPayReal = totalPay + cashReceive;
+                            }
                         } else {
-                            var totalPayReal = totalPay + cashReceive;
+                            if (totalPay > totalTransport) {
+                                showNotification('warning', 'Số tiền trả không được lớn hơn tổng tiền đơn hàng.');
+                                totalPay = totalTransport;
+                            }
+                            var totalPayReal = totalPay;
                         }
                     } else {
-                        if (totalPay > totalTransport) {
-                            showNotification('warning', 'Số tiền trả không được lớn hơn tổng tiền đơn hàng.');
-                            totalPay = totalTransport;
+                        var invoiceCustomer = _.find(debtCustomerView.dataInvoiceCustomer, function(o){
+                            return o.id == invoice_id;
+                        });
+                        var compare = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'];
+                        if(invoiceCustomer['statusPrePaid'] == 1){
+                            compare -= invoiceCustomer['prePaid'];
+                        }
+                        if (totalPay > compare) {
+                            showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
+                            totalPay = compare;
                         }
                         var totalPayReal = totalPay;
                     }
+
 
                     var hasVat = totalPayReal + (totalPayReal * vat / 100);
                     if(debtCustomerView.statusPrePaid === 1) {

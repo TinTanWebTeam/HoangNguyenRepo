@@ -307,6 +307,9 @@ class DebtManagementController extends Controller
                     $debtReal = $totalTransport - $sum_totalPaid;
                 }
 
+                #Tính sum totalPay, totalPaid, hasVat
+
+
                 $response = [
                     'status' => 2,
                     'totalTransport' => $totalTransport,
@@ -343,6 +346,17 @@ class DebtManagementController extends Controller
         $createdBy = \Auth::user()->id;
         $updatedBy = \Auth::user()->id;
         $invoiceType = 0;
+
+        if($statusPrePaid == 1){
+            if($totalPaid > $hasVat - $prePaid){
+                $totalPaid = $hasVat - $prePaid;
+            }
+        } else {
+            if($totalPaid > $hasVat){
+                $totalPaid = $hasVat;
+            }
+        }
+
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
 
@@ -418,10 +432,7 @@ class DebtManagementController extends Controller
                 $invoiceCustomerDetail = new InvoiceCustomerDetail();
                 $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
                 $invoiceCustomerDetail->paidAmt = $totalPaid;
-
-                $payDate = $request->input('_invoiceCustomer')['payDate'];
                 $invoiceCustomerDetail->payDate = $payDate;
-
                 $invoiceCustomerDetail->modify = false;
                 $invoiceCustomerDetail->createdBy = $createdBy;
                 $invoiceCustomerDetail->updatedBy = $updatedBy;
