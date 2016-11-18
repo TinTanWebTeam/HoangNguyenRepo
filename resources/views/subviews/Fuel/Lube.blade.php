@@ -285,7 +285,8 @@
                             data: lubePriceView.dataForTableLubePrice,
                             columns: [
                                 {
-                                    data: "id"
+                                    data: "id",
+                                    visible: false
                                 },
                                 {
                                     data: "applyDate",
