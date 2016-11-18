@@ -113,7 +113,8 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
-                                <button class="btn btn-primary marginRight" onclick="oilPriceView.save()">Hoàn tất</button>
+                                <button class="btn btn-primary marginRight" onclick="oilPriceView.save()">Hoàn tất
+                                </button>
                                 <button class="btn default" onclick="oilPriceView.hideFormControl()"
                                         style="margin-right: 10px">Hủy
                                 </button>
@@ -135,7 +136,7 @@
                 oilObject: null,
                 tableOilPrice: null,
                 dataForTableOilPrice: null,
-               
+
                 showFormControl: function () {
                     $(".menu-toggle").fadeOut();
                     $("#divControl").fadeIn(300);
@@ -158,7 +159,7 @@
                 },
                 showFormForEdit: function (id) {
                     oilPriceView.resetForm();
-                    oilPriceView.oilObject = _.find(oilPriceView.dataForTableOilPrice,function(o){
+                    oilPriceView.oilObject = _.find(oilPriceView.dataForTableOilPrice, function (o) {
                         return o.id == id;
                     });
                     $("#form_mode").text("Chỉnh sửa giá dầu");
@@ -178,61 +179,68 @@
                 },
                 save: function () {
                     oilPriceView.validateForm();
-                    if($("#formFuelPrice").valid()){
-                        if(oilPriceView.oilObject){
-                            /* EDIT */
-                            $.ajax({
-                                url: url + "fuel-price/oil/update",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    _token: _token,
-                                    id : oilPriceView.oilObject.id,
-                                    price: asNumberFromCurrency("#price"),
-                                    note: $("#note").val().trim(),
-                                    applyDate: $("#applyDate").val()
-                                }
-                            }).done(function (data, textStatus, jqXHR){
-                                if(jqXHR.status == 201){
-                                    var indexOilPriceOld = _.findIndex(oilPriceView.dataForTableOilPrice,function(o){
-                                        return o.id == oilPriceView.oilObject.id;
-                                    });
-                                    oilPriceView.dataForTableOilPrice.splice(indexOilPriceOld, 1, data);
-                                    oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
-                                }
-                            }).fail(function (jqXHR, textStatus, errorThrown){
+                    var price = $('input[id=price]').val();
+                    if (price < 1) {
+                        showNotification("error", "Giá phải lớn hơn 0");
+                        $('input[id=price]').focus();
+                    } else {
+                        if ($("#formFuelPrice").valid()) {
+                            if (oilPriceView.oilObject) {
+                                /* EDIT */
+                                $.ajax({
+                                    url: url + "fuel-price/oil/update",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: {
+                                        _token: _token,
+                                        id: oilPriceView.oilObject.id,
+                                        price: asNumberFromCurrency("#price"),
+                                        note: $("#note").val().trim(),
+                                        applyDate: $("#applyDate").val()
+                                    }
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        var indexOilPriceOld = _.findIndex(oilPriceView.dataForTableOilPrice, function (o) {
+                                            return o.id == oilPriceView.oilObject.id;
+                                        });
+                                        oilPriceView.dataForTableOilPrice.splice(indexOilPriceOld, 1, data);
+                                        oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                            }).always(function(){
-                                oilPriceView.hideFormControl();
-                            });
-                        }else{
-                            /* ADD */
-                            $.ajax({
-                                async: false,
-                                url: url + "fuel-price/oil/add",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    _token: _token,
-                                    price: asNumberFromCurrency("#price"),
-                                    note: $("#note").val().trim(),
-                                    applyDate: $("#applyDate").val()
-                                }
-                            }).done(function (data, textStatus, jqXHR){
-                                if(jqXHR.status == 201){
-                                    oilPriceView.dataForTableOilPrice.push(data);
-                                    oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
-                                }
-                            }).fail(function (jqXHR, textStatus, errorThrown){
+                                }).always(function () {
+                                    oilPriceView.hideFormControl();
+                                });
+                            } else {
+                                /* ADD */
+                                $.ajax({
+                                    async: false,
+                                    url: url + "fuel-price/oil/add",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: {
+                                        _token: _token,
+                                        price: asNumberFromCurrency("#price"),
+                                        note: $("#note").val().trim(),
+                                        applyDate: $("#applyDate").val()
+                                    }
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        oilPriceView.dataForTableOilPrice.push(data);
+                                        oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                            }).always(function(){
-                                oilPriceView.hideFormControl();
-                            });
+                                }).always(function () {
+                                    oilPriceView.hideFormControl();
+                                });
+                            }
+                        }
+                        else {
+                            $("form#formFuelPrice").find("label[class=error]").css("color", "red");
                         }
                     }
-                    else {
-                        $("form#formFuelPrice").find("label[class=error]").css("color", "red");
-                    }
+
                 },
                 renderDateTimePicker: function () {
                     $("#applyDate").datepicker({
@@ -241,7 +249,7 @@
                     });
                     $("#applyDate").datepicker("setDate", new Date());
                 },
-                validateForm: function(){
+                validateForm: function () {
 
                     $("#formFuelPrice").validate({
                         rules: {
@@ -249,8 +257,7 @@
                                 required: true
                             },
                             price: {
-                                required: true,
-                                min:1.0
+                                required: true
                             }
                         },
                         ignore: ".ignore",
@@ -259,8 +266,7 @@
                                 required: "Ngày áp dụng bắt buộc nhập"
                             },
                             price: {
-                                required: "Giá dầu bắt buộc nhập",
-                                min: "asd"
+                                required: "Giá dầu bắt buộc nhập"
                             }
                         }
                     });
@@ -282,7 +288,7 @@
                                 },
                                 {
                                     data: "applyDate",
-                                    render: function(data, type, full, meta){
+                                    render: function (data, type, full, meta) {
                                         return moment(data).format("DD/MM/YYYY");
                                     }
                                 },

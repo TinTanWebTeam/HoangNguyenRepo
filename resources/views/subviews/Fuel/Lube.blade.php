@@ -181,62 +181,69 @@
                 },
                 save: function () {
                     lubePriceView.validateForm();
-                    if ($("#formFuelPrice").valid()) {
-                        if (lubePriceView.lubeObject) {
-                            /* EDIT */
-                            $.ajax({
-                                url: url + "fuel-price/lube/update",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    _token: _token,
-                                    id: lubePriceView.lubeObject.id,
-                                    price: asNumberFromCurrency("#price"),
-                                    note: $("#note").val().trim(),
-                                    applyDate: $("#applyDate").val()
-                                }
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (jqXHR.status == 201) {
-                                    var indexLubePriceOld = _.findIndex(lubePriceView.dataForTableLubePrice, function (o) {
-                                        return o.id == lubePriceView.lubeObject.id;
-                                    });
-                                    lubePriceView.dataForTableLubePrice.splice(indexLubePriceOld, 1, data);
-                                    lubePriceView.tableLubePrice.clear().rows.add(lubePriceView.dataForTableLubePrice).draw();
-                                }
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                    var price = $('input[id=price]').val();
+                    if (price < 1) {
+                        showNotification("error", "Giá phải lớn hơn 0");
+                        $('input[id=price]').focus();
+                    } else {
+                        if ($("#formFuelPrice").valid()) {
+                            if (lubePriceView.lubeObject) {
+                                /* EDIT */
+                                $.ajax({
+                                    url: url + "fuel-price/lube/update",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: {
+                                        _token: _token,
+                                        id: lubePriceView.lubeObject.id,
+                                        price: asNumberFromCurrency("#price"),
+                                        note: $("#note").val().trim(),
+                                        applyDate: $("#applyDate").val()
+                                    }
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        var indexLubePriceOld = _.findIndex(lubePriceView.dataForTableLubePrice, function (o) {
+                                            return o.id == lubePriceView.lubeObject.id;
+                                        });
+                                        lubePriceView.dataForTableLubePrice.splice(indexLubePriceOld, 1, data);
+                                        lubePriceView.tableLubePrice.clear().rows.add(lubePriceView.dataForTableLubePrice).draw();
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                            }).always(function () {
-                                lubePriceView.hideFormControl();
-                            });
-                        } else {
-                            /* ADD */
-                            $.ajax({
-                                async: false,
-                                url: url + "fuel-price/lube/add",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    _token: _token,
-                                    price: asNumberFromCurrency("#price"),
-                                    note: $("#note").val().trim(),
-                                    applyDate: $("#applyDate").val()
-                                }
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (jqXHR.status == 201) {
-                                    lubePriceView.dataForTableLubePrice.push(data);
-                                    lubePriceView.tableLubePrice.clear().rows.add(lubePriceView.dataForTableLubePrice).draw();
-                                    lubePriceView.clearValidation();
-                                }
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                }).always(function () {
+                                    lubePriceView.hideFormControl();
+                                });
+                            } else {
+                                /* ADD */
+                                $.ajax({
+                                    async: false,
+                                    url: url + "fuel-price/lube/add",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: {
+                                        _token: _token,
+                                        price: asNumberFromCurrency("#price"),
+                                        note: $("#note").val().trim(),
+                                        applyDate: $("#applyDate").val()
+                                    }
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        lubePriceView.dataForTableLubePrice.push(data);
+                                        lubePriceView.tableLubePrice.clear().rows.add(lubePriceView.dataForTableLubePrice).draw();
+                                        lubePriceView.clearValidation();
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
 
-                            }).always(function () {
-                                lubePriceView.hideFormControl();
-                            });
+                                }).always(function () {
+                                    lubePriceView.hideFormControl();
+                                });
+                            }
+                        }
+                        else {
+                            $("form#formFuelPrice").find("label[class=error]").css("color", "red");
                         }
                     }
-                    else {
-                        $("form#formFuelPrice").find("label[class=error]").css("color", "red");
-                    }
+
                 },
                 renderDateTimePicker: function () {
                     $("#applyDate").datepicker({
@@ -252,8 +259,7 @@
                                 required: true
                             },
                             price: {
-                                required: true,
-                                min:1
+                                required: true
                             }
                         },
                         ignore: ".ignore",
@@ -262,9 +268,7 @@
                                 required: "Ngày áp dụng bắt buộc nhập"
                             },
                             price: {
-                                required: "Giá dầu bắt buộc nhập",
-                                min: "Giá dầu không được nhỏ hơn 1,000"
-
+                                required: "Giá dầu bắt buộc nhập"
                             }
                         }
                     });

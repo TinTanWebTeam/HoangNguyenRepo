@@ -99,7 +99,7 @@
                                                    name="garages_name">
                                         </div>
                                         <div class="col-sm-3 col-xs-3">
-                                            <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
+                                            <div class="btn btn-primary btn-sm btn-circle" title="Thêm nhà xe"
                                                  onclick="vehicleInsideView.displayModal('show', '#modal-addGarage')">
                                                 <i class="glyphicon glyphicon-plus"></i>
                                             </div>
@@ -228,7 +228,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true" onclick="vehicleInsideView.clearInputFormGarage()">×</span>
                     </button>
                     <h4 class="modal-title">Thêm nhà xe</h4>
                 </div>
@@ -240,7 +240,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="Garage_name"><b>Tên nhà xe</b></label>
                                     <input type="text" class="form-control"
-                                           id="Garage_name"
+                                           id="Garage_name" autofocus
                                            name="Garage_name">
                                 </div>
                             </div>
@@ -398,7 +398,6 @@
                         vehicleInsideView.action = null;
                         vehicleInsideView.idDelete = null;
                     }
-
                     vehicleInsideView.clearValidation("#frmGarage");
                     vehicleInsideView.clearValidation("#frmVehicleType");
                 },
@@ -711,6 +710,7 @@
                 },
                 clearValidation: function (idForm) {
                     $(idForm).find("label[class=error]").remove();
+                    $("#frmGarage").find("input[name=Garage_name]").focus();
                 },
                 validateGarage: function () {
                     $("#frmGarage").validate({

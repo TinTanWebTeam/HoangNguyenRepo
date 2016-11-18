@@ -13,10 +13,10 @@
 </div>
 
 <script>
-    $(function(){
-        if(typeof dashboardView === 'undefined') {
+    $(function () {
+        if (typeof dashboardView === 'undefined') {
             dashboardView = {
-                loadChart1: function(){
+                loadChart1: function () {
                     $('#chart1').highcharts({
                         chart: {
                             type: 'column'
@@ -52,26 +52,28 @@
                             }
                         },
 
-                        series: [{
-                            name: 'John',
-                            data: [5, 3, 4, 7, 2],
-                            stack: 'male'
-                        }, {
-                            name: 'Joe',
-                            data: [3, 4, 4, 2, 5],
-                            stack: 'male'
-                        }, {
-                            name: 'Jane',
-                            data: [2, 5, 6, 2, 1],
-                            stack: 'female'
-                        }, {
-                            name: 'Janet',
-                            data: [3, 0, 4, 4, 3],
-                            stack: 'female'
-                        }]
+                        series: [
+                            {
+                                name: 'John',
+                                data: [5, 3, 4, 7, 2],
+                                stack: 'male'
+                            }, {
+                                name: 'Joe',
+                                data: [3, 4, 4, 2, 5],
+                                stack: 'male'
+                            }, {
+                                name: 'Jane',
+                                data: [2, 5, 6, 2, 1],
+                                stack: 'female'
+                            }, {
+                                name: 'Janet',
+                                data: [3, 0, 4, 4, 3],
+                                stack: 'female'
+                            }
+                        ]
                     });
                 },
-                loadChart2: function(){
+                loadChart2: function () {
                     $('#chart2').highcharts({
                         chart: {
                             type: 'area'
@@ -126,7 +128,7 @@
                         }]
                     });
                 },
-                loadChart3: function(){
+                loadChart3: function () {
                     $('#chart3').highcharts({
                         title: {
                             text: 'Thống kê / So sánh lợi nhuận qua các năm',
