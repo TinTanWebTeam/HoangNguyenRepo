@@ -95,6 +95,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/debt-garage/transports', 'DebtManagementController@getDataDebtGarage');
         /*POST MODIFY*/
         Route::post('/debt-customer/validate', 'DebtManagementController@postValidateTransportCustomer');
+        Route::post('/debt-customer/validate-invoice', 'DebtManagementController@postValidateInvoiceCustomer');
         Route::post('/debt-garage/validate', 'DebtManagementController@postValidateTransportGarage');
         Route::post('/debt-customer/modify', 'DebtManagementController@postModifyDebtCustomer');
         Route::post('/invoice-customer/modify', 'DebtManagementController@postModifyInvoiceCustomer');

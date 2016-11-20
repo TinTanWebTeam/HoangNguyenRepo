@@ -156,358 +156,172 @@ class DebtManagementController extends Controller
     {
         $array_transportId = $request->input('_array_transportId');
 
-        //======================================================================
-        // KIỂM TRA CÙNG KHÁCH HÀNG
-        //======================================================================
+        #Kiểm tra cùng khách hàng
         $arrayCustomer = Transport::whereIn('id', $array_transportId)->pluck('customer_id');
         $collection = collect($arrayCustomer);
         $unique = $collection->unique();
-        if (count($unique->values()->all()) != 1) {
+        if(count($unique->values()->all()) != 1){
             $response = [
                 'status' => 0,
-                'msg'    => 'Các đơn hàng có khách hàng không giống nhau.'
+                'msg' => 'Các đơn hàng có khách hàng không giống nhau.'
             ];
             return response()->json($response, 203);
         }
 
-        //======================================================================
-        // KIỂM TRA ĐƠN HÀNG ĐÃ XUẤT HÓA ĐƠN HAY CHƯA
-        //======================================================================
+        #Kiểm tra đơn hàng đã xuất hđ hay chưa
         $kt = false;
         $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)
             ->where('invoiceCustomer_id', '<>', null)
             ->get();
-        if (count($array_transportInvoice) > 0)
+        if(count($array_transportInvoice) > 0)
             $kt = true;
 
-        if (!$kt) {
-            //-----------------------------------------------------
-            // Nếu Chưa Xuất Hóa Đơn Lần Nào
-            //-----------------------------------------------------
-            $prePaid = Transport::whereIn('id', $array_transportId)->pluck('cashReceive')->toArray();
-            $sum_prePaid = array_sum($prePaid);
+        //Nếu chưa xuất hóa đơn lần nào
+        if(!$kt){
+            $arr_transport = Transport::whereIn('id', $array_transportId)->get();
+            $totalPay = $arr_transport->pluck('cashRevenue');
+            $sum_totalPay = array_sum($totalPay->toArray());
 
-            /*
-            * Tiền trả trước > 0, cho dùng checkbox
-            * Tiền trả trước <= 0, ko cho dùng checkbox
-            */
-            if ($sum_prePaid > 0)
+            $prePaid = $arr_transport->pluck('cashReceive');
+            $sum_prePaid = array_sum($prePaid->toArray());
+            //Tiền trả trước > 0, cho dùng checkbox
+            if($sum_prePaid > 0)
                 $statusPrePaid = 0;
+            //Tiền trả trước <= 0, ko cho dùng checkbox
             else
                 $statusPrePaid = 1;
-
-            //======================================================================
-            // TÍNH CÁC THAM SỐ ĐỂ TRUYỀN SANG VIEW
-            //======================================================================
-
-            /*
-             * Sample
-             * $response = [
-                    'status' => 1 or 2,
-                    'invoiceCode' => '',
-                    'totalTransport' => 0,
-                    'prePaid' => 0,
-                    'payNeed' => 0,
-                    'debt' => 0,
-                    'debtNotExportInvoice' => 0,
-                    'debtExportInvoice' => 0,
-                    'debtReal' => 0,
-                    'statusPrePaid' => 0,
-                    'msg' => ''
-                ];
-             * */
-
-            # invoiceCode
-            $invoiceCode = $this->generateInvoiceCode('customer');
-
-            # totalTransport
-            $collectTransport = Transport::whereIn('id', $array_transportId)->get();
-            $totalTransport = $collectTransport->pluck('cashRevenue')->toArray();
-            $totalTransport = array_sum($totalTransport);
-
-            # prePaid
-            $prePaid = $collectTransport->pluck('cashReceive')->toArray();
-            $prePaid = array_sum($prePaid);
-
-            # payNeed
-            $payNeed = $totalTransport - $prePaid;
-
-            # debt (Có thể xuất hóa đơn)
-            $debt = $totalTransport;
-
-            # debtNotExportInvoice
-            $debtNotExportInvoice = $totalTransport;
-
-            # debtExportInvoice
-            $debtExportInvoice = 0;
-
-            # debtReal
-            $debtReal = $debtNotExportInvoice + $debtExportInvoice;
-
-            # statusPrePaid
-
             $response = [
-                'status'               => 1,
-                'invoiceCode'          => $invoiceCode,
-                'totalTransport'       => $totalTransport,
-                'prePaid'              => $prePaid,
-                'payNeed'              => $payNeed,
-                'debt'                 => $debt,
-                'debtNotExportInvoice' => $debtNotExportInvoice,
-                'debtExportInvoice'    => $debtExportInvoice,
-                'debtReal'             => $debtReal,
-                'statusPrePaid'        => $statusPrePaid,
-                'msg'                  => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'
+                'status' => 1,
+                'totalPay' => $sum_totalPay,
+                'prePaid' => $sum_prePaid,
+                'statusPrePaid' => $statusPrePaid,
+                'msg' => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'
             ];
             return response()->json($response, 200);
-        } else {
-            //-----------------------------------------------------
-            // Nếu Đã Xuất Hóa Đơn
-            //-----------------------------------------------------
-
-            //======================================================================
-            // KIỂM TRA CÁC ĐƠN HÀNG ĐÃ CHỌN VÀ CÁC ĐƠN HÀNG Ở DB CÓ KHỚP NHAU KHÔNG?
-            //======================================================================
+        }
+        //Nếu đã xuất hóa đơn
+        else {
+            #Kiểm tra xem các đơn hàng đã chọn và các đơn hàng ở database có khớp nhau không?
             $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])
                 ->where('invoiceCustomer_id', '<>', null)
                 ->pluck('invoiceCustomer_id');
-            if ($arrayInvoice == null) {
+            if($arrayInvoice == null) {
                 $response = [
-                    'status'   => 0,
+                    'status' => 0,
                     'totalPay' => 0,
-                    'msg'      => 'Không tìm thấy arrayInvoice'
+                    'msg' => 'Không tìm thấy arrayInvoice'
                 ];
                 return response()->json($response, 203);
             };
             $array_match = true;
-            foreach ($arrayInvoice as $invoiceId) {
+            foreach($arrayInvoice as $invoiceId){
                 $arrayTransport = TransportInvoice::where('invoiceCustomer_id', $invoiceId)
                     ->where('invoiceCustomer_id', '<>', null)
                     ->pluck('transport_id');
-                if ($arrayTransport == null) {
+                if($arrayTransport == null) {
                     $response = [
-                        'status'   => 0,
+                        'status' => 0,
                         'totalPay' => 0,
-                        'msg'      => 'Không tìm thấy arrayTransport'
+                        'msg' => 'Không tìm thấy arrayTransport'
                     ];
                     return response()->json($response, 203);
                 }
                 $collectTransportStock = collect($array_transportId);
                 $diff = $collectTransportStock->diff($arrayTransport);
-                if (count($diff->all()) > 0) {
-                    $array_match = false; //khac nhau
+                if(count($diff->all()) > 0){
+                    //khac nhau
+                    $array_match = false;
                 }
             }
-
-            //-----------------------------------------------------
-            // Nếu Các Đơn Hàng Không Khớp Nhau
-            //-----------------------------------------------------
-            if (!$array_match) {
+            //Nếu các đơn hàng không khớp nhau
+            if(!$array_match){
                 $response = [
-                    'status'   => 0,
+                    'status' => 0,
                     'totalPay' => 0,
-                    'msg'      => 'Các đơn hàng không khớp nhau.'
+                    'msg' => 'Các đơn hàng không khớp nhau.'
                 ];
                 return response()->json($response, 203);
-            } else {
-                //-----------------------------------------------------
-                // Nếu Các Đơn Hàng Khớp Nhau
-                //-----------------------------------------------------
-
-                //======================================================================
-                // KIỂM TRA XEM CÁC HÓA ĐƠN TRƯỚC ĐÃ DÙNG TRẢ TRƯỚC HAY CHƯA
-                //======================================================================
+            }
+            //Nếu các đơn hàng khớp nhau
+            else {
+                #Kiểm tra xem đã dùng trả trước hay chưa
                 $statusPrePaid = InvoiceCustomer::whereIn('id', $arrayInvoice)->pluck('statusPrePaid');
-
+                //Nếu đã dùng trả trước
                 if (in_array(1, $statusPrePaid->toArray())) {
-                    //-----------------------------------------------------
-                    // Nếu Đã Dùng Trả Trước
-                    //-----------------------------------------------------
                     $statusPrePaid = 1;
-                } else {
-                    //-----------------------------------------------------
-                    // Nếu Chưa Dùng Trả Trước
-                    //-----------------------------------------------------
-
-                    /*
-                    * Tiền trả trước > 0, cho dùng checkbox
-                    * Tiền trả trước <= 0, ko cho dùng checkbox
-                    */
+                }
+                //Nếu chưa dùng trả trước
+                else {
+                    #Kiểm tra tiền trả trước nếu bé hơn hoặc = 0 thì k cho dùng checkbox
                     $prePaid = Transport::whereIn('id', $array_transportId)->pluck('cashReceive');
                     $sum_prePaid = array_sum($prePaid->toArray());
-                    if ($sum_prePaid > 0)
+                    //Tiền trả trước > 0, cho dùng checkbox
+                    if($sum_prePaid > 0)
                         $statusPrePaid = 0;
+                    //Tiền trả trước <= 0, ko cho dùng checkbox
                     else
                         $statusPrePaid = 1;
                 }
 
-                //======================================================================
-                // TÍNH CÁC THAM SỐ ĐỂ TRUYỀN SANG VIEW
-                //======================================================================
-
-                /*
-                 * Sample
-                 * $response = [
-                        'status' => 1 or 2,
-                        'invoiceCode' => '',
-                        'totalTransport' => 0,
-                        'prePaid' => 0,
-                        'payNeed' => 0,
-                        'debt' => 0,
-                        'debtNotExportInvoice' => 0,
-                        'debtExportInvoice' => 0,
-                        'debtReal' => 0,
-                        'statusPrePaid' => 0,
-                        'msg' => ''
+                #Tính totalPay (Tổng tiền) cho lần tạo mới hóa đơn này
+                $invoice = InvoiceCustomer::find($arrayInvoice[0]);
+                $invoices = InvoiceCustomer::whereIn('id', $arrayInvoice)->get();
+                if($invoice == null){
+                    $response = [
+                        'status' => 0,
+                        'totalPay' => 0,
+                        'msg' => 'Không tìm thấy invoices'
                     ];
-                 * */
+                    return response()->json($response, 203);
+                }
 
-                # invoiceCode
-                $invoiceCode = $this->generateInvoiceCode('customer');
+                $totalTransport = (int)$invoice->totalTransport; // 7tr
+                $prePaid = (int)$invoice->prePaid; // 5tr
+                $totalPay = 0;
 
-                # totalTransport
-                $collectTransport = Transport::whereIn('id', $array_transportId)->get();
-                $totalTransport = $collectTransport->pluck('cashRevenue')->toArray();
-                $totalTransport = array_sum($totalTransport);
+                foreach($invoices as $invoice_item){
+                    $totalPay += $invoice_item->totalPay;
+                } // 6tr
 
-                # prePaid
-                $prePaid = $collectTransport->pluck('cashReceive')->toArray();
-                $prePaid = array_sum($prePaid);
+                if($statusPrePaid == 1){
+                    $totalPay = $totalTransport - $totalPay;
+                } else {
+                    $totalPay = $totalTransport - $prePaid - $totalPay;
+                }
 
-                # payNeed
-                $payNeed = $totalTransport - $prePaid;
+//                if($totalPay == 0){
+//                    $response = [
+//                        'status' => 0,
+//                        'totalPay' => 0,
+//                        'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'
+//                    ];
+//                    return response()->json($response, 203);
+//                }
 
-                # debt (Có thể xuất hóa đơn)
-                $debt = $totalTransport;
+                #Tính debt-real (Nợ thực tế)
+                $totalPaid = InvoiceCustomerDetail::whereIn('invoiceCustomer_id', $arrayInvoice)->pluck('paidAmt');
+                $sum_totalPaid = array_sum($totalPaid->toArray());
+                if($statusPrePaid == 1){
+                    $debtReal = $totalTransport - $prePaid - $sum_totalPaid;
+                } else {
+                    $debtReal = $totalTransport - $sum_totalPaid;
+                }
 
-                # debtNotExportInvoice
-                $array_InvoiceId = $arrayInvoice;
-                $collectInvoice = InvoiceCustomer::whereIn('id', $array_InvoiceId)->get();
-                $totalPay = $collectInvoice->pluck('totalPay')->toArray();
-                $totalPay = array_sum($totalPay);
-                $debtNotExportInvoice = $totalTransport - $totalPay;
+                #Tính sum totalPay, totalPaid, hasVat
 
-                # debtExportInvoice
-                $hasVat = $collectInvoice->pluck('hasVAT')->toArray();
-                $hasVat = array_sum($hasVat);
-                $totalPaid = $collectInvoice->pluck('totalPaid')->toArray();
-                $totalPaid = array_sum($totalPaid);
-                $debtExportInvoice = $hasVat - $totalPaid;
-
-                if ($statusPrePaid == 1)
-                    $debtExportInvoice -= $prePaid;
-
-                # debtReal
-                $debtReal = $debtNotExportInvoice + $debtExportInvoice;
-
-                # statusPrePaid
 
                 $response = [
-                    'status'               => 2,
-                    'invoiceCode'          => $invoiceCode,
-                    'totalTransport'       => $totalTransport,
-                    'prePaid'              => $prePaid,
-                    'payNeed'              => $payNeed,
-                    'debt'                 => $debt,
-                    'debtNotExportInvoice' => $debtNotExportInvoice,
-                    'debtExportInvoice'    => $debtExportInvoice,
-                    'debtReal'             => $debtReal,
-                    'statusPrePaid'        => $statusPrePaid,
-                    'msg'                  => 'Các đơn hàng khớp nhau'
+                    'status' => 2,
+                    'totalTransport' => $totalTransport,
+                    'totalPay' => $totalPay,
+                    'prePaid' => $prePaid,
+                    'debtReal' => $debtReal,
+                    'statusPrePaid' => $statusPrePaid,
+                    'msg' => 'Các đơn hàng khớp nhau'
                 ];
                 return response()->json($response, 200);
             }
         }
-    }
-
-    public function postValidateInvoiceCustomer(Request $request)
-    {
-        $invoiceId = $request->input('_invoiceId');
-
-        $array_TransportId = TransportInvoice::where('invoiceCustomer_Id', $invoiceId)->pluck('transport_id')->toArray();
-
-        $array_InvoiceId = TransportInvoice::whereIn('transport_id', $array_TransportId)->pluck('invoiceCustomer_id')->toArray();
-
-        //======================================================================
-        // KIỂM TRA XEM HÓA ĐƠN NÀY ĐÃ DÙNG TRẢ TRƯỚC HAY CHƯA
-        //======================================================================
-        $invoice = InvoiceCustomer::find($invoiceId);
-        $statusPrePaid = $invoice->pluck('statusPrePaid')->first();
-
-        //======================================================================
-        // TÍNH CÁC THAM SỐ ĐỂ TRUYỀN SANG VIEW
-        //======================================================================
-
-        /*
-         * Sample
-         * $response = [
-                'status' => 1 or 2,
-                'invoiceCode' => '',
-                'totalTransport' => 0,
-                'prePaid' => 0,
-                'payNeed' => 0,
-                'debt' => 0,
-                'debtNotExportInvoice' => 0,
-                'debtExportInvoice' => 0,
-                'debtReal' => 0,
-                'statusPrePaid' => 0,
-                'msg' => ''
-            ];
-         * */
-
-        # invoiceCode
-        $invoiceCode = $invoice->pluck('invoiceCode')->first();
-
-        # totalTransport
-        $collectTransport = Transport::whereIn('id', $array_TransportId)->get();
-        $totalTransport = $collectTransport->pluck('cashRevenue')->toArray();
-        $totalTransport = array_sum($totalTransport);
-
-        # prePaid
-        $prePaid = $collectTransport->pluck('cashReceive')->toArray();
-        $prePaid = array_sum($prePaid);
-
-        # payNeed
-        $payNeed = $totalTransport - $prePaid;
-
-        # debt (Có thể xuất hóa đơn)
-        $debt = $totalTransport;
-
-        # debtNotExportInvoice
-        $collectInvoice = InvoiceCustomer::whereIn('id', $array_InvoiceId)->get();
-        $totalPay = $collectInvoice->pluck('totalPay')->toArray();
-        $totalPay = array_sum($totalPay);
-        $debtNotExportInvoice = $totalTransport - $totalPay;
-
-        # debtExportInvoice
-        $hasVat = $collectInvoice->pluck('hasVAT')->toArray();
-        $hasVat = array_sum($hasVat);
-        $totalPaid = $collectInvoice->pluck('totalPaid')->toArray();
-        $totalPaid = array_sum($totalPaid);
-        $debtExportInvoice = $hasVat - $totalPaid;
-
-        if ($statusPrePaid == 1)
-            $debtExportInvoice -= $prePaid;
-
-        # debtReal
-        $debtReal = $debtNotExportInvoice + $debtExportInvoice;
-
-        # statusPrePaid
-
-        $response = [
-            'status'               => 3,
-            'invoiceCode'          => $invoiceCode,
-            'totalTransport'       => $totalTransport,
-            'prePaid'              => $prePaid,
-            'payNeed'              => $payNeed,
-            'debt'                 => $debt,
-            'debtNotExportInvoice' => $debtNotExportInvoice,
-            'debtExportInvoice'    => $debtExportInvoice,
-            'debtReal'             => $debtReal,
-            'statusPrePaid'        => $statusPrePaid,
-            'msg'                  => 'Các đơn hàng khớp nhau'
-        ];
-        return response()->json($response, 200);
     }
 
     public function postModifyInvoiceCustomer(Request $request)
@@ -533,12 +347,12 @@ class DebtManagementController extends Controller
         $updatedBy = \Auth::user()->id;
         $invoiceType = 0;
 
-        if ($statusPrePaid == 1) {
-            if ($totalPaid > $hasVat - $prePaid) {
+        if($statusPrePaid == 1){
+            if($totalPaid > $hasVat - $prePaid){
                 $totalPaid = $hasVat - $prePaid;
             }
         } else {
-            if ($totalPaid > $hasVat) {
+            if($totalPaid > $hasVat){
                 $totalPaid = $hasVat;
             }
         }
@@ -553,29 +367,29 @@ class DebtManagementController extends Controller
             //Kiểm tra xem đã xuất hđ hay chưa
             $kt = false;
             $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)->get();
-            if (count($array_transportInvoice) > 0)
+            if(count($array_transportInvoice) > 0)
                 $kt = true;
 
             //Nếu đã xuất hóa đơn
-            if ($kt) {
+            if($kt){
                 $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])->pluck('invoiceCustomer_id');
-                if ($arrayInvoice == null) {
+                if($arrayInvoice == null) {
                     return response()->json(['msg' => 'Không tìm thấy arrayInvoice'], 203);
                 };
                 $array_match = true;
-                foreach ($arrayInvoice as $invoiceId) {
+                foreach($arrayInvoice as $invoiceId){
                     $arrayTransport = TransportInvoice::where('invoiceCustomer_id', $invoiceId)->pluck('transport_id');
-                    if ($arrayTransport == null) {
+                    if($arrayTransport == null) {
                         return response()->json(['msg' => 'Không tìm thấy arrayTransport'], 203);
                     }
                     $collectTransportStock = collect($array_transportId);
                     $diff = $collectTransportStock->diff($arrayTransport);
-                    if (count($diff->all()) > 0) {
+                    if(count($diff->all()) > 0){
                         //khac nhau
                         $array_match = false;
                     }
                 }
-                if (!$array_match) {
+                if(!$array_match){
                     return response()->json(['msg' => 'Các đơn hàng đã chọn không khớp nhau.'], 203);
                 }
             }
@@ -646,7 +460,7 @@ class DebtManagementController extends Controller
                     $transportInvoice->createdBy = $createdBy;
                     $transportInvoice->updatedBy = $updatedBy;
 
-                    if (!$transportInvoice->save()) {
+                    if(!$transportInvoice->save()){
                         DB::rollBack();
                         return response()->json(['msg' => 'Create transportInvoice fail!'], 404);
                     }
@@ -747,7 +561,7 @@ class DebtManagementController extends Controller
             DB::beginTransaction();
             //Delete TransportInvoice
             $array_transportInvoice = TransportInvoice::where('invoiceCustomer_id', $invoiceCustomerId)->get();
-            if (count($array_transportInvoice) > 0) {
+            if(count($array_transportInvoice) > 0){
                 foreach ($array_transportInvoice as $transportInvoice) {
                     if (!$transportInvoice->delete()) {
                         DB::rollBack();
@@ -759,7 +573,7 @@ class DebtManagementController extends Controller
             //Delete InvoiceCustomerDetail
             $array_invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomerId)->get();
             $array_invoiceCustomerDetailId = null;
-            if (count($array_invoiceCustomerDetail) > 0) {
+            if(count($array_invoiceCustomerDetail) > 0){
                 $array_invoiceCustomerDetailId = collect($array_invoiceCustomerDetail)->pluck('id');
                 foreach ($array_invoiceCustomerDetail as $invoiceCustomerDetail) {
                     if (!$invoiceCustomerDetail->delete()) {
@@ -771,7 +585,7 @@ class DebtManagementController extends Controller
 
             //Delete InvoiceCustomer
             $invoiceCustomer = InvoiceCustomer::find($invoiceCustomerId);
-            if (!$invoiceCustomer) {
+            if(!$invoiceCustomer){
                 DB::rollBack();
                 return response()->json(['msg' => 'InvoiceCustomer does not exists.'], 404);
             }
@@ -782,8 +596,8 @@ class DebtManagementController extends Controller
 
             //Response
             $response = [
-                'msg'                    => 'Delete InvoiceCustomer successful!',
-                'invoiceCustomer'        => $invoiceCustomerId,
+                'msg' => 'Delete InvoiceCustomer successful!',
+                'invoiceCustomer' => $invoiceCustomerId,
                 'invoiceCustomerDetails' => $array_invoiceCustomerDetailId
             ];
             DB::commit();
@@ -805,7 +619,7 @@ class DebtManagementController extends Controller
             DB::beginTransaction();
             //Delete InvoiceCustomerDetail
             $invoiceCustomerDetail = InvoiceCustomerDetail::find($invoiceCustomerDetailId);
-            if (!$invoiceCustomerDetailId) {
+            if(!$invoiceCustomerDetailId){
                 DB::rollBack();
                 return response()->json(['msg' => 'InvoiceCustomerDetail does not exists.'], 404);
             }
@@ -817,10 +631,10 @@ class DebtManagementController extends Controller
                 DB::rollBack();
                 return response()->json(['msg' => 'Delete InvoiceCustomerDetail fail.'], 404);
             }
-            if ($action == 'delete1') {
+            if($action == 'delete1'){
                 //Update InvoiceCustomer
                 $invoiceCustomer = InvoiceCustomer::find($invoiceCustomer_id);
-                if (!$invoiceCustomer) {
+                if(!$invoiceCustomer){
                     DB::rollBack();
                     return response()->json(['msg' => 'InvoiceCustomer does not exists.'], 404);
                 }
@@ -847,15 +661,15 @@ class DebtManagementController extends Controller
                     ->first();
 
                 $response = [
-                    'msg'                   => 'Delete InvoiceCustomer successful!',
-                    'invoiceCustomer'       => $invoiceCustomer,
+                    'msg' => 'Delete InvoiceCustomer successful!',
+                    'invoiceCustomer' => $invoiceCustomer,
                     'invoiceCustomerDetail' => $invoiceCustomerDetailId
                 ];
             } else {
 
                 //Delete InvoiceCustomer
                 $invoiceCustomer = InvoiceCustomer::find($invoiceCustomer_id);
-                if (!$invoiceCustomer) {
+                if(!$invoiceCustomer){
                     DB::rollBack();
                     return response()->json(['msg' => 'InvoiceCustomer does not exists.'], 404);
                 }
@@ -866,7 +680,7 @@ class DebtManagementController extends Controller
 
                 //Delete TransportInvoice
                 $array_transportInvoice = TransportInvoice::where('invoiceCustomer_id', $invoiceCustomer->id)->get();
-                if (count($array_transportInvoice) > 0) {
+                if(count($array_transportInvoice) > 0){
                     foreach ($array_transportInvoice as $transportInvoice) {
                         if (!$transportInvoice->delete()) {
                             DB::rollBack();
@@ -877,8 +691,8 @@ class DebtManagementController extends Controller
 
                 //Response
                 $response = [
-                    'msg'                   => 'Delete InvoiceCustomer successful!',
-                    'invoiceCustomer'       => $invoiceCustomer_id,
+                    'msg' => 'Delete InvoiceCustomer successful!',
+                    'invoiceCustomer' => $invoiceCustomer_id,
                     'invoiceCustomerDetail' => $invoiceCustomerDetailId
                 ];
             }
@@ -1037,7 +851,7 @@ class DebtManagementController extends Controller
         $arrayGarage = Garage::whereIn('id', $arrayVehicle)->pluck('id');
         $collection = collect($arrayGarage);
         $unique = $collection->unique();
-        if (count($unique->values()->all()) != 1) {
+        if(count($unique->values()->all()) != 1){
             return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có nhà xe không giống nhau.'], 203);
         }
 
@@ -1046,48 +860,49 @@ class DebtManagementController extends Controller
         $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)
             ->where('invoiceGarage_id', '<>', null)
             ->get();
-        if (count($array_transportInvoice) > 0)
+        if(count($array_transportInvoice) > 0)
             $kt = true;
 
         //Nếu đã xuất hóa đơn
-        if ($kt) {
+        if($kt){
             $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])
                 ->where('invoiceGarage_id', '<>', null)
                 ->pluck('invoiceGarage_id');
-            if ($arrayInvoice == null) {
+            if($arrayInvoice == null) {
                 return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayInvoice'], 203);
             };
             $array_match = true;
-            foreach ($arrayInvoice as $invoiceId) {
+            foreach($arrayInvoice as $invoiceId){
                 $arrayTransport = TransportInvoice::where('invoiceGarage_id', $invoiceId)
                     ->where('invoiceGarage_id', '<>', null)
                     ->pluck('transport_id');
-                if ($arrayTransport == null) {
+                if($arrayTransport == null) {
                     return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayTransport'], 203);
                 }
                 $collectTransportStock = collect($array_transportId);
                 $diff = $collectTransportStock->diff($arrayTransport);
-                if (count($diff->all()) > 0) {
+                if(count($diff->all()) > 0){
                     //khac nhau
                     $array_match = false;
                 }
             }
-            if ($array_match) {
+            if($array_match){
                 $invoices = InvoiceGarage::find($arrayInvoice[0])->get();
-                if ($invoices == null)
+                if($invoices == null)
                     return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy invoices'], 203);
 
                 $totalTransport = $invoices[0]->totalTransport;
                 $totalPay = 0;
-                foreach ($invoices as $invoice) {
+                foreach($invoices as $invoice){
                     $totalPay += $invoice->totalPay;
                 }
                 $totalPay = $totalTransport - $totalPay;
-                if ($totalPay == 0) {
+                if($totalPay == 0){
                     return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'], 203);
                 }
                 return response()->json(['status' => 2, 'totalPay' => $totalPay, 'msg' => 'Các đơn hàng khớp nhau'], 200);
-            } else {
+            }
+            else{
                 return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng không khớp nhau.'], 203);
             }
         } else {
@@ -1108,29 +923,29 @@ class DebtManagementController extends Controller
             //Kiểm tra xem đã xuất hđ hay chưa
             $kt = false;
             $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)->get();
-            if (count($array_transportInvoice) > 0)
+            if(count($array_transportInvoice) > 0)
                 $kt = true;
 
             //Nếu đã xuất hóa đơn
-            if ($kt) {
+            if($kt){
                 $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])->pluck('invoiceGarage_id');
-                if ($arrayInvoice == null) {
+                if($arrayInvoice == null) {
                     return response()->json(['msg' => 'Không tìm thấy arrayInvoice'], 203);
                 };
                 $array_match = true;
-                foreach ($arrayInvoice as $invoiceId) {
+                foreach($arrayInvoice as $invoiceId){
                     $arrayTransport = TransportInvoice::where('invoiceGarage_id', $invoiceId)->pluck('transport_id');
-                    if ($arrayTransport == null) {
+                    if($arrayTransport == null) {
                         return response()->json(['msg' => 'Không tìm thấy arrayTransport'], 203);
                     }
                     $collectTransportStock = collect($array_transportId);
                     $diff = $collectTransportStock->diff($arrayTransport);
-                    if (count($diff->all()) > 0) {
+                    if(count($diff->all()) > 0){
                         //khac nhau
                         $array_match = false;
                     }
                 }
-                if (!$array_match) {
+                if(!$array_match){
                     return response()->json(['msg' => 'Các đơn hàng đã chọn không khớp nhau.'], 203);
                 }
             }
@@ -1212,7 +1027,7 @@ class DebtManagementController extends Controller
                     $transportInvoice->createdBy = \Auth::user()->id;
                     $transportInvoice->updatedBy = \Auth::user()->id;
 
-                    if (!$transportInvoice->save()) {
+                    if(!$transportInvoice->save()){
                         DB::rollBack();
                         return response()->json(['msg' => 'Create transportInvoice fail!'], 404);
                     }
@@ -1237,10 +1052,10 @@ class DebtManagementController extends Controller
                     ->first();
 
                 $response = [
-                    'msg'                 => 'Create Invoice successful!',
+                    'msg'                   => 'Create Invoice successful!',
                     'invoiceGarage'       => $invoiceGarage,
                     'invoiceGarageDetail' => $invoiceGarageDetail,
-                    'invoiceCode'         => $this->generateInvoiceCode('garage')
+                    'invoiceCode'           => $this->generateInvoiceCode('garage')
                 ];
                 return response()->json($response, 201);
             } catch (Exception $ex) {
@@ -1309,10 +1124,10 @@ class DebtManagementController extends Controller
                     ->first();
 
                 $response = [
-                    'msg'                 => 'Create Invoice successful!',
+                    'msg'                   => 'Create Invoice successful!',
                     'invoiceGarage'       => $invoiceGarage,
                     'invoiceGarageDetail' => $invoiceGarageDetail,
-                    'invoiceCode'         => $this->generateInvoiceCode('garage')
+                    'invoiceCode'           => $this->generateInvoiceCode('garage')
                 ];
                 return response()->json($response, 201);
             } catch (Exception $ex) {
@@ -1332,7 +1147,7 @@ class DebtManagementController extends Controller
             DB::beginTransaction();
             //Delete TransportInvoice
             $array_transportInvoice = TransportInvoice::where('invoiceGarage_id', $invoiceGarageId)->get();
-            if (count($array_transportInvoice) > 0) {
+            if(count($array_transportInvoice) > 0){
                 foreach ($array_transportInvoice as $transportInvoice) {
                     if (!$transportInvoice->delete()) {
                         DB::rollBack();
@@ -1344,7 +1159,7 @@ class DebtManagementController extends Controller
             //Delete InvoiceGarageDetail
             $array_invoiceGarageDetail = InvoiceGarageDetail::where('invoiceGarage_id', $invoiceGarageId)->get();
             $array_invoiceGarageDetailId = null;
-            if (count($array_invoiceGarageDetail) > 0) {
+            if(count($array_invoiceGarageDetail) > 0){
                 $array_invoiceGarageDetailId = collect($array_invoiceGarageDetail)->pluck('id');
                 foreach ($array_invoiceGarageDetail as $invoiceGarageDetail) {
                     if (!$invoiceGarageDetail->delete()) {
@@ -1356,7 +1171,7 @@ class DebtManagementController extends Controller
 
             //Delete InvoiceGarage
             $invoiceGarage = InvoiceGarage::find($invoiceGarageId);
-            if (!$invoiceGarage) {
+            if(!$invoiceGarage){
                 DB::rollBack();
                 return response()->json(['msg' => 'InvoiceGarage does not exists.'], 404);
             }
@@ -1367,8 +1182,8 @@ class DebtManagementController extends Controller
 
             //Response
             $response = [
-                'msg'                  => 'Delete InvoiceGarage successful!',
-                'invoiceGarage'        => $invoiceGarageId,
+                'msg' => 'Delete InvoiceGarage successful!',
+                'invoiceGarage' => $invoiceGarageId,
                 'invoiceGarageDetails' => $array_invoiceGarageDetailId
             ];
             DB::commit();
@@ -1390,7 +1205,7 @@ class DebtManagementController extends Controller
             DB::beginTransaction();
             //Delete InvoiceGarageDetail
             $invoiceGarageDetail = InvoiceGarageDetail::find($invoiceGarageDetailId);
-            if (!$invoiceGarageDetailId) {
+            if(!$invoiceGarageDetailId){
                 DB::rollBack();
                 return response()->json(['msg' => 'InvoiceGarageDetail does not exists.'], 404);
             }
@@ -1402,10 +1217,10 @@ class DebtManagementController extends Controller
                 DB::rollBack();
                 return response()->json(['msg' => 'Delete InvoiceGarageDetail fail.'], 404);
             }
-            if ($action == 'delete1') {
+            if($action == 'delete1'){
                 //Update InvoiceGarage
                 $invoiceGarage = InvoiceGarage::find($invoiceGarage_id);
-                if (!$invoiceGarage) {
+                if(!$invoiceGarage){
                     DB::rollBack();
                     return response()->json(['msg' => 'InvoiceGarage does not exists.'], 404);
                 }
@@ -1436,14 +1251,14 @@ class DebtManagementController extends Controller
                     ->first();
 
                 $response = [
-                    'msg'                 => 'Delete InvoiceGarage successful!',
-                    'invoiceGarage'       => $invoiceGarage,
+                    'msg' => 'Delete InvoiceGarage successful!',
+                    'invoiceGarage' => $invoiceGarage,
                     'invoiceGarageDetail' => $invoiceGarageDetailId
                 ];
             } else {
                 //Delete InvoiceGarage
                 $invoiceGarage = InvoiceGarage::find($invoiceGarage_id);
-                if (!$invoiceGarage) {
+                if(!$invoiceGarage){
                     DB::rollBack();
                     return response()->json(['msg' => 'InvoiceGarage does not exists.'], 404);
                 }
@@ -1454,7 +1269,7 @@ class DebtManagementController extends Controller
 
                 //Delete TransportInvoice
                 $array_transportInvoice = TransportInvoice::where('invoiceGarage_id', $invoiceGarage->id)->get();
-                if (count($array_transportInvoice) > 0) {
+                if(count($array_transportInvoice) > 0){
                     foreach ($array_transportInvoice as $transportInvoice) {
                         if (!$transportInvoice->delete()) {
                             DB::rollBack();
@@ -1465,8 +1280,8 @@ class DebtManagementController extends Controller
 
                 //Response
                 $response = [
-                    'msg'                 => 'Delete InvoiceGarage successful!',
-                    'invoiceGarage'       => $invoiceGarage_id,
+                    'msg' => 'Delete InvoiceGarage successful!',
+                    'invoiceGarage' => $invoiceGarage_id,
                     'invoiceGarageDetail' => $invoiceGarageDetailId
                 ];
             }
