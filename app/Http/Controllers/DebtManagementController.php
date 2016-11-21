@@ -481,6 +481,8 @@ class DebtManagementController extends Controller
 
         # debtInvoice
         $debtInvoice = $invoice->pluck('hasVAT')->first() - $invoice->pluck('totalPaid')->first();
+        if($statusPrePaid == 1)
+            $debtInvoice -= $invoice->pluck('prePaid')->first();
 
         # totalTransport
         $collectTransport = Transport::whereIn('id', $array_TransportId)->get();

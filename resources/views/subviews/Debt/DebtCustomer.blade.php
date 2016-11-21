@@ -1700,7 +1700,6 @@
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 } else {
-                                    debugger;
                                     //Remove & Add InvoiceCustomer
                                     var Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
                                         return o.id == sendToServer._invoiceCustomer.id;
@@ -1715,11 +1714,11 @@
                                     debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
 
                                     //fill data to table InvoiceCustomerDetail
-                                    data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
+                                    var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
                                         return o.invoiceCustomer_id == sendToServer._invoiceCustomer.id;
                                     });
-                                    if (typeof data === 'undefined') return;
-                                    debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(data);
+                                    if (typeof dataDetail === 'undefined') return;
+                                    debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
 
                                     //call search Method
                                     debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
@@ -1728,13 +1727,12 @@
                                     //clear Input
                                     $("input[id=paidAmt]").val('');
                                     $("textarea[id=note]").val('');
-
-                                    var prePaid = parseInt(sendToServer._invoiceCustomer['paidAmt']);
-                                    var debtReal = asNumberFromCurrency("#debt-real") - prePaid;
-                                    debtReal = (debtReal < 0) ? 0 : debtReal;
-                                    $("input[id=debt]").val(debtReal);
-                                    $("input[id=debt-real]").val(debtReal);
                                     $("#paidAmt").focus();
+
+                                    $("input[id=debtNotExportInvoice]").val(data['arrayInput']['debtNotExportInvoice']);
+                                    $("input[id=debtExportInvoice]").val(data['arrayInput']['debtExportInvoice']);
+                                    $("input[id=debt-real]").val(data['arrayInput']['debtReal']);
+                                    $("input[id=debtInvoice]").val(data['arrayInput']['debtInvoice']);
 
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
@@ -2022,15 +2020,32 @@
                 },
                 computeWhenChangePaidAmt: function (paidAmt) {
                     paidAmt = convertStringToNumber(paidAmt);
-
+                    var invoice_id = $("#invoice_id").val();
+                    var statusCheck = $("#statusPrePaid").prop('checked');
                     var cashReceive = asNumberFromCurrency("#cashReceive");
                     var hasVat = asNumberFromCurrency("#hasVAT");
 
-                    if(debtCustomerView.statusPrePaid === 1) {
-                        var debtInvoice = hasVat - paidAmt - cashReceive;
+                    if(invoice_id == ''){
+                        if(statusCheck) {
+                            var debtInvoice = hasVat - paidAmt - cashReceive;
+                        } else {
+                            var debtInvoice = hasVat - paidAmt;
+                        }
                     } else {
-                        var debtInvoice = hasVat - paidAmt;
+                        var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                           return o.invoiceCustomer_id == invoice_id;
+                        });
+                        var dataDetail_map = _.map(dataDetail, 'paidAmt');
+                        dataDetail_map = dataDetail_map.map(Number);
+                        var dataDetail_sum = _.sum(dataDetail_map);
+
+                        if(statusCheck) {
+                            var debtInvoice = hasVat - (dataDetail_sum + paidAmt) - cashReceive;
+                        } else {
+                            var debtInvoice = hasVat - (dataDetail_sum + paidAmt);
+                        }
                     }
+
                     debtInvoice = (debtInvoice < 0) ? 0 : debtInvoice;
 
                     $("input[id=debtInvoice]").val(debtInvoice);
