@@ -655,7 +655,7 @@
                             driver_id: $('#driver').attr('data-driverId'),
                             vehicleType_id: $('#vehicleTypes_name').val(),
                             vehicleNumber: $("input[id='vehicleNumber']").val(),
-                            areaCode: $("input[id='areaCode']").val(),
+                            areaCode: $("input[id='areaCode']").val().toUpperCase(),
                             size: $("input[id='size']").val(),
                             owner: $("input[id='owner']").val(),
                             weight: $("input[id='weight']").val()
@@ -665,7 +665,7 @@
                         vehicleInsideView.current.driver_id = $('#driver').attr('data-driverId');
                         vehicleInsideView.current.vehicleType_id = $('#vehicleTypes_name').val();
                         vehicleInsideView.current.vehicleNumber = $("input[id='vehicleNumber']").val();
-                        vehicleInsideView.current.areaCode = $("input[id='areaCode']").val();
+                        vehicleInsideView.current.areaCode = $("input[id='areaCode']").val().toUpperCase();
                         vehicleInsideView.current.size = $("input[id='size']").val();
                         vehicleInsideView.current.weight = $("input[id='weight']").val();
                         vehicleInsideView.current.owner = $("input[id='owner']").val();
