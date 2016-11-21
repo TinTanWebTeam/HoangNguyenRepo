@@ -129,8 +129,8 @@ class CustomerManagementController extends Controller
                 $customerNew->phone = $phone;
                 $customerNew->email = $email;
                 $customerNew->note = $note;
-                $customerNew->percentFuel = $percentFuel;
-                $customerNew->percentFuelChange = $percentFuelChange;
+                $customerNew->percentOilPerPostage = $percentFuel;
+                $customerNew->percentOilLimitToChangePostage = $percentFuelChange;
                 $customerNew->createdBy = $createdBy;
                 $customerNew->updatedBy = $updatedBy;
                 if ($customerNew->save()) {
@@ -157,8 +157,8 @@ class CustomerManagementController extends Controller
                 $customerUpdate->phone = $phoneEdit;
                 $customerUpdate->email = $emailEdit;
                 $customerUpdate->note = $noteEdit;
-                $customerUpdate->percentFuel = $percentFuelEdit;
-                $customerUpdate->percentFuelChange = $percentFuelChangeEdit;
+                $customerUpdate->percentOilPerPostage = $percentFuelEdit;
+                $customerUpdate->percentOilLimitToChangePostage = $percentFuelChangeEdit;
                 $customerUpdate->updatedBy = $updatedBy;
                 if ($customerUpdate->update()) {
                     $customer = DB::table('customers')
