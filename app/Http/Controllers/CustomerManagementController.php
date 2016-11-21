@@ -14,6 +14,7 @@ use App\InvoiceCustomerDetail;
 use App\Postage;
 use App\Product;
 
+use App\ProductType;
 use App\StaffCustomer;
 use App\Status;
 use App\Transport;
@@ -393,6 +394,7 @@ class CustomerManagementController extends Controller
         $name = null;
         $description = null;
         $productType_id = null;
+        $productType = null;
 
         $action = $request->input('_action');
         if ($action != 'delete') {
@@ -402,24 +404,46 @@ class CustomerManagementController extends Controller
             }
 
             $name = $request->input('_product')['name'];
+            $productType = $request->input('_product')['productType'];
             $description = $request->input('_product')['description'];
             $productType_id = $request->input('_product')['productType_id'];
         }
 
         switch ($action) {
             case 'add':
-                $productNew = new Product();
-                $productNew->name = $name;
-                $productNew->description = $description;
-                $productNew->productType_id = $productType_id;
-                if ($productNew->save()) {
-                    $response = [
-                        'msg'     => 'Created Product',
-                        'product' => $productNew
-                    ];
-                    return response()->json($response, 201);
+                if(!$productType_id){
+                    $productTypeNew = new ProductType();
+                    $productTypeNew->name = $productType;
+                    if ($productTypeNew->save()) {
+                        $productNew = new Product();
+                        $productNew->name = $name;
+                        $productNew->description = $description;
+                        $productNew->productType_id = $productTypeNew->id;
+                        if ($productNew->save()) {
+                            $response = [
+                                'msg'     => 'Created Product',
+                                'product' => $productNew,
+                                'productType' => $productTypeNew
+                            ];
+                            return response()->json($response, 201);
+                        }
+                    }
+                    return response()->json(['msg' => 'Create failed'], 404);
+                }else{
+                    $productNew = new Product();
+                    $productNew->name = $name;
+                    $productNew->description = $description;
+                    $productNew->productType_id = $productType_id;
+                    if ($productNew->save()) {
+                        $response = [
+                            'msg'     => 'Created Product',
+                            'product' => $productNew
+                        ];
+                        return response()->json($response, 201);
+                    }
+                    return response()->json(['msg' => 'Create failed'], 404);
                 }
-                return response()->json(['msg' => 'Create failed'], 404);
+
                 break;
             case 'update':
                 $productUpdate = Product::findOrFail($request->input('_product')['id']);
