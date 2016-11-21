@@ -92,7 +92,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group form-md-line-input">
-                                            <label for="customer_id"class="red"><b>Khách hàng</b></label>
+                                            <label for="customer_id" class="red"><b>Khách hàng</b></label>
                                             <input type="text" class="form-control" id="customer_id"
                                                    name="customer_id"
                                                    placeholder="Nhập tên khách hàng"
@@ -128,7 +128,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="applyDate"class="red"><b>Ngày áp dụng</b></label>
+                                                    <label for="applyDate" class="red"><b>Ngày áp dụng</b></label>
                                                     <input type="text" class="date ignore form-control" id="applyDate"
                                                            name="applyDate">
                                                 </div>
@@ -245,6 +245,52 @@
 </div>
 <!-- end Modal notification -->
 
+<!-- Modal -->
+<div class="row">
+    <div class="modal fade" id="myModalNorm" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Cập nhật ngày áp dụng
+                    </h4>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="apply-date">Ngày áp dụng</label>
+                            <input type="text" class="date ignore form-control"
+                                   id="apply-date" name="apply-date"/>
+                            <input type="hidden" id="postage-id" name="postage-id"/>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="postageView.updateApplyDate()">
+                        Cập nhật
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
 <script>
     $(function () {
         if (typeof postageView === 'undefined') {
@@ -261,6 +307,8 @@
                 current: null,
                 action: null,
                 idDelete: null,
+                tagsCustomerName: [],
+
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -297,7 +345,6 @@
                     $("input[id='postage']").val('');
                     $("input[id='note']").val('');
                 },
-                tagsCustomerName: [],
 
                 renderEventClickTableModal: function () {
                     $("#table-customer").find("tbody").on('click', 'tr', function () {
@@ -331,6 +378,13 @@
                     });
                     $('#applyDate').datepicker("setDate", new Date());
 
+                    $('#apply-date').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#apply-date').datepicker("setDate", new Date());
+
                     $('#createdDate').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
@@ -348,6 +402,14 @@
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
+                    });
+                },
+                renderEventRowClick: function () {
+                    $("#table-postageDetail").find("tbody").on('click', 'tr', function () {
+                        $("#postage-id").val($(this).find('td:first')[0].innerText);
+                        var applyDate = moment($(this).find('td:eq(4)')[0].innerText, "DD/MM/YYYY");
+                        $("input[id='apply-date']").datepicker('update', applyDate.format("DD-MM-YYYY"));
+                        postageView.displayModal('show', '#myModalNorm');
                     });
                 },
 
@@ -375,6 +437,7 @@
                     postageView.renderEventFocusOut();
                     postageView.renderDateTimePicker();
                     postageView.renderScrollbar();
+                    postageView.renderEventRowClick();
                     formatCurrency(".currency");
                     setEventFormatCurrency(".currency");
                     defaultZero("#postage");
@@ -403,7 +466,7 @@
                 fillDataToDatatable: function (data) {
                     removeDataTable();
 
-                    if(postageView.table != null)
+                    if (postageView.table != null)
                         postageView.table.destroy();
 
                     postageView.table = $('#table-data').DataTable({
@@ -497,8 +560,8 @@
                         data: data,
                         columns: [
                             {
-                                data: 'id',
-                                visible: false
+                                data: 'id'
+//                                visible: false
                             },
                             {
                                 data: 'postage',
@@ -509,7 +572,7 @@
                             {
                                 data: 'applyDate',
                                 render: function (data, type, full, meta) {
-                                    if(data != null)
+                                    if (data != null)
                                         return moment(data).format("DD/MM/YYYY");
                                     else
                                         return "";
@@ -701,7 +764,7 @@
                                     postageView.fillDataToDatatable(postageView.dataPostageFiltered);
 
                                     var custId = parseInt($("#customer_id").attr('data-customerId'));
-                                    var data = _.filter(postageView.dataPostage, function(o){
+                                    var data = _.filter(postageView.dataPostage, function (o) {
                                         return o.customer_id == custId;
                                     });
                                     postageView.fillDataToDatatablePostageDetail(data);
@@ -727,6 +790,40 @@
                             postageView.clearInput();
                         } else if (jqXHR.status == 203) {
                             showNotification("warning", data['msg']);
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+
+                updateApplyDate: function(){
+                    var sendToServer = {
+                        _token: _token,
+                        _id: $("#postage-id").val(),
+                        _applyDate: $("#apply-date").val()
+                    };
+
+                    $.ajax({
+                        url: url + 'postage/update-apply-date',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            postageView.dataPostageFiltered = data['postageFiltered'];
+                            postageView.dataPostage = data['postageFull'];
+                            postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+
+                            var custId = parseInt($("#customer_id").attr('data-customerId'));
+                            var data = _.filter(postageView.dataPostage, function (o) {
+                                return o.customer_id == custId;
+                            });
+                            postageView.fillDataToDatatablePostageDetail(data);
+
+                            showNotification("success", "Cập nhật ngày áp dụng thành công!");
+                            postageView.displayModal("hide", "#myModalNorm");
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }

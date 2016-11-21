@@ -24,9 +24,10 @@ class CreateCustomersTable extends Migration
             $table->integer('updatedBy')->unsigned();
             $table->boolean('active')->default(1);
             $table->integer('customerType_id')->unsigned();
-            $table->integer('percentPetroleum')->default(0);
-            $table->integer('percentFuel')->default(0);
-            $table->integer('percentFuelChange')->default(0);
+            $table->integer('percentOilPerPostage')->default(0)->comment('Phần trăm dầu trên cước phí');
+            $table->integer('percentOilLimitToChangePostage')->default(0)->comment('Phần trăm dầu giới hạn thay đổi giá cước phí');
+            $table->integer('percentLubePerPostage')->default(0)->comment('Phần trăm nhớt trên cước phí');
+            $table->integer('percentLubeLimitToChangePostage')->default(0)->comment('Phần trăm nhớt giới hạn thay đổi giá cước phí');
             $table->timestamps();
         });
     }

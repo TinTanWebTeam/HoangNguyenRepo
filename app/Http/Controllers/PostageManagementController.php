@@ -148,6 +148,35 @@ class PostageManagementController extends Controller
         }
     }
 
+    public function postUpdateApplyDate(Request $request)
+    {
+        if (!\Auth::check()) {
+            return response()->json(['msg' => 'Not authorize'], 404);
+        }
+
+        $postageId = $request->input('_id');
+        $applyDate = $request->input('_applyDate');
+        $applyDate = Carbon::createFromFormat('d-m-Y', $applyDate);
+
+        try {
+            DB::beginTransaction();
+            $postage = Postage::find($postageId);
+            $postage->applyDate = $applyDate;
+            if(!$postage->update()){
+                DB::rollBack();
+                return response()->json(['msg' => 'Update ApplyDate Postage failed'], 404);
+            }
+            DB::commit();
+
+            //Response
+            $response = $this->getData();
+            return response()->json($response, 201);
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
+        }
+    }
+
     public function getData()
     {
         $postageFiltered = DB::select("     
