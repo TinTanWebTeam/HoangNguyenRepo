@@ -221,7 +221,6 @@
                 },
 
                 loadChart: function (data) {
-                    var a = data.map(Number);
                     $('#container').highcharts({
                         chart: {
                             type: 'column'
