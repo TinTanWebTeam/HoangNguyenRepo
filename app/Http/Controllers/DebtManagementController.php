@@ -424,6 +424,13 @@ class DebtManagementController extends Controller
     {
         $invoiceId = $request->input('_invoiceId');
 
+        $response = $this->ValidateInvoiceCustomer($invoiceId);
+
+        return response()->json($response, 200);
+    }
+
+    public function ValidateInvoiceCustomer($invoiceId)
+    {
         $array_TransportId = TransportInvoice::where('invoiceCustomer_Id', $invoiceId)->pluck('transport_id')->toArray();
 
         $array_InvoiceId = TransportInvoice::whereIn('transport_id', $array_TransportId)->pluck('invoiceCustomer_id')->toArray();
@@ -443,6 +450,8 @@ class DebtManagementController extends Controller
          * $response = [
                 'status' => 1 or 2,
                 'invoiceCode' => '',
+                'totalPay' => 0,
+                'totalPayReal' => 0,
                 'totalTransport' => 0,
                 'prePaid' => 0,
                 'payNeed' => 0,
@@ -457,6 +466,21 @@ class DebtManagementController extends Controller
 
         # invoiceCode
         $invoiceCode = $invoice->pluck('invoiceCode')->first();
+
+        # totalPay
+        $totalPay = $invoice->pluck('totalPay')->first();
+        $totalPayReal = $totalPay;
+        if($statusPrePaid == 1)
+            $totalPayReal += $invoice->pluck('prePaid')->first();
+
+        # vat
+        $vat = $invoice->pluck('VAT')->first();
+
+        # hasVat
+        $hasVat = $invoice->pluck('hasVAT')->first();
+
+        # debtInvoice
+        $debtInvoice = $invoice->pluck('hasVAT')->first() - $invoice->pluck('totalPaid')->first();
 
         # totalTransport
         $collectTransport = Transport::whereIn('id', $array_TransportId)->get();
@@ -497,6 +521,11 @@ class DebtManagementController extends Controller
         $response = [
             'status'               => 3,
             'invoiceCode'          => $invoiceCode,
+            'totalPay'             => $totalPay,
+            'totalPayReal'         => $totalPayReal,
+            'vat'                  => $vat,
+            'hasVat'               => $hasVat,
+            'debtInvoice'          => $debtInvoice,
             'totalTransport'       => $totalTransport,
             'prePaid'              => $prePaid,
             'payNeed'              => $payNeed,
@@ -507,7 +536,7 @@ class DebtManagementController extends Controller
             'statusPrePaid'        => $statusPrePaid,
             'msg'                  => 'Các đơn hàng khớp nhau'
         ];
-        return response()->json($response, 200);
+        return $response;
     }
 
     public function postModifyInvoiceCustomer(Request $request)
@@ -618,6 +647,7 @@ class DebtManagementController extends Controller
                 $invoiceCustomerDetail = new InvoiceCustomerDetail();
                 $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
                 $invoiceCustomerDetail->paidAmt = $totalPaid;
+                $invoiceCustomerDetail->paidAmtNotVat = $totalPaid - ($totalPaid * $vat / 100);
                 $invoiceCustomerDetail->payDate = $payDate;
                 $invoiceCustomerDetail->modify = false;
                 $invoiceCustomerDetail->createdBy = $createdBy;
@@ -677,7 +707,9 @@ class DebtManagementController extends Controller
                 return response()->json(['msg' => $ex], 404);
             }
         } else {
-            $invoiceCustomer = InvoiceCustomer::find($request->input('_invoiceCustomer')['id']);
+            $invoiceId = $request->input('_invoiceCustomer')['id'];
+
+            $invoiceCustomer = InvoiceCustomer::find($invoiceId);
             $invoiceCustomer->exportDate = $exportDate;
             $invoiceCustomer->invoiceDate = $invoiceDate;
             $invoiceCustomer->payDate = $payDate;
@@ -697,6 +729,7 @@ class DebtManagementController extends Controller
                 $invoiceCustomerDetail = new InvoiceCustomerDetail();
                 $invoiceCustomerDetail->invoiceCustomer_id = $invoiceCustomer->id;
                 $invoiceCustomerDetail->paidAmt = $totalPaid;
+                $invoiceCustomerDetail->paidAmtNotVat = $totalPaid - ($totalPaid * $vat / 100);
                 $invoiceCustomerDetail->payDate = $payDate;
 
                 $invoiceCustomerDetail->modify = false;
@@ -723,11 +756,14 @@ class DebtManagementController extends Controller
                     ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
                     ->first();
 
+                $arrayInput = $this->ValidateInvoiceCustomer($invoiceId);
+
                 $response = [
                     'msg'                   => 'Create Invoice successful!',
                     'invoiceCustomer'       => $invoiceCustomer,
                     'invoiceCustomerDetail' => $invoiceCustomerDetail,
-                    'invoiceCode'           => $this->generateInvoiceCode('customer')
+                    'invoiceCode'           => $this->generateInvoiceCode('customer'),
+                    'arrayInput'            => $arrayInput
                 ];
                 return response()->json($response, 201);
             } catch (Exception $ex) {

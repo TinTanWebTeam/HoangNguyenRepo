@@ -464,7 +464,7 @@
                 },
 
                 fillDataToDatatable: function (data) {
-                    removeDataTable();
+//                    removeDataTable();
 
                     if (postageView.table != null)
                         postageView.table.destroy();
@@ -549,7 +549,7 @@
                         ]
                     });
                     $("#table-data").css("width", "auto");
-                    pushDataTable(postageView.table);
+//                    pushDataTable(postageView.table);
                 },
                 fillDataToDatatablePostageDetail: function (data) {
                     if (postageView.tablePostageDetail != null)

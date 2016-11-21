@@ -424,7 +424,8 @@
                                         <tr class="active">
                                             <th>Mã</th>
                                             <th>Ngày trả</th>
-                                            <th>Tiền trả</th>
+                                            <th>Tiền trả (-VAT)</th>
+                                            <th>Tiền trả (+VAT)</th>
                                             <th>In</th>
                                         </tr>
                                         </thead>
@@ -946,10 +947,10 @@
                                     return moment(data).format("DD/MM/YYYY");
                                 }
                             },
-//                            {
-//                                data: 'totalPay',
-//                                render: $.fn.dataTable.render.number(",", ".", 0)
-//                            },
+                            {
+                                data: 'paidAmtNotVat',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
                             {
                                 data: 'paidAmt',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
@@ -1119,6 +1120,7 @@
                         $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
 
                         // remove readonly input
+                        $("input[id=totalPay]").prop('readonly', false);
                         $("input[id=invoiceCode]").prop('readonly', false);
                         $("input[id=VAT]").prop('readonly', false);
                         $("input[id=hasVAT]").prop('readonly', false);
@@ -1146,12 +1148,12 @@
                             $("input[id=statusPrePaid]").prop('checked', true);
                         }
 
-                        var _totalPay = 0;
-                        var _totalPayReal = 0;
-                        var _vat = 10;
-                        var _hasVat = 0;
+                        var _totalPay = dataAfterValidate['totalPay'];
+                        var _totalPayReal = dataAfterValidate['totalPayReal'];
+                        var _vat = dataAfterValidate['vat'];
+                        var _hasVat = dataAfterValidate['hasVat'];
                         var _paidAmt = 0;
-                        var _debtInvoice = 0;
+                        var _debtInvoice = dataAfterValidate['debtInvoice'];
                         //
 
                         //fill data to table InvoiceCustomerDetail
@@ -1177,6 +1179,7 @@
                         $("input[id=invoiceCode]").val(debtCustomerView.invoiceCode);
 
                         // add readonly input
+                        $("input[id=totalPay]").prop('readonly', true);
                         $("input[id=invoiceCode]").prop('readonly', true);
                         $("input[id=VAT]").prop('readonly', true);
                         $("input[id=hasVAT]").prop('readonly', true);
@@ -1636,7 +1639,7 @@
                     if ($("#frmInvoice").valid()) {
                         debtCustomerView.fillFormDataToCurrentObject();
 
-                        sendToServer = {
+                        var sendToServer = {
                             _token: _token,
                             _action: debtCustomerView.action,
                             _invoiceCustomer: debtCustomerView.currentInvoiceCustomer,
@@ -1697,6 +1700,7 @@
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 } else {
+                                    debugger;
                                     //Remove & Add InvoiceCustomer
                                     var Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
                                         return o.id == sendToServer._invoiceCustomer.id;

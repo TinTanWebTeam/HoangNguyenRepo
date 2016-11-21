@@ -15,7 +15,8 @@ class CreateInvoiceCustomerDetailsTable extends Migration
         Schema::create('invoiceCustomerDetails', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('invoiceCustomer_id')->unsigned();
-            $table->decimal('paidAmt', 18, 0)->default(0)->comment('Số tiền trả');
+            $table->decimal('paidAmt', 18, 0)->default(0)->comment('Số tiền trả có VAT');
+            $table->decimal('paidAmtNotVat', 18, 0)->default(0)->comment('Số tiền trả không VAT');
             $table->dateTime('payDate')->nullable()->comment('Ngày trả');
             $table->boolean('modify')->default(0)->comment('Có chỉnh sửa hay không');
             $table->integer('createdBy')->unsigned()->comment('Người tạo');
