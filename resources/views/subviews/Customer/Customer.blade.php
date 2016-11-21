@@ -1177,7 +1177,7 @@
                     var nameCustomer = _.map(customerView.tableCustomer, function (o) {
                         return o.fullName;
                     });
-                    if (_.indexOf(nameCustomer, $("input[id=fullName]").val()) > 0) {
+                    if (_.indexOf(nameCustomer, $("input[id=fullName]").val()) >= 0) {
                         showNotification("error", "Khách hàng đã tồn tại!");
                     } else {
                         customerView.formValidate();

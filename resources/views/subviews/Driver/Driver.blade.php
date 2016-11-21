@@ -235,7 +235,7 @@
                 current: null,
                 action: null,
                 idDelete: null,
-                tagsGovernmentId:[],
+                tagsGovernmentId: [],
                 cancel: function () {
                     if (driverView.action == 'add') {
                         driverView.clearInput();
@@ -525,7 +525,6 @@
                             _action: driverView.action,
                             _id: driverView.idDelete
                         };
-
                         $.ajax({
                             url: url + 'driver/modify',
                             type: "POST",
@@ -540,20 +539,21 @@
                                 driverView.dataDrivers.splice(indexOfDriverOld, 1);
                                 driverView.showNotification("success", "Xóa thành công!");
                                 driverView.displayModal("hide", "#modalConfirm");
-
                             }
                             driverView.table.clear().rows.add(driverView.dataDrivers).draw();
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        var governmentId = _.map(driverView.dataDrivers, function (o) {
-                            return o.governmentId;
-                        });
-                        if (_.indexOf(governmentId, $("input[id=governmentId]").val()) > 0) {
-                            showNotification("error", "CMND đã tồn tại!");
-                        }else {
-                            driverView.validateDriver();
+                        driverView.validateDriver();
+                        if (driverView.action == 'add') {
+                            var governmentId = _.map(driverView.dataDrivers, function (o) {
+                                return Number(o.governmentId);
+                            });
+                            if (_.indexOf(governmentId, Number($("input[id=governmentId]").val())) >= 0) {
+                                showNotification("error", "CMND đã tồn tại!");
+                            }
+                        } else {
                             if ($("#frmDriver").valid()) {
                                 driverView.fillFormDataToCurrentObject();
                                 sendToServer = {
@@ -607,6 +607,7 @@
                                 $("form#frmDriver").find("label[class=error]").css("color", "red");
                             }
                         }
+
 
                     }
                 }
