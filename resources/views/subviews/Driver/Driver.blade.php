@@ -130,7 +130,6 @@
                                                name="address">
                                     </div>
                                 </div>
-
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="phone"><b>Số điện thoại</b></label>
@@ -152,8 +151,8 @@
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="governmentId"><b>CMND</b></label>
-                                        <input type="number" class="form-control"
-                                               id="governmentId"
+                                        <input type="text" class="form-control"
+                                               id="governmentId" maxlength="12"
                                                name="governmentId">
                                     </div>
                                 </div>
@@ -492,6 +491,7 @@
                 fillFormDataToCurrentObject: function () {
                     if (driverView.action == 'add') {
                         driverView.current = {
+                            id: null,
                             fullName: $("input[id='fullName']").val(),
                             address: $("input[id='address']").val(),
                             phone: $("input[id='phone']").val(),
@@ -544,18 +544,23 @@
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
-                    } else {
+                    }
+                    else {
                         driverView.validateDriver();
-                        if (driverView.action == 'add') {
-                            var governmentId = _.map(driverView.dataDrivers, function (o) {
-                                return Number(o.governmentId);
-                            });
-                            if (_.indexOf(governmentId, Number($("input[id=governmentId]").val())) >= 0) {
-                                showNotification("error", "CMND đã tồn tại!");
+                        if ($("#frmDriver").valid()) {
+                            driverView.fillFormDataToCurrentObject();
+                            if (driverView.current.id == null) {
+                                var existCMND = _.find(driverView.dataDrivers, function (o) {
+                                    return o.governmentId == $("input[id=governmentId]").val();
+                                });
+                            } else {
+                                var existCMND = _.find(driverView.dataDrivers, function (o) {
+                                    return o.governmentId == $("input[id=governmentId]").val() && o.id != driverView.current.id;
+                                });
                             }
-                        } else {
-                            if ($("#frmDriver").valid()) {
-                                driverView.fillFormDataToCurrentObject();
+                            if (typeof existCMND !== "undefined") {
+                                showNotification("error", "CMND đã tồn tại!");
+                            } else {
                                 sendToServer = {
                                     _token: _token,
                                     _action: driverView.action,
@@ -598,18 +603,16 @@
                                     } else {
                                         driverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                     }
-
-
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
                                     driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                                 });
-                            } else {
-                                $("form#frmDriver").find("label[class=error]").css("color", "red");
                             }
+                        } else {
+                            $("form#frmDriver").find("label[class=error]").css("color", "red");
                         }
 
-
                     }
+
                 }
 
             };
