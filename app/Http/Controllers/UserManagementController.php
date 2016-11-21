@@ -125,7 +125,6 @@ class UserManagementController extends Controller
         $birthday = null;
         $position_id = null;
         $action = $request->get('_action');
-
         if ($action != 'delete' && $action != 'restoreUser') {
             $validateUser = ValidateController::ValidateCreateUser($request->get('_object'));
             if ($validateUser->fails()) {

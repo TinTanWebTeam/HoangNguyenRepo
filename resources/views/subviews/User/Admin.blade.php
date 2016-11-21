@@ -749,53 +749,67 @@
                             adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        adminView.validate();
-                        if ($("#formUser").valid()) {
-                            adminView.fillFormDataToCurrentObject();
-                            sendToServer = {
-                                _token: _token,
-                                _action: adminView.action,
-                                _object: adminView.current,
-                                _object2: adminView.array_roleId
-                            };
-                            $.ajax({
-                                url: url + 'user/modify',
-                                type: "POST",
-                                dataType: "json",
-                                data: sendToServer
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (jqXHR.status == 201) {
-                                    switch (adminView.action) {
-                                        case 'add':
-                                            adminView.tableAdmin.push(data['tableUserAdd'][0]);
-                                            adminView.showNotification("success", "Thêm thành công!");
-                                            break;
-                                        case 'update':
-                                            var UpdateUserOld = _.find(adminView.tableAdmin, function (o) {
-                                                return o.id == sendToServer._object.id;
-                                            });
-                                            var indexOfUpdateUserOld = _.indexOf(adminView.tableAdmin, UpdateUserOld);
-                                            adminView.tableAdmin.splice(indexOfUpdateUserOld, 1, data['tableUserUpdate'][0]);
-                                            adminView.tableSubRow = data['subRoles'][0];
-                                            adminView.showNotification("success", "Cập nhật thành công!");
-                                            adminView.hide();
-                                            break;
-                                        default:
-                                            break;
+                        dateBirthday = $("input[id='birthday']").val();
+                        birthday = moment(dateBirthday,"DD-MM-YYYY").year();
+                        yearNow = moment().year();
+                        old = yearNow - birthday;
+                        if(old >= 18){
+                            if(old >= 60){
+                                adminView.showNotification("error", "Người dùng đã hết tuổi lao động");
+                            }else {
+                                adminView.validate();
+                                if ($("#formUser").valid()) {
+                                    adminView.fillFormDataToCurrentObject();
+                                    sendToServer = {
+                                        _token: _token,
+                                        _action: adminView.action,
+                                        _object: adminView.current,
+                                        _object2: adminView.array_roleId
+                                    };
+                                    $.ajax({
+                                        url: url + 'user/modify',
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: sendToServer
+                                    }).done(function (data, textStatus, jqXHR) {
+                                        if (jqXHR.status == 201) {
+                                            switch (adminView.action) {
+                                                case 'add':
+                                                    adminView.tableAdmin.push(data['tableUserAdd'][0]);
+                                                    adminView.showNotification("success", "Thêm thành công!");
+                                                    break;
+                                                case 'update':
+                                                    var UpdateUserOld = _.find(adminView.tableAdmin, function (o) {
+                                                        return o.id == sendToServer._object.id;
+                                                    });
+                                                    var indexOfUpdateUserOld = _.indexOf(adminView.tableAdmin, UpdateUserOld);
+                                                    adminView.tableAdmin.splice(indexOfUpdateUserOld, 1, data['tableUserUpdate'][0]);
+                                                    adminView.tableSubRow = data['subRoles'][0];
+                                                    adminView.showNotification("success", "Cập nhật thành công!");
+                                                    adminView.hide();
+                                                    break;
+                                                default:
+                                                    break;
 
-                                    }
-                                    adminView.table.clear().rows.add(adminView.tableAdmin).draw();
-                                    adminView.clearInput();
+                                            }
+                                            adminView.table.clear().rows.add(adminView.tableAdmin).draw();
+                                            adminView.clearInput();
+                                        } else {
+                                            adminView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                        }
+
+                                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                                        adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                    });
                                 } else {
-                                    adminView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    $("form#formUser").find("label[class=error]").css("color", "red");
                                 }
-
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                adminView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                            });
-                        } else {
-                            $("form#formUser").find("label[class=error]").css("color", "red");
+                            }
                         }
+                        else {
+                            adminView.showNotification("error", "Người dùng chưa đủ tuổi lao động");
+                        }
+
                     }
                 },
                 resetRolesInDom: function () {
