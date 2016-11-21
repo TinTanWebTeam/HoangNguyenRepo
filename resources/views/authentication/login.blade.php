@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="wrapper">
-    <!-----start-main---->
+    <!--start-main-->
     <div class="main">
         <div class="login-form">
             <h1>Thông tin đăng nhập</h1>
@@ -29,7 +29,7 @@
         </div>
         <!--//End-login-form-->
     </div>
-    <!-----//end-main---->
+    <!--//end-main-->
 </div>
 
 <!-- JQuery -->
