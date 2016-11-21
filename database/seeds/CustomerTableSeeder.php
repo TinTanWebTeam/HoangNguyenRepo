@@ -23,18 +23,19 @@ class CustomerTableSeeder extends Seeder
 
         foreach($array_name as $item){
             Customer::create([
-                'fullName'        => $item,
-                'address'         => '662 Le Quang Dinh',
-                'phone'           => '0987654321',
-                'email'           => 'mycompany@company.com',
-                'note'            => $item,
-                'createdBy'       => 1,
-                'updatedBy'       => 1,
-                'taxCode'         => '0301876168',
-                'customerType_id' => 1,
-                'percentPetroleum'=> 0,
-                'percentFuel'     => 30,
-                'percentFuelChange'=> 15
+                'fullName'                        => $item,
+                'address'                         => '662 Le Quang Dinh',
+                'phone'                           => '0987654321',
+                'email'                           => 'mycompany@company.com',
+                'note'                            => $item,
+                'createdBy'                       => 1,
+                'updatedBy'                       => 1,
+                'taxCode'                         => '0301876168',
+                'customerType_id'                 => 1,
+                'percentOilPerPostage'            => 30,
+                'percentOilLimitToChangePostage'  => 15,
+                'percentLubePerPostage'           => 0,
+                'percentLubeLimitToChangePostage' => 0
             ]);
         }
     }

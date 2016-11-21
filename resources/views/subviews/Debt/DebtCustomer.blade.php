@@ -529,6 +529,7 @@
                 tagsCustomerNameTransport: [], //for search
                 tagsCustomerNameInvoice: [], //for search
                 statusPrePaid: 0,
+                statusInvoice: 0,
 
                 showControl: function (flag) {
                     if (flag == 0) {
@@ -676,16 +677,29 @@
                     });
                 },
                 renderEventCheckbox: function (cb) {
+                    // Thêm mới hóa đơn
                     debtCustomerView.statusPrePaid = (cb.checked) ? 1 : 0;
+                    var statusCheck = cb.checked;
 
                     var totalPay = asNumberFromCurrency("#totalPay");
+                    var debtNotExportInvoice = asNumberFromCurrency("#debtNotExportInvoice");
                     var cashReceive = asNumberFromCurrency("#cashReceive");
                     var vat = parseFloat($("input[id=VAT]").val());
                     var paidAmt = asNumberFromCurrency("#paidAmt");
 
-                    if(debtCustomerView.statusPrePaid === 1){
+                    if(statusCheck) {
+                        // Dùng trả trước
+                        if (totalPay > debtNotExportInvoice - cashReceive) {
+                            showNotification('warning', 'Số tiền trả không được lớn hơn tiền cần thanh toán.');
+                            totalPay = debtNotExportInvoice - cashReceive;
+                        }
                         var totalPayReal = totalPay + cashReceive;
                     } else {
+                        // Không dùng trả trước
+                        if (totalPay > debtNotExportInvoice) {
+                            showNotification('warning', 'Số tiền trả không được lớn hơn tổng tiền đơn hàng.');
+                            totalPay = debtNotExportInvoice;
+                        }
                         var totalPayReal = totalPay;
                     }
 
@@ -702,8 +716,6 @@
                     $("input[id=totalPay-real]").val(totalPayReal);
                     $("input[id=hasVAT]").val(hasVat);
                     $("input[id=debtInvoice]").val(debtInvoice);
-
-                    //Checked ma Xuat HD thuc te > CO the xuat hoa don
                 },
 
                 fillDataToDatatable: function (data) {
@@ -1063,7 +1075,7 @@
                         invoiceDate: $("input[id='invoiceDate']").val(),
                         payDate: $("input[id='payDate']").val(),
                         note: $("textarea[id='note']").val(),
-                        statusPrePaid: debtCustomerView.statusPrePaid,
+                        statusPrePaid: ($("#statusPrePaid").prop("checked")) ? 1 : 0
                     }
                 },
 
@@ -1076,8 +1088,8 @@
                         var dataAfterValidate = debtCustomerView.validateListTransport();
 
                         //
-                        var status = dataAfterValidate['status'];
-                        if(status === 0){
+                        debtCustomerView.status = dataAfterValidate['status'];
+                        if(debtCustomerView.status === 0){
                             //Unvalid
                             $("#modal-notification").find(".modal-title").html("Cảnh báo");
                             $("#modal-notification").find(".modal-body").html(dataAfterValidate['msg']);
@@ -1103,6 +1115,7 @@
                         var _debtInvoice = 0;
                         //
 
+                        $("input[id=invoice_id]").val('');
                         $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
 
                         // remove readonly input
@@ -1120,6 +1133,7 @@
                         debtCustomerView.invoiceCustomerId = invoiceCustomer_id;
 
                         var dataAfterValidate = debtCustomerView.validateInvoice();
+                        debtCustomerView.status = dataAfterValidate['status'];
 
                         //
                         debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
@@ -1179,7 +1193,6 @@
                     var _debtExportInvoice = dataAfterValidate['debtExportInvoice'];
                     var _debtReal = dataAfterValidate['debtReal'];
 
-                    $("input[id=invoice_id]").val('');
                     $("input[id=totalTransport]").val(_totalTransport);
                     $("input[id=cashReceive]").val(_cashReceive);
                     $("input[id=payNeed]").val(_payNeed);
@@ -1896,7 +1909,8 @@
 
                 computeWhenChangeTotalPay: function (totalPay) {
                     var totalPay = convertStringToNumber(totalPay);
-                    var debtReal = asNumberFromCurrency("#debt-real");
+                    var statusCheck = $("#statusPrePaid").prop('checked');
+                    var debtNotExportInvoice = asNumberFromCurrency("#debtNotExportInvoice");
                     var totalTransport = asNumberFromCurrency("#totalTransport");
                     var cashReceive = asNumberFromCurrency("#cashReceive");
                     var paidAmt = asNumberFromCurrency("#paidAmt");
@@ -1904,39 +1918,49 @@
                     var invoice_id = $('#invoice_id').val();
 
                     if(invoice_id == ''){
-                        if(debtCustomerView.statusPrePaid === 1) {
-                            if (totalPay > debtReal) {
+                        // Tạo mới hóa đơn
+                        if(statusCheck) {
+                            // Dùng trả trước
+                            if (totalPay > debtNotExportInvoice - cashReceive) {
                                 showNotification('warning', 'Số tiền trả không được lớn hơn tiền cần thanh toán.');
-                                totalPay = debtReal;
-                                var totalPayReal = totalTransport;
-                            } else {
-                                var totalPayReal = totalPay + cashReceive;
+                                totalPay = debtNotExportInvoice - cashReceive;
                             }
+                            var totalPayReal = totalPay + cashReceive;
                         } else {
-                            if (totalPay > totalTransport) {
+                            // Không dùng trả trước
+                            if (totalPay > debtNotExportInvoice) {
                                 showNotification('warning', 'Số tiền trả không được lớn hơn tổng tiền đơn hàng.');
-                                totalPay = totalTransport;
+                                totalPay = debtNotExportInvoice;
                             }
                             var totalPayReal = totalPay;
                         }
                     } else {
+                        // Xem chi tiết hóa đơn
                         var invoiceCustomer = _.find(debtCustomerView.dataInvoiceCustomer, function(o){
                             return o.id == invoice_id;
                         });
-                        var compare = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'];
-                        if(invoiceCustomer['statusPrePaid'] == 1){
-                            compare -= invoiceCustomer['prePaid'];
+                        var ConNo = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'];
+
+                        if(statusCheck) {
+                            // Dùng trả trước
+                            if (totalPay > ConNo - cashReceive) {
+                                showNotification('warning', 'Số tiền trả không được lớn hơn tiền cần thanh toán.');
+                                totalPay = ConNo - cashReceive;
+                            }
+                            var totalPayReal = totalPay + cashReceive;
+                        } else {
+                            // Không dùng trả trước
+                            if (totalPay > ConNo) {
+                                showNotification('warning', 'Số tiền trả không được lớn hơn tổng tiền đơn hàng.');
+                                totalPay = ConNo;
+                            }
+                            var totalPayReal = totalPay;
                         }
-                        if (totalPay > compare) {
-                            showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
-                            totalPay = compare;
-                        }
-                        var totalPayReal = totalPay;
                     }
 
-
                     var hasVat = totalPayReal + (totalPayReal * vat / 100);
-                    if(debtCustomerView.statusPrePaid === 1) {
+
+                    if(statusCheck) {
                         var debtInvoice = hasVat - paidAmt - cashReceive;
                     } else {
                         var debtInvoice = hasVat - paidAmt;
@@ -1959,6 +1983,7 @@
                     var cashReceive = asNumberFromCurrency("#cashReceive");
 
                     var hasVat = totalPayReal + (totalPayReal * vat / 100);
+
                     if(debtCustomerView.statusPrePaid === 1) {
                         var debtInvoice = hasVat - paidAmt - cashReceive;
                     } else {
