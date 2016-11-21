@@ -26,41 +26,41 @@ class UserTableSeeder extends Seeder
         	'password' => encrypt('123456',Config::get('app.key')),
             'position_id' => 0
         ]);
-        User::create([
-            'username' => 'nguyenthibich',
-            'fullname' => 'Nguyễn Thị Bích',
-            'address' => 'Le Quang Dinh',
-            'phone' => '09876542',
-            'email' => 'ntbich@hoangnguyen.com',
-            'password' => encrypt('123456',Config::get('app.key')),
-            'position_id' => 1
-        ]);
-        User::create([
-            'username' => 'nguyenvanhai',
-            'fullname' => 'Nguyễn Văn Hải',
-            'address' => 'Nguyen Trai',
-            'phone' => '02312566',
-            'email' => 'nvhai@hoangnguyen.com',
-            'password' => encrypt('123456',Config::get('app.key')),
-            'position_id' => 2
-        ]);
-        User::create([
-            'username' => 'nguyenvannam',
-            'fullname' => 'Nguyễn Văn Nam',
-            'address' => 'Nguyen Binh Khiem',
-            'phone' => '2312324',
-            'email' => 'nvnam@hoangnguyen.com',
-            'password' => encrypt('123456',Config::get('app.key')),
-            'position_id' => 3
-        ]);
-        User::create([
-            'username' => 'nguyenvanvu',
-            'fullname' => 'Nguyễn Văn Vũ',
-            'address' => 'Bui Xuan Soan',
-            'phone' => '09837744',
-            'email' => 'nvvu@hoangnguyen.com',
-            'password' => encrypt('123456',Config::get('app.key')),
-            'position_id' => 4
-        ]);
+//        User::create([
+//            'username' => 'nguyenthibich',
+//            'fullname' => 'Nguyễn Thị Bích',
+//            'address' => 'Le Quang Dinh',
+//            'phone' => '09876542',
+//            'email' => 'ntbich@hoangnguyen.com',
+//            'password' => encrypt('123456',Config::get('app.key')),
+//            'position_id' => 1
+//        ]);
+//        User::create([
+//            'username' => 'nguyenvanhai',
+//            'fullname' => 'Nguyễn Văn Hải',
+//            'address' => 'Nguyen Trai',
+//            'phone' => '02312566',
+//            'email' => 'nvhai@hoangnguyen.com',
+//            'password' => encrypt('123456',Config::get('app.key')),
+//            'position_id' => 2
+//        ]);
+//        User::create([
+//            'username' => 'nguyenvannam',
+//            'fullname' => 'Nguyễn Văn Nam',
+//            'address' => 'Nguyen Binh Khiem',
+//            'phone' => '2312324',
+//            'email' => 'nvnam@hoangnguyen.com',
+//            'password' => encrypt('123456',Config::get('app.key')),
+//            'position_id' => 3
+//        ]);
+//        User::create([
+//            'username' => 'nguyenvanvu',
+//            'fullname' => 'Nguyễn Văn Vũ',
+//            'address' => 'Bui Xuan Soan',
+//            'phone' => '09837744',
+//            'email' => 'nvvu@hoangnguyen.com',
+//            'password' => encrypt('123456',Config::get('app.key')),
+//            'position_id' => 4
+//        ]);
     }
 }
