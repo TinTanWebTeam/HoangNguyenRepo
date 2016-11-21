@@ -24,6 +24,9 @@
             height: 80vh;
         }
     }
+    .ui-autocomplete {
+        z-index: 1510 !important;
+    }
 </style>
 
 <!-- Begin Table Transport -->
@@ -226,8 +229,9 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input">
                                             <label for="cashReceive" class="red"><b>Nhận</b></label>
-                                            <input type="text" class="form-control currency" id="cashReceive" name="cashReceive"
-                                                onkeyup="transportView.computeWhenCashReceiveChange(this.value)">
+                                            <input type="text" class="form-control currency" id="cashReceive"
+                                                   name="cashReceive"
+                                                   onkeyup="transportView.computeWhenCashReceiveChange(this.value)">
                                         </div>
                                     </div>
                                 </div>
@@ -603,22 +607,21 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
-                                    <label for="description"><b>Mô tả</b></label>
-                                    <textarea name="description" id="description" cols="10" rows="3"
-                                              class="form-control"></textarea>
+                                    <label for="productType_id"><b>Loại hàng</b></label>
+                                    <input name="productType_id" data-id="" id="productType_id" class="form-control">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
-                                    <label for="productType_id"><b>Loại hàng</b></label>
-                                    <select name="productType_id" id="productType_id" class="form-control">
-
-                                    </select>
+                                    <label for="description"><b>Mô tả</b></label>
+                                    <textarea name="description" id="description" cols="10" rows="3"
+                                              class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -684,7 +687,6 @@
                 dataStatus: null,
                 dataCostPrice: null,
                 dataProductType: null,
-
                 arrayVoucher: [],
                 current: null,
                 action: null,
@@ -692,6 +694,7 @@
                 tagsProductName: [],
                 tagsCustomerName: [],
                 tagsVehicleName: [],
+                tagsProductType: [],
                 transportType: 0,
 
                 showControl: function () {
@@ -801,8 +804,9 @@
                             return o.name == productName;
                         });
                         if (typeof product === "undefined") {
-                            transportView.loadSelectBox(transportView.dataProductType, 'productType_id', 'name');
+//                            transportView.loadSelectBox(transportView.dataProductType, 'productType_id', 'name');
                             transportView.displayModal("show", "#modal-addProduct");
+                            transportView.loadListProductType();
                             $("input[id=productName]").val(productName);
                         } else {
                             $("#product_name").attr("data-productId", product.id);
@@ -868,7 +872,6 @@
                         if (jqXHR.status == 200) {
                             transportView.dataTransport = data['transports'];
                             transportView.fillDataToDatatable(transportView.dataTransport);
-
                             transportView.dataVoucherTransport = data['voucherTransports'];
                             transportView.dataVoucher = data['vouchers'];
                             transportView.dataStatus = data['statuses'];
@@ -886,7 +889,7 @@
                     transportView.renderScrollbar();
                     transportView.renderEventTableModal();
                     transportView.renderEventFocusOut();
-                    transportView.loadListProductType();
+
                     transportView.loadListProduct();
                     transportView.loadListCustomer();
                     transportView.loadListVehicle();
@@ -960,21 +963,7 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                loadListProductType: function () {
-                    $.ajax({
-                        url: url + 'product-type/product-types',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            transportView.dataProductType = data['productTypes'];
-                        } else {
-                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                },
+
                 loadListVoucher: function () {
                     $.ajax({
                         url: url + 'voucher/vouchers',
@@ -1507,8 +1496,6 @@
                             _transport: transportView.current
                         };
                     }
-                    console.log("CLIENT");
-                    console.log(sendToServer._transport);
                     $.ajax({
                         url: url + 'transport/modify',
                         type: "POST",
@@ -1614,13 +1601,33 @@
                         $("form#frmVoucher").find("label[class=error]").css("color", "red");
                     }
                 },
+                loadListProductType: function () {
+                    $.ajax({
+                        url: url + 'product-type/product-types',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            transportView.dataProductType = data['productTypes'];
+                            transportView.tagsProductType = _.map(transportView.dataProductType, "name");
+                            transportView.tagsProductType = _.union(transportView.tagsProductType);
+                            renderAutoCompleteSearch("#productType_id", transportView.tagsProductType);
+                        } else {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+
                 saveProduct: function () {
                     transportView.validateProduct();
                     if ($("#frmProduct").valid()) {
                         var product = {
                             name: $("input[id='productName']").val(),
                             description: $("textarea[id='description']").val(),
-                            productType_id: $("select[id='productType_id']").val()
+                            productType_id: $("#productType_id").attr('data-id'),
+                            productType: $("input[id='productType_id']").val()
                         };
                         var sendToServer = {
                             _token: _token,
