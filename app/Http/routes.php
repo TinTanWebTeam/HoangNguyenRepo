@@ -149,6 +149,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/postage/postages', 'PostageManagementController@getDataPostage');
 
         Route::post('/postage/modify', 'PostageManagementController@postModifyPostage');
+        Route::post('/postage/update-apply-date', 'PostageManagementController@postUpdateApplyDate');
         Route::get('/postage/customers', 'PostageManagementController@getDataCustomer');
     });
     //QL giá nhiên liệu
