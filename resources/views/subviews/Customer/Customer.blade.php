@@ -380,7 +380,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12" style="padding: 0">
                                 <span class="text text-primary">Nhân viên khách hàng</span>
                                 <div class="table-responsive">
                                     <table style="width: 100%" class="table table-bordered table-hover"
