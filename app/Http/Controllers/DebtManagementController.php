@@ -438,8 +438,8 @@ class DebtManagementController extends Controller
         //======================================================================
         // KIỂM TRA XEM HÓA ĐƠN NÀY ĐÃ DÙNG TRẢ TRƯỚC HAY CHƯA
         //======================================================================
-        $invoice = InvoiceCustomer::find($invoiceId);
-        $statusPrePaid = $invoice->pluck('statusPrePaid')->first();
+        $invoice = InvoiceCustomer::findOrFail($invoiceId);
+        $statusPrePaid = $invoice->statusPrePaid;
 
         //======================================================================
         // TÍNH CÁC THAM SỐ ĐỂ TRUYỀN SANG VIEW
@@ -465,24 +465,24 @@ class DebtManagementController extends Controller
          * */
 
         # invoiceCode
-        $invoiceCode = $invoice->pluck('invoiceCode')->first();
+        $invoiceCode = $invoice->invoiceCode;
 
         # totalPay
-        $totalPay = $invoice->pluck('totalPay')->first();
+        $totalPay = $invoice->totalPay;
         $totalPayReal = $totalPay;
         if($statusPrePaid == 1)
-            $totalPayReal += $invoice->pluck('prePaid')->first();
+            $totalPayReal += $invoice->prePaid;
 
         # vat
-        $vat = $invoice->pluck('VAT')->first();
+        $vat = $invoice->VAT;
 
         # hasVat
-        $hasVat = $invoice->pluck('hasVAT')->first();
+        $hasVat = $invoice->hasVAT;
 
         # debtInvoice
-        $debtInvoice = $invoice->pluck('hasVAT')->first() - $invoice->pluck('totalPaid')->first();
+        $debtInvoice = $invoice->hasVAT - $invoice->totalPaid;
         if($statusPrePaid == 1)
-            $debtInvoice -= $invoice->pluck('prePaid')->first();
+            $debtInvoice -= $invoice->prePaid;
 
         # totalTransport
         $collectTransport = Transport::whereIn('id', $array_TransportId)->get();
@@ -884,10 +884,13 @@ class DebtManagementController extends Controller
                     ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
                     ->first();
 
+                $arrayInput = $this->ValidateInvoiceCustomer($invoiceCustomer_id);
+
                 $response = [
                     'msg'                   => 'Delete InvoiceCustomer successful!',
                     'invoiceCustomer'       => $invoiceCustomer,
-                    'invoiceCustomerDetail' => $invoiceCustomerDetailId
+                    'invoiceCustomerDetail' => $invoiceCustomerDetailId,
+                    'arrayInput'            => $arrayInput
                 ];
             } else {
 

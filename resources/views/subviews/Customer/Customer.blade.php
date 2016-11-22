@@ -192,7 +192,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuel"><b>Phần trăm nhiên liệu</b></label>
+                                                    <label for="percentFuel"><b>Phí nhiên liệu/cước phí (%)</b></label>
                                                     <input type="number" id="percentFuel" name="percentFuel"
                                                            class="form-control">
                                                 </div>
@@ -201,7 +201,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelChange"><b>Phần trăm nhiên liệu thay đổi</b></label>
+                                                    <label for="percentFuelChange"><b>Cước phí tăng khi nhiên liệu tăng (%)</b></label>
                                                     <input type="number" id="percentFuelChange" name="percentFuelChange"
                                                            class="form-control">
                                                 </div>
@@ -884,8 +884,8 @@
                     $("input[id='addressEdit']").val(customerView.current["address"]);
                     $("input[id='phoneEdit']").val(customerView.current["phone"]);
                     $("input[id='emailEdit']").val(customerView.current["email"]);
-                    $("input[id='percentFuelEdit']").val(customerView.current["percentFuel"]);
-                    $("input[id='percentFuelChangeEdit']").val(customerView.current["percentFuelChange"]);
+                    $("input[id='percentFuelEdit']").val(customerView.current["percentOilPerPostage"]);
+                    $("input[id='percentFuelChangeEdit']").val(customerView.current["percentOilLimitToChangePostage"]);
                     $("textarea[id='noteEdit']").val(customerView.current["note"]);
                     $("select[id='customerType']").val(customerView.current["customerType_id"]);
 
@@ -1212,7 +1212,7 @@
                                             customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
                                             showNotification("success", "Cập nhật thành công!");
                                             customerView.hideControl();
-                                           customerView.clearInput();
+                                            customerView.clearInput();
                                             break;
                                         case 'delete':
                                             var customerOld = _.find(customerView.tableCustomer, function (o) {
