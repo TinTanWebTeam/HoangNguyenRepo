@@ -111,6 +111,7 @@
 
             <div class="panel-body portlet-body">
                 <form id="frmDriver">
+                    <input id="driverId" style="display: none">
                     <div class="col-md-12">
                         <div class="row" id='datetimepicker'>
                             <div class="row ">
@@ -240,8 +241,15 @@
                         driverView.clearInput();
                         driverView.renderDateTimePicker();
                     } else {
+                        var driverId = $('input[id=driverId]').val();
+                        var driver = _.find(driverView.dataDrivers,function (o) {
+                            return o.id == driverId;
+                        });
+                        if(typeof driver === 'undefined'){
+                            return;
+                        }
+                        driverView.current = driver;
                         driverView.fillCurrentObjectToForm();
-
                     }
                 },
                 showControl: function () {
@@ -479,6 +487,7 @@
                     $("textarea[id='note']").val(driverView.current["note"]);
                 },
                 editDriver: function (id) {
+                    $('input[id=driverId]').val(id);
                     $("#divControl").find(".titleControl").html("Cập nhật tài xế");
                     driverView.current = _.clone(_.find(driverView.dataDrivers, function (o) {
                         return o.id == id;
@@ -548,7 +557,7 @@
                     else {
                         driverView.validateDriver();
                         if ($("#frmDriver").valid()) {
-                            driverView.fillFormDataToCurrentObject();
+                        driverView.fillFormDataToCurrentObject();
                             if (driverView.current.id == null) {
                                 var existCMND = _.find(driverView.dataDrivers, function (o) {
                                     return o.governmentId == $("input[id=governmentId]").val();
@@ -561,6 +570,7 @@
                             if (typeof existCMND !== "undefined") {
                                 showNotification("error", "CMND đã tồn tại!");
                             } else {
+
                                 sendToServer = {
                                     _token: _token,
                                     _action: driverView.action,
