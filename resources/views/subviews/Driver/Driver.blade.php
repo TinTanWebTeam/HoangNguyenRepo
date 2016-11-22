@@ -24,6 +24,7 @@
     #divControl .panel-body {
         height: 430px;
     }
+
 </style>
 {{--start Modal delete Driver--}}
 <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
