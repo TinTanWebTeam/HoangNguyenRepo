@@ -592,7 +592,9 @@ class CustomerManagementController extends Controller
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'statuses_tran.status as status_transport_',
                 'statuses_cust.status as status_customer_',
-                'statuses_gar.status as status_garage_'
+                'statuses_gar.status as status_garage_',
+                'users_createdBy.fullName as users_createdBy',
+                'users_updatedBy.fullName as users_updatedBy'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -600,7 +602,9 @@ class CustomerManagementController extends Controller
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-            ->orderBy('receiveDate', 'desc')
+            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
+//            ->orderBy('receiveDate', 'desc')
             ->get();
 
         $voucherTransports = VoucherTransport::all();
@@ -758,7 +762,9 @@ class CustomerManagementController extends Controller
                             'vehicles.vehicleNumber as vehicles_vehicleNumber',
                             'statuses_tran.status as status_transport_',
                             'statuses_cust.status as status_customer_',
-                            'statuses_gar.status as status_garage_'
+                            'statuses_gar.status as status_garage_',
+                            'users_createdBy.fullName as users_createdBy',
+                            'users_updatedBy.fullName as users_updatedBy'
                         )
                         ->leftJoin('products', 'products.id', '=', 'transports.product_id')
                         ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -766,6 +772,8 @@ class CustomerManagementController extends Controller
                         ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                         ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
                         ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                        ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                        ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                         ->where('transports.id', '=', $transportNew->id)
                         ->first();
 
@@ -879,7 +887,9 @@ class CustomerManagementController extends Controller
                             'vehicles.vehicleNumber as vehicles_vehicleNumber',
                             'statuses_tran.status as status_transport_',
                             'statuses_cust.status as status_customer_',
-                            'statuses_gar.status as status_garage_'
+                            'statuses_gar.status as status_garage_',
+                            'users_createdBy.fullName as users_createdBy',
+                            'users_updatedBy.fullName as users_updatedBy'
                         )
                         ->leftJoin('products', 'products.id', '=', 'transports.product_id')
                         ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -887,6 +897,8 @@ class CustomerManagementController extends Controller
                         ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                         ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
                         ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                        ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                        ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                         ->where('transports.id', '=', $transportUpdate->id)
                         ->first();
 

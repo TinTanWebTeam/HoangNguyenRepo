@@ -48,7 +48,9 @@ class DebtManagementController extends Controller
                 'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                 'statuses_tran.status as status_transport_',
                 'statuses_cust.status as status_customer_',
-                'statuses_gar.status as status_garage_'
+                'statuses_gar.status as status_garage_',
+                'users_createdBy.fullName as users_createdBy',
+                'users_updatedBy.fullName as users_updatedBy'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -59,14 +61,22 @@ class DebtManagementController extends Controller
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where('transports.active', 1)
             ->get();
 
         $invoiceCustomers = DB::table('invoiceCustomers')
-            ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
+            ->select('invoiceCustomers.*',
+                'customers.fullName as customers_fullName',
+                'users_createdBy.fullName as users_createdBy',
+                'users_updatedBy.fullName as users_updatedBy'
+            )
             ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
             ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where('invoiceCustomers.active', 1)
             ->get();
 
@@ -119,7 +129,9 @@ class DebtManagementController extends Controller
                         'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                         'statuses_tran.status as status_transport_',
                         'statuses_cust.status as status_customer_',
-                        'statuses_gar.status as status_garage_'
+                        'statuses_gar.status as status_garage_',
+                        'users_createdBy.fullName as users_createdBy',
+                        'users_updatedBy.fullName as users_updatedBy'
                     )
                     ->leftJoin('products', 'products.id', '=', 'transports.product_id')
                     ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -130,6 +142,8 @@ class DebtManagementController extends Controller
                     ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                     ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
                     ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                     ->where([
                         ['transports.active', '=', 1],
                         ['transports.id', '=', $transportUpdate->id]
@@ -690,11 +704,17 @@ class DebtManagementController extends Controller
                     ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
                     ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                     ->where([
                         ['invoiceCustomers.id', '=', $invoiceCustomer->id],
                         ['invoiceCustomers.active', '=', 1]
                     ])
-                    ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
+                    ->select('invoiceCustomers.*',
+                        'customers.fullName as customers_fullName',
+                        'users_createdBy.fullName as users_createdBy',
+                        'users_updatedBy.fullName as users_updatedBy'
+                    )
                     ->first();
 
                 $response = [
@@ -751,11 +771,17 @@ class DebtManagementController extends Controller
                     ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
                     ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                     ->where([
                         ['invoiceCustomers.id', '=', $invoiceCustomer->id],
                         ['invoiceCustomers.active', '=', 1]
                     ])
-                    ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
+                    ->select('invoiceCustomers.*',
+                        'customers.fullName as customers_fullName',
+                        'users_createdBy.fullName as users_createdBy',
+                        'users_updatedBy.fullName as users_updatedBy'
+                    )
                     ->first();
 
                 $arrayInput = $this->ValidateInvoiceCustomer($invoiceId);
@@ -877,11 +903,17 @@ class DebtManagementController extends Controller
                     ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
                     ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                     ->where([
                         ['invoiceCustomers.active', '=', 1],
                         ['invoiceCustomers.id', '=', $invoiceCustomer->id]
                     ])
-                    ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
+                    ->select('invoiceCustomers.*',
+                        'customers.fullName as customers_fullName',
+                        'users_createdBy.fullName as users_createdBy',
+                        'users_updatedBy.fullName as users_updatedBy'
+                    )
                     ->first();
 
                 $arrayInput = $this->ValidateInvoiceCustomer($invoiceCustomer_id);
@@ -952,7 +984,9 @@ class DebtManagementController extends Controller
                 'costs.cost', 'costs.note as costs_note',
                 'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                 'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
-                'statuses_gar.status as status_garage_'
+                'statuses_gar.status as status_garage_',
+                'users_createdBy.fullName as users_createdBy',
+                'users_updatedBy.fullName as users_updatedBy'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -964,6 +998,8 @@ class DebtManagementController extends Controller
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where([
                 ['transports.active', '=', 1],
                 ['transports.product_id', '<>', 0],
@@ -973,11 +1009,17 @@ class DebtManagementController extends Controller
             ->get();
 
         $invoiceGarages = DB::table('invoiceGarages')
-            ->select('invoiceGarages.*', 'garages.name as garages_name')
+            ->select('invoiceGarages.*',
+                'garages.name as garages_name',
+                'users_createdBy.fullName as users_createdBy',
+                'users_updatedBy.fullName as users_updatedBy'
+            )
             ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
             ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
             ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
             ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
+            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where([
                 ['invoiceGarages.active', 1],
                 ['transports.active', '=', 1],
@@ -1036,7 +1078,9 @@ class DebtManagementController extends Controller
                     'costs.cost', 'costs.note as costs_note',
                     'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
                     'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
-                    'statuses_gar.status as status_garage_'
+                    'statuses_gar.status as status_garage_',
+                    'users_createdBy.fullName as users_createdBy',
+                    'users_updatedBy.fullName as users_updatedBy'
                 )
                 ->leftJoin('products', 'products.id', '=', 'transports.product_id')
                 ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -1048,6 +1092,8 @@ class DebtManagementController extends Controller
                 ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
                 ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
                 ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+                ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                 ->where([
                     ['transports.active', '=', 1],
                     ['transports.product_id', '<>', 0],
@@ -1263,11 +1309,17 @@ class DebtManagementController extends Controller
                 DB::commit();
 
                 $invoiceGarage = DB::table('invoiceGarages')
-                    ->select('invoiceGarages.*', 'garages.name as garages_name')
+                    ->select('invoiceGarages.*',
+                        'garages.name as garages_name',
+                        'users_createdBy.fullName as users_createdBy',
+                        'users_updatedBy.fullName as users_updatedBy'
+                    )
                     ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
                     ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
                     ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
+                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                     ->where([
                         ['invoiceGarages.active', '=', 1],
                         ['invoiceGarages.id', '=', $invoiceGarage->id],
@@ -1336,11 +1388,17 @@ class DebtManagementController extends Controller
                 DB::commit();
 
                 $invoiceGarage = DB::table('invoiceGarages')
-                    ->select('invoiceGarages.*', 'garages.name as garages_name')
+                    ->select('invoiceGarages.*',
+                        'garages.name as garages_name',
+                        'users_createdBy.fullName as users_createdBy',
+                        'users_updatedBy.fullName as users_updatedBy'
+                    )
                     ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
                     ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
                     ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
+                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                     ->where([
                         ['invoiceGarages.active', '=', 1],
                         ['invoiceGarages.id', '=', $invoiceGarage->id],
@@ -1463,11 +1521,17 @@ class DebtManagementController extends Controller
 
                 //Response
                 $invoiceGarage = DB::table('invoiceGarages')
-                    ->select('invoiceGarages.*', 'garages.name as garages_name')
+                    ->select('invoiceGarages.*',
+                        'garages.name as garages_name',
+                        'users_createdBy.fullName as users_createdBy',
+                        'users_updatedBy.fullName as users_updatedBy'
+                    )
                     ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
                     ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
                     ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
                     ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
+                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
                     ->where([
                         ['invoiceGarages.active', '=', 1],
                         ['invoiceGarages.id', '=', $invoiceGarage->id],

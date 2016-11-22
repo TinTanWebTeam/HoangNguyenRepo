@@ -126,6 +126,8 @@
                                         <th>Giao xe</th>
                                         <th>Nợ</th>
                                         <th>Người nhận</th>
+                                        <th>Người tạo</th>
+                                        <th>Người sửa</th>
                                         <th>Ngày nhận</th>
                                         <th>Thanh toán</th>
                                     </tr>
@@ -188,6 +190,8 @@
                                         <th>Trả trước</th>
                                         <th>Trả trên HĐ</th>
                                         <th>Nợ</th>
+                                        <th>Người tạo</th>
+                                        <th>Người sửa</th>
                                         <th>Chi tiết</th>
                                     </tr>
                                     </thead>
@@ -625,6 +629,8 @@
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {data: 'receiver'},
+                            {data: 'users_createdBy'},
+                            {data: 'users_updatedBy'},
                             {
                                 data: 'receiveDate',
                                 render: function (data, type, full, meta) {
@@ -736,6 +742,8 @@
                             {data: 'prePaid', render: $.fn.dataTable.render.number(",", ".", 0)},
                             {data: 'totalPaid', render: $.fn.dataTable.render.number(",", ".", 0)},
                             {data: 'debt', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'users_createdBy'},
+                            {data: 'users_updatedBy'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';

@@ -98,6 +98,8 @@
                                         <th>Công an</th>
                                         <th>Lợi nhuận</th>
                                         <th>Người nhận</th>
+                                        <th>Người tạo</th>
+                                        <th>Người sửa</th>
                                         <th>Tên hàng</th>
                                         <th>Trạng thái</th>
                                         <th>Sửa/ Xóa</th>
@@ -1125,6 +1127,8 @@
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {data: 'receiver'},
+                            {data: 'users_createdBy'},
+                            {data: 'users_updatedBy'},
                             {data: 'products_name'},
                             {
                                 render: function (data, type, full, meta) {
