@@ -332,7 +332,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelEdit"><b>Phần trăm nhiên liệu</b></label>
+                                                    <label for="percentFuelEdit"><b>Phí nhiên liệu/cước phí (%)</b></label>
                                                     <input type="number" id="percentFuelEdit" name="percentFuel"
                                                            class="form-control">
                                                 </div>
@@ -341,8 +341,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelChangeEdit"><b>Phần trăm nhiên liệu thay
-                                                            đổi</b></label>
+                                                    <label for="percentFuelChangeEdit"><b>Cước phí tăng khi nhiên liệu tăng (%)</b></label>
                                                     <input type="number" id="percentFuelChangeEdit"
                                                            name="percentFuelChange"
                                                            class="form-control">

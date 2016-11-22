@@ -759,9 +759,9 @@
                     var dateOnlyDatepair = new Datepair(dateOnlySearchEl);
 
                     $('#receiveDate').datepicker({
-                        "setDate": new Date(),
-                        'format': 'dd-mm-yyyy',
-                        'autoclose': true
+                        setDate: new Date(),
+                        format: 'dd-mm-yyyy',
+                        autoclose: true
                     });
 
                     $('#receiveDate').datepicker("setDate", new Date());
@@ -857,6 +857,7 @@
                     });
                     $("#receiveDate").focusout(function () {
                         transportView.postDataPostageOfCustomer();
+                        console.log("Focus Out");
                     });
                 },
                 renderEventCheckbox: function (cb) {
