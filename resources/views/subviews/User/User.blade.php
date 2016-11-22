@@ -543,8 +543,8 @@
                             pwd = data['password'];
                             userView.fillRolesToDom(roles_array);
                             userView.fillCurrentObjectToForm();
-                            $("input[id=password]").val(pwd);
-                            $("input[id=password_confirmation]").val(pwd);
+                            $("input[id=password]").val(pwd).prop("readOnly", true);
+                            $("input[id=password_confirmation]").val(pwd).prop("readOnly", true);
                             $("input[id=username]").prop("readOnly", true);
                             $("#divControl").find(".titleControl").html("Cập nhật tài khoản");
                             userView.action = 'update';
@@ -653,7 +653,6 @@
                             break;
                     }
                 },
-
                 createUser: function () {
                     $("#modalRestoreUser").modal('hide');
                     $('input[id=username]').val('');
@@ -698,7 +697,6 @@
                         userView.action = null;
                         userView.idDelete = null;
                     }
-
 
                 },
                 save: function () {
