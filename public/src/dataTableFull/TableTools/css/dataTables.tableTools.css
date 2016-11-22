@@ -27,6 +27,7 @@
  * TableTools container element and styles applying to all components
  */
 div.DTTT_container {
+	margin-left: 25px;
 	position: relative;
 	float: right;
 	margin-bottom: 1em;

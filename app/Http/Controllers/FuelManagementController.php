@@ -54,10 +54,10 @@ class FuelManagementController extends Controller
         $oilPrice->type = 'oil';
         try{
             /* Select Max Oil Apply Date */
-            $currentOilPrice = Fuel::whereRaw('applyDate = (select max(`applyDate`) from fuels)')->get()->first();
+            $currentOilPrice = Fuel::whereRaw('applyDate = (select max(`applyDate`) from fuels where `type` = \'oil\')')->first();
             $currentApplyDate = \Carbon\Carbon::createFromFormat('Y-m-d',$currentOilPrice->applyDate);
-            if($oilPrice->applyDate->diffInDays($currentApplyDate) == 0){
-                return response()->json([],500); 
+            if($oilPrice->applyDate->diffInDays($currentApplyDate,false) >= 0){
+                return response()->json(['Error' => 'Vui lòng chọn này áp dụng giá dầu phù hợp!'],500); 
             }
             DB::beginTransaction();
             if($oilPrice->save()){
@@ -76,10 +76,11 @@ class FuelManagementController extends Controller
                             $postageNew = new Postage();
                             if($changePercent < 0){
                                 $postageNew->postage = $postageReference->postage*(1 - abs($changePercent)*$customer->percentFuel/10000);
-                                 $postageNew->note = "Giảm cước phí vận chuyển và giao xe do giá dầu giảm từ ".number_format($currentOilPrice->price)." xuống ".number_format($oilPrice->price);
+                                $postageNew->note = "Giảm cước phí vận chuyển và giao xe do giá dầu giảm từ ".number_format($currentOilPrice->price)." xuống ".number_format($oilPrice->price);
                             }else{
                                 $postageNew->postage = $postageReference->postage*(1 + abs($changePercent)*$customer->percentFuel/10000);
-                                 $postageNew->note = "Tăng cước vận chuyển và giao xe do giá dầu tăng từ ".number_format($currentOilPrice->price)." lên ".number_format($oilPrice->price);
+                                
+                                $postageNew->note = "Tăng cước vận chuyển và giao xe do giá dầu tăng từ ".number_format($currentOilPrice->price)." lên ".number_format($oilPrice->price);
                             }
                             $postageNew->postageBase = $postageReference->postageBase;
                             $postageNew->createdDate = date('Y-m-d');
@@ -98,7 +99,7 @@ class FuelManagementController extends Controller
                     DB::commit();  
                 }catch(Exception $ex){
                     DB::rollBack();
-                    return response()->json([],500);
+                    return response()->json(['Error' => $ex],500);
                 }
                 /* Find Customer Match Percent Of OilChange */
                 $result = Fuel::where('type','oil')
@@ -117,10 +118,10 @@ class FuelManagementController extends Controller
                     ->get();
                 return response()->json($result->first(),201);
             }else{
-                return response()->json([],500);
+                return response()->json(['Error' => 'Có lỗi trong quá trình lưu vui lòng xem lại dữ liệu!'],500);
             }
         }catch (Exception $ex){
-            return response()->json([],500);
+            return response()->json(['Error'=>$ex],500);
         }
     }
 
@@ -151,13 +152,13 @@ class FuelManagementController extends Controller
                         ->get();
                     return response()->json($result->first(),201);
                 }else{
-                    return response()->json(500);
+                    return response()->json(['Error'=>'Có lỗi trong quá trình lưu vui lòng xe lại dữ liệu!'],500);
                 }
             }catch (Exception $ex){
-                return response()->json(500);
+                return response()->json(['Error'=>$ex],500);
             }
         }
-        return response()->json(500);
+        return response()->json(['Error'=>'Có lỗi trong quá trình lưu vui lòng xe lại dữ liệu!'],500);
     }
 
     /*--------------------------------------------------------------------------------*/
@@ -217,10 +218,10 @@ class FuelManagementController extends Controller
                     ->get();
                 return response()->json($result->first(),201);
             }else{
-                return response()->json([],500);
+                return response()->json(['Error'=>'Có lỗi trong quá trình lưu vui lòng xe lại dữ liệu!'],500);
             }
         }catch (Exception $ex){
-            return response()->json([],500);
+            return response()->json(['Error'=>$ex],500);
         }
     }
     
@@ -251,12 +252,12 @@ class FuelManagementController extends Controller
                         ->get();
                     return response()->json($result->first(),201);
                 }else{
-                    return response()->json(500);
+                    return response()->json(['Error'=>'Có lỗi trong quá trình lưu vui lòng xe lại dữ liệu!'],500);
                 }
             }catch (Exception $ex){
-                return response()->json(500);
+                return response()->json(['Error'=>$ex],500);
             }
         }
-        return response()->json(500);
+        return response()->json(['Error'=>'Có lỗi trong quá trình lưu vui lòng xe lại dữ liệu!'],500);
     }
 }

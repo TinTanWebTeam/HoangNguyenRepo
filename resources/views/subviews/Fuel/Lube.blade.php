@@ -233,7 +233,9 @@
                                         lubePriceView.clearValidation();
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
-
+                                    console.log(jqXHR);
+                                    console.log(textStatus);
+                                    console.log(errorThrown); 
                                 }).always(function () {
                                     lubePriceView.hideFormControl();
                                 });
@@ -305,9 +307,11 @@
                                     data: "updatedBy"
                                 },
                                 {
-                                    data: "note",  visible: false
+                                    data: "note",  
+                                    visible: false,
                                 },
-                                {  visible: false,
+                                {  
+                                    // visible: false,
                                     render: function (data, type, full, meta) {
                                         var tr = '';
                                         tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
@@ -342,7 +346,7 @@
                                 {
                                     extend: "pdfHtml5",
                                     text: "Xuất PDF",
-                                    message: "Thống Kê Xe Từ Ngày ... Đến Ngày",
+                                    message: "Bảng giá nhớt",
                                     customize: function (doc) {
                                         doc.content.splice(0, 1);
                                         doc.styles.tableBodyEven.alignment = 'center';
