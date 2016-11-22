@@ -1341,11 +1341,11 @@
                     debtCustomerView.displayModal('show', '#modal-notification');
                 },
                 deleteInvoiceCustomerDetail: function (invoiceCustomerDetail_id, flag) {
-                    action = 'delete1';
+                    var action = 'delete1';
                     if (typeof flag !== 'undefined') {
                         action = 'delete2';
                     }
-                    sendToServer = {
+                    var sendToServer = {
                         _token: _token,
                         _action: action,
                         _invoiceCustomerDetail_id: invoiceCustomerDetail_id
@@ -1362,9 +1362,12 @@
                         console.log(data);
                         if (jqXHR.status == 201) {
                             if (action == 'delete1') {
-                                invoiceCustomer = data['invoiceCustomer'];
-                                invoiceCustomer.debt = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'] - invoiceCustomer['prePaid'];
-                                invoiceCustomerDetailId = data['invoiceCustomerDetail'];
+                                var invoiceCustomer = data['invoiceCustomer'];
+                                invoiceCustomer.debt = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'];
+                                if(invoiceCustomer['statusPrePaid'] == 1){
+                                    invoiceCustomer.debt -= invoiceCustomer['prePaid'];
+                                }
+                                var invoiceCustomerDetailId = data['invoiceCustomerDetail'];
 
                                 //Update invoiceCustomer
                                 Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
@@ -1384,32 +1387,39 @@
                                 debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
 
                                 //fill data to table InvoiceCustomerDetail
-                                data = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
+                                var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
                                     return o.invoiceCustomer_id == invoiceCustomer['id'];
                                 });
-                                if (typeof data === 'undefined') return;
-                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(data);
+                                if (typeof dataDetail === 'undefined') return;
+                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
 
                                 //call search Method
                                 debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
                                 debtCustomerView.searchInvoice();
 
-                                var debtReal = parseInt(invoiceCustomer['debt']);
-                                $("input[id=debt]").val(debtReal);
+                                var debtInvoice = data['arrayInput']['debtInvoice'];
+                                var debtNotExportInvoice = data['arrayInput']['debtNotExportInvoice'];
+                                var debtExportInvoice = data['arrayInput']['debtExportInvoice'];
+                                var debtReal = data['arrayInput']['debtReal'];
+
+
+                                $("input[id=debtExportInvoice]").val(debtExportInvoice);
                                 $("input[id=debt-real]").val(debtReal);
+                                $("input[id=debtInvoice]").val(debtInvoice);
+                                $("input[id=paidAmt]").val(0);
 
                                 //Show notification
                                 showNotification("success", "Xóa chi tiết đơn hàng thành công!");
                                 debtCustomerView.displayModal("hide", "#modal-notification");
                             } else {
-                                invoiceCustomerId = data['invoiceCustomer'];
-                                invoiceCustomerDetailId = data['invoiceCustomerDetail'];
+                                var invoiceCustomerId = data['invoiceCustomer'];
+                                var invoiceCustomerDetailId = data['invoiceCustomerDetail'];
 
                                 //Remove invoiceCustomer
-                                Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
+                                var Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
                                     return o.id == invoiceCustomerId;
                                 });
-                                indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
+                                var indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
                                 debtCustomerView.dataInvoiceCustomer.splice(indexOf, 1);
 
                                 //Remove invoiceCustomerDetail
@@ -1420,7 +1430,7 @@
                                 debtCustomerView.dataInvoiceCustomerDetail.splice(indexOf, 1);
 
                                 //Remove InvoiceCustomer_id in Transport
-                                dataTransport = _.filter(debtCustomerView.dataTransport, function (o) {
+                                var dataTransport = _.filter(debtCustomerView.dataTransport, function (o) {
                                     return o.invoiceCustomer_id == invoiceCustomerId;
                                 });
                                 for (i = 0; i < dataTransport.length; i++) {
@@ -2048,6 +2058,10 @@
                         dataDetail_map = dataDetail_map.map(Number);
                         var dataDetail_sum = _.sum(dataDetail_map);
 
+                        if(paidAmt > hasVat - dataDetail_sum){
+                            paidAmt = hasVat - dataDetail_sum;
+                        }
+
                         if(statusCheck) {
                             var debtInvoice = hasVat - (dataDetail_sum + paidAmt) - cashReceive;
                         } else {
@@ -2057,6 +2071,7 @@
 
                     debtInvoice = (debtInvoice < 0) ? 0 : debtInvoice;
 
+                    $("input[id=paidAmt]").val(paidAmt);
                     $("input[id=debtInvoice]").val(debtInvoice);
                     formatCurrency(".currency");
                 }

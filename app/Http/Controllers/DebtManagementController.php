@@ -884,10 +884,13 @@ class DebtManagementController extends Controller
                     ->select('invoiceCustomers.*', 'customers.fullName as customers_fullName')
                     ->first();
 
+                $arrayInput = $this->ValidateInvoiceCustomer($invoiceCustomer_id);
+
                 $response = [
                     'msg'                   => 'Delete InvoiceCustomer successful!',
                     'invoiceCustomer'       => $invoiceCustomer,
-                    'invoiceCustomerDetail' => $invoiceCustomerDetailId
+                    'invoiceCustomerDetail' => $invoiceCustomerDetailId,
+                    'arrayInput'            => $arrayInput
                 ];
             } else {
 
