@@ -1066,7 +1066,7 @@
                 },
 
                 fillDataToDatatable: function (data) {
-                    removeDataTable();
+//                    removeDataTable();
 
                     for (var i = 0; i < data.length; i++) {
                         if (data[i]['transportType'] === 1) {
@@ -1182,9 +1182,9 @@
                             }
                         ],
                         responsive: true,
-                        fixedHeader: {
-                            header: true
-                        },
+//                        fixedHeader: {
+//                            header: true
+//                        },
                         order: [[0, "desc"]],
                         dom: 'Bfrtip',
                         buttons: [
@@ -1231,7 +1231,7 @@
                     });
                     $("#table-data").css("width", "auto");
 
-                    pushDataTable(transportView.table);
+//                    pushDataTable(transportView.table);
                 },
                 fillCurrentObjectToForm: function () {
                     transportView.transportType = transportView.current["transportType"];

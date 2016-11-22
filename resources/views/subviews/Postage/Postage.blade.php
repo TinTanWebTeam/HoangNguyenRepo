@@ -502,9 +502,9 @@
                             }
                         ],
                         order: [[0, "desc"]],
-                        fixedHeader: {
-                            header: true
-                        },
+//                        fixedHeader: {
+//                            header: true
+//                        },
                         dom: 'Bfrtip',
                         buttons: [
                             {

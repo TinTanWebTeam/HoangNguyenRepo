@@ -720,7 +720,7 @@
                 },
 
                 fillDataToDatatable: function (data) {
-                    removeDataTable();
+//                    removeDataTable();
                     for (var i = 0; i < data.length; i++) {
                         if (data[i]['transportType'] === 1) {
                             data[i].fullNumber = data[i]['vehicle_name'];
@@ -793,9 +793,9 @@
                                 }
                             }
                         ],
-                        fixedHeader: {
-                            header: true
-                        },
+//                        fixedHeader: {
+//                            header: true
+//                        },
                         order: [[0, "desc"]],
                         dom: 'T<"clear">Bfrtip',
                         tableTools: {
@@ -846,7 +846,7 @@
                     });
                     $("#table-data").css("width", "auto");
 
-                    pushDataTable(debtCustomerView.table);
+//                    pushDataTable(debtCustomerView.table);
                 },
                 fillDataToDatatableInvoiceCustomer: function (data) {
                     for (var i = 0; i < data.length; i++) {

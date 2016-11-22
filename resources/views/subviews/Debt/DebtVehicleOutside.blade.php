@@ -598,7 +598,7 @@
                 },
 
                 fillDataToDatatable: function (data) {
-                    removeDataTable();
+//                    removeDataTable();
 
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
@@ -651,9 +651,9 @@
                                 }
                             }
                         ],
-                        fixedHeader: {
-                            header: true
-                        },
+//                        fixedHeader: {
+//                            header: true
+//                        },
                         order: [[0, "desc"]],
                         dom: 'T<"clear">Bfrtip',
                         tableTools: {
@@ -704,7 +704,7 @@
                     });
                     $("#table-data").css("width", "auto");
 
-                    pushDataTable(debtGarageView.table);
+//                    pushDataTable(debtGarageView.table);
                 },
                 fillDataToDatatableInvoiceGarage: function (data) {
                     for (var i = 0; i < data.length; i++) {
