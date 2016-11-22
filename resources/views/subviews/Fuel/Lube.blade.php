@@ -183,7 +183,7 @@
                     lubePriceView.validateForm();
                     var price = $('input[id=price]').val();
                     if (price < 1) {
-                        showNotification("error", "Giá phải lớn hơn 0");
+                        showNotification("error", "Giá phải lớn hơn 1000");
                         $('input[id=price]').focus();
                     } else {
                         if ($("#formFuelPrice").valid()) {
@@ -233,9 +233,7 @@
                                         lubePriceView.clearValidation();
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                                    console.log(jqXHR);
-                                    console.log(textStatus);
-                                    console.log(errorThrown); 
+                                    showNotification("error","Vui lòng nhập giá dầu và ngày áp dụng phù hợp!")   
                                 }).always(function () {
                                     lubePriceView.hideFormControl();
                                 });
@@ -267,10 +265,10 @@
                         ignore: ".ignore",
                         messages: {
                             applyDate: {
-                                required: "Ngày áp dụng bắt buộc nhập"
+                                required: "Ngày áp dụng bắt buộc nhập và phải lớn hơn ngày áp dụng lớn nhất trong bảng!"
                             },
                             price: {
-                                required: "Giá dầu bắt buộc nhập"
+                                required: "Giá nhớt bắt buộc nhập và lớn hơn 1000!"
                             }
                         }
                     });
