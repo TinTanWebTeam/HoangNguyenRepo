@@ -12,8 +12,8 @@ class GarageTypeTableSeeder extends Seeder
     public function run()
     {
         $array_name = [
-            'Nhà xe công ty',
-            'Nhà xe ngoài'
+            'Xe công ty',
+            'Xe ngoài'
         ];
 
         foreach($array_name as $item){

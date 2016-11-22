@@ -122,11 +122,11 @@
                                         <th>Mã</th>
                                         <th>Khách hàng</th>
                                         <th>Số xe</th>
+                                        <th>Nơi nhận</th>
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
                                         <th>Doanh thu</th>
                                         <th>Nhận</th>
-                                        <th>Nợ</th>
                                         <th>Người nhận</th>
                                         <th>Ngày nhận</th>
                                         <th>Thanh toán</th>
@@ -743,6 +743,7 @@
                             },
                             {data: 'customers_fullName'},
                             {data: 'fullNumber'},
+                            {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
                             {data: 'voucherNumber'},
                             {
@@ -753,10 +754,10 @@
                                 data: 'cashReceive',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
-                            {
-                                data: 'debt',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
-                            },
+//                            {
+//                                data: 'debt',
+//                                render: $.fn.dataTable.render.number(",", ".", 0)
+//                            },
                             {data: 'receiver'},
                             {
                                 data: 'receiveDate',
@@ -766,17 +767,25 @@
                             },
                             {
                                 render: function (data, type, full, meta) {
-                                    color = 'btn-default';
-                                    if (full.cashReceive == 0 && full.invoiceCustomer == null)
+                                    var color = 'btn-default';
+                                    var text = '';
+                                    if (full.cashReceive == 0 && full.invoiceCustomer == null){
                                         color = 'btn-danger';
-                                    else if (full.cashReceive == full.cashRevenue)
+                                        text = 'Click để trả đủ';
+                                    }
+                                    else if (full.cashReceive == full.cashRevenue){
                                         color = 'btn-success';
-                                    else if (full.cashReceive > 0 && full.invoiceCustomer == null)
+                                        text = 'Đã trả đủ';
+                                    }
+                                    else if (full.cashReceive > 0 && full.invoiceCustomer == null){
                                         color = 'btn-primary';
+                                        text = 'Click để trả đủ';
+                                    }
+
 
                                     var tr = '';
                                     tr += '<div class="text-center" data-transportId="' + full.id + '">';
-                                    tr += "<div class='btn btn-circle " + color + "' title='Trả đủ' onclick='debtCustomerView.autoEditTransportConfirm(" + full.id + ")'>";
+                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtCustomerView.autoEditTransportConfirm(" + full.id + ")'>";
                                     tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                     tr += '</div>';
                                     tr += '</div>';

@@ -15,7 +15,8 @@ class CreateInvoiceGarageDetailsTable extends Migration
         Schema::create('invoiceGarageDetails', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('invoiceGarage_id')->unsigned();
-            $table->decimal('paidAmt', 18, 0)->default(0)->comment('Số tiền trả');
+            $table->decimal('paidAmt', 18, 0)->default(0)->comment('Số tiền trả có Vat');
+            $table->decimal('paidAmtNotVat', 18, 0)->default(0)->comment('Số tiền trả chưa Vat');
             $table->dateTime('payDate')->nullable()->comment('Ngày trả');
             $table->boolean('modify')->default(0)->comment('Có chỉnh sửa hay không');
             $table->integer('createdBy')->unsigned()->comment('Người tạo');

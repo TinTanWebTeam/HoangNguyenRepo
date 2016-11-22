@@ -56,7 +56,7 @@
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-md-7" style="font-size: 1.2em">
                             <i class="fa fa-user" aria-hidden="true"></i> Khách hàng
-                            <i class="fa fa-truck" aria-hidden="true"></i> Nhà xe ngoài
+                            <i class="fa fa-truck" aria-hidden="true"></i> Nhà xe
                         </div>
                         <div class="col-md-5">
                             <span class="label label-danger" style="font-size: 1em">Chưa thanh toán</span>
@@ -85,8 +85,8 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
+                                        <th>Ngày nhận</th>
                                         <th>Số xe</th>
-                                        <th>Tên hàng</th>
                                         <th>Nơi nhận</th>
                                         <th>Nơi giao</th>
                                         <th>Khách hàng</th>
@@ -98,7 +98,7 @@
                                         <th>Công an</th>
                                         <th>Lợi nhuận</th>
                                         <th>Người nhận</th>
-                                        <th>Ngày nhận</th>
+                                        <th>Tên hàng</th>
                                         <th>Trạng thái</th>
                                         <th>Sửa/ Xóa</th>
                                     </tr>
@@ -1085,8 +1085,13 @@
                                 data: 'id',
                                 visible: false
                             },
+                            {
+                                data: 'receiveDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
                             {data: 'fullNumber'},
-                            {data: 'products_name'},
                             {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
                             {data: 'customers_fullName'},
@@ -1119,12 +1124,7 @@
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {data: 'receiver'},
-                            {
-                                data: 'receiveDate',
-                                render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY");
-                                }
-                            },
+                            {data: 'products_name'},
                             {
                                 render: function (data, type, full, meta) {
                                     var color_customer = '';

@@ -1219,6 +1219,7 @@ class DebtManagementController extends Controller
                 $invoiceGarageDetail = new InvoiceGarageDetail();
                 $invoiceGarageDetail->invoiceGarage_id = $invoiceGarage->id;
                 $invoiceGarageDetail->paidAmt = $request->input('_invoiceGarage')['paidAmt'];
+//                $invoiceGarageDetail->paidAmtNotVat = $totalPaid - ($totalPaid * $vat / 100);
 
                 $payDate = $request->input('_invoiceGarage')['payDate'];
                 $invoiceGarageDetail->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
@@ -1313,6 +1314,7 @@ class DebtManagementController extends Controller
                 $invoiceGarageDetail = new InvoiceGarageDetail();
                 $invoiceGarageDetail->invoiceGarage_id = $invoiceGarage->id;
                 $invoiceGarageDetail->paidAmt = $request->input('_invoiceGarage')['paidAmt'];
+//                $invoiceGarageDetail->paidAmtNotVat = $totalPaid - ($totalPaid * $vat / 100);
 
                 $payDate = $request->input('_invoiceGarage')['payDate'];
                 $invoiceGarageDetail->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();

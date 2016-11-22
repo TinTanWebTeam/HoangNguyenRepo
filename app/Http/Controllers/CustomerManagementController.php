@@ -600,6 +600,7 @@ class CustomerManagementController extends Controller
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+            ->orderBy('receiveDate', 'desc')
             ->get();
 
         $voucherTransports = VoucherTransport::all();
