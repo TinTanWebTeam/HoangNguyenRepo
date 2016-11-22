@@ -1,3 +1,7 @@
+<script src="{{URL::to('src/autocompleteTable/jquery-ui.min.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="{{URL::to('src/autocompleteTable/jquery-ui.css')}}">
+<link rel="stylesheet" type="text/css" href="{{URL::to('src/autocompleteTable/style.css')}}">
+
 <style>
     #divControl {
         z-index: 3;
@@ -148,6 +152,13 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="driver"><b>Tài xế</b></label>
+                                    <input type="text" class="form-control" data-driverId="" id="driver" name="driver">
+                                    {{--<input type="text" class="form-control" id="driver_id" name="driver_id" style="display: block">--}}
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
                                 <div class="form-group form-md-line-input ">
                                     <label for="size"><b>Kích thước</b></label>
                                     <input type="number" class="form-control" id="size" name="size">
@@ -159,12 +170,7 @@
                                     <input type="number" class="form-control" id="weight" name="weight">
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group form-md-line-input">
-                                    <label for="driver"><b>Tài xế</b></label>
-                                    <input type="text" class="form-control" data-driverId="" id="driver" name="driver">
-                                </div>
-                            </div>
+
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
@@ -234,7 +240,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form id="frmGarage" onsubmit="return false;" >
+                    <form id="frmGarage" onsubmit="return false;">
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <div class="form-group form-md-line-input">
@@ -315,7 +321,7 @@
                     <h4 class="modal-title">Thêm loại xe</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="frmVehicleType"  onsubmit="return false;" >
+                    <form id="frmVehicleType" onsubmit="return false;">
                         <div class="row ">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input">
@@ -356,7 +362,11 @@
     </div>
 </div>
 <!-- end Modal add vehicleTypes -->
-
+<div class="form-group form-md-line-input">
+    <label for="driver"><b>Tài xế</b></label>
+    <input type="text" class="form-control" data-id="" id="test" name="test">
+    {{--<input type="text" class="form-control" id="driver_id" name="driver_id" style="display: block">--}}
+</div>
 <script>
     $(function () {
         if (typeof (vehicleInsideView) === 'undefined') {
@@ -373,6 +383,7 @@
                 dataDrivers: null,
                 tagsGarageName: [],
                 tagsDriverName: [],
+                tagsGovernmentId: [],
                 cancel: function () {
                     if (vehicleInsideView.action == 'add') {
                         vehicleInsideView.clearInput();
@@ -486,11 +497,11 @@
                 renderAutoCompleteSearch: function () {
                     vehicleInsideView.tagsGarageName = _.map(vehicleInsideView.dataGarage, 'name');
                     vehicleInsideView.tagsGarageName = _.union(vehicleInsideView.tagsGarageName);
-                    renderAutoCompleteSearch('#garages_name', vehicleInsideView.tagsGarageName,$("#garages_name").focusout(function () {
+                    renderAutoCompleteSearch('#garages_name', vehicleInsideView.tagsGarageName, $("#garages_name").focusout(function () {
                         var garageName = this.value;
                         if (garageName == '') return;
                         var garage = _.find(vehicleInsideView.dataGarage, function (o) {
-                            return o.name == garageName ;
+                            return o.name == garageName;
                         });
                         if (typeof garage === "undefined") {
                             vehicleInsideView.displayModal("show", "#modal-addGarage");
@@ -499,27 +510,29 @@
                             $("#garages_name").attr("data-garageId", garage.id);
                         }
                     }));
-//                    vehicleInsideView.tagsDriverName = _.map(vehicleInsideView.dataDrivers, 'fullName');
-                    vehicleInsideView.tagsDriverName = _.map(vehicleInsideView.dataDrivers, function (o) {
-                        return o.fullName + ' | ' + o.governmentId;
+
+
+                    $('input#driver').tableAutocomplete({
+                        source: vehicleInsideView.dataDrivers,
+                        columns: [{
+                            field: 'fullName',
+                            title: 'Tên tài xế'
+                        }, {
+                            field: 'governmentId',
+                            title: 'CMND'
+                        },{
+                            field: 'licenseDriverType',
+                            title: 'Loại bằng'
+                        }],
+                        delay: 500,
+                        select: function (event, ui) {
+                            if (ui.item != undefined) {
+                                $(this).val(ui.item.fullName);
+                                $('#driver').attr("data-driverId", ui.item.id);
+                            }
+                            return false;
+                        }
                     });
-                    vehicleInsideView.tagsDriverName = _.union(vehicleInsideView.tagsDriverName);
-                    renderAutoCompleteSearch('#driver', vehicleInsideView.tagsDriverName,$("#driver").focusout(function () {
-                        var driverName = this.value;
-                        if (driverName == ''){
-                            $("#driver").attr("data-driverId",'');
-                            return;
-                        }
-                        var driver =_.find(vehicleInsideView.dataDrivers,function (o) {
-                            return o.fullName == driverName;
-                        });
-                        if (typeof driver === "undefined") {
-                            $("input[id=driver]").val('');
-                            $("#driver").attr("data-driverId",'');
-                        } else {
-                            $("#driver").attr("data-driverId", driver.id);
-                        }
-                    }));
                 },
                 localSearch: function () {
                     var dataSearch = _.filter(vehicleInsideView.tableVehicle, function (o) {
@@ -592,6 +605,14 @@
                                 }
                             }
                         ],
+                        columnDefs: [
+                            {responsivePriority: 1, targets: -1},
+                            {responsivePriority: 1, targets: -2},
+                            {
+                                "targets": [4],
+                                "visible": true
+                            }
+                        ],
                         order: [[0, "desc"]],
                         dom: 'Bfrtip',
                         buttons: [
@@ -635,7 +656,8 @@
                                 text: 'Ẩn cột'
                             }
                         ]
-                    })
+                    });
+
                 },
                 fillCurrentObjectToForm: function () {
                     $("input[id='areaCode']").val(vehicleInsideView.current["areaCode"]);
@@ -885,5 +907,100 @@
         } else {
             vehicleInsideView.loadData();
         }
+    });
+
+    $.widget('custom.tableAutocomplete', $.ui.autocomplete, {
+        options: {
+            open: function (event, ui) {
+                // Hack to prevent a 'menufocus' error when doing sequential searches using only the keyboard
+                $('.ui-autocomplete .ui-menu-item:first').trigger('mouseover');
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+            }
+        },
+        _create: function () {
+            this._super();
+            // Using a table makes the autocomplete forget how to menu.
+            // With this we can skip the header row and navigate again via keyboard.
+            this.widget().menu("option", "items", ".ui-menu-item");
+        },
+        _renderMenu: function (ul, items) {
+            var self = this;
+            var $table = $('<table class="table-autocomplete">'),
+                    $thead = $('<thead>'),
+                    $headerRow = $('<tr>'),
+                    $tbody = $('<tbody>');
+
+            $.each(self.options.columns, function (index, columnMapping) {
+                $('<th>').text(columnMapping.title).appendTo($headerRow);
+            });
+
+            $thead.append($headerRow);
+            $table.append($thead);
+            $table.append($tbody);
+
+            ul.html($table);
+
+            $.each(items, function (index, item) {
+                self._renderItemData(ul, ul.find("table tbody"), item);
+            });
+        },
+        _renderItemData: function (ul, table, item) {
+            return this._renderItem(table, item).data("ui-autocomplete-item", item);
+        },
+        _renderItem: function (table, item) {
+            var self = this;
+            var $tr = $('<tr class="ui-menu-item" role="presentation">');
+
+            $.each(self.options.columns, function (index, columnMapping) {
+                var cellContent = !item[columnMapping.field] ? '' : item[columnMapping.field];
+                $('<td>').text(cellContent).appendTo($tr);
+            });
+
+            return $tr.appendTo(table);
+        }
+    });
+
+    $(function () {
+        var result_sample = [
+            {
+                "id": 26,
+                "value": "Ladislau Santos Jr.",
+                "email": "klber_moraes@email.net",
+                "address": "9867 Roberta Rua"
+            }, {
+                "id": 14,
+                "value": "Pablo Santos",
+                "email": "pablo@xpto.org",
+                "address": "7540 Moreira Ponte"
+            }, {
+                "id": 13,
+                "value": "Souza, Nogueira e Santos",
+                "email": null,
+                "address": "3504 Melo Marginal"
+            }];
+
+        $('input#test').tableAutocomplete({
+            source: result_sample,
+            columns: [{
+                field: 'value',
+                title: 'Name'
+            }, {
+                field: 'email',
+                title: 'E-mail'
+            }, {
+                field: 'address',
+                title: 'Address'
+            }],
+            delay: 500,
+            select: function (event, ui) {
+                if (ui.item != undefined) {
+                    $(this).val(ui.item.value);
+                    $('#test').attr("data-id", ui.item.id);
+                }
+                return false;
+            }
+        });
     });
 </script>
