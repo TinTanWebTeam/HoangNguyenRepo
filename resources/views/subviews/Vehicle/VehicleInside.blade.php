@@ -499,10 +499,12 @@
                             $("#garages_name").attr("data-garageId", garage.id);
                         }
                     }));
-                    vehicleInsideView.tagsDriverName = _.map(vehicleInsideView.dataDrivers, 'fullName');
+//                    vehicleInsideView.tagsDriverName = _.map(vehicleInsideView.dataDrivers, 'fullName');
+                    vehicleInsideView.tagsDriverName = _.map(vehicleInsideView.dataDrivers, function (o) {
+                        return o.fullName + ' | ' + o.governmentId;
+                    });
                     vehicleInsideView.tagsDriverName = _.union(vehicleInsideView.tagsDriverName);
                     renderAutoCompleteSearch('#driver', vehicleInsideView.tagsDriverName,$("#driver").focusout(function () {
-
                         var driverName = this.value;
                         if (driverName == ''){
                             $("#driver").attr("data-driverId",'');

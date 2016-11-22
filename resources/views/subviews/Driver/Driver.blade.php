@@ -153,7 +153,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label for="governmentId"><b>CMND</b></label>
                                         <input type="text" class="form-control"
-                                               id="governmentId" maxlength="12"
+                                               id="governmentId" maxlength="12" minlength="9"
                                                name="governmentId">
                                     </div>
                                 </div>
@@ -242,10 +242,10 @@
                         driverView.renderDateTimePicker();
                     } else {
                         var driverId = $('input[id=driverId]').val();
-                        var driver = _.find(driverView.dataDrivers,function (o) {
+                        var driver = _.find(driverView.dataDrivers, function (o) {
                             return o.id == driverId;
                         });
-                        if(typeof driver === 'undefined'){
+                        if (typeof driver === 'undefined') {
                             return;
                         }
                         driverView.current = driver;
@@ -438,6 +438,8 @@
                             fullName: "required",
                             governmentId: {
                                 required: true,
+                                minlength: 9,
+                                maxlength:12,
                                 number: true
                             },
                             driverType: "required"
@@ -447,6 +449,8 @@
                             fullName: "Vui lòng nhập tên",
                             governmentId: {
                                 required: "Vui lòng nhập CMND",
+                                minlength: "Số CMND tối thiểu 9 số",
+                                maxlength: "Số CMND tối đa 12 số",
                                 number: "CMND phải là số"
                             },
                             driverType: "Vui lòng nhập loại Bằng lái"
@@ -557,7 +561,7 @@
                     else {
                         driverView.validateDriver();
                         if ($("#frmDriver").valid()) {
-                        driverView.fillFormDataToCurrentObject();
+                            driverView.fillFormDataToCurrentObject();
                             if (driverView.current.id == null) {
                                 var existCMND = _.find(driverView.dataDrivers, function (o) {
                                     return o.governmentId == $("input[id=governmentId]").val();
@@ -570,52 +574,64 @@
                             if (typeof existCMND !== "undefined") {
                                 showNotification("error", "CMND đã tồn tại!");
                             } else {
-
-                                sendToServer = {
-                                    _token: _token,
-                                    _action: driverView.action,
-                                    _object: driverView.current
-                                };
-                                $.ajax({
-                                    url: url + 'driver/modify',
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: sendToServer
-                                }).done(function (data, textStatus, jqXHR) {
-                                    if (jqXHR.status == 201) {
-                                        switch (driverView.action) {
-                                            case 'add':
-                                                data['dataAddDriver'].fullNumber = (data['dataAddDriver']['areaCode'] == null || data['dataAddDriver']['vehicleNumber'] == null) ? "" : data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']['vehicleNumber'];
-                                                if (data['dataAddDriver'].fullNumber == null) {
-                                                    data['dataAddDriver'].fullNumber = 'chứa có xe'
-                                                }
-                                                driverView.dataDrivers.push(data['dataAddDriver']);
-                                                showNotification("success", "Thêm thành công!");
-                                                break;
-                                            case 'update':
-                                                data['dataUpdateDriver'].fullNumber = (data['dataUpdateDriver']['areaCode'] == null || data['dataUpdateDriver']['vehicleNumber'] == null) ? "" : data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']['vehicleNumber'];
-                                                if (data['dataUpdateDriver'].fullNumber == null) {
-                                                    data['dataUpdateDriver'].fullNumber = 'chứa có xe'
-                                                }
-                                                var driverOld = _.find(driverView.dataDrivers, function (o) {
-                                                    return o.id == sendToServer._object.id;
-                                                });
-                                                var indexOfDriverOld = _.indexOf(driverView.dataDrivers, driverOld);
-                                                driverView.dataDrivers.splice(indexOfDriverOld, 1, data['dataUpdateDriver']);
-                                                showNotification("success", "Cập nhật thành công!");
-                                                driverView.hideControl();
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                        driverView.table.clear().rows.add(driverView.dataDrivers).draw();
-                                        driverView.clearInput();
+                                dateBirthday = $("input[id='birthday']").val();
+                                birthday = moment(dateBirthday, "DD-MM-YYYY").year();
+                                yearNow = moment().year();
+                                old = yearNow - birthday;
+                                if (old >= 18) {
+                                    if (old >= 60) {
+                                        driverView.showNotification("error", "Người dùng đã hết tuổi lao động");
                                     } else {
-                                        driverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                        sendToServer = {
+                                            _token: _token,
+                                            _action: driverView.action,
+                                            _object: driverView.current
+                                        };
+                                        $.ajax({
+                                            url: url + 'driver/modify',
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: sendToServer
+                                        }).done(function (data, textStatus, jqXHR) {
+                                            if (jqXHR.status == 201) {
+                                                switch (driverView.action) {
+                                                    case 'add':
+                                                        data['dataAddDriver'].fullNumber = (data['dataAddDriver']['areaCode'] == null || data['dataAddDriver']['vehicleNumber'] == null) ? "" : data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']['vehicleNumber'];
+                                                        if (data['dataAddDriver'].fullNumber == null) {
+                                                            data['dataAddDriver'].fullNumber = 'chứa có xe'
+                                                        }
+                                                        driverView.dataDrivers.push(data['dataAddDriver']);
+                                                        showNotification("success", "Thêm thành công!");
+                                                        break;
+                                                    case 'update':
+                                                        data['dataUpdateDriver'].fullNumber = (data['dataUpdateDriver']['areaCode'] == null || data['dataUpdateDriver']['vehicleNumber'] == null) ? "" : data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']['vehicleNumber'];
+                                                        if (data['dataUpdateDriver'].fullNumber == null) {
+                                                            data['dataUpdateDriver'].fullNumber = 'chứa có xe'
+                                                        }
+                                                        var driverOld = _.find(driverView.dataDrivers, function (o) {
+                                                            return o.id == sendToServer._object.id;
+                                                        });
+                                                        var indexOfDriverOld = _.indexOf(driverView.dataDrivers, driverOld);
+                                                        driverView.dataDrivers.splice(indexOfDriverOld, 1, data['dataUpdateDriver']);
+                                                        showNotification("success", "Cập nhật thành công!");
+                                                        driverView.hideControl();
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                                driverView.table.clear().rows.add(driverView.dataDrivers).draw();
+                                                driverView.clearInput();
+                                            } else {
+                                                driverView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                            }
+                                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                                            driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                        });
                                     }
-                                }).fail(function (jqXHR, textStatus, errorThrown) {
-                                    driverView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                                });
+                                } else {
+                                    driverView.showNotification("error", "Người dùng chưa đủ tuổi lao động");
+                                }
+
                             }
                         } else {
                             $("form#frmDriver").find("label[class=error]").css("color", "red");

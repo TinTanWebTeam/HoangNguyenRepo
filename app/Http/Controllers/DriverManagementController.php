@@ -174,7 +174,6 @@ class DriverManagementController extends Controller
                 return response()->json($response, 201);
                 break;
             case 'delete':
-
                 $driverDelete = Driver::findOrFail($request->input('_id'));
                 $driverDelete->active = 0;
                 if ($driverDelete->update()) {
