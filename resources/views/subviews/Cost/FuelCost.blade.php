@@ -1010,6 +1010,7 @@
                 clearInputPrice: function () {
                     /* Form addPrice*/
                     $("input[id='costPrice']").val(0);
+                    $("textarea[id='description']").val('');
                 },
                 savePriceType: function () {
                     if ($("input[id='costPrice']").val() == 0) {

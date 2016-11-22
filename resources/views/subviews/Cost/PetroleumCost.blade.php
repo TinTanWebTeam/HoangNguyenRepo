@@ -307,8 +307,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="description"><b>Mô tả</b></label>
                                     <textarea name="description" id="description" cols="10" rows="3"
-                                              class="form-control">
-                                </textarea>
+                                              class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -432,7 +431,6 @@
 
 <script>
     $(function () {
-
         if (typeof (petroleumCostView) === 'undefined') {
             petroleumCostView = {
                 table: null,
@@ -563,7 +561,8 @@
                 },
                 clearInputPrice: function () {
                     /* Form addPrice*/
-                    $("input[id='costPrice']").val('');
+                    $("input[id='costPrice']").val(0);
+                    $("textarea[id='description']").val('');
 
                 },
                 clearInputVehicle: function () {

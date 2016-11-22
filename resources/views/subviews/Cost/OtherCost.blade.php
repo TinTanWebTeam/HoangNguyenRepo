@@ -382,7 +382,6 @@
                     otherCostView.save();
                     $("#modalConfirm").modal('hide');
                 },
-
                 fillFormDataToCurrentObject: function () {
                     if (otherCostView.action == 'add') {
                         otherCostView.current = {
@@ -405,7 +404,6 @@
                     $("input[id='cost']").val(otherCostView.current["cost"])
 
                 },
-
                 editOtherCost: function (id) {
                     $("#divControl").find(".titleControl").html("Cập nhật chi phí khác");
                     otherCostView.current = null;

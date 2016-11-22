@@ -577,7 +577,6 @@ class CostManagementController extends Controller
 
     public function postModifyParkingCost(Request $request)
     {
-
         $vehicle_id = null;
         $checkIn = null;
         $checkOut = null;
@@ -604,12 +603,18 @@ class CostManagementController extends Controller
             $checkIn = Carbon::createFromFormat('d-m-Y H:i', $dateIn . " " . $timeIn)->toDateTimeString();
             $dateOut = $request->get('_object')['dateCheckOut'];
             $timeOut = $request->get('_object')['timeCheckOut'];
-            $checkOut = Carbon::createFromFormat('d-m-Y H:i', $dateOut . " " . $timeOut)->toDateTimeString();
-            $totalDate = $request->get('_object')['totalDate'];
-            $totalHour = $request->get('_object')['totalTime'];
-            $price = str_replace(',', '', $request->get('_object')['prices_price']);
-            $totalCost = $price * $totalHour;
-
+            if($dateOut == '' && $timeOut == ''){
+                $checkOut = null;
+                $totalDate = 0;
+                $totalHour = 0;
+                $totalCost = 0;
+            }else{
+                $checkOut = Carbon::createFromFormat('d-m-Y H:i', $dateOut . " " . $timeOut)->toDateTimeString();
+                $totalDate = $request->get('_object')['totalDate'];
+                $totalHour = $request->get('_object')['totalTime'];
+                $price = str_replace(',', '', $request->get('_object')['prices_price']);
+                $totalCost = $price * $totalHour;
+            }
         }
 
 
@@ -663,8 +668,6 @@ class CostManagementController extends Controller
                 $parkingUpdate->price_id = $prices_id;
                 $parkingUpdate->vehicle_id = $vehicle_id;
                 $parkingUpdate->updatedBy = Auth::user()->id;
-
-
                 if ($parkingUpdate->update()) {
                     $tableParkingUpdate = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
