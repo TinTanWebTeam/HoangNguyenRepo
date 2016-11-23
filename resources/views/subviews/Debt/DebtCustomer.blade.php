@@ -1099,10 +1099,6 @@
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
                     if (flag == 0) {
-                        $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
-                        debtCustomerView.showControl(flag);
-                        debtCustomerView.action = "new";
-
                         var dataAfterValidate = debtCustomerView.validateListTransport();
 
                         //
@@ -1114,6 +1110,10 @@
                             debtCustomerView.displayModal('show', '#modal-notification');
                             return;
                         }
+
+                        $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
+                        debtCustomerView.showControl(flag);
+                        debtCustomerView.action = "new";
 
                         debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
                         debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
@@ -1513,14 +1513,14 @@
                 },
 
                 validateListTransport: function () {
-                    array = $.map(debtCustomerView.table.rows('.selected').data(), function (value, index) {
+                    var array = $.map(debtCustomerView.table.rows('.selected').data(), function (value, index) {
                         return [value];
                     });
                     debtCustomerView.array_transportId = [];
                     debtCustomerView.array_transportId = _.map(array, 'id');
 
-                    array_customerId = _.map(array, 'customer_id');
-                    array_customerId = _.uniq(array_customerId);
+                    var array_customerId = _.map(array, 'customer_id');
+                    var array_customerId = _.uniq(array_customerId);
 
                     if (array_customerId.length == 1 && debtCustomerView.array_transportId.length > 0) {
                         //Kiem tra xem nhung don hang nay da xuat hoa don chua
@@ -1542,9 +1542,10 @@
                             if (jqXHR.status == 200) {
                                 result = data;
                             } else if (jqXHR.status == 203) {
-                                showNotification("error", data['msg']);
+                                result = data;
                             } else {
                                 showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                result = data;
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");

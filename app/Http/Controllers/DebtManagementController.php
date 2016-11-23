@@ -193,7 +193,6 @@ class DebtManagementController extends Controller
             ->get();
         if (count($array_transportInvoice) > 0)
             $kt = true;
-
         if (!$kt) {
             //-----------------------------------------------------
             // Nếu Chưa Xuất Hóa Đơn Lần Nào
@@ -293,6 +292,18 @@ class DebtManagementController extends Controller
                 ];
                 return response()->json($response, 203);
             };
+
+
+
+            if(count($arrayInvoice) == 0){
+                $response = [
+                    'status'   => 0,
+                    'totalPay' => 0,
+                    'msg'      => 'Các đơn hàng không khớp nhau.'
+                ];
+                return response()->json($response, 203);
+            }
+
             $array_match = true;
             foreach ($arrayInvoice as $invoiceId) {
                 $arrayTransport = TransportInvoice::where('invoiceCustomer_id', $invoiceId)
