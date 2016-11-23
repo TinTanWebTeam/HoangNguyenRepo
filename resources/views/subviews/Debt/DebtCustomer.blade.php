@@ -768,7 +768,17 @@
                                 visible: false
                             },
                             {data: 'customers_fullName'},
-                            {data: 'invoiceCode'},
+                            {
+                                data: 'invoiceCode',
+                                render: function (data, type, full, meta) {
+                                    var arr = data.split(",");
+                                    var tr = "";
+                                    for(var i in arr){
+                                        tr += arr[i] + "<br>";
+                                    }
+                                    return tr;
+                                }
+                            },
                             {data: 'fullNumber'},
                             {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
