@@ -18,13 +18,13 @@ class DriverTableSeeder extends Seeder
             'Phạm Văn Lập'
         ];
 
-        foreach($array_name as $item){
+        foreach($array_name as $key=>$item){
             \App\Driver::create([
                 'fullName' => $item,
                 'address' => '652/2A Lê Quang Định',
                 'phone' => '0987654321',
                 'birthday' => '1994-01-05',
-                'governmentId' => '1234567890',
+                'governmentId' => random_int(100000000, 900000000),
                 'issueDate_governmentId' => '2012-01-05',
                 'licenseDriver' => '1029384756',
                 'issueDate_licenseDriver' => '2013-01-05',

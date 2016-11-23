@@ -1,7 +1,3 @@
-<script src="{{URL::to('src/autocompleteTable/jquery-ui.min.js')}}"></script>
-<link rel="stylesheet" type="text/css" href="{{URL::to('src/autocompleteTable/jquery-ui.css')}}">
-<link rel="stylesheet" type="text/css" href="{{URL::to('src/autocompleteTable/style.css')}}">
-
 <style>
     #divControl {
         z-index: 3;
@@ -155,7 +151,6 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="driver"><b>Tài xế</b></label>
                                     <input type="text" class="form-control" data-driverId="" id="driver" name="driver">
-                                    {{--<input type="text" class="form-control" id="driver_id" name="driver_id" style="display: block">--}}
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-4">
@@ -362,11 +357,7 @@
     </div>
 </div>
 <!-- end Modal add vehicleTypes -->
-<div class="form-group form-md-line-input">
-    <label for="driver"><b>Tài xế</b></label>
-    <input type="text" class="form-control" data-id="" id="test" name="test">
-    {{--<input type="text" class="form-control" id="driver_id" name="driver_id" style="display: block">--}}
-</div>
+
 <script>
     $(function () {
         if (typeof (vehicleInsideView) === 'undefined') {
@@ -511,28 +502,21 @@
                         }
                     }));
 
-
-                    $('input#driver').tableAutocomplete({
-                        source: vehicleInsideView.dataDrivers,
-                        columns: [{
-                            field: 'fullName',
-                            title: 'Tên tài xế'
-                        }, {
-                            field: 'governmentId',
-                            title: 'CMND'
-                        },{
-                            field: 'licenseDriverType',
-                            title: 'Loại bằng'
-                        }],
-                        delay: 500,
-                        select: function (event, ui) {
-                            if (ui.item != undefined) {
-                                $(this).val(ui.item.fullName);
-                                $('#driver').attr("data-driverId", ui.item.id);
-                            }
-                            return false;
+                    vehicleInsideView.tagsDriverName = _.map(vehicleInsideView.dataDrivers, 'fullName');
+                    vehicleInsideView.tagsDriverName = _.union(vehicleInsideView.tagsDriverName);
+                    renderAutoCompleteSearch('#driver', vehicleInsideView.tagsDriverName, $("#driver").focusout(function () {
+                        var name = this.value;
+                        if (name == '') return;
+                        var driver = _.find(vehicleInsideView.dataDrivers, function (o) {
+                            return o.fullName == name;
+                        });
+                        if (typeof driver === "undefined") {
+                            $("input[id=driver]").val("");
+                            $("#driver").attr("data-driverId", 0);
+                        } else {
+                            $("#driver").attr("data-driverId", driver.id);
                         }
-                    });
+                    }));
                 },
                 localSearch: function () {
                     var dataSearch = _.filter(vehicleInsideView.tableVehicle, function (o) {
@@ -907,100 +891,5 @@
         } else {
             vehicleInsideView.loadData();
         }
-    });
-
-    $.widget('custom.tableAutocomplete', $.ui.autocomplete, {
-        options: {
-            open: function (event, ui) {
-                // Hack to prevent a 'menufocus' error when doing sequential searches using only the keyboard
-                $('.ui-autocomplete .ui-menu-item:first').trigger('mouseover');
-            },
-            focus: function (event, ui) {
-                event.preventDefault();
-            }
-        },
-        _create: function () {
-            this._super();
-            // Using a table makes the autocomplete forget how to menu.
-            // With this we can skip the header row and navigate again via keyboard.
-            this.widget().menu("option", "items", ".ui-menu-item");
-        },
-        _renderMenu: function (ul, items) {
-            var self = this;
-            var $table = $('<table class="table-autocomplete">'),
-                    $thead = $('<thead>'),
-                    $headerRow = $('<tr>'),
-                    $tbody = $('<tbody>');
-
-            $.each(self.options.columns, function (index, columnMapping) {
-                $('<th>').text(columnMapping.title).appendTo($headerRow);
-            });
-
-            $thead.append($headerRow);
-            $table.append($thead);
-            $table.append($tbody);
-
-            ul.html($table);
-
-            $.each(items, function (index, item) {
-                self._renderItemData(ul, ul.find("table tbody"), item);
-            });
-        },
-        _renderItemData: function (ul, table, item) {
-            return this._renderItem(table, item).data("ui-autocomplete-item", item);
-        },
-        _renderItem: function (table, item) {
-            var self = this;
-            var $tr = $('<tr class="ui-menu-item" role="presentation">');
-
-            $.each(self.options.columns, function (index, columnMapping) {
-                var cellContent = !item[columnMapping.field] ? '' : item[columnMapping.field];
-                $('<td>').text(cellContent).appendTo($tr);
-            });
-
-            return $tr.appendTo(table);
-        }
-    });
-
-    $(function () {
-        var result_sample = [
-            {
-                "id": 26,
-                "value": "Ladislau Santos Jr.",
-                "email": "klber_moraes@email.net",
-                "address": "9867 Roberta Rua"
-            }, {
-                "id": 14,
-                "value": "Pablo Santos",
-                "email": "pablo@xpto.org",
-                "address": "7540 Moreira Ponte"
-            }, {
-                "id": 13,
-                "value": "Souza, Nogueira e Santos",
-                "email": null,
-                "address": "3504 Melo Marginal"
-            }];
-
-        $('input#test').tableAutocomplete({
-            source: result_sample,
-            columns: [{
-                field: 'value',
-                title: 'Name'
-            }, {
-                field: 'email',
-                title: 'E-mail'
-            }, {
-                field: 'address',
-                title: 'Address'
-            }],
-            delay: 500,
-            select: function (event, ui) {
-                if (ui.item != undefined) {
-                    $(this).val(ui.item.value);
-                    $('#test').attr("data-id", ui.item.id);
-                }
-                return false;
-            }
-        });
     });
 </script>
