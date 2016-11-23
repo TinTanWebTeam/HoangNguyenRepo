@@ -54,7 +54,8 @@
                             <tr class="active">
                                 <th>Mã</th>
                                 <th>Cước phí</th>
-                                <th>Tháng</th>
+                                <th>Ngày tạo</th>
+                                <th>Ngày áp dụng</th>
                                 <th>Khách hàng</th>
                                 <th>Nơi nhận</th>
                                 <th>Nơi giao</th>
@@ -484,7 +485,14 @@
                             {
                                 data: 'createdDate',
                                 render: function (data, type, full, meta) {
-                                    return moment(data).format("MM/YYYY");
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {
+                                data: 'applyDate',
+                                render: function (data, type, full, meta) {
+                                    if(data == null || data == "") return "";
+                                    return moment(data).format("DD/MM/YYYY");
                                 }
                             },
                             {data: 'customers_fullName'},

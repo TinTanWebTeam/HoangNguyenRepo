@@ -764,6 +764,9 @@
                         setDate: new Date(),
                         format: 'dd-mm-yyyy',
                         autoclose: true
+                    }).on("input change", function (e) {
+                        console.log("Date changed: ", e.target.value);
+                        transportView.postDataPostageOfCustomer();
                     });
 
                     $('#receiveDate').datepicker("setDate", new Date());
@@ -857,10 +860,9 @@
                     $("#deliveryPlace").focusout(function () {
                         transportView.postDataPostageOfCustomer();
                     });
-                    $("#receiveDate").focusout(function () {
-                        transportView.postDataPostageOfCustomer();
-                        console.log("Focus Out");
-                    });
+//                    $("#receiveDate").focusout(function () {
+//                        transportView.postDataPostageOfCustomer();
+//                    });
                 },
                 renderEventCheckbox: function (cb) {
                     transportView.transportType = (cb.checked) ? 1 : 0;
