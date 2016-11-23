@@ -594,16 +594,16 @@ class DebtManagementController extends Controller
 
         # debtNotExportInvoice
         $collectInvoice = InvoiceCustomer::whereIn('id', $array_InvoiceId)->get();
-        $totalPay = $collectInvoice->pluck('totalPay')->toArray();
-        $totalPay = array_sum($totalPay);
-        $debtNotExportInvoice = $totalTransport - $totalPay;
+        $totalPay_ = $collectInvoice->pluck('totalPay')->toArray();
+        $totalPay_ = array_sum($totalPay_);
+        $debtNotExportInvoice = $totalTransport - $totalPay_;
 
         # debtExportInvoice
-        $hasVat = $collectInvoice->pluck('hasVAT')->toArray();
-        $hasVat = array_sum($hasVat);
+        $hasVat_ = $collectInvoice->pluck('hasVAT')->toArray();
+        $hasVat_ = array_sum($hasVat_);
         $totalPaid = $collectInvoice->pluck('totalPaid')->toArray();
         $totalPaid = array_sum($totalPaid);
-        $debtExportInvoice = $hasVat - $totalPaid;
+        $debtExportInvoice = $hasVat_ - $totalPaid;
 
         if ($statusPrePaid == 1)
             $debtExportInvoice -= $prePaid;
