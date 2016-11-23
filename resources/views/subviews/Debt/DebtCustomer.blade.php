@@ -1242,7 +1242,11 @@
                         return o.id == transportId;
                     }), true);
 
-                    if (debtCustomerView.current['invoiceCustomer_id'] != null) {
+                    var transportInvoice = _.clone(_.find(debtCustomerView.dataTransportInvoice, function (o) {
+                        return o.transport_id == transportId;
+                    }), true);
+
+                    if (typeof transportInvoice !== "undefined") {
                         $("#modal-notification").find(".modal-title").html("Cảnh báo");
                         $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
                         debtCustomerView.displayModal('show', '#modal-notification');
@@ -1943,23 +1947,29 @@
                     var debtNotExportInvoice = asNumberFromCurrency("#debtNotExportInvoice");
                     var totalTransport = asNumberFromCurrency("#totalTransport");
                     var cashReceive = asNumberFromCurrency("#cashReceive");
+                    var payNeed = asNumberFromCurrency("#payNeed");
                     var paidAmt = asNumberFromCurrency("#paidAmt");
                     var vat = parseFloat($("#VAT").val());
                     var invoice_id = $('#invoice_id').val();
 
                     if(invoice_id == ''){
                         // Tạo mới hóa đơn
+                        if(totalPay > payNeed){
+                            showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
+                            totalPay = payNeed;
+                        }
+
                         if(statusCheck) {
                             // Dùng trả trước
                             if (totalPay > debtNotExportInvoice - cashReceive) {
-                                showNotification('warning', 'Số tiền trả không được lớn hơn tiền cần thanh toán.');
+                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
                                 totalPay = debtNotExportInvoice - cashReceive;
                             }
                             var totalPayReal = totalPay + cashReceive;
                         } else {
                             // Không dùng trả trước
                             if (totalPay > debtNotExportInvoice) {
-                                showNotification('warning', 'Số tiền trả không được lớn hơn tổng tiền đơn hàng.');
+                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tổng tiền đơn hàng.');
                                 totalPay = debtNotExportInvoice;
                             }
                             var totalPayReal = totalPay;
@@ -1974,14 +1984,14 @@
                         if(statusCheck) {
                             // Dùng trả trước
                             if (totalPay > ConNo - cashReceive) {
-                                showNotification('warning', 'Số tiền trả không được lớn hơn tiền cần thanh toán.');
+                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
                                 totalPay = ConNo - cashReceive;
                             }
                             var totalPayReal = totalPay + cashReceive;
                         } else {
                             // Không dùng trả trước
                             if (totalPay > ConNo) {
-                                showNotification('warning', 'Số tiền trả không được lớn hơn tổng tiền đơn hàng.');
+                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tổng tiền đơn hàng.');
                                 totalPay = ConNo;
                             }
                             var totalPayReal = totalPay;
