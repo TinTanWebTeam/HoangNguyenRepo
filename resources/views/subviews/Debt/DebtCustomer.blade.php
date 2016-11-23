@@ -121,6 +121,7 @@
                                     <tr class="active">
                                         <th>Mã</th>
                                         <th>Khách hàng</th>
+                                        <th>Mã hóa đơn</th>
                                         <th>Số xe</th>
                                         <th>Nơi nhận</th>
                                         <th>Nơi giao</th>
@@ -735,6 +736,27 @@
                             data[i].fullNumber = fullNumber;
                         }
                         data[i].debt = data[i]['cashRevenue'] - data[i]['cashReceive'];
+
+                        var transportInvoice = _.filter(debtCustomerView.dataTransportInvoice, function(o){
+                            return o.transport_id == data[i]['id'];
+                        });
+
+                        if(transportInvoice.length > 0){
+                            transportInvoice = _.map(transportInvoice, 'invoiceCustomer_id');
+                            var invoice = _.filter(debtCustomerView.dataInvoiceCustomer, function(o){
+                                return _.includes(transportInvoice, o.id);
+                            });
+                            if(invoice.length > 0){
+                                invoice = _.map(invoice, 'invoiceCode');
+                                data[i].invoiceCode = invoice.toString();
+                            }
+                            else {
+                                data[i].invoiceCode = "";
+                            }
+                        }
+                        else {
+                            data[i].invoiceCode = "";
+                        }
                     }
 
                     debtCustomerView.table = $('#table-data').DataTable({
@@ -746,6 +768,7 @@
                                 visible: false
                             },
                             {data: 'customers_fullName'},
+                            {data: 'invoiceCode'},
                             {data: 'fullNumber'},
                             {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
@@ -1022,17 +1045,15 @@
                         if (jqXHR.status == 200) {
                             debtCustomerView.dataTransport = data['transports'];
                             debtCustomerView.dataSearch = data['transports'];
-                            debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
-
-                            debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
-                            debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
-                            debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
-
                             debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
                             debtCustomerView.dataPrintHistory = data['printHistories'];
                             debtCustomerView.dataTransportInvoice = data['transportInvoices'];
-
+                            debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                            debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
                             debtCustomerView.invoiceCode = data['invoiceCode'];
+
+                            debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
+                            debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
 
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
@@ -1622,7 +1643,7 @@
                 },
 
                 save: function () {
-                    sendToServer = {
+                    var sendToServer = {
                         _token: _token,
                         _transport: debtCustomerView.current.id
                     };
@@ -1644,6 +1665,28 @@
                             var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
                             data['transport'].fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + ' ' + data['transport']['vehicles_vehicleNumber'];
                             data['transport'].debt = data['transport']['cashRevenue'] - data['transport']['cashReceive'];
+
+                            var transportInvoice = _.filter(debtCustomerView.dataTransportInvoice, function(o){
+                                return o.transport_id == data['id'];
+                            });
+
+                            if(transportInvoice.length > 0){
+                                transportInvoice = _.map(transportInvoice, 'invoiceCustomer_id');
+                                var invoice = _.filter(debtCustomerView.dataInvoiceCustomer, function(o){
+                                    return _.includes(transportInvoice, o.id);
+                                });
+                                if(invoice.length > 0){
+                                    invoice = _.map(invoice, 'invoiceCode');
+                                    data.invoiceCode = invoice.toString();
+                                }
+                                else {
+                                    data.invoiceCode = "";
+                                }
+                            }
+                            else {
+                                data.invoiceCode = "";
+                            }
+
                             debtCustomerView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
                             //reload 2 table
@@ -1699,13 +1742,12 @@
 
 
                                 if (debtCustomerView.action == 'new') {
-                                    //Update InvoiceCustomer_Id for Transports
+                                    //Update invoiceCode for Transports
                                     for (var i = 0; i < debtCustomerView.array_transportId.length; i++) {
-                                        Old = _.find(debtCustomerView.dataTransport, function (o) {
+                                        var Old = _.find(debtCustomerView.dataTransport, function (o) {
                                             return o.id == debtCustomerView.array_transportId[i];
                                         });
-                                        Old['invoiceCustomer_id'] = invoiceCustomer['id'];
-                                        Old['invoiceCode'] = invoiceCustomer['invoiceCode'];
+                                        Old['invoiceCode'] = Old['invoiceCode'] + ", " + invoiceCustomer['invoiceCode'];
                                     }
 
                                     //add InvoiceCustomer
@@ -1869,14 +1911,14 @@
                     return found;
                 },
                 searchExportInvoice: function (data) {
-                    invoice = $("#invoiceUp").find("input:checked").val();
-                    found = _.filter(data, function (o) {
+                    var invoice = $("#invoiceUp").find("input:checked").val();
+                    var found = _.filter(data, function (o) {
                         if (invoice == 'All') {
                             return true;
                         } else if (invoice == 'Invoice') {
-                            return o.invoiceCustomer_id != null;
+                            return o.invoiceCode != "";
                         } else {
-                            return o.invoiceCustomer_id == null;
+                            return o.invoiceCode == "";
                         }
                     });
                     return found;
@@ -2066,8 +2108,14 @@
                     if(invoice_id == ''){
                         if(statusCheck) {
                             var debtInvoice = hasVat - paidAmt - cashReceive;
+                            var debtInvoiceRoot = hasVat - cashReceive;
                         } else {
                             var debtInvoice = hasVat - paidAmt;
+                            var debtInvoiceRoot = hasVat;
+                        }
+
+                        if(paidAmt > debtInvoiceRoot){
+                            paidAmt = debtInvoiceRoot;
                         }
                     } else {
                         var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
