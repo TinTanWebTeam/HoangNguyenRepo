@@ -1306,7 +1306,7 @@
                     debtCustomerView.displayModal('show', '#modal-notification');
                 },
                 deleteInvoiceCustomer: function (invoiceCustomer_id) {
-                    sendToServer = {
+                    var sendToServer = {
                         _token: _token,
                         _invoiceCustomer_id: invoiceCustomer_id
                     };

@@ -78,6 +78,7 @@ class DebtManagementController extends Controller
             ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where('invoiceCustomers.active', 1)
+            ->groupBy('invoiceCustomers.id')
             ->get();
 
         $invoiceCustomerDetails = DB::table('invoiceCustomerDetails')
@@ -146,6 +147,7 @@ class DebtManagementController extends Controller
             ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where('invoiceCustomers.active', 1)
+            ->groupBy('invoiceCustomers.id')
             ->get();
 
         $invoiceCustomerDetails = DB::table('invoiceCustomerDetails')
@@ -794,6 +796,7 @@ class DebtManagementController extends Controller
                         'users_createdBy.fullName as users_createdBy',
                         'users_updatedBy.fullName as users_updatedBy'
                     )
+                    ->groupBy('invoiceCustomers.id')
                     ->first();
 
                 $response = [
@@ -861,6 +864,7 @@ class DebtManagementController extends Controller
                         'users_createdBy.fullName as users_createdBy',
                         'users_updatedBy.fullName as users_updatedBy'
                     )
+                    ->groupBy('invoiceCustomers.id')
                     ->first();
 
                 $arrayInput = $this->ValidateInvoiceCustomer($invoiceId);
@@ -993,6 +997,7 @@ class DebtManagementController extends Controller
                         'users_createdBy.fullName as users_createdBy',
                         'users_updatedBy.fullName as users_updatedBy'
                     )
+                    ->groupBy('invoiceCustomers.id')
                     ->first();
 
                 $arrayInput = $this->ValidateInvoiceCustomer($invoiceCustomer_id);
@@ -1106,6 +1111,7 @@ class DebtManagementController extends Controller
                 ['transports.vehicle_id', '<>', 0],
                 ['transports.customer_id', '<>', 0]
             ])
+            ->groupBy('invoiceGarages.id')
             ->get();
 
         $invoiceGarageDetails = DB::table('invoiceGarageDetails')
@@ -1407,6 +1413,7 @@ class DebtManagementController extends Controller
                         ['transports.vehicle_id', '<>', 0],
                         ['transports.customer_id', '<>', 0]
                     ])
+                    ->groupBy('invoiceGarages.id')
                     ->first();
 
                 $response = [
@@ -1486,6 +1493,7 @@ class DebtManagementController extends Controller
                         ['transports.vehicle_id', '<>', 0],
                         ['transports.customer_id', '<>', 0]
                     ])
+                    ->groupBy('invoiceGarages.id')
                     ->first();
 
                 $response = [
@@ -1619,6 +1627,7 @@ class DebtManagementController extends Controller
                         ['transports.vehicle_id', '<>', 0],
                         ['transports.customer_id', '<>', 0]
                     ])
+                    ->groupBy('invoiceGarages.id')
                     ->first();
 
                 $response = [

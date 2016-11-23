@@ -980,8 +980,6 @@ class CustomerManagementController extends Controller
             ->where(\DB::raw('DATE(applyDate)'), '<=', $receiveDate)
             ->orderBy('applyDate', 'desc')->first();
 
-        dd($postageDetail);
-
         $postage = ($postageDetail == null) ? 0 : $postageDetail->postage;
         $cashDelivery = ($postageDetail == null) ? 0 : $postageDetail->cashDelivery;
 
