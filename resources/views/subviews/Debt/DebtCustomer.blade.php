@@ -1900,15 +1900,23 @@
                     return found;
                 },
                 searchStatusMoneyInvoice: function (data) {
-                    console.log(data);
                     var money = $("#invoiceDown").find("input:checked").val();
                     var found = _.filter(data, function (o) {
                         if (money == 'All') {
                             return true;
                         } else if (money == 'StillDebt') {
-                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+                            if(o.statusPrePaid == 1){
+                                return parseInt(o.hasVAT) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+                            } else {
+                                return parseInt(o.hasVAT) > parseInt(o.totalPaid);
+                            }
                         } else {
-                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+                            debugger;
+                            if(o.statusPrePaid == 1){
+                                return parseInt(o.hasVAT) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+                            } else {
+                                return parseInt(o.hasVAT) == parseInt(o.totalPaid);
+                            }
                         }
                     });
                     return found;
