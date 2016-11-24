@@ -207,10 +207,9 @@
                                     <th>Mã</th>
                                     <th>Cước phí</th>
                                     <th>Phí giao xe</th>
-                                    <th>Nơi nhận</th>
-                                    <th>Nơi giao</th>
                                     <th>Ngày áp dụng</th>
                                     <th>Thay đổi do</th>
+                                    <th>Cập nhật</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -407,12 +406,12 @@
                     });
                 },
                 renderEventRowClick: function () {
-                    $("#table-postageDetail").find("tbody").on('click', 'tr', function () {
-                        $("#postage-id").val($(this).find('td:first')[0].innerText);
-                        var applyDate = moment($(this).find('td:eq(4)')[0].innerText, "DD/MM/YYYY");
-                        $("input[id='apply-date']").datepicker('update', applyDate.format("DD-MM-YYYY"));
-                        postageView.displayModal('show', '#myModalNorm');
-                    });
+//                    $("#table-postageDetail").find("tbody").on('click', 'tr', function () {
+//                        $("#postage-id").val($(this).find('td:first')[0].innerText);
+//                        var applyDate = moment($(this).find('td:eq(4)')[0].innerText, "DD/MM/YYYY");
+//                        $("input[id='apply-date']").datepicker('update', applyDate.format("DD-MM-YYYY"));
+//                        postageView.displayModal('show', '#myModalNorm');
+//                    });
                 },
 
                 loadData: function () {
@@ -573,8 +572,8 @@
                         data: data,
                         columns: [
                             {
-                                data: 'id'
-//                                visible: false
+                                data: 'id',
+                                visible: false
                             },
                             {
                                 data: 'postage',
@@ -584,8 +583,6 @@
                                 data: 'cashDelivery',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
-                            {data: 'receivePlace'},
-                            {data: 'deliveryPlace'},
                             {
                                 data: 'applyDate',
                                 render: function (data, type, full, meta) {
@@ -603,6 +600,15 @@
                                         tr = "Nhập tay";
                                     else
                                         tr = "Giá dầu tăng"
+                                    return tr;
+                                }
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="btn btn-success btn-circle" onclick="postageView.showUpdateApplyDate(' + full.id + ')">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
                                     return tr;
                                 }
                             }
@@ -666,10 +672,10 @@
                     var data = _.find(postageView.dataPostage, function (o) {
                         return o.id == id;
                     });
-                    data = _.filter(postageView.dataPostage, function (o) {
-                        return o.customer_id == data['customer_id'];
+                    var dataDetail = _.filter(postageView.dataPostage, function (o) {
+                        return o.customer_id == data['customer_id'] && o.receivePlace == data['receivePlace'] && o.deliveryPlace == data['deliveryPlace'];
                     });
-                    postageView.fillDataToDatatablePostageDetail(data);
+                    postageView.fillDataToDatatablePostageDetail(dataDetail);
 
                     var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
                     $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
@@ -834,10 +840,12 @@
                             postageView.fillDataToDatatable(postageView.dataPostageFiltered);
 
                             var custId = parseInt($("#customer_id").attr('data-customerId'));
-                            var data = _.filter(postageView.dataPostage, function (o) {
-                                return o.customer_id == custId;
+                            var receivePlace = $("#receivePlace").val();
+                            var deliveryPlace = $("#deliveryPlace").val();
+                            var dataDetail = _.filter(postageView.dataPostage, function (o) {
+                                return o.customer_id == custId && o.receivePlace == receivePlace && o.deliveryPlace == deliveryPlace;
                             });
-                            postageView.fillDataToDatatablePostageDetail(data);
+                            postageView.fillDataToDatatablePostageDetail(dataDetail);
 
                             showNotification("success", "Cập nhật ngày áp dụng thành công!");
                             postageView.displayModal("hide", "#myModalNorm");
@@ -847,6 +855,16 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                },
+                showUpdateApplyDate: function(detailId){
+                    var postageDetail = _.find(postageView.dataPostage, function(o){
+                        return o.id == detailId;
+                    });
+
+                    $("#postage-id").val(postageDetail.id);
+                    var applyDate = moment(postageDetail.applyDate, "YYYY-MM-DD");
+                    $("input[id='apply-date']").datepicker('update', applyDate.format("DD-MM-YYYY"));
+                    postageView.displayModal('show', '#myModalNorm');
                 }
             };
             postageView.loadData();
