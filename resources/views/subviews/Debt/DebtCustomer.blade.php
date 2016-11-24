@@ -2139,13 +2139,15 @@
                         dataDetail_map = dataDetail_map.map(Number);
                         var dataDetail_sum = _.sum(dataDetail_map);
 
-                        if(paidAmt > hasVat - dataDetail_sum){
-                            paidAmt = hasVat - dataDetail_sum;
-                        }
-
                         if(statusCheck) {
+                            if(paidAmt > hasVat - dataDetail_sum - cashReceive){
+                                paidAmt = hasVat - dataDetail_sum - cashReceive;
+                            }
                             var debtInvoice = hasVat - (dataDetail_sum + paidAmt) - cashReceive;
                         } else {
+                            if(paidAmt > hasVat - dataDetail_sum){
+                                paidAmt = hasVat - dataDetail_sum;
+                            }
                             var debtInvoice = hasVat - (dataDetail_sum + paidAmt);
                         }
                     }
