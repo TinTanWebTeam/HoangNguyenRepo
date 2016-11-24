@@ -124,7 +124,7 @@
                                                 <div class="form-group form-md-line-input ">
                                                     <label for="createdDate"><b>Ngày tạo</b></label>
                                                     <input type="text" class="date ignore form-control" id="createdDate"
-                                                           name="createdDate">
+                                                           name="createdDate" disabled>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
