@@ -1432,7 +1432,7 @@
                             receiver: "required",
                             receivePlace: "required",
                             deliveryPlace: "required",
-                            voucherNumber: "required",
+//                            voucherNumber: "required",
                             voucherQuantumProduct: "required",
                             costs_note: "required"
                         },
@@ -1450,7 +1450,7 @@
                             receiver: "Vui lòng nhập người nhận",
                             receivePlace: "Vui lòng nhập nơi nhận",
                             deliveryPlace: "Vui lòng nhập nơi giao",
-                            voucherNumber: "Vui lòng nhập số chứng từ",
+//                            voucherNumber: "Vui lòng nhập số chứng từ",
                             voucherQuantumProduct: "Vui lòng nhập số lượng hàng trên chứng từ",
                             costs_note: "Vui lòng nhập ghi chú cho chi phí"
                         }

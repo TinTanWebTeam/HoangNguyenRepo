@@ -1160,7 +1160,6 @@
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
                     if (flag == 0) {
-                        debugger;
                         var dataAfterValidate = debtCustomerView.validateListTransport();
 
                         //
@@ -1608,7 +1607,7 @@
                     });
                     return result;
                 },
-                validateForm: function () {
+                validateFormJquery: function () {
                     $("#frmInvoice").validate({
                         rules: {
                             paidAmt: {
@@ -1622,6 +1621,14 @@
                             }
                         }
                     });
+                },
+                validateForm: function () {
+                    var totalPayReal = asNumberFromCurrency("#totalPay-real");
+                    if(totalPayReal <= 0){
+                        showNotification("warning", "Tiền xuất hóa đơn phải lớn hơn 0.");
+                        return false;
+                    }
+                    return true;
                 },
                 clearValidation: function (idForm) {
                     $(idForm).find("label[class=error]").remove();
@@ -1672,8 +1679,11 @@
                     });
                 },
                 saveInvoiceCustomer: function () {
-                    debtCustomerView.validateForm();
+                    debtCustomerView.validateFormJquery();
                     if ($("#frmInvoice").valid()) {
+                        if(!debtCustomerView.validateForm())
+                            return;
+
                         debtCustomerView.fillFormDataToCurrentObject();
 
                         var sendToServer = {
@@ -1693,7 +1703,6 @@
                             console.log("SERVER");
                             console.log(data);
                             if (jqXHR.status == 201) {
-                                debugger;
                                 debtCustomerView.dataTransport = data['transports'];
                                 debtCustomerView.dataSearch = data['transports'];
                                 debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
