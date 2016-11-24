@@ -28,7 +28,7 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <p class="lead text-primary text-left"><strong>Chi tiết doanh thu</strong></p>
+                    <p class="lead text-primary text-left"><strong>Doanh thu / lợi nhuận giao hàng</strong></p>
                     <div class="row">
                         <div class="col-md-7" id="dateSearchRevenueReport">
                             <input id="dateStart" type="text" class="date start"/> đến
@@ -40,10 +40,6 @@
                                     class="btn btn-sm btn-info marginRight"><i
                                         class="fa fa-search" aria-hidden="true"></i> Tìm
                             </button>
-                            <button class="btn btn-sm btn-default" onclick="revenueReportView.clearInput()">
-                                <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
-                            </button>
-
                         </div>
                     </div>
                     <br>
@@ -55,9 +51,9 @@
                                     <tr class="active">
                                         <th>Ngày</th>
                                         <th>Khách hàng</th>
-                                        <th>Doanh thu</th>
-                                        <th>Lợi nhuận ước tính</th>
-                                        <th>Lợi nhuận thực tế</th>
+                                        <th>Doanh thu giao hàng</th>
+                                        <th>Lợi nhuận giao hàng</th>
+                                        <th>Khách hàng nợ</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -70,7 +66,44 @@
                 </div>
                 <hr>
                 <div class="dataTable_wrapper">
-                    <p class="lead text-primary text-left"><strong>Doanh thu theo tháng</strong></p>
+                    <p class="lead text-primary text-left"><strong>Doanh thu đổ dầu, thay nhớt, đậu bãi, khác</strong></p>
+                    <div class="row">
+                        <div class="col-md-7" id="dateSearchRevenueReport">
+                            <input id="dateStart" type="text" class="date start"/> đến
+                            <input id="dateEnd" type="text" class="date end"/>
+
+                        </div>
+                        <div class="col-md-5" style="padding-left: 0">
+                            <button onclick="revenueReportView.searchDateToDate()" id="btnSearchTransport"
+                                    class="btn btn-sm btn-info marginRight"><i
+                                        class="fa fa-search" aria-hidden="true"></i> Tìm
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="table-data">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Khách hàng</th>
+                                        <th>Doanh thu giao hàng</th>
+                                        <th>Lợi nhuận giao hàng</th>
+                                        <th>Khách hàng nợ</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="dataTable_wrapper">
+                    <p class="lead text-primary text-left"><strong>Thống kê theo tháng</strong></p>
                     <div class="row">
                         <div class="col-md-2">
                             <div class="form-group form-md-line-input">
@@ -87,7 +120,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <table class="table table-bordered table-hover" id="table-data-year">
                                         <thead>
                                         <tr class="active">
@@ -102,12 +135,13 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="col-md-6 ">
-                                    <div id="container"></div>
-                                </div>
-
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="container"></div>
                     </div>
                 </div>
             </div>
@@ -226,30 +260,30 @@
                             type: 'column'
                         },
                         title: {
-                            text: 'Doanh thu / lợi nhuận theo tháng'
+                            text: 'Doanh thu / lợi nhuận giao hàng'
                         },
 
                         xAxis: {
                             categories: [
-                                'Jan',
-                                'Feb',
-                                'Mar',
-                                'Apr',
-                                'May',
-                                'Jun',
-                                'Jul',
-                                'Aug',
-                                'Sep',
-                                'Oct',
-                                'Nov',
-                                'Dec'
+                                'T1',
+                                'T2',
+                                'T3',
+                                'T4',
+                                'T5',
+                                'T6',
+                                'T7',
+                                'T8',
+                                'T9',
+                                'T10',
+                                'T11',
+                                'T12'
                             ],
                             crosshair: true
                         },
                         yAxis: {
                             min: 0,
                             title: {
-                                text: 'Đơn vị ( Vnd )'
+                                text: ' Triệu đồng'
                             }
                         },
                         tooltip: {
