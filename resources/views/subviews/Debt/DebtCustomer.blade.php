@@ -259,7 +259,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input ">
-                                                        <label for="debt"><b>Có thể xuất hóa đơn</b></label>
+                                                        <label for="debt"><b>Đã xuất hóa đơn</b></label>
                                                         <input type="text" class="form-control currency"
                                                                id="debt" name="debt" readonly>
                                                     </div>
@@ -272,11 +272,11 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <fieldset>
-                                            <legend>Nợ:</legend>
+                                            <legend>Thông tin nợ:</legend>
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-4">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="debtNotExportInvoice"><b>Nợ chưa xuất hóa đơn</b></label>
+                                                        <label for="debtNotExportInvoice"><b>Chưa xuất hóa đơn</b></label>
                                                         <input type="text" class="form-control currency"
                                                                name="debtNotExportInvoice" id="debtNotExportInvoice" readonly>
                                                     </div>
@@ -1149,19 +1149,23 @@
                         debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
                         debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
                         if(debtCustomerView.statusPrePaid === 0) {
-                            $("input[id=statusPrePaid]").attr('disabled', false);
-                            $("input[id=statusPrePaid]").prop('checked', false);
+//                            $("input[id=statusPrePaid]").attr('disabled', false);
+//                            $("input[id=statusPrePaid]").prop('checked', false);
+
+                            $("input[id=statusPrePaid]").attr('disabled', true);
+                            $("input[id=statusPrePaid]").prop('checked', true);
+                            debtCustomerView.statusPrePaid == 1;
                         } else {
                             $("input[id=statusPrePaid]").attr('disabled', true);
                             $("input[id=statusPrePaid]").prop('checked', false);
                         }
 
                         var _totalPay = 0;
-                        var _totalPayReal = 0;
-                        var _vat = 10;
-                        var _hasVat = 0;
+                        var _totalPayReal = dataAfterValidate['totalPayReal'];
+                        var _vat = dataAfterValidate['vat'];
+                        var _hasVat = dataAfterValidate['hasVat'];
                         var _paidAmt = 0;
-                        var _debtInvoice = 0;
+                        var _debtInvoice = dataAfterValidate['debtInvoice'];
                         //
 
                         $("input[id=invoice_id]").val('');

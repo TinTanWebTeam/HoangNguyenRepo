@@ -38,70 +38,7 @@ class DebtManagementController extends Controller
 
     public function getDataDebtCustomer()
     {
-        $transports = \DB::table('transports')
-            ->select('transports.*',
-                'products.name as products_name',
-                'customers.fullName as customers_fullName',
-                'vehicles.areaCode as vehicles_areaCode',
-                'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                'costs.cost', 'costs.note as costs_note',
-                'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
-                'statuses_tran.status as status_transport_',
-                'statuses_cust.status as status_customer_',
-                'statuses_gar.status as status_garage_',
-                'users_createdBy.fullName as users_createdBy',
-                'users_updatedBy.fullName as users_updatedBy'
-            )
-            ->leftJoin('products', 'products.id', '=', 'transports.product_id')
-            ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-            ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-            ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
-            ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
-            ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-            ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-            ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-            ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-            ->where('transports.active', 1)
-            ->get();
-
-        $invoiceCustomers = DB::table('invoiceCustomers')
-            ->select('invoiceCustomers.*',
-                'customers.fullName as customers_fullName',
-                'users_createdBy.fullName as users_createdBy',
-                'users_updatedBy.fullName as users_updatedBy'
-            )
-            ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
-            ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
-            ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-            ->where('invoiceCustomers.active', 1)
-            ->groupBy('invoiceCustomers.id')
-            ->get();
-
-        $invoiceCustomerDetails = DB::table('invoiceCustomerDetails')
-            ->get();
-
-        $printHistories = DB::table('printHistories')
-            ->leftJoin('users', 'users.id', '=', 'printHistories.updatedBy')
-            ->select('printHistories.*', 'users.fullName as users_fullName')
-            ->get();
-
-        $invoiceCode = $this->generateInvoiceCode('customer');
-
-        $transportInvoices = DB::table('transportInvoices')->get();
-
-        $response = [
-            'msg'                    => 'Get list all Transport',
-            'transports'             => $transports,
-            'invoiceCustomers'       => $invoiceCustomers,
-            'invoiceCustomerDetails' => $invoiceCustomerDetails,
-            'printHistories'         => $printHistories,
-            'invoiceCode'            => $invoiceCode,
-            'transportInvoices'      => $transportInvoices
-        ];
+        $response = $this->DataDebtCustomer();
         return response()->json($response, 200);
     }
 
@@ -271,8 +208,8 @@ class DebtManagementController extends Controller
             $sum_prePaid = array_sum($prePaid);
 
             /*
-            * Tiền trả trước > 0, cho dùng checkbox
-            * Tiền trả trước <= 0, ko cho dùng checkbox
+            * Tiền trả trước > 0, cho dùng checkbox, ép dùng trả trước
+            * Tiền trả trước <= 0, ko cho dùng checkbox, vô hiệu trả trước
             */
             if ($sum_prePaid > 0)
                 $statusPrePaid = 0;
@@ -295,6 +232,9 @@ class DebtManagementController extends Controller
                     'debtNotExportInvoice' => 0,
                     'debtExportInvoice' => 0,
                     'debtReal' => 0,
+                    'totalPayReal'         => 0,
+                    'hastVat'              => 0,
+                    'vat'                  => 0,
                     'statusPrePaid' => 0,
                     'msg' => ''
                 ];
@@ -315,8 +255,8 @@ class DebtManagementController extends Controller
             # payNeed
             $payNeed = $totalTransport - $prePaid;
 
-            # debt (Có thể xuất hóa đơn)
-            $debt = $totalTransport;
+            # debt (Đã xuất hóa đơn)
+            $debt = 0;
 
             # debtNotExportInvoice
             $debtNotExportInvoice = $totalTransport;
@@ -328,6 +268,15 @@ class DebtManagementController extends Controller
             $debtReal = $debtNotExportInvoice + $debtExportInvoice;
 
             # statusPrePaid
+            $vat = 10;
+            $totalPayReal = 0;
+            $hasVat = 0;
+            $debtInvoice = 0;
+            if($statusPrePaid == 0){
+                $totalPayReal = $prePaid;
+                $hasVat = $totalPayReal + ($totalPayReal * $vat / 100);
+                $debtInvoice = $hasVat;
+            }
 
             $response = [
                 'status'               => 1,
@@ -339,6 +288,10 @@ class DebtManagementController extends Controller
                 'debtNotExportInvoice' => $debtNotExportInvoice,
                 'debtExportInvoice'    => $debtExportInvoice,
                 'debtReal'             => $debtReal,
+                'totalPayReal'         => $totalPayReal,
+                'hastVat'              => $hasVat,
+                'vat'                  => $vat,
+                'debtInvoice'          => $debtInvoice,
                 'statusPrePaid'        => $statusPrePaid,
                 'msg'                  => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'
             ];
@@ -472,8 +425,7 @@ class DebtManagementController extends Controller
                 # payNeed
                 $payNeed = $totalTransport - $prePaid;
 
-                # debt (Có thể xuất hóa đơn)
-                $debt = $totalTransport;
+
 
                 # debtNotExportInvoice
                 $array_InvoiceId = $arrayInvoice;
@@ -481,6 +433,9 @@ class DebtManagementController extends Controller
                 $totalPay = $collectInvoice->pluck('totalPay')->toArray();
                 $totalPay = array_sum($totalPay);
                 $debtNotExportInvoice = $totalTransport - $totalPay;
+
+                # debt (Đã xuất hóa đơn)
+                $debt = $totalPay;
 
                 # debtExportInvoice
                 $hasVat = $collectInvoice->pluck('hasVAT')->toArray();
@@ -591,14 +546,16 @@ class DebtManagementController extends Controller
         # payNeed
         $payNeed = $totalTransport - $prePaid;
 
-        # debt (Có thể xuất hóa đơn)
-        $debt = $totalTransport;
+
 
         # debtNotExportInvoice
         $collectInvoice = InvoiceCustomer::whereIn('id', $array_InvoiceId)->get();
         $totalPay_ = $collectInvoice->pluck('totalPay')->toArray();
         $totalPay_ = array_sum($totalPay_);
         $debtNotExportInvoice = $totalTransport - $totalPay_;
+
+        # debt (Đã xuất hóa đơn)
+        $debt = $totalPay_;
 
         # debtExportInvoice
         $hasVat_ = $collectInvoice->pluck('hasVAT')->toArray();
