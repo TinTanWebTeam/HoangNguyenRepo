@@ -584,6 +584,13 @@ class CustomerManagementController extends Controller
 
     public function getDataTransport()
     {
+        $response = $this->DataTransport();
+
+        return response()->json($response, 200);
+    }
+
+    public function DataTransport()
+    {
         $transports = DB::table('transports')
             ->select('transports.*',
                 'products.name as products_name',
@@ -599,13 +606,15 @@ class CustomerManagementController extends Controller
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
             ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+//            ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+//            ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
             ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where('transports.active', 1)
-//            ->orderBy('receiveDate', 'desc')
+//            ->where(\DB::raw('DATE(transports.receiveDate)'), '<=', \DB::raw('DATE(driverVehicles.updated_at)'))
             ->get();
 
         $voucherTransports = VoucherTransport::all();
@@ -622,7 +631,7 @@ class CustomerManagementController extends Controller
             'costPrices'        => $costPrices
         ];
 
-        return response()->json($response, 200);
+        return $response;
     }
 
     public function postModifyTransport(Request $request)

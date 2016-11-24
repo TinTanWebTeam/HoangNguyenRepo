@@ -58,6 +58,7 @@
                             <span class="label label-danger" style="font-size: 1em;">Chưa trả</span>
                             <span class="label label-primary" style="font-size: 1em;">Đã trả trước</span>
                             <span class="label label-success" style="font-size: 1em;">Đã trả đủ</span>
+                            <span class="label label-info" style="font-size: 1em;">Đã xuất hóa đơn</span>
                         </div>
                     </div>
 
@@ -829,8 +830,11 @@
                                     else if (full.cashReceive > 0 && full.invoiceCode == ""){
                                         color = 'btn-primary';
                                         text = 'Click để trả đủ';
+                                    } else if (full.invoiceCode != ""){
+                                        color = 'btn-info';
+                                        text = 'Đã xuất hóa đơn';
                                     }
-
+                                    console.log(color);
 
                                     var tr = '';
                                     tr += '<div class="text-center" data-transportId="' + full.id + '">';

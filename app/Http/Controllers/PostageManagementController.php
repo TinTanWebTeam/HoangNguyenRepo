@@ -20,7 +20,7 @@ class PostageManagementController extends Controller
 
     public function getDataPostage()
     {
-        $response = $this->getData();
+        $response = $this->DataPostage();
         return response()->json($response, 200);
     }
 
@@ -97,7 +97,7 @@ class PostageManagementController extends Controller
                     }
                     DB::commit();
                     //Response
-                    $response = $this->getData();
+                    $response = $this->DataPostage();
                     return response()->json($response, 201);
                     break;
                 case 'update':
@@ -133,7 +133,7 @@ class PostageManagementController extends Controller
                     }
 
                     //Response
-                    $response = $this->getData();
+                    $response = $this->DataPostage();
                     return response()->json($response, 201);
                     break;
                 case 'delete':
@@ -169,7 +169,7 @@ class PostageManagementController extends Controller
             DB::commit();
 
             //Response
-            $response = $this->getData();
+            $response = $this->DataPostage();
             return response()->json($response, 201);
         } catch (Exception $ex) {
             DB::rollBack();
@@ -177,7 +177,7 @@ class PostageManagementController extends Controller
         }
     }
 
-    public function getData()
+    public function DataPostage()
     {
         $postageFiltered = DB::select("     
             select p.*, customers.fullName as customers_fullName
@@ -206,6 +206,7 @@ class PostageManagementController extends Controller
         ];
         return $response;
     }
+
     public function getDataCustomer()
     {
         $staffCustomers = DB::table('staffCustomers')
