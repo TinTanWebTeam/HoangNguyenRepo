@@ -604,6 +604,7 @@ class CustomerManagementController extends Controller
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
             ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
+            ->where('transports.active', 1)
 //            ->orderBy('receiveDate', 'desc')
             ->get();
 
@@ -774,7 +775,8 @@ class CustomerManagementController extends Controller
                         ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
                         ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
                         ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                        ->where('transports.id', '=', $transportNew->id)
+                        ->where('transports.id', $transportNew->id)
+                        ->where('transports.active', 1)
                         ->first();
 
                     $voucherTransport = VoucherTransport::where('transport_id', $transportNew->id)->get();
@@ -899,7 +901,8 @@ class CustomerManagementController extends Controller
                         ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
                         ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
                         ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                        ->where('transports.id', '=', $transportUpdate->id)
+                        ->where('transports.id', $transportUpdate->id)
+                        ->where('transports.active', 1)
                         ->first();
 
                     $voucherTransport = VoucherTransport::where('transport_id', $transportUpdate->id)->get();
