@@ -526,10 +526,10 @@ class DebtManagementController extends Controller
         $invoiceCode = $invoice->invoiceCode;
 
         # totalPay
-        $totalPay = $invoice->totalPay;
+        $totalPay = (int)$invoice->totalPay;
         $totalPayReal = $totalPay;
         if($statusPrePaid == 1)
-            $totalPayReal += $invoice->prePaid;
+            $totalPay -= $invoice->prePaid;
 
         # vat
         $vat = $invoice->VAT;
@@ -636,40 +636,6 @@ class DebtManagementController extends Controller
 
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
-
-            //Kiem tra xem cac transport nay da xuat hoa don chua
-            //Neu da xuat hoa don thi kiem tra xem ma cac hoa don do co giong nhau khong
-            //Neu giong nhau tien hanh them hoa don them lan nua
-
-            //Kiểm tra xem đã xuất hđ hay chưa
-            $kt = false;
-            $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)->get();
-            if (count($array_transportInvoice) > 0)
-                $kt = true;
-
-            //Nếu đã xuất hóa đơn
-            if ($kt) {
-                $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])->pluck('invoiceCustomer_id');
-                if ($arrayInvoice == null) {
-                    return response()->json(['msg' => 'Không tìm thấy arrayInvoice'], 203);
-                };
-                $array_match = true;
-                foreach ($arrayInvoice as $invoiceId) {
-                    $arrayTransport = TransportInvoice::where('invoiceCustomer_id', $invoiceId)->pluck('transport_id');
-                    if ($arrayTransport == null) {
-                        return response()->json(['msg' => 'Không tìm thấy arrayTransport'], 203);
-                    }
-                    $collectTransportStock = collect($array_transportId);
-                    $diff = $collectTransportStock->diff($arrayTransport);
-                    if (count($diff->all()) > 0) {
-                        //khac nhau
-                        $array_match = false;
-                    }
-                }
-                if (!$array_match) {
-                    return response()->json(['msg' => 'Các đơn hàng đã chọn không khớp nhau.'], 203);
-                }
-            }
 
             $invoiceCustomer = new InvoiceCustomer();
 
