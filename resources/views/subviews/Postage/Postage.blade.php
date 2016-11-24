@@ -439,6 +439,10 @@
                     postageView.renderDateTimePicker();
                     postageView.renderScrollbar();
                     postageView.renderEventRowClick();
+
+                    renderAutoCompleteSearch('#receivePlace', array_city);
+                    renderAutoCompleteSearch('#deliveryPlace', array_city);
+
                     formatCurrency(".currency");
                     setEventFormatCurrency(".currency");
                     defaultZero("#postage");
