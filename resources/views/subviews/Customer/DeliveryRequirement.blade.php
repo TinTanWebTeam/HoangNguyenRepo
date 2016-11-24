@@ -898,6 +898,9 @@
                     transportView.loadListProduct();
                     transportView.loadListCustomer();
                     transportView.loadListVehicle();
+                    renderAutoCompleteSearch('#receivePlace', array_city);
+                    renderAutoCompleteSearch('#deliveryPlace', array_city);
+
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     defaultZero("#cashRevenue");
