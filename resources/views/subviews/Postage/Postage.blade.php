@@ -80,7 +80,7 @@
     <div id="divControl" class="col-md-offset-6 col-md-6 col-sm-offset-4 col-sm-8 col-xs-offset-0 col-xs-12">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">
-                <span>Cập nhật cước phí</span>
+                <span class="titleControl">Cập nhật cước phí</span>
                 <div class="menu-toggles pull-right" onclick="postageView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
                 </div>
@@ -681,6 +681,8 @@
                     $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
                     $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
                     $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
+
+                    $("#divControl").find(".titleControl").html("Cập nhật cước phí");
                 },
                 addPostage: function () {
                     if (postageView.tablePostageDetail != null)
@@ -697,6 +699,8 @@
                     $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
                     $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
                     $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
+
+                    $("#divControl").find(".titleControl").html("Thêm mới cước phí");
                 },
                 deletePostage: function (id) {
                     postageView.action = 'delete';
