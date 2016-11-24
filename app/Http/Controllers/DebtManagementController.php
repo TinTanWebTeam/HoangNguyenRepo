@@ -124,48 +124,15 @@ class DebtManagementController extends Controller
 
             $transportUpdate->updatedBy = \Auth::user()->id;
 
-            if ($transportUpdate->update()) {
-                //Response
-                $transport = \DB::table('transports')
-                    ->select('transports.*',
-                        'products.name as products_name',
-                        'customers.fullName as customers_fullName',
-                        'vehicles.areaCode as vehicles_areaCode',
-                        'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                        'costs.cost', 'costs.note as costs_note',
-                        'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
-                        'statuses_tran.status as status_transport_',
-                        'statuses_cust.status as status_customer_',
-                        'statuses_gar.status as status_garage_',
-                        'users_createdBy.fullName as users_createdBy',
-                        'users_updatedBy.fullName as users_updatedBy'
-                    )
-                    ->leftJoin('products', 'products.id', '=', 'transports.product_id')
-                    ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-                    ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
-                    ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
-                    ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-                    ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-                    ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-                    ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                    ->where([
-                        ['transports.active', '=', 1],
-                        ['transports.id', '=', $transportUpdate->id]
-                    ])
-                    ->first();
-
-                $response = [
-                    'msg'       => 'Updated transport',
-                    'transport' => $transport
-                ];
-                DB::commit();
-                return response()->json($response, 201);
+            if (!$transportUpdate->update()) {
+                DB::rollBack();
+                return response()->json(['msg' => 'Update failed'], 404);
             }
-            DB::rollBack();
-            return response()->json(['msg' => 'Update failed'], 404);
+            DB::commit();
+            //Response
+            $response = $this->DataDebtCustomer();
+
+            return response()->json($response, 201);
         } catch (Exception $ex) {
             DB::rollBack();
             return response()->json(['msg' => $ex], 404);
@@ -272,7 +239,7 @@ class DebtManagementController extends Controller
             $totalPayReal = 0;
             $hasVat = 0;
             $debtInvoice = 0;
-            if($statusPrePaid == 0){
+            if ($statusPrePaid == 0) {
                 $totalPayReal = $prePaid;
                 $hasVat = $totalPayReal + ($totalPayReal * $vat / 100);
                 $debtInvoice = $hasVat;
@@ -317,8 +284,7 @@ class DebtManagementController extends Controller
             };
 
 
-
-            if(count($arrayInvoice) == 0){
+            if (count($arrayInvoice) == 0) {
                 $response = [
                     'status'   => 0,
                     'totalPay' => 0,
@@ -426,7 +392,6 @@ class DebtManagementController extends Controller
                 $payNeed = $totalTransport - $prePaid;
 
 
-
                 # debtNotExportInvoice
                 $array_InvoiceId = $arrayInvoice;
                 $collectInvoice = InvoiceCustomer::whereIn('id', $array_InvoiceId)->get();
@@ -528,7 +493,7 @@ class DebtManagementController extends Controller
         # totalPay
         $totalPay = (int)$invoice->totalPay;
         $totalPayReal = $totalPay;
-        if($statusPrePaid == 1)
+        if ($statusPrePaid == 1)
             $totalPay -= $invoice->prePaid;
 
         # vat
@@ -539,7 +504,7 @@ class DebtManagementController extends Controller
 
         # debtInvoice
         $debtInvoice = $invoice->hasVAT - $invoice->totalPaid;
-        if($statusPrePaid == 1)
+        if ($statusPrePaid == 1)
             $debtInvoice -= $invoice->prePaid;
 
         # totalTransport
@@ -553,7 +518,6 @@ class DebtManagementController extends Controller
 
         # payNeed
         $payNeed = $totalTransport - $prePaid;
-
 
 
         # debtNotExportInvoice
@@ -712,30 +676,8 @@ class DebtManagementController extends Controller
 
                 DB::commit();
 
-                $invoiceCustomer = DB::table('invoiceCustomers')
-                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
-                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
-                    ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                    ->where([
-                        ['invoiceCustomers.id', '=', $invoiceCustomer->id],
-                        ['invoiceCustomers.active', '=', 1]
-                    ])
-                    ->select('invoiceCustomers.*',
-                        'customers.fullName as customers_fullName',
-                        'users_createdBy.fullName as users_createdBy',
-                        'users_updatedBy.fullName as users_updatedBy'
-                    )
-                    ->groupBy('invoiceCustomers.id')
-                    ->first();
+                $response = $this->DataDebtCustomer();
 
-                $response = [
-                    'msg'                   => 'Create Invoice successful!',
-                    'invoiceCustomer'       => $invoiceCustomer,
-                    'invoiceCustomerDetail' => $invoiceCustomerDetail,
-                    'invoiceCode'           => $this->generateInvoiceCode('customer')
-                ];
                 return response()->json($response, 201);
             } catch (Exception $ex) {
                 DB::rollBack();
@@ -780,32 +722,19 @@ class DebtManagementController extends Controller
 
                 DB::commit();
 
-                $invoiceCustomer = DB::table('invoiceCustomers')
-                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceCustomer_id', '=', 'invoiceCustomers.id')
-                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
-                    ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                    ->where([
-                        ['invoiceCustomers.id', '=', $invoiceCustomer->id],
-                        ['invoiceCustomers.active', '=', 1]
-                    ])
-                    ->select('invoiceCustomers.*',
-                        'customers.fullName as customers_fullName',
-                        'users_createdBy.fullName as users_createdBy',
-                        'users_updatedBy.fullName as users_updatedBy'
-                    )
-                    ->groupBy('invoiceCustomers.id')
-                    ->first();
+                $arrayResponse = $this->DataDebtCustomer();
 
                 $arrayInput = $this->ValidateInvoiceCustomer($invoiceId);
 
                 $response = [
-                    'msg'                   => 'Create Invoice successful!',
-                    'invoiceCustomer'       => $invoiceCustomer,
-                    'invoiceCustomerDetail' => $invoiceCustomerDetail,
-                    'invoiceCode'           => $this->generateInvoiceCode('customer'),
-                    'arrayInput'            => $arrayInput
+                    'msg'                    => $arrayResponse['msg'],
+                    'transports'             => $arrayResponse['transports'],
+                    'invoiceCustomers'       => $arrayResponse['invoiceCustomers'],
+                    'invoiceCustomerDetails' => $arrayResponse['invoiceCustomerDetails'],
+                    'printHistories'         => $arrayResponse['printHistories'],
+                    'invoiceCode'            => $arrayResponse['invoiceCode'],
+                    'transportInvoices'      => $arrayResponse['transportInvoices'],
+                    'arrayInput'             => $arrayInput
                 ];
                 return response()->json($response, 201);
             } catch (Exception $ex) {
@@ -858,13 +787,11 @@ class DebtManagementController extends Controller
                 return response()->json(['msg' => 'Delete InvoiceCustomer fail.'], 404);
             }
 
-            //Response
-            $response = [
-                'msg'                    => 'Delete InvoiceCustomer successful!',
-                'invoiceCustomer'        => $invoiceCustomerId,
-                'invoiceCustomerDetails' => $array_invoiceCustomerDetailId
-            ];
             DB::commit();
+
+            //Response
+            $response = $this->DataDebtCustomer();
+
             return response()->json($response, 201);
         } catch (Exception $ex) {
             DB::rollBack();
@@ -933,11 +860,17 @@ class DebtManagementController extends Controller
 
                 $arrayInput = $this->ValidateInvoiceCustomer($invoiceCustomer_id);
 
+                $arrayResponse = $this->DataDebtCustomer();
+
                 $response = [
-                    'msg'                   => 'Delete InvoiceCustomer successful!',
-                    'invoiceCustomer'       => $invoiceCustomer,
-                    'invoiceCustomerDetail' => $invoiceCustomerDetailId,
-                    'arrayInput'            => $arrayInput
+                    'msg'                    => $arrayResponse['msg'],
+                    'transports'             => $arrayResponse['transports'],
+                    'invoiceCustomers'       => $arrayResponse['invoiceCustomers'],
+                    'invoiceCustomerDetails' => $arrayResponse['invoiceCustomerDetails'],
+                    'printHistories'         => $arrayResponse['printHistories'],
+                    'invoiceCode'            => $arrayResponse['invoiceCode'],
+                    'transportInvoices'      => $arrayResponse['transportInvoices'],
+                    'arrayInput'             => $arrayInput
                 ];
             } else {
 
@@ -964,11 +897,7 @@ class DebtManagementController extends Controller
                 }
 
                 //Response
-                $response = [
-                    'msg'                   => 'Delete InvoiceCustomer successful!',
-                    'invoiceCustomer'       => $invoiceCustomer_id,
-                    'invoiceCustomerDetail' => $invoiceCustomerDetailId
-                ];
+                $response = $this->DataDebtCustomer();
             }
 
             DB::commit();
@@ -1483,14 +1412,14 @@ class DebtManagementController extends Controller
                 DB::rollBack();
                 return response()->json(['msg' => 'Delete InvoiceGarage fail.'], 404);
             }
-
+            DB::commit();
             //Response
             $response = [
                 'msg'                  => 'Delete InvoiceGarage successful!',
                 'invoiceGarage'        => $invoiceGarageId,
                 'invoiceGarageDetails' => $array_invoiceGarageDetailId
             ];
-            DB::commit();
+
             return response()->json($response, 201);
         } catch (Exception $ex) {
             DB::rollBack();

@@ -120,6 +120,7 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
+                                        <th>Chi tiết</th>
                                         <th>Khách hàng</th>
                                         <th>Mã hóa đơn</th>
                                         <th>Số xe</th>
@@ -304,14 +305,14 @@
                                         <fieldset>
                                             <legend>Hóa đơn:
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <span style="font-size: 13px;">Thêm tiền đã nhận: </span>
+                                                <span style="font-size: 13px;">Xuất HĐ tiền đã nhận: </span>
                                                 <input type="checkbox" id="statusPrePaid" name="statusPrePaid"
                                                        onchange="debtCustomerView.renderEventCheckbox(this)">
                                             </legend>
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="totalPay"><b>Xuất hóa đơn</b></label>
+                                                        <label for="totalPay"><b>Trả</b></label>
                                                         <input type="text" class="form-control currency"
                                                                id="totalPay" name="totalPay" data-totalTransport=""
                                                                onkeyup="debtCustomerView.computeWhenChangeTotalPay(this.value)">
@@ -320,7 +321,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="totalPay-real"><b>Xuất HĐ thực tế</b></label>
+                                                        <label for="totalPay-real"><b>Xuất HĐ</b></label>
                                                         <input type="text" class="form-control currency"
                                                                name="totalPay-real" id="totalPay-real" readonly>
                                                     </div>
@@ -345,7 +346,7 @@
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-4">
                                                     <div class="form-group form-md-line-input ">
-                                                        <label for="paidAmt" class="red"><b>Trả trên hóa đơn</b></label>
+                                                        <label for="paidAmt" class="red"><b>Nhận tiền</b></label>
                                                         <input type="text" class="form-control currency defaultZero"
                                                                id="paidAmt" name="paidAmt"
                                                                onkeyup="debtCustomerView.computeWhenChangePaidAmt(this.value)">
@@ -658,7 +659,7 @@
                         if (transport.transportType === 1)
                             return;
 
-                        if (tr.find('td:eq(0)').text() == td.text()) {
+                        if (tr.find('td:eq(1)').text() == td.text()) {
                             $("input[id=custName_transport]").val(td.text());
                             debtCustomerView.searchTransport();
                             debtCustomerView.selectAll();
@@ -722,10 +723,14 @@
                     $("input[id=totalPay-real]").val(totalPayReal);
                     $("input[id=hasVAT]").val(hasVat);
                     $("input[id=debtInvoice]").val(debtInvoice);
+                    formatCurrency(".currency");
                 },
 
                 fillDataToDatatable: function (data) {
 //                    removeDataTable();
+                    if(debtCustomerView.table != null)
+                        debtCustomerView.table.destroy();
+
                     for (var i = 0; i < data.length; i++) {
                         if (data[i]['transportType'] === 1) {
                             data[i].fullNumber = data[i]['vehicle_name'];
@@ -766,6 +771,11 @@
                             {
                                 data: 'id',
                                 visible: false
+                            },
+                            {
+                                render: function(){
+                                    return "";
+                                }
                             },
                             {data: 'customers_fullName'},
                             {
@@ -835,6 +845,23 @@
 //                        fixedHeader: {
 //                            header: true
 //                        },
+                        responsive: true,
+                        columnDefs: [
+                            {responsivePriority: 1, targets: 1},
+                            {responsivePriority: 2, targets: 2},
+                            {responsivePriority: 3, targets: 3},
+                            {responsivePriority: 4, targets: 4},
+                            {responsivePriority: 5, targets: 5},
+                            {responsivePriority: 6, targets: 6},
+                            {responsivePriority: 7, targets: 7},
+                            {responsivePriority: 8, targets: 8},
+                            {responsivePriority: 9, targets: 9},
+                            {responsivePriority: 10, targets: 10},
+                            {responsivePriority: 14, targets: 11}, //Nguoi sua
+                            {responsivePriority: 13, targets: 12}, //Nguoi tao
+                            {responsivePriority: 11, targets: 13},
+                            {responsivePriority: 12, targets: 14}
+                        ],
                         order: [[0, "desc"]],
                         dom: 'T<"clear">Bfrtip',
                         tableTools: {
@@ -888,6 +915,9 @@
 //                    pushDataTable(debtCustomerView.table);
                 },
                 fillDataToDatatableInvoiceCustomer: function (data) {
+                    if(debtCustomerView.tableInvoiceCustomer != null)
+                        debtCustomerView.tableInvoiceCustomer.destroy();
+
                     for (var i = 0; i < data.length; i++) {
                         if(data[i]['statusPrePaid'] === 1){
                             data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'] - data[i]['prePaid'];
@@ -1325,42 +1355,21 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            invoiceCustomerId = data['invoiceCustomer'];
-                            array_invoiceCustomerDetailId = data['invoiceCustomerDetails'];
+                            debtCustomerView.dataTransport = data['transports'];
+                            debtCustomerView.dataSearch = data['transports'];
+                            debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
+                            debtCustomerView.dataPrintHistory = data['printHistories'];
+                            debtCustomerView.dataTransportInvoice = data['transportInvoices'];
+                            debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                            debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
+                            debtCustomerView.invoiceCode = data['invoiceCode'];
 
-                            //Remove invoiceCustomer
-                            Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
-                                return o.id == invoiceCustomerId;
-                            });
-                            indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
-                            debtCustomerView.dataInvoiceCustomer.splice(indexOf, 1);
+                            debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
+                            debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
 
-                            //Remove invoiceCustomerDetail
-                            for (var i = 0; i < array_invoiceCustomerDetailId.length; i++) {
-                                Old = _.find(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
-                                    return o.id == array_invoiceCustomerDetailId[i];
-                                });
-                                indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomerDetail, Old);
-                                debtCustomerView.dataInvoiceCustomerDetail.splice(indexOf, 1);
-                            }
-
-                            //Remove InvoiceCustomer_id in Transport
-                            dataTransport = _.filter(debtCustomerView.dataTransport, function (o) {
-                                return o.invoiceCustomer_id == invoiceCustomerId;
-                            });
-                            for (i = 0; i < dataTransport.length; i++) {
-                                dataTransport[i]['invoiceCustomer_id'] = null;
-                                dataTransport[i]['invoiceCode'] = null;
-                            }
-                            debtCustomerView.dataSearch = debtCustomerView.dataTransport;
                             debtCustomerView.searchTransport();
-
-                            //reload table
-                            debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
-
-                            //call search Method
-                            debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
                             debtCustomerView.searchInvoice();
+
 
                             //Show notification
                             showNotification("success", "Xóa hóa đơn thành công!");
@@ -1409,39 +1418,20 @@
                         console.log(data);
                         if (jqXHR.status == 201) {
                             if (action == 'delete1') {
-                                var invoiceCustomer = data['invoiceCustomer'];
-                                invoiceCustomer.debt = invoiceCustomer['hasVAT'] - invoiceCustomer['totalPaid'];
-                                if(invoiceCustomer['statusPrePaid'] == 1){
-                                    invoiceCustomer.debt -= invoiceCustomer['prePaid'];
-                                }
-                                var invoiceCustomerDetailId = data['invoiceCustomerDetail'];
+                                debtCustomerView.dataTransport = data['transports'];
+                                debtCustomerView.dataSearch = data['transports'];
+                                debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
+                                debtCustomerView.dataPrintHistory = data['printHistories'];
+                                debtCustomerView.dataTransportInvoice = data['transportInvoices'];
+                                debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                                debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
+                                debtCustomerView.invoiceCode = data['invoiceCode'];
 
-                                //Update invoiceCustomer
-                                Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
-                                    return o.id == invoiceCustomer['id'];
-                                });
-                                indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
-                                debtCustomerView.dataInvoiceCustomer.splice(indexOf, 1, invoiceCustomer);
+                                debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
+                                debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
+                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(debtCustomerView.dataInvoiceCustomerDetail);
 
-                                //Remove invoiceCustomerDetail
-                                Old = _.find(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
-                                    return o.id == invoiceCustomerDetailId;
-                                });
-                                indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomerDetail, Old);
-                                debtCustomerView.dataInvoiceCustomerDetail.splice(indexOf, 1);
-
-                                //reload table
-                                debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
-
-                                //fill data to table InvoiceCustomerDetail
-                                var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
-                                    return o.invoiceCustomer_id == invoiceCustomer['id'];
-                                });
-                                if (typeof dataDetail === 'undefined') return;
-                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
-
-                                //call search Method
-                                debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
+                                debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
 
                                 var debtInvoice = data['arrayInput']['debtInvoice'];
@@ -1459,39 +1449,19 @@
                                 showNotification("success", "Xóa chi tiết đơn hàng thành công!");
                                 debtCustomerView.displayModal("hide", "#modal-notification");
                             } else {
-                                var invoiceCustomerId = data['invoiceCustomer'];
-                                var invoiceCustomerDetailId = data['invoiceCustomerDetail'];
+                                debtCustomerView.dataTransport = data['transports'];
+                                debtCustomerView.dataSearch = data['transports'];
+                                debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
+                                debtCustomerView.dataPrintHistory = data['printHistories'];
+                                debtCustomerView.dataTransportInvoice = data['transportInvoices'];
+                                debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                                debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
+                                debtCustomerView.invoiceCode = data['invoiceCode'];
 
-                                //Remove invoiceCustomer
-                                var Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
-                                    return o.id == invoiceCustomerId;
-                                });
-                                var indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
-                                debtCustomerView.dataInvoiceCustomer.splice(indexOf, 1);
+                                debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
+                                debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
 
-                                //Remove invoiceCustomerDetail
-                                Old = _.find(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
-                                    return o.id == invoiceCustomerDetailId;
-                                });
-                                indexOf = _.indexOf(debtCustomerView.dataInvoiceCustomerDetail, Old);
-                                debtCustomerView.dataInvoiceCustomerDetail.splice(indexOf, 1);
-
-                                //Remove InvoiceCustomer_id in Transport
-                                var dataTransport = _.filter(debtCustomerView.dataTransport, function (o) {
-                                    return o.invoiceCustomer_id == invoiceCustomerId;
-                                });
-                                for (i = 0; i < dataTransport.length; i++) {
-                                    dataTransport[i]['invoiceCustomer_id'] = null;
-                                    dataTransport[i]['invoiceCode'] = null;
-                                }
-                                debtCustomerView.dataSearch = debtCustomerView.dataTransport;
                                 debtCustomerView.searchTransport();
-
-                                //reload table
-                                debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
-
-                                //call search Method
-                                debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
                                 debtCustomerView.searchInvoice();
 
                                 //Show notification
@@ -1672,43 +1642,20 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            //Remove and Add Transport
-                            var Old = _.find(debtCustomerView.dataTransport, function (o) {
-                                return o.id == sendToServer._transport;
-                            });
-                            var indexOfOld = _.indexOf(debtCustomerView.dataTransport, Old);
-                            data['transport'].fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + ' ' + data['transport']['vehicles_vehicleNumber'];
-                            data['transport'].debt = data['transport']['cashRevenue'] - data['transport']['cashReceive'];
+                            debtCustomerView.dataTransport = data['transports'];
+                            debtCustomerView.dataSearch = data['transports'];
+                            debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
+                            debtCustomerView.dataPrintHistory = data['printHistories'];
+                            debtCustomerView.dataTransportInvoice = data['transportInvoices'];
+                            debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                            debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
+                            debtCustomerView.invoiceCode = data['invoiceCode'];
 
-                            var transportInvoice = _.filter(debtCustomerView.dataTransportInvoice, function(o){
-                                return o.transport_id == data['id'];
-                            });
+                            debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
+                            debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
 
-                            if(transportInvoice.length > 0){
-                                transportInvoice = _.map(transportInvoice, 'invoiceCustomer_id');
-                                var invoice = _.filter(debtCustomerView.dataInvoiceCustomer, function(o){
-                                    return _.includes(transportInvoice, o.id);
-                                });
-                                if(invoice.length > 0){
-                                    invoice = _.map(invoice, 'invoiceCode');
-                                    data.invoiceCode = invoice.toString();
-                                }
-                                else {
-                                    data.invoiceCode = "";
-                                }
-                            }
-                            else {
-                                data.invoiceCode = "";
-                            }
-
-                            debtCustomerView.dataTransport.splice(indexOfOld, 1, data['transport']);
-
-                            //reload 2 table
-                            debtCustomerView.table.clear().rows.add(debtCustomerView.dataTransport).draw();
-
-                            //call search Method
-                            debtCustomerView.dataSearch = debtCustomerView.dataTransport;
                             debtCustomerView.searchTransport();
+                            debtCustomerView.searchInvoice();
 
                             //clear Input
                             debtCustomerView.clearInput();
@@ -1745,41 +1692,23 @@
                             console.log("SERVER");
                             console.log(data);
                             if (jqXHR.status == 201) {
-                                var invoiceCustomer = data['invoiceCustomer'];
-                                var invoiceCustomerDetail = data['invoiceCustomerDetail'];
+                                debtCustomerView.dataTransport = data['transports'];
+                                debtCustomerView.dataSearch = data['transports'];
+                                debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
+                                debtCustomerView.dataPrintHistory = data['printHistories'];
+                                debtCustomerView.dataTransportInvoice = data['transportInvoices'];
+                                debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                                debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
                                 debtCustomerView.invoiceCode = data['invoiceCode'];
-                                if(invoiceCustomer['statusPrePaid'] === 1){
-                                    invoiceCustomer.debt = parseInt(invoiceCustomer['hasVAT']) - parseInt(invoiceCustomer['totalPaid']) - parseInt(invoiceCustomer['prePaid']);
-                                } else {
-                                    invoiceCustomer.debt = parseInt(invoiceCustomer['hasVAT']) - parseInt(invoiceCustomer['totalPaid']);
-                                }
 
+                                debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
+                                debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
+                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(debtCustomerView.dataInvoiceCustomerDetail);
+
+                                debtCustomerView.searchTransport();
+                                debtCustomerView.searchInvoice();
 
                                 if (debtCustomerView.action == 'new') {
-                                    //Update invoiceCode for Transports
-                                    for (var i = 0; i < debtCustomerView.array_transportId.length; i++) {
-                                        var Old = _.find(debtCustomerView.dataTransport, function (o) {
-                                            return o.id == debtCustomerView.array_transportId[i];
-                                        });
-                                        Old['invoiceCode'] = Old['invoiceCode'] + ", " + invoiceCustomer['invoiceCode'];
-                                    }
-
-                                    //add InvoiceCustomer
-                                    debtCustomerView.dataInvoiceCustomer.push(invoiceCustomer);
-
-                                    //add InvoiceCustomerDetails
-                                    debtCustomerView.dataInvoiceCustomerDetail.push(invoiceCustomerDetail);
-
-                                    //reload 2 table & search
-                                    debtCustomerView.dataSearch = [];
-                                    debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
-                                    debtCustomerView.tagsCustomerNameTransport = [];
-                                    debtCustomerView.searchTransport();
-
-                                    debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
-                                    debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataSearchInvoiceCustomer).draw();
-                                    debtCustomerView.searchInvoice();
-
                                     //clear Input
                                     debtCustomerView.clearInput();
                                     debtCustomerView.clearValidation("#frmInvoice");
@@ -1788,30 +1717,6 @@
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 } else {
-                                    //Remove & Add InvoiceCustomer
-                                    var Old = _.find(debtCustomerView.dataInvoiceCustomer, function (o) {
-                                        return o.id == sendToServer._invoiceCustomer.id;
-                                    });
-                                    var indexOfOld = _.indexOf(debtCustomerView.dataInvoiceCustomer, Old);
-                                    debtCustomerView.dataInvoiceCustomer.splice(indexOfOld, 1, invoiceCustomer);
-
-                                    //add InvoiceCustomerDetails
-                                    debtCustomerView.dataInvoiceCustomerDetail.push(invoiceCustomerDetail);
-
-                                    //reload table
-                                    debtCustomerView.tableInvoiceCustomer.clear().rows.add(debtCustomerView.dataInvoiceCustomer).draw();
-
-                                    //fill data to table InvoiceCustomerDetail
-                                    var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
-                                        return o.invoiceCustomer_id == sendToServer._invoiceCustomer.id;
-                                    });
-                                    if (typeof dataDetail === 'undefined') return;
-                                    debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
-
-                                    //call search Method
-                                    debtCustomerView.dataSearchInvoiceCustomer = debtCustomerView.dataInvoiceCustomer;
-                                    debtCustomerView.searchInvoice();
-
                                     //clear Input
                                     $("input[id=paidAmt]").val('');
                                     $("textarea[id=note]").val('');
