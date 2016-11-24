@@ -441,7 +441,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row hide">
                             <div class="col-md-12">
                                 <span class="text text-primary">Lịch sử in</span>
                                 <div class="table-responsive">
@@ -808,7 +808,7 @@
                                 render: function (data, type, full, meta) {
                                     var color = 'btn-default';
                                     var text = '';
-                                    if (full.cashReceive == 0 && full.invoiceCustomer == null){
+                                    if (full.cashReceive == 0 && full.invoiceCode == ""){
                                         color = 'btn-danger';
                                         text = 'Click để trả đủ';
                                     }
@@ -816,7 +816,7 @@
                                         color = 'btn-success';
                                         text = 'Đã trả đủ';
                                     }
-                                    else if (full.cashReceive > 0 && full.invoiceCustomer == null){
+                                    else if (full.cashReceive > 0 && full.invoiceCode == ""){
                                         color = 'btn-primary';
                                         text = 'Click để trả đủ';
                                     }

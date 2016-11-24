@@ -451,6 +451,10 @@ class DebtManagementController extends Controller
                 $debtReal = $debtNotExportInvoice + $debtExportInvoice;
 
                 # statusPrePaid
+                $vat = 10;
+                $totalPayReal = 0;
+                $hasVat = 0;
+                $debtInvoice = 0;
 
                 $response = [
                     'status'               => 2,
@@ -462,6 +466,10 @@ class DebtManagementController extends Controller
                     'debtNotExportInvoice' => $debtNotExportInvoice,
                     'debtExportInvoice'    => $debtExportInvoice,
                     'debtReal'             => $debtReal,
+                    'totalPayReal'         => $totalPayReal,
+                    'hastVat'              => $hasVat,
+                    'vat'                  => $vat,
+                    'debtInvoice'          => $debtInvoice,
                     'statusPrePaid'        => $statusPrePaid,
                     'msg'                  => 'Các đơn hàng khớp nhau'
                 ];
