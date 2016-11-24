@@ -508,7 +508,7 @@
                     }
                 },
                 addParkingCost: function () {
-                    $("#divControl").find(".titleControl").html("Thêm mới phí đậu bãi");
+                    $("#divControl").find(".titleControl").html("Thêm mới chi phí đậu bãi");
                     parkingCostView.renderDateTimePicker();
                     parkingCostView.current = null;
                     parkingCostView.action = 'add';

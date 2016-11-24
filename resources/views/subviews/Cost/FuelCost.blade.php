@@ -646,7 +646,7 @@
                 },
                 addNewFuelCost: function () {
                     fuelCostView.renderDateTimePicker();
-                    $("#divControl").find(".titleControl").html("Thêm mới chi phi");
+                    $("#divControl").find(".titleControl").html("Thêm mới chi phí dầu");
                     fuelCostView.action = 'add';
                     fuelCostView.inputPrice();
                     fuelCostView.show();

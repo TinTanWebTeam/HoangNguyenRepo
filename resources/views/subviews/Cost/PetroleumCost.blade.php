@@ -632,7 +632,7 @@
 
                 },
                 addPetroleum: function () {
-                    $("#divControl").find(".titleControl").html("Thêm mới phí thay nhớt");
+                    $("#divControl").find(".titleControl").html("Thêm mới chi phí thay nhớt");
                     petroleumCostView.renderDateTimePicker();
                     petroleumCostView.current = null;
                     petroleumCostView.action = 'add';
