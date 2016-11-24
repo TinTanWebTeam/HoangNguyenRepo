@@ -206,6 +206,7 @@
                                 <tr class="active">
                                     <th>Mã</th>
                                     <th>Cước phí</th>
+                                    <th>Phí giao xe</th>
                                     <th>Nơi nhận</th>
                                     <th>Nơi giao</th>
                                     <th>Ngày áp dụng</th>
@@ -577,6 +578,10 @@
                             },
                             {
                                 data: 'postage',
+                                render: $.fn.dataTable.render.number(".", ",", 0)
+                            },
+                            {
+                                data: 'cashDelivery',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
                             {data: 'receivePlace'},
