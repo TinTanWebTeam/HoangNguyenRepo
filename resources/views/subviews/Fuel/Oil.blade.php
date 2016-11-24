@@ -201,9 +201,9 @@
                                 }).done(function (data, textStatus, jqXHR) {
                                     if (jqXHR.status == 201) {
                                         var indexOilPriceOld = _.findIndex(oilPriceView.dataForTableOilPrice, function (o) {
-                                            return o.id == oilPriceView.oilObject.id;
-                                        });
-                                        oilPriceView.dataForTableOilPrice.splice(indexOilPriceOld, 1, data);
+                                                return o.id == oilPriceView.oilObject.id;
+                                            });
+                                        oilPriceView.dataForTableOilPrice.splice(indexOilPriceOld, 1, data);     
                                         oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
