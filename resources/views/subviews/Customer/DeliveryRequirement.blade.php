@@ -1183,12 +1183,24 @@
                             }
                         ],
                         columnDefs: [
-                            {responsivePriority: 1, targets: -1},
-                            {responsivePriority: 1, targets: -2},
-                            {
-                                "targets": [8],
-                                "visible": false
-                            }
+                            {responsivePriority: 1, targets: 1},
+                            {responsivePriority: 2, targets: 2},
+                            {responsivePriority: 3, targets: 3},
+                            {responsivePriority: 4, targets: 4},
+                            {responsivePriority: 5, targets: 5},
+                            {responsivePriority: 6, targets: 6},
+                            {responsivePriority: 7, targets: 7},
+                            {responsivePriority: 8, targets: 8},
+                            {responsivePriority: 16, targets: 9},
+                            {responsivePriority: 17, targets: 10},
+                            {responsivePriority: 18, targets: 11},
+                            {responsivePriority: 12, targets: 12},
+                            {responsivePriority: 13, targets: 13},
+                            {responsivePriority: 14, targets: 14},
+                            {responsivePriority: 15, targets: 15},
+                            {responsivePriority: 16, targets: 16},
+                            {responsivePriority: 10, targets: 17},
+                            {responsivePriority: 9, targets: 18}
                         ],
                         responsive: true,
 //                        fixedHeader: {

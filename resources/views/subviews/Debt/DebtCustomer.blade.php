@@ -1160,6 +1160,7 @@
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
                     if (flag == 0) {
+                        debugger;
                         var dataAfterValidate = debtCustomerView.validateListTransport();
 
                         //
@@ -1692,6 +1693,7 @@
                             console.log("SERVER");
                             console.log(data);
                             if (jqXHR.status == 201) {
+                                debugger;
                                 debtCustomerView.dataTransport = data['transports'];
                                 debtCustomerView.dataSearch = data['transports'];
                                 debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
@@ -1889,8 +1891,9 @@
                     return found;
                 },
                 searchStatusMoneyInvoice: function (data) {
-                    money = $("#invoiceDown").find("input:checked").val();
-                    found = _.filter(data, function (o) {
+                    console.log(data);
+                    var money = $("#invoiceDown").find("input:checked").val();
+                    var found = _.filter(data, function (o) {
                         if (money == 'All') {
                             return true;
                         } else if (money == 'StillDebt') {
