@@ -181,15 +181,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/driver/modify', 'DriverManagementController@postModifyDriver');
     });
     Route::group(['middleware' => 'Report'], function () {
-        Route::get('/revenue-report', 'ReportController@getViewRevenueReport');
-        Route::get('/history-delivery-report', 'ReportController@getViewHistoryDeliveryReport');
-        //Get data view
-        Route::get('/revenue-report-view', 'ReportController@getDataViewRevenueReport');
-        Route::get('/delivery-report-view', 'ReportController@getDataViewDeliveryReport');
-        //Post data view
-        Route::post('/revenue-report-list', 'ReportController@getDataReportList');
-        Route::post('/delivery-report-list', 'ReportController@getDataDeliveryList');
-
+        Route::get('/revenue-report','ReportController@getViewRevenueReport');
+        Route::get('/revenue-report/get-basic-data','ReportController@getBasicData');
+        /*--------------------------------------*/
+        Route::get('/history-delivery-report','ReportController@getViewTransportHistoryReport');
     });
 });
 
