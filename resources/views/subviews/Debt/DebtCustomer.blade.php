@@ -1421,6 +1421,10 @@
                         console.log(data);
                         if (jqXHR.status == 201) {
                             if (action == 'delete1') {
+                                var invoiceDetail = _.find(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                    return o.id == invoiceCustomerDetail_id;
+                                });
+
                                 debtCustomerView.dataTransport = data['transports'];
                                 debtCustomerView.dataSearch = data['transports'];
                                 debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
@@ -1432,7 +1436,11 @@
 
                                 debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                                 debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
-                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(debtCustomerView.dataInvoiceCustomerDetail);
+
+                                var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                    return o.invoiceCustomer_id == invoiceDetail.invoiceCustomer_id;
+                                });
+                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
 
                                 debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
@@ -1717,7 +1725,6 @@
 
                                 debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                                 debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
-                                debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(debtCustomerView.dataInvoiceCustomerDetail);
 
                                 debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
@@ -1731,6 +1738,11 @@
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 } else {
+                                    var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
+                                        return o.invoiceCustomer_id == sendToServer._invoiceCustomer.id;
+                                    });
+                                    debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
+
                                     //clear Input
                                     $("input[id=paidAmt]").val('');
                                     $("textarea[id=note]").val('');
