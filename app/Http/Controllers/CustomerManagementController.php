@@ -614,6 +614,7 @@ class CustomerManagementController extends Controller
             ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where('transports.active', 1)
+            ->orderBy('transports.receiveDate', 'desc')
 //            ->where(\DB::raw('DATE(transports.receiveDate)'), '<=', \DB::raw('DATE(driverVehicles.updated_at)'))
             ->get();
 

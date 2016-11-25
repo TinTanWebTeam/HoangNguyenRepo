@@ -85,6 +85,7 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
+                                        <th>STT</th>
                                         <th>Ngày nhận</th>
                                         <th>Số xe</th>
                                         <th>Nơi nhận</th>
@@ -1084,6 +1085,7 @@
                             var fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
                             data[i].fullNumber = fullNumber;
                         }
+                        data[i].stt = i + 1;
                     }
                     transportView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -1093,6 +1095,7 @@
                                 data: 'id',
                                 visible: false
                             },
+                            {   data: 'stt'   },
                             {
                                 data: 'receiveDate',
                                 render: function (data, type, full, meta) {
@@ -1183,30 +1186,31 @@
                             }
                         ],
                         columnDefs: [
-                            {responsivePriority: 1, targets: 1},
-                            {responsivePriority: 2, targets: 2},
-                            {responsivePriority: 3, targets: 3},
-                            {responsivePriority: 4, targets: 4},
-                            {responsivePriority: 5, targets: 5},
-                            {responsivePriority: 6, targets: 6},
-                            {responsivePriority: 7, targets: 7},
-                            {responsivePriority: 8, targets: 8},
-                            {responsivePriority: 16, targets: 9},
-                            {responsivePriority: 17, targets: 10},
-                            {responsivePriority: 18, targets: 11},
-                            {responsivePriority: 12, targets: 12},
-                            {responsivePriority: 13, targets: 13},
-                            {responsivePriority: 14, targets: 14},
-                            {responsivePriority: 15, targets: 15},
-                            {responsivePriority: 16, targets: 16},
-                            {responsivePriority: 10, targets: 17},
-                            {responsivePriority: 9, targets: 18}
+                            {responsivePriority: 1, targets: 1}, // STT
+                            {responsivePriority: 1, targets: 2}, // Ngay nhan
+                            {responsivePriority: 1, targets: 3}, // So xe
+                            {responsivePriority: 1, targets: 4}, // Noi nhan
+                            {responsivePriority: 1, targets: 5}, // Noi giao
+                            {responsivePriority: 1, targets: 6}, // Khach hang
+                            {responsivePriority: 1, targets: 7}, // Doanh thu
+                            {responsivePriority: 1, targets: 8}, // Giao xe
+                            {responsivePriority: 1, targets: 9}, // Nhan
+                            {responsivePriority: 10, targets: 10}, // Boc xep
+                            {responsivePriority: 10, targets: 11}, // Neo dem
+                            {responsivePriority: 10, targets: 12}, // Cong an
+                            {responsivePriority: 1, targets: 13}, // Loi nhuan
+                            {responsivePriority: 10, targets: 14}, // Nguoi nhan
+                            {responsivePriority: 10, targets: 15}, // Nguoi tao
+                            {responsivePriority: 10, targets: 16}, // Nguoi sua
+                            {responsivePriority: 10, targets: 17}, // Ten hang
+                            {responsivePriority: 1, targets: 18}, // Trang thai
+                            {responsivePriority: 1, targets: 19} // Sua/ xoa
                         ],
                         responsive: true,
 //                        fixedHeader: {
 //                            header: true
 //                        },
-                        order: [[0, "desc"]],
+                        order: [[0, "asc"]],
                         dom: 'Bfrtip',
                         buttons: [
                             {
