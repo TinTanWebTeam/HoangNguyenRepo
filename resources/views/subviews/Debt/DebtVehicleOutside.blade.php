@@ -1429,6 +1429,7 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
+                            debugger;
                             //Remove and Add Transport
                             var Old = _.find(debtGarageView.dataTransport, function (o) {
                                 return o.id == sendToServer._transport;
@@ -1436,7 +1437,6 @@
                             var indexOfOld = _.indexOf(debtGarageView.dataTransport, Old);
                             data['transport'].fullNumber = data['transport']['vehicles_areaCode'] + ' ' + data['transport']['vehicles_vehicleNumber'];
                             data['transport'].debt = data['transport']['cashDelivery'] - data['transport']['cashPreDelivery'];
-                            data['transport'].cashProfit_real = parseInt(data['transport']['cashPreDelivery']) - (parseInt(data['transport']['cashPreDelivery']) + parseInt(data['transport']['cost']));
                             debtGarageView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
                             //reload 2 table

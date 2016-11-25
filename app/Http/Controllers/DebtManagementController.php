@@ -1003,7 +1003,7 @@ class DebtManagementController extends Controller
         try {
             DB::beginTransaction();
             $transportUpdate = Transport::findOrFail($transport_id);
-            $transportUpdate->cashPreDelivery = $transportUpdate->cashRevenue;
+            $transportUpdate->cashPreDelivery = $transportUpdate->cashDelivery;
             $transportUpdate->status_garage = 10;
 
             $transportUpdate->updatedBy = \Auth::user()->id;
