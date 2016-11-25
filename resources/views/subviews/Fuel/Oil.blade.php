@@ -116,7 +116,7 @@
                                 <button class="btn btn-primary marginRight" onclick="oilPriceView.save()">Hoàn tất
                                 </button>
                                 <button class="btn default" onclick="oilPriceView.hideFormControl()"
-                                        style="margin-right: 10px">Hủy
+                                        style="margin-right: 10px">Nhập lại
                                 </button>
                             </div>
                         </div>

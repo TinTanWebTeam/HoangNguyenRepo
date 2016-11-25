@@ -167,7 +167,7 @@
                                             onclick="PositionView.validatePosition()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="PositionView.cancel()">Hủy
+                                    <button type="button" class="btn default" onclick="PositionView.cancel()">Nhập lại
                                     </button>
                                 </div>
                             </div>
