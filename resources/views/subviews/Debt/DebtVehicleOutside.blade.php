@@ -614,28 +614,24 @@
                         data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
                         data[i].debt = parseInt(data[i]['cashDelivery']) - parseInt(data[i]['cashPreDelivery']);
 
-                        if(debtGarageView.dataTransportInvoice.length > 0){
-                            var transportInvoice = _.filter(debtGarageView.dataTransportInvoice, function(o){
-                                return o.transport_id == data[i]['id'];
-                            });
+                        var transportInvoice = _.filter(debtGarageView.dataTransportInvoice, function(o){
+                            return o.transport_id == data[i]['id'];
+                        });
 
-                            if(transportInvoice.length > 0){
-                                transportInvoice = _.map(transportInvoice, 'invoiceCustomer_id');
-                                var invoice = _.filter(debtGarageView.dataInvoiceGarage, function(o){
-                                    return _.includes(transportInvoice, o.id);
-                                });
-                                if(invoice.length > 0){
-                                    invoice = _.map(invoice, 'invoiceCode');
-                                    data[i].invoiceCode = invoice.toString();
-                                }
-                                else {
-                                    data[i].invoiceCode = "";
-                                }
+                        if(transportInvoice.length > 0){
+                            transportInvoice = _.map(transportInvoice, 'invoiceGarage_id');
+                            var invoice = _.filter(debtGarageView.dataInvoiceGarage, function(o){
+                                return _.includes(transportInvoice, o.id);
+                            });
+                            if(invoice.length > 0){
+                                invoice = _.map(invoice, 'invoiceCode');
+                                data[i].invoiceCode = invoice.toString();
                             }
                             else {
                                 data[i].invoiceCode = "";
                             }
-                        } else {
+                        }
+                        else {
                             data[i].invoiceCode = "";
                         }
                         data[i].stt = i + 1;
