@@ -127,7 +127,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group form-md-line-input">
-                                        <label for="cost"><b>Số tiền</b></label>
+                                        <label for="cost"><b>Chi phí</b></label>
                                         <div class="row">
                                             <div class="col-sm-12 col-xs-12">
                                                 <input type="text" class="form-control currency" value="0"

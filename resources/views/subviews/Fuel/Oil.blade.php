@@ -115,7 +115,7 @@
                             <div class="col-sm-12 form-group">
                                 <button class="btn btn-primary marginRight" onclick="oilPriceView.save()">Hoàn tất
                                 </button>
-                                <button class="btn default" onclick="oilPriceView.hideFormControl()"
+                                <button class="btn default" onclick="oilPriceView.resetForm()"
                                         style="margin-right: 10px">Nhập lại
                                 </button>
                             </div>
@@ -169,7 +169,7 @@
                 resetForm: function () {
                     $("#price").empty().val(0);
                     $("#note").empty().val("");
-                    $("#applyDate").empty().val("");
+                    oilPriceView.renderDateTimePicker();
                 },
                 fillForm: function (oilObject) {
                     $("#price").empty().val(oilObject.price);

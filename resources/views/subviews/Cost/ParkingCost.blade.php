@@ -542,6 +542,8 @@
                     $("input[id='totalCost']").val(0);
                     $("input[id='totalDate']").val(0);
                     $("input[id='totalTime']").val(0);
+                    $("input[id='dateCheckOut']").val('');
+                    $("input[id='timeCheckOut']").val('');
                 },
                 clearInputPrice: function () {
                     /* Form addPrice*/
@@ -716,7 +718,7 @@
                     start = moment($('input[id=dateCheckIn]').val() + " " + $('input[id=timeCheckIn]').val(), "DD-MM-YYYY HH:mm");
                     end = moment($('input[id=dateCheckOut]').val() + " " + $('input[id=timeCheckOut]').val(), "DD-MM-YYYY HH:mm");
                     if (end < start) {
-                        showNotification("error", "Giờ ra không được nhỏ hơn giờ vào!");
+                        showNotification("error", "Ngày lấy xe phải hơn ngày đậu!");
                         $('input[id=totalTime]').val(0);
                         $('input[id=totalDate]').val(0);
                         $("input[id=totalCost]").val(0);
@@ -750,7 +752,6 @@
                             _action: parkingCostView.action,
                             _object: parkingCostView.idDelete
                         };
-
                         $.ajax({
                             url: url + 'parking-cost/modify',
                             type: "POST",
@@ -781,14 +782,16 @@
                                 var timeOut = $('input[id=timeCheckOut]').val();
                                 var dateIn = $('input[id=dateCheckIn]').val();
                                 var timeIn = $('input[id=timeCheckIn]').val();
-                                if (dateOut == '' || timeOut == '') {
-                                    showNotification("error", "Vui lòng nhập đầy đủ ngày, giờ lấy xe ra");
-                                } else if (dateIn == '' || timeIn == '') {
-                                    showNotification("error", "Vui lòng nhập đầy đủ ngày, giờ xe vào");
+                                if (dateIn == '' || timeIn == '') {
+                                    showNotification("error", "Vui lòng nhập đầy đủ ngày, giờ xe vào!");
                                 }
                                 else {
-                                    if ($('input[id=totalTime]').val() == 0) {
-                                        showNotification("error", "Giờ ra không được nhỏ hơn giờ vào!");
+                                    if ($('input[id=totalTime]').val() == 0 && dateOut != '') {
+                                        if (timeOut == '') {
+                                            showNotification("error", "Vui lòng nhập giờ lấy xe!");
+                                        } else {
+                                            showNotification("error", "Ngày lấy xe phải hơn ngày đậu!");
+                                        }
                                     } else {
                                         parkingCostView.fillFormDataToCurrentObject();
                                         sendToServer = {

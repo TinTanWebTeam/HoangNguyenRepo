@@ -118,7 +118,7 @@
                             <div class="col-sm-12 form-group">
                                 <button class="btn btn-primary marginRight" onclick="lubePriceView.save()">Hoàn tất
                                 </button>
-                                <button type="button" class="btn default" onclick="lubePriceView.hideFormControl()"
+                                <button type="button" class="btn default" onclick="lubePriceView.resetForm()"
                                         style="margin-right: 10px">Nhập lại
                                 </button>
                             </div>
@@ -171,7 +171,7 @@
                 resetForm: function () {
                     $("#price").empty().val(0);
                     $("#note").empty().val("");
-                    $("#applyDate").empty().val("");
+                    lubePriceView.renderDateTimePicker();
                 },
                 fillForm: function (lubeObject) {
                     $("#price").empty().val(lubeObject.price);

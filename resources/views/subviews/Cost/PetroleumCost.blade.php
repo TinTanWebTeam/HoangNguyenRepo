@@ -193,9 +193,9 @@
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input ">
                                         <label for="vat"><b>Khấu trừ %(trước VAT)</b></label>
-                                        <input type="number" class="form-control"
+                                        <input type="text" class="form-control"
                                                onkeyup="petroleumCostView.totalPrice()"
-                                               id="vat"
+                                               id="vat" maxlength="3"
                                                name="vat">
                                     </div>
                                 </div>
@@ -540,9 +540,12 @@
                 totalPrice: function () {
                     lit = $("input[id=literNumber]").val();
                     price = asNumberFromCurrency('#price');
-                    vat = $("input[id=vat]").val();
+                    vat = asNumberFromCurrency('#vat');
                     if(vat >100){
-                        vat= 100;
+                        vat = 100;
+                        $("input[id=vat]").val(vat);
+                    }else if (vat < 0 || vat == 0){
+                        vat = '';
                         $("input[id=vat]").val(vat);
                     }
                     hasVat = lit * price;
