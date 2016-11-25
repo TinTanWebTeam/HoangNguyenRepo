@@ -1112,6 +1112,7 @@
                 },
                 cancelPriceType: function () {
                     $("input[id='costPrice']").val(0);
+                    $("textarea[id='description']").val('');
                 }
 
             };

@@ -127,7 +127,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group form-md-line-input">
-                                        <label for="cost"><b>Đơn giá</b></label>
+                                        <label for="cost"><b>Số tiền</b></label>
                                         <div class="row">
                                             <div class="col-sm-12 col-xs-12">
                                                 <input type="text" class="form-control currency" value="0"
@@ -160,7 +160,7 @@
                                             onclick="otherCostView.save()">
                                         Hoàn tất
                                     </button>
-                                    <button type="button" class="btn default" onclick="otherCostView.cancel()">Huỷ
+                                    <button type="button" class="btn default" onclick="otherCostView.cancel()">Nhập lại
                                     </button>
                                 </div>
                             </div>
@@ -560,14 +560,16 @@
                         rules: {
                             vehicle_id: "required",
                             cost: {
-                                required: true
+                                required: true,
+                                number: true
                             }
 
                         },
                         messages: {
                             vehicle_id: "Vui lòng chọn xe",
                             cost: {
-                                required: "Vui lòng nhập số tiền"
+                                required: "Vui lòng nhập số tiền",
+                                number: "Đơn giá phải là số"
                             }
                         }
                     });
@@ -601,8 +603,8 @@
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        if ($('input[id=cost]').val() == 0) {
-                            showNotification("error", "Đơn giá phải lớn hơn 0");
+                        if ($('input[id=cost]').val() < 1000) {
+                            showNotification("error", "Đơn giá phải lớn hơn 1000");
                         } else {
                             otherCostView.ValidateOtherCost();
                             if ($("#formOtherCost").valid()) {
