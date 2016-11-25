@@ -713,7 +713,6 @@
                             || $('input[id=timeCheckIn]').val() == ""
                             || $('input[id=timeCheckOut]').val() == "")
                         return;
-
                     start = moment($('input[id=dateCheckIn]').val() + " " + $('input[id=timeCheckIn]').val(), "DD-MM-YYYY HH:mm");
                     end = moment($('input[id=dateCheckOut]').val() + " " + $('input[id=timeCheckOut]').val(), "DD-MM-YYYY HH:mm");
                     if (end < start) {
