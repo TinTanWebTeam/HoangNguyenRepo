@@ -394,9 +394,9 @@
                     $('#createdDate').datepicker("setDate", new Date());
 
                     $('#oils_applyDate').datepicker({
-                        "setDate": new Date(),
-                        'format': 'dd-mm-yyyy',
-                        'autoclose': true
+                        setDate: new Date(),
+                        format: 'dd-mm-yyyy',
+                        autoclose: true
                     });
                     $('#oils_applyDate').datepicker("setDate", new Date());
                 },
@@ -688,6 +688,8 @@
                     $("input[id=deliveryPlace]").prop('readonly', true);
                 },
                 addPostage: function () {
+                    postageView.renderDateTimePicker();
+
                     if (postageView.tablePostageDetail != null)
                         postageView.tablePostageDetail.clear().draw();
 
@@ -738,7 +740,7 @@
                     postageView.dataFuelLastest = fuel;
                 },
 
-                formValidate: function () {
+                formValidateJquery: function () {
                     $("#frmControl").validate({
                         rules: {
                             customer_id: "required",
@@ -750,6 +752,26 @@
                             postage: "Vui lòng nhập cước phí"
                         }
                     });
+                },
+                formValidate: function () {
+                    var isValid = true;
+
+                    if ($("#customer_id").attr('data-customerId') == '') {
+                        showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
+                        isValid = false;
+                    }
+
+                    var createdDate = $("#createdDate").val();
+                    var applyDate = $("#applyDate").val();
+                    createdDate = moment(createdDate, "DD-MM-YYYY");
+                    applyDate = moment(applyDate, "DD-MM-YYYY");
+
+                    if(applyDate.isBefore(createdDate)){
+                        showNotification('warning', 'Vui lòng chọn ngày áp dụng sau ngày tạo cước phí.');
+                        isValid = false;
+                    }
+
+                    return isValid;
                 },
                 clearValidation: function (idForm) {
                     $(idForm).find("label[class=error]").remove();
@@ -765,12 +787,13 @@
                             _id: postageView.idDelete
                         };
                     } else {
-                        postageView.formValidate();
+                        postageView.formValidateJquery();
                         if ($("#frmControl").valid()) {
-                            if ($("#customer_id").attr('data-customerId') == '') {
-                                showNotification('warning', 'Vui lòng chọn một khách hàng có trong danh sách.');
+
+                            if(!postageView.formValidate()){
                                 return;
                             }
+
                             postageView.fillFormDataToCurrentObject();
                             var sendToServer = {
                                 _token: _token,
@@ -779,6 +802,7 @@
                             };
                         } else {
                             $("form#frmControl").find("label[class=error]").css("color", "red");
+                            return;
                         }
                     }
                     console.log(sendToServer);
