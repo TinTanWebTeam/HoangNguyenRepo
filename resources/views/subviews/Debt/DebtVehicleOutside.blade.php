@@ -683,11 +683,16 @@
                                 render: function (data, type, full, meta) {
                                     var color = 'btn-default';
                                     var text = '';
+
                                     if (full.cashPreDelivery == 0 && full.invoiceCode == ""){
                                         color = 'btn-danger';
                                         text = 'Click để trả đủ';
                                     }
-                                    else if (full.cashPreDelivery == full.cashDelivery){
+                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode != ""){
+                                        color = 'btn-info';
+                                        text = 'Đã trả đủ và xuất hóa đơn';
+                                    }
+                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode == ""){
                                         color = 'btn-success';
                                         text = 'Đã trả đủ';
                                     }
@@ -698,6 +703,8 @@
                                         color = 'btn-info';
                                         text = 'Đã xuất hóa đơn';
                                     }
+                                    console.log(full.invoiceCode);
+                                    console.log(color);
 
                                     var tr = '';
                                     tr += '<div class="text-center">';
