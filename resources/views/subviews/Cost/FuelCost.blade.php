@@ -267,7 +267,7 @@
                                     <input type="text" class="form-control currency" value="0"
                                            id="costPrice" name="costPrice">
                                     <label class="error" style="color: red; display: none"><p>Giá tiền phải lớn hơn
-                                            0</p></label>
+                                            1000</p></label>
                                 </div>
                             </div>
                         </div>
@@ -1013,7 +1013,7 @@
                     $("textarea[id='description']").val('');
                 },
                 savePriceType: function () {
-                    if ($("input[id='costPrice']").val() == 0) {
+                    if ($("input[id='costPrice']").val() < 1000) {
                         $("form#formCostPrice").find("label[class=error]").css("display", "block");
 
                     } else {
