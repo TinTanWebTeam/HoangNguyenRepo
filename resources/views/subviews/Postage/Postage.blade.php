@@ -895,9 +895,19 @@
                         return o.id == detailId;
                     });
 
+                    if(postageDetail.applyDate != null){
+                        showNotification("warning", "Cước phí này đã có ngày áp dụng. Vui lòng chọn cước phí chưa có này áp dụng để cập nhật.");
+                        return;
+                    }
+
                     $("#postage-id").val(postageDetail.id);
+
                     var applyDate = moment(postageDetail.applyDate, "YYYY-MM-DD");
-                    $("input[id='apply-date']").datepicker('update', applyDate.format("DD-MM-YYYY"));
+                    if(applyDate.isValid()){
+                        applyDate = applyDate.format("DD-MM-YYYY");
+                        $("input[id='apply-date']").datepicker('update', applyDate);
+                    }
+
                     postageView.displayModal('show', '#myModalNorm');
                 }
             };
