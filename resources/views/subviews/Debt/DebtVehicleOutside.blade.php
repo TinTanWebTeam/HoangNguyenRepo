@@ -1277,6 +1277,7 @@
 
                                 debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                                 debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+                                debtGarageView.fillDataToDatatableInvoiceGarageDetail(debtGarageView.dataInvoiceGarageDetail);
 
                                 debtGarageView.searchTransport();
                                 debtGarageView.searchInvoice();
@@ -1507,9 +1508,11 @@
 
                                 debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                                 debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+                                debtGarageView.fillDataToDatatableInvoiceGarageDetail(debtGarageView.dataInvoiceGarageDetail);
 
                                 debtGarageView.searchTransport();
                                 debtGarageView.searchInvoice();
+
 
                                 if (debtGarageView.action == 'new') {
                                     //clear Input
@@ -1520,6 +1523,8 @@
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 } else {
+
+
                                     //clear Input
                                     $("input[id=paidAmt]").val('');
                                     $("textarea[id=note]").val('');
@@ -1544,7 +1549,7 @@
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        $("form#frmInvoice").find("label[class=error]").css("color", "red");
+                        $("#frmInvoice").find("label[class=error]").css("color", "red");
                     }
                 },
 
