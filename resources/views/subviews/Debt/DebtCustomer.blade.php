@@ -834,7 +834,6 @@
                                         color = 'btn-info';
                                         text = 'Đã xuất hóa đơn';
                                     }
-                                    console.log(color);
 
                                     var tr = '';
                                     tr += '<div class="text-center" data-transportId="' + full.id + '">';

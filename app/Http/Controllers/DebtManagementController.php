@@ -918,6 +918,41 @@ class DebtManagementController extends Controller
 
     public function getDataDebtGarage()
     {
+        $response = $this->DataDebtGarage();
+
+        return response()->json($response, 200);
+    }
+
+    public function postModifyDebtGarage(Request $request)
+    {
+        //Trả đủ
+        $transport_id = $request->input('_transport');
+
+        try {
+            DB::beginTransaction();
+            $transportUpdate = Transport::findOrFail($transport_id);
+            $transportUpdate->cashPreDelivery = $transportUpdate->cashDelivery;
+            $transportUpdate->status_garage = 10;
+
+            $transportUpdate->updatedBy = \Auth::user()->id;
+
+            if (!$transportUpdate->update()) {
+                DB::rollBack();
+                return response()->json(['msg' => 'Update failed'], 404);
+            }
+
+            DB::commit();
+            //Response
+            $response = $this->DataDebtGarage();
+            return response()->json($response, 201);
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
+        }
+    }
+
+    public function DataDebtGarage()
+    {
         $transports = \DB::table('transports')
             ->select('transports.*',
                 'products.name as products_name',
@@ -984,80 +1019,20 @@ class DebtManagementController extends Controller
 
         $invoiceCode = $this->generateInvoiceCode('garage');
 
+        $transportInvoices = DB::table('transportInvoices')->get();
+
         $response = [
             'msg'                  => 'Get list all Transport',
             'transports'           => $transports,
             'invoiceGarages'       => $invoiceGarages,
             'invoiceGarageDetails' => $invoiceGarageDetails,
             'printHistories'       => $printHistories,
-            'invoiceCode'          => $invoiceCode
+            'invoiceCode'          => $invoiceCode,
+            'transportInvoices'      => $transportInvoices
         ];
-        return response()->json($response, 200);
+        return $response;
     }
 
-    public function postModifyDebtGarage(Request $request)
-    {
-        //Trả đủ
-        $transport_id = $request->input('_transport');
-
-        try {
-            DB::beginTransaction();
-            $transportUpdate = Transport::findOrFail($transport_id);
-            $transportUpdate->cashPreDelivery = $transportUpdate->cashDelivery;
-            $transportUpdate->status_garage = 10;
-
-            $transportUpdate->updatedBy = \Auth::user()->id;
-
-            if (!$transportUpdate->update()) {
-                DB::rollBack();
-                return response()->json(['msg' => 'Update failed'], 404);
-            }
-            //Response
-            $transport = \DB::table('transports')
-                ->select('transports.*',
-                    'products.name as products_name',
-                    'customers.fullName as customers_fullName',
-                    'garages.name as garages_name',
-                    'vehicles.areaCode as vehicles_areaCode',
-                    'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                    'costs.cost', 'costs.note as costs_note',
-                    'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
-                    'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
-                    'statuses_gar.status as status_garage_',
-                    'users_createdBy.fullName as users_createdBy',
-                    'users_updatedBy.fullName as users_updatedBy'
-                )
-                ->leftJoin('products', 'products.id', '=', 'transports.product_id')
-                ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-                ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-                ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
-                ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
-                ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
-                ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-                ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-                ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-                ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-                ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                ->where([
-                    ['transports.active', '=', 1],
-                    ['transports.product_id', '<>', 0],
-                    ['transports.vehicle_id', '<>', 0],
-                    ['transports.customer_id', '<>', 0],
-                    ['transports.id', '=', $transportUpdate->id]
-                ])
-                ->first();
-            $response = [
-                'msg'       => 'Updated transport',
-                'transport' => $transport
-            ];
-            DB::commit();
-            return response()->json($response, 201);
-        } catch (Exception $ex) {
-            DB::rollBack();
-            return response()->json(['msg' => $ex], 404);
-        }
-    }
 
     //Invoice Garage
     public function postValidateTransportGarage(Request $request)
@@ -1253,35 +1228,7 @@ class DebtManagementController extends Controller
 
                 DB::commit();
 
-                $invoiceGarage = DB::table('invoiceGarages')
-                    ->select('invoiceGarages.*',
-                        'garages.name as garages_name',
-                        'users_createdBy.fullName as users_createdBy',
-                        'users_updatedBy.fullName as users_updatedBy'
-                    )
-                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
-                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
-                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-                    ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
-                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                    ->where([
-                        ['invoiceGarages.active', '=', 1],
-                        ['invoiceGarages.id', '=', $invoiceGarage->id],
-                        ['transports.active', '=', 1],
-                        ['transports.product_id', '<>', 0],
-                        ['transports.vehicle_id', '<>', 0],
-                        ['transports.customer_id', '<>', 0]
-                    ])
-                    ->groupBy('invoiceGarages.id')
-                    ->first();
-
-                $response = [
-                    'msg'                 => 'Create Invoice successful!',
-                    'invoiceGarage'       => $invoiceGarage,
-                    'invoiceGarageDetail' => $invoiceGarageDetail,
-                    'invoiceCode'         => $this->generateInvoiceCode('garage')
-                ];
+                $response = $this->DataDebtGarage();
                 return response()->json($response, 201);
             } catch (Exception $ex) {
                 DB::rollBack();
@@ -1333,35 +1280,7 @@ class DebtManagementController extends Controller
 
                 DB::commit();
 
-                $invoiceGarage = DB::table('invoiceGarages')
-                    ->select('invoiceGarages.*',
-                        'garages.name as garages_name',
-                        'users_createdBy.fullName as users_createdBy',
-                        'users_updatedBy.fullName as users_updatedBy'
-                    )
-                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
-                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
-                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-                    ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
-                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                    ->where([
-                        ['invoiceGarages.active', '=', 1],
-                        ['invoiceGarages.id', '=', $invoiceGarage->id],
-                        ['transports.active', '=', 1],
-                        ['transports.product_id', '<>', 0],
-                        ['transports.vehicle_id', '<>', 0],
-                        ['transports.customer_id', '<>', 0]
-                    ])
-                    ->groupBy('invoiceGarages.id')
-                    ->first();
-
-                $response = [
-                    'msg'                 => 'Create Invoice successful!',
-                    'invoiceGarage'       => $invoiceGarage,
-                    'invoiceGarageDetail' => $invoiceGarageDetail,
-                    'invoiceCode'         => $this->generateInvoiceCode('garage')
-                ];
+                $response = $this->DataDebtGarage();
                 return response()->json($response, 201);
             } catch (Exception $ex) {
                 DB::rollBack();
@@ -1414,11 +1333,7 @@ class DebtManagementController extends Controller
             }
             DB::commit();
             //Response
-            $response = [
-                'msg'                  => 'Delete InvoiceGarage successful!',
-                'invoiceGarage'        => $invoiceGarageId,
-                'invoiceGarageDetails' => $array_invoiceGarageDetailId
-            ];
+            $response = $this->DataDebtGarage();
 
             return response()->json($response, 201);
         } catch (Exception $ex) {
@@ -1467,34 +1382,7 @@ class DebtManagementController extends Controller
                 }
 
                 //Response
-                $invoiceGarage = DB::table('invoiceGarages')
-                    ->select('invoiceGarages.*',
-                        'garages.name as garages_name',
-                        'users_createdBy.fullName as users_createdBy',
-                        'users_updatedBy.fullName as users_updatedBy'
-                    )
-                    ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
-                    ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
-                    ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-                    ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
-                    ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                    ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                    ->where([
-                        ['invoiceGarages.active', '=', 1],
-                        ['invoiceGarages.id', '=', $invoiceGarage->id],
-                        ['transports.active', '=', 1],
-                        ['transports.product_id', '<>', 0],
-                        ['transports.vehicle_id', '<>', 0],
-                        ['transports.customer_id', '<>', 0]
-                    ])
-                    ->groupBy('invoiceGarages.id')
-                    ->first();
-
-                $response = [
-                    'msg'                 => 'Delete InvoiceGarage successful!',
-                    'invoiceGarage'       => $invoiceGarage,
-                    'invoiceGarageDetail' => $invoiceGarageDetailId
-                ];
+                $response = $this->DataDebtGarage();
             } else {
                 //Delete InvoiceGarage
                 $invoiceGarage = InvoiceGarage::find($invoiceGarage_id);
@@ -1519,11 +1407,7 @@ class DebtManagementController extends Controller
                 }
 
                 //Response
-                $response = [
-                    'msg'                 => 'Delete InvoiceGarage successful!',
-                    'invoiceGarage'       => $invoiceGarage_id,
-                    'invoiceGarageDetail' => $invoiceGarageDetailId
-                ];
+                $response = $this->DataDebtGarage();
             }
 
             DB::commit();
