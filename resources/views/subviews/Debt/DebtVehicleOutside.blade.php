@@ -93,7 +93,7 @@
                                             onchange="debtGarageView.searchTransport(this); debtGarageView.selectAll()">
                                         <option value="All">Tất cả</option>
                                         <option value="NotPay">Chưa trả</option>
-                                        <option value="PrePay">Trả trước</option>
+                                        {{--<option value="PrePay">Trả trước</option>--}}
                                         <option value="FullPay">Trả đủ</option>
                                     </select>
                                 </div>
@@ -1670,17 +1670,17 @@
                 },
                 searchStatusMoney: function (data, value) {
                     if (typeof value === 'undefined')
-                        money = $("select[id=statusMoney]").val();
+                        var money = $("select[id=statusMoney]").val();
                     else
-                        money = value;
-                    found = _.filter(data, function (o) {
+                        var money = value;
+                    var found = _.filter(data, function (o) {
                         if (money == 'FullPay') {
                             return o.cashDelivery == o.cashPreDelivery;
                         } else if (money == 'PrePay') {
                             return o.cashPreDelivery != 0 && o.cashDelivery > o.cashPreDelivery;
                         } else if (money == 'NotPay') {
                             return o.cashPreDelivery == 0;
-                        } else {
+                        } else if (money == 'All') {
                             return true;
                         }
                     });
