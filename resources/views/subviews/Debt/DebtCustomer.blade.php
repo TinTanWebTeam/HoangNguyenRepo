@@ -1815,8 +1815,8 @@
                 },
 
                 searchDate: function (data) {
-                    fromDate = $("#dateSearchTransport").find(".start").val();
-                    toDate = $("#dateSearchTransport").find(".end").val();
+                    var fromDate = $("#dateSearchTransport").find(".start").val();
+                    var toDate = $("#dateSearchTransport").find(".end").val();
                     if (fromDate == '' || toDate == '')
                         return data;
 
@@ -1825,18 +1825,18 @@
                     if (!fromDate.isValid() && !toDate.isValid())
                         return data;
 
-                    found = _.filter(data, function (o) {
+                    var found = _.filter(data, function (o) {
                         var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
                     });
                     return found;
                 },
                 searchCustomer: function (data) {
-                    custName = $("#custName_transport").val();
+                    var custName = $("#custName_transport").val();
                     if (custName == '')
                         return data;
 
-                    found = _.filter(data, function (o) {
+                    var found = _.filter(data, function (o) {
                         if (o.customers_fullName == null)
                             return false;
                         else
@@ -1859,10 +1859,10 @@
                 },
                 searchStatusMoney: function (data, value) {
                     if (typeof value === 'undefined')
-                        money = $("select[id=statusMoney]").val();
+                        var money = $("select[id=statusMoney]").val();
                     else
-                        money = value;
-                    found = _.filter(data, function (o) {
+                        var money = value;
+                    var found = _.filter(data, function (o) {
                         if (money == 'FullPay') {
                             return o.cashRevenue == o.cashReceive;
                         } else if (money == 'PrePay') {
@@ -1877,8 +1877,8 @@
                 },
 
                 searchDateInvoice: function (data) {
-                    fromDate = $("#dateSearchInvoice").find(".start").val();
-                    toDate = $("#dateSearchInvoice").find(".end").val();
+                    var fromDate = $("#dateSearchInvoice").find(".start").val();
+                    var toDate = $("#dateSearchInvoice").find(".end").val();
                     if (fromDate == '' || toDate == '')
                         return data;
 
@@ -1887,18 +1887,18 @@
                     if (!fromDate.isValid() && !toDate.isValid())
                         return data;
 
-                    found = _.filter(data, function (o) {
+                    var found = _.filter(data, function (o) {
                         var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
                         return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
                     });
                     return found;
                 },
                 searchCustomerInvoice: function (data) {
-                    custName = $("#custName_invoice").val();
+                    var custName = $("#custName_invoice").val();
                     if (custName == '')
                         return data;
 
-                    found = _.filter(data, function (o) {
+                    var found = _.filter(data, function (o) {
                         return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
                     });
                     return found;
@@ -1915,7 +1915,6 @@
                                 return parseInt(o.hasVAT) > parseInt(o.totalPaid);
                             }
                         } else {
-                            debugger;
                             if(o.statusPrePaid == 1){
                                 return parseInt(o.hasVAT) == parseInt(o.totalPaid) + parseInt(o.prePaid);
                             } else {

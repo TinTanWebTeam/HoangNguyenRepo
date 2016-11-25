@@ -1130,6 +1130,8 @@ class DebtManagementController extends Controller
     public function postModifyInvoiceGarage(Request $request)
     {
         $action = $request->input('_action');
+        $invoiceCode = $request->input('_invoiceGarage')['invoiceCode'];
+
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
 
@@ -1169,11 +1171,9 @@ class DebtManagementController extends Controller
 
             $invoiceGarage = new InvoiceGarage();
 
-            $invoiceCode = $this->generateInvoiceCode('garage');
-            if ($request->input('_invoiceGarage')['invoiceCode'] == '')
-                $invoiceGarage->invoiceCode = $invoiceCode;
+            if ($invoiceCode == '')
+                $invoiceGarage->invoiceCode = $this->generateInvoiceCode('garage');
             else {
-                $invoiceCode = $request->input('_invoiceGarage')['invoiceCode'];
                 if (InvoiceGarage::where('invoiceCode', $invoiceCode)->get()->count() == 0)
                     $invoiceGarage->invoiceCode = $invoiceCode;
                 else

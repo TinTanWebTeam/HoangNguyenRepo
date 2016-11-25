@@ -25,6 +25,7 @@
         }
     }
 </style>
+
 <!-- Begin Table -->
 <div class="row">
     <div class="col-md-12">
@@ -1429,7 +1430,6 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            debugger;
                             //Remove and Add Transport
                             var Old = _.find(debtGarageView.dataTransport, function (o) {
                                 return o.id == sendToServer._transport;
@@ -1629,8 +1629,8 @@
                 },
 
                 searchDate: function (data) {
-                    fromDate = $("#dateSearchTransport").find(".start").val();
-                    toDate = $("#dateSearchTransport").find(".end").val();
+                    var fromDate = $("#dateSearchTransport").find(".start").val();
+                    var toDate = $("#dateSearchTransport").find(".end").val();
                     if (fromDate == '' || toDate == '')
                         return data;
 
@@ -1639,25 +1639,25 @@
                     if (!fromDate.isValid() && !toDate.isValid())
                         return data;
 
-                    found = _.filter(data, function (o) {
+                    var found = _.filter(data, function (o) {
                         var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
                         return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
                     });
                     return found;
                 },
                 searchGarage: function (data) {
-                    garaName = $("#garaName_transport").val();
+                    var garaName = $("#garaName_transport").val();
                     if (garaName == '')
                         return data;
 
-                    found = _.filter(data, function (o) {
+                    var found = _.filter(data, function (o) {
                         return removeDiacritics(o.garages_name.toLowerCase()).includes(removeDiacritics(garaName.toLowerCase()));
                     });
                     return found;
                 },
                 searchExportInvoice: function (data) {
-                    invoice = $("#invoiceUp").find("input:checked").val();
-                    found = _.filter(data, function (o) {
+                    var invoice = $("#invoiceUp").find("input:checked").val();
+                    var found = _.filter(data, function (o) {
                         if (invoice == 'All') {
                             return true;
                         } else if (invoice == 'Invoice') {
