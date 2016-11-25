@@ -683,6 +683,9 @@
                     $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
 
                     $("#divControl").find(".titleControl").html("Cập nhật cước phí");
+
+                    $("input[id=receivePlace]").prop('readonly', true);
+                    $("input[id=deliveryPlace]").prop('readonly', true);
                 },
                 addPostage: function () {
                     if (postageView.tablePostageDetail != null)
@@ -701,6 +704,9 @@
                     $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
 
                     $("#divControl").find(".titleControl").html("Thêm mới cước phí");
+
+                    $("input[id=receivePlace]").prop('readonly', false);
+                    $("input[id=deliveryPlace]").prop('readonly', false);
                 },
                 deletePostage: function (id) {
                     postageView.action = 'delete';
