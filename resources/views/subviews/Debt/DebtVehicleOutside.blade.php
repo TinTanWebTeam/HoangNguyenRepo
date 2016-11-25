@@ -638,7 +638,7 @@
                         } else {
                             data[i].invoiceCode = "";
                         }
-
+                        data[i].stt = i + 1;
                     }
                     debtGarageView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -649,9 +649,7 @@
                                 visible: false
                             },
                             {
-                                render: function(){
-                                    return "";
-                                }
+                                data: 'stt'
                             },
                             {data: 'garages_name'},
                             {
@@ -734,7 +732,7 @@
                             {responsivePriority: 1, targets: 12},
                             {responsivePriority: 1, targets: 13},
                         ],
-                        order: [[0, "desc"]],
+                        order: [[1, "asc"]],
                         dom: 'T<"clear">Bfrtip',
                         tableTools: {
                             "sRowSelect": "multi",

@@ -1210,7 +1210,7 @@
 //                        fixedHeader: {
 //                            header: true
 //                        },
-                        order: [[0, "asc"]],
+                        order: [[1, "asc"]],
                         dom: 'Bfrtip',
                         buttons: [
                             {

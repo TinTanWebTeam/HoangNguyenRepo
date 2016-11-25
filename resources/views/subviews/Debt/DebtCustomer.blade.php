@@ -121,7 +121,7 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
-                                        <th>Chi tiết</th>
+                                        <th>STT</th>
                                         <th>Khách hàng</th>
                                         <th>Mã hóa đơn</th>
                                         <th>Số xe</th>
@@ -763,6 +763,7 @@
                         else {
                             data[i].invoiceCode = "";
                         }
+                        data[i].stt = i + 1;
                     }
 
                     debtCustomerView.table = $('#table-data').DataTable({
@@ -773,11 +774,7 @@
                                 data: 'id',
                                 visible: false
                             },
-                            {
-                                render: function(){
-                                    return "";
-                                }
-                            },
+                            {data: 'stt'},
                             {data: 'customers_fullName'},
                             {
                                 data: 'invoiceCode',
@@ -865,7 +862,7 @@
                             {responsivePriority: 11, targets: 13},
                             {responsivePriority: 12, targets: 14}
                         ],
-                        order: [[0, "desc"]],
+                        order: [[1, "asc"]],
                         dom: 'T<"clear">Bfrtip',
                         tableTools: {
                             "sRowSelect": "multi",
