@@ -38,7 +38,8 @@ class RoleTableSeeder extends Seeder
             'Position',
             'User',
             'Oil',
-            'Lube'
+            'Lube',
+            'RevenueManagement'
         ];
 
         $array_description = [
@@ -67,7 +68,8 @@ class RoleTableSeeder extends Seeder
             'Chức vụ',
             'Tài khoản',
             'Dầu',
-            'Nhớt'
+            'Nhớt',
+            'QL doanh thu'
         ];
 
         foreach($array_name as $key => $name){

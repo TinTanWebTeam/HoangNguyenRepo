@@ -23,7 +23,6 @@ class CreateInvoiceCustomersTable extends Migration
             $table->float('VAT')->default(0)->comment('Phần trăm VAT');
             $table->decimal('notVAT', 18, 0)->default(0)->comment('Tổng tiền chưa VAT');
             $table->decimal('hasVAT', 18, 0)->default(0)->comment('Tổng tiền có VAT');
-
             $table->dateTime('exportDate')->nullable()->comment('Ngày xuất');
             $table->dateTime('invoiceDate')->nullable()->comment('Ngày hóa đơn');
             $table->dateTime('payDate')->nullable()->comment('Ngày trả');
@@ -34,6 +33,7 @@ class CreateInvoiceCustomersTable extends Migration
             $table->boolean('statusPrePaid')->default(0)->comment('Trạng thái có dùng tiền trả trước hay không?');
             $table->boolean('invoiceType')->default(0)->comment('Loại hóa đơn Khống hay Thường');
             $table->decimal('money', 18, 0)->default(0)->comment('');
+            $table->string('sendToPerson')->comment('Người nhận hóa đơn');
             $table->timestamps();
         });
     }

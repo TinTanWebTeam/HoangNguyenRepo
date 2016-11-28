@@ -16,7 +16,8 @@ class VoucherTransportTableSeeder extends Seeder
                 'voucher_id'   => $i,
                 'transport_id' => 1,
                 'createdBy'    => 1,
-                'updatedBy'    => 1
+                'updatedBy'    => 1,
+                'quantity'     => 1
             ]);
         }
     }
