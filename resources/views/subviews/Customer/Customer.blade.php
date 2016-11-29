@@ -49,9 +49,11 @@
         height: 488px;
     }
 
-    #divControl_edit .panel-body {
+    #divControl_edit .scroll-bar {
         height: 488px;
     }
+
+
 </style>
 
 <!-- Table -->
@@ -201,7 +203,8 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelChange"><b>Cước phí tăng khi nhiên liệu tăng (%)</b></label>
+                                                    <label for="percentFuelChange"><b>Cước phí tăng khi nhiên liệu tăng
+                                                            (%)</b></label>
                                                     <input type="number" id="percentFuelChange" name="percentFuelChange"
                                                            class="form-control">
                                                 </div>
@@ -332,7 +335,8 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelEdit"><b>Phí nhiên liệu/cước phí (%)</b></label>
+                                                    <label for="percentFuelEdit"><b>Phí nhiên liệu/cước phí
+                                                            (%)</b></label>
                                                     <input type="number" id="percentFuelEdit" name="percentFuel"
                                                            class="form-control">
                                                 </div>
@@ -341,7 +345,8 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="percentFuelChangeEdit"><b>Cước phí tăng khi nhiên liệu tăng (%)</b></label>
+                                                    <label for="percentFuelChangeEdit"><b>Cước phí tăng khi nhiên liệu
+                                                            tăng (%)</b></label>
                                                     <input type="number" id="percentFuelChangeEdit"
                                                            name="percentFuelChange"
                                                            class="form-control">
@@ -378,9 +383,9 @@
 
                     </div>
                     <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-12" style="padding: 0">
-                                <span class="text text-primary">Nhân viên khách hàng</span>
+                        <div class="row scroll-bar">
+                            <div class="col-md-12" align="center">
+                                <span class="text text-primary" style="font-size: 23px">Nhân viên khách hàng</span>
                                 <div class="table-responsive">
                                     <table style="width: 100%" class="table table-bordered table-hover"
                                            id="table-tableStaffCustomers">
@@ -398,96 +403,96 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <form role="form" id="frmStaffCustomer">
-                                <input id="idStaff" style="display: none;">
-                                <input id="idCustomer" style="display: none;">
-                                <div class="form-body" id='datetimepicker'>
-                                    <div class="row">
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="form-group form-md-line-input ">
-                                                <label for="fullNameStaff"><b>Tên nhân viên</b></label>
-                                                <input type="text" class="form-control"
-                                                       id="fullNameStaff"
-                                                       name="fullNameStaff">
+                            <div class="col-md-12">
+                                <form role="form" id="frmStaffCustomer">
+                                    <input id="idStaff" style="display: none;">
+                                    <input id="idCustomer" style="display: none;">
+                                    <div class="form-body" id='datetimepicker'>
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group form-md-line-input ">
+                                                    <label for="fullNameStaff"><b>Tên nhân viên</b></label>
+                                                    <input type="text" class="form-control"
+                                                           id="fullNameStaff"
+                                                           name="fullNameStaff">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="form-group form-md-line-input ">
-                                                <label for="positionStaff"><b>Chức vụ</b></label>
-                                                <input type="text" class="form-control"
-                                                       id="positionStaff"
-                                                       name="positionStaff">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group form-md-line-input ">
+                                                    <label for="positionStaff"><b>Chức vụ</b></label>
+                                                    <input type="text" class="form-control"
+                                                           id="positionStaff"
+                                                           name="positionStaff">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="form-group form-md-line-input ">
-                                                <label for="phoneStaff"><b>Điện thoại</b></label>
-                                                <input type="number" class="form-control"
-                                                       id="phoneStaff"
-                                                       name="phoneStaff">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group form-md-line-input ">
+                                                    <label for="phoneStaff"><b>Điện thoại</b></label>
+                                                    <input type="number" class="form-control"
+                                                           id="phoneStaff"
+                                                           name="phoneStaff">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-xs-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="addressStaff"><b>Địa chỉ</b></label>
+                                                    <input type="text" class="form-control"
+                                                           id="addressStaff"
+                                                           name="addressStaff">
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6 col-xs-6">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="addressStaff"><b>Địa chỉ</b></label>
-                                                <input type="text" class="form-control"
-                                                       id="addressStaff"
-                                                       name="addressStaff">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-xs-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="birthdayStaff"><b>Ngày sinh</b></label>
+                                                    <input type="text" class="date form-control ignore"
+                                                           id="birthdayStaff"
+                                                           name="birthdayStaff">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group form-md-line-input ">
+                                                    <label for="emailStaff"><b>Email</b></label>
+                                                    <input type="text" class="form-control"
+                                                           id="emailStaff"
+                                                           name="emailStaff">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-xs-6">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="birthdayStaff"><b>Ngày sinh</b></label>
-                                                <input type="text" class="date form-control ignore"
-                                                       id="birthdayStaff"
-                                                       name="birthdayStaff">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-xs-12">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="noteStaff"><b>Ghi chú</b></label>
+                                                    <textarea type="text" class="form-control"
+                                                              id="noteStaff"
+                                                              name="noteStaff"></textarea>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="form-group form-md-line-input ">
-                                                <label for="emailStaff"><b>Email</b></label>
-                                                <input type="text" class="form-control"
-                                                       id="emailStaff"
-                                                       name="emailStaff">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12 col-xs-12">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="noteStaff"><b>Ghi chú</b></label>
-                                                <textarea type="text" class="form-control"
-                                                          id="noteStaff"
-                                                          name="noteStaff"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="form-actions noborder">
-                                                <div class="form-group">
-                                                    <button id="addStaffCustomer" type="button"
-                                                            class="btn btn-primary marginRight"
-                                                            onclick="customerView.saveStaff()">
-                                                        Hoàn tất
-                                                    </button>
-                                                    <button id="retype" type="button" class="btn default"
-                                                            onclick="customerView.clearInputStaff()">
-                                                        Nhập lại
-                                                    </button>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-actions noborder">
+                                                    <div class="form-group">
+                                                        <button id="addStaffCustomer" type="button"
+                                                                class="btn btn-primary marginRight"
+                                                                onclick="customerView.saveStaff()">
+                                                            Hoàn tất
+                                                        </button>
+                                                        <button id="retype" type="button" class="btn default"
+                                                                onclick="customerView.clearInputStaff()">
+                                                            Nhập lại
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -696,7 +701,7 @@
                     $("#divControl_add").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
-                    $("#divControl_edit").find('.panel-body').mCustomScrollbar({
+                    $("#divControl_edit").find('.scroll-bar').mCustomScrollbar({
                         theme: "dark"
                     });
                 },
@@ -742,9 +747,9 @@
                 loadSelectBox: function (lstCustomerType) {
                     //reset selectbox
                     $('#customerType_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("customerType_id");
                     for (var i = 0; i < lstCustomerType.length; i++) {
@@ -755,9 +760,9 @@
                         select.appendChild(el);
                     }
                     $('#customerType')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("customerType");
                     for (var i = 0; i < lstCustomerType.length; i++) {
@@ -972,7 +977,7 @@
                                 required: true,
                                 number: true
                             },
-                            phoneEdit:{
+                            phoneEdit: {
                                 number: "Số điện thoại không hợp lệ"
                             },
                             emailEdit: {
@@ -987,7 +992,7 @@
                                 required: "Vui lòng nhập mã số thuế",
                                 number: "Mã số thuế không hợp lệ"
                             },
-                            phoneEdit:{
+                            phoneEdit: {
                                 number: "Số điện thoại không hợp lệ"
                             },
                             emailEdit: {
@@ -1006,7 +1011,7 @@
                                 required: true,
                                 number: true
                             },
-                            phone:{
+                            phone: {
                                 number: true
                             },
                             email: {
@@ -1022,7 +1027,7 @@
                                 required: "Vui lòng nhập mã số thuế",
                                 number: "Mã số thuế không hợp lệ"
                             },
-                            phone:{
+                            phone: {
                                 number: "Số điện thoại không hợp lệ"
                             },
                             email: {
@@ -1255,7 +1260,7 @@
                         }
                     });
                 },
-                cancelCustomerType:function () {
+                cancelCustomerType: function () {
                     $('input[id=CustomerType_name]').val('');
                     $('textarea[id=description]').val('');
                 },
