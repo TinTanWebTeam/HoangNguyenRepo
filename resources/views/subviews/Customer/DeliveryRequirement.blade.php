@@ -741,7 +741,7 @@
                 dataStatus: null,
                 dataCostPrice: null,
                 dataProductType: null,
-                arrayVoucher: [],
+                arrayVoucher: {},
                 current: null,
                 action: null,
                 idDelete: null,
@@ -800,7 +800,7 @@
                     $("textarea[id=costNote]").val('');
                     $("input[id=transportType]").attr('checked', false);
 
-                    transportView.arrayVoucher = [];
+                    transportView.arrayVoucher = {};
                 },
 
                 renderDateTimePicker: function () {
@@ -1037,8 +1037,12 @@
                                     {
                                         render: function (data, type, full, meta) {
                                             var tr = '';
-                                            tr += '<div class="btn btn-xs btn-primary" data-voucherId="' + full.id + '" onclick="transportView.checkVoucher(this)">';
-                                            tr += '<i class="fa fa-times" aria-hidden="true"></i>';
+                                            tr += '<div class="btn btn-xs btn-primary marginRight" onclick="transportView.increaseVoucher('+full.id+')">';
+                                            tr += '<i class="fa fa-plus" aria-hidden="true"></i>';
+                                            tr += '</div>';
+                                            tr += '<span id="voucher_'+full.id+'" data-voucherId="' + full.id + '" class="badge marginRight">0</span>';
+                                            tr += '<div class="btn btn-xs btn-primary" onclick="transportView.reduceVoucher('+full.id+')">';
+                                            tr += '<i class="fa fa-minus" aria-hidden="true"></i>';
                                             tr += '</div>';
                                             return tr;
                                         }
@@ -1076,6 +1080,7 @@
                 },
 
                 checkVoucher: function (element) {
+                    // Method not use anymore
                     var voucherId = $(element).attr("data-voucherId");
 
                     if ($(element).find("i").hasClass("fa-times")) {
@@ -1110,10 +1115,9 @@
                 fillVoucher: function () {
                     if (transportView.arrayVoucher.length <= 0) return;
 
-                    for (var i = 0; i < transportView.arrayVoucher.length; i++) {
-                        var checkbox = $("div[data-voucherId=" + transportView.arrayVoucher[i] + "]");
-                        checkbox.removeClass("btn-primary").addClass("btn-success");
-                        checkbox.find("i").removeClass("fa-times").addClass("fa-check");
+                    for(var item in transportView.arrayVoucher){
+                        var span = $("span[data-voucherId=" + item + "]");
+                        span.text(transportView.arrayVoucher[item]);
                     }
                 },
 
@@ -1346,9 +1350,9 @@
                     $("textarea[id='costNote']").val(transportView.current["costNote"]);
 
                     var strVoucherName = "";
-                    for (var i = 0; i < transportView.arrayVoucher.length; i++) {
+                    for(var item in transportView.arrayVoucher){
                         var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
-                            return o.id == transportView.arrayVoucher[i];
+                            return o.id == item;
                         }), true);
                         strVoucherName += objVoucher.name + ", ";
                     }
@@ -1432,7 +1436,12 @@
                         return o.transport_id == id;
                     }), true);
 
-                    transportView.arrayVoucher = _.map(arrayVoucherTransport, 'voucher_id');
+                    var b = [];
+                    var a = _.map(arrayVoucherTransport, function(o){
+                        return b[o.id] = o.quantity;
+                    });
+                    transportView.arrayVoucher = b;
+                    console.log(transportView.arrayVoucher);
 
                     transportView.fillCurrentObjectToForm();
                     transportView.action = 'update';
@@ -1891,7 +1900,7 @@
                                 data: 'fileName',
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-//                                    tr += "<span onclick='transportView.downloadFile("+full.id+")'>" + full.fileName + "</span>";
+                                //    tr += "<span onclick='transportView.downloadFile("+full.id+")'>" + full.fileName + "</span>";
                                     tr += "<a href='" + full.filePath + "' download>" + full.fileName + "</a>";
                                     return tr;
                                 }
@@ -1967,6 +1976,43 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                },
+                increaseVoucher: function(voucherId){
+                    var num = parseInt($("#voucher_"+voucherId).text());
+                    num += 1;
+
+                    transportView.arrayVoucher[voucherId] = num;
+
+                    $("#voucher_"+voucherId).empty().text(num);
+
+                    if(num == 1){
+                        var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
+                            return o.id == voucherId;
+                        }), true);
+                        $("input[id='voucher_transport']").val($("input[id='voucher_transport']").val() + objVoucher.name + ", ");
+                    }
+                },
+                reduceVoucher: function(voucherId){
+                    var num = parseInt($("#voucher_"+voucherId).text());
+                    if(num == 0)
+                        return;
+
+                    num -= 1;
+                    transportView.arrayVoucher[voucherId] = num;
+
+                    $("#voucher_"+voucherId).text(num);
+
+                    if(num == 0){
+                        var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
+                            return o.id == voucherId;
+                        }), true);
+                        var strVoucherName = $("input[id='voucher_transport']").val();
+                        if (strVoucherName.indexOf(objVoucher.name) >= 0) {
+                            strVoucherName = strVoucherName.replace(objVoucher.name + ", ", '');
+                        }
+                        $("input[id='voucher_transport']").val(strVoucherName);
+                    }
+
                 }
             };
             transportView.loadData();

@@ -738,6 +738,7 @@ class CustomerManagementController extends Controller
             }
             if (array_key_exists('voucher_transport', $request->input('_transport'))) {
                 $array_voucherTransport = $request->input('_transport')['voucher_transport'];
+                $array_voucherTransport = array_filter($array_voucherTransport, function($value) { return $value !== ''; });
             }
         }
         try {
@@ -785,10 +786,11 @@ class CustomerManagementController extends Controller
                         return response()->json(['msg' => 'Create Transport failed'], 404);
                     }
                     //Add VoucherTransport
-                    for ($i = 0; $i < count($array_voucherTransport); ++$i) {
+                    foreach($array_voucherTransport as $key => $value){
                         $vouTranNew = new VoucherTransport();
-                        $vouTranNew->voucher_id = $array_voucherTransport[$i];
+                        $vouTranNew->voucher_id = $key;
                         $vouTranNew->transport_id = $transportNew->id;
+                        $vouTranNew->quantity = $value;
                         $vouTranNew->createdBy = \Auth::user()->id;
                         $vouTranNew->updatedBy = \Auth::user()->id;
                         if (!$vouTranNew->save()) {
@@ -890,10 +892,11 @@ class CustomerManagementController extends Controller
                     }
 
                     //Add VoucherTransport
-                    for ($i = 0; $i < count($array_voucherTransport); ++$i) {
+                    foreach($array_voucherTransport as $key => $value){
                         $vouTranNew = new VoucherTransport();
-                        $vouTranNew->voucher_id = $array_voucherTransport[$i];
+                        $vouTranNew->voucher_id = $key;
                         $vouTranNew->transport_id = $transportUpdate->id;
+                        $vouTranNew->quantity = $value;
                         $vouTranNew->createdBy = $createdBy;
                         $vouTranNew->updatedBy = \Auth::user()->id;
                         if (!$vouTranNew->save()) {
