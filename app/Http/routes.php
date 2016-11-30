@@ -80,10 +80,11 @@ Route::group(['middleware' => 'auth'], function () {
         //get View
         Route::get('/vehicle-inside', 'VehicleManagementController@getViewGarageInside');
         Route::get('/vehicle-outside', 'VehicleManagementController@getViewGarageOutside');
-        //get Data
+
 //        Route::get('/vehicle-inside/vehicles', 'VehicleManagementController@getDataVehicle');
 //        Route::get('/vehicle-outside/garages', 'VehicleManagementController@getDataGarage');
-        Route::get('/vehicle-type/vehicleTypes', 'VehicleManagementController@getDataVehicleType');
+        //Post vehicleType + list vehicle
+        Route::POST('/vehicle-type/vehicleTypes', 'VehicleManagementController@postDataVehicleType');
         //post Modify
         Route::post('/vehicle-outside/modify', 'VehicleManagementController@postModifyGarage');
         Route::post('/vehicle-type/modify', 'VehicleManagementController@postModifyVehicleType');
@@ -92,6 +93,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/garage-outside/garages', 'VehicleManagementController@getDataGarageOutside');
         //post Modify Garage In side
         Route::post('/garage-inside/modify', 'VehicleManagementController@postModifyGarageInside');
+        Route::post('/vehicle-inside/modify', 'VehicleManagementController@postModifyVehicleInside');
 
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
