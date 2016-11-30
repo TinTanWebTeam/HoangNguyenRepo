@@ -164,7 +164,7 @@ class VehicleManagementController extends Controller
     public function postModifyVehicleInside(Request $request){
         $action = $request->input('_action');
         switch ($action) {
-            case 'add':
+            case 'addVehicle':
                 $garageNew = new Garage();
                 $garageNew->name = $garage_name;
                 $garageNew->address = $address;
@@ -188,7 +188,7 @@ class VehicleManagementController extends Controller
                 }
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
-            case 'update':
+            case 'updateVehicle':
                 $garageUpdate = Garage::findOrFail($request->input('_garage')['id']);
                 $garageUpdate->name = $garage_name;
                 $garageUpdate->address = $address;
@@ -223,25 +223,25 @@ class VehicleManagementController extends Controller
                 }
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
-            case'vehicleType':
-                $vehicleTypeNew = new VehicleType();
-                $vehicleTypeNew->name = $vehicleType;
-                $vehicleTypeNew->description = $description;
-                if (!$vehicleTypeNew->save()) {
-                    return response()->json(['msg' => 'Create failed'], 404);
-                }
-                $vehicleTypes = \DB::table('vehicleTypes')
-                    ->where('vehicleTypes.id',$vehicleTypeNew->id)
-                    ->first();
-                $response = [
-                    'msg' => 'Created vehicleType',
-                    'dataVehicleTypes' => $vehicleTypes,
-
-                ];
-                return response()->json($response, 201);
-
-
-                break;
+//            case'vehicleType':
+//                $vehicleTypeNew = new VehicleType();
+//                $vehicleTypeNew->name = $vehicleType;
+//                $vehicleTypeNew->description = $description;
+//                if (!$vehicleTypeNew->save()) {
+//                    return response()->json(['msg' => 'Create failed'], 404);
+//                }
+//                $vehicleTypes = \DB::table('vehicleTypes')
+//                    ->where('vehicleTypes.id',$vehicleTypeNew->id)
+//                    ->first();
+//                $response = [
+//                    'msg' => 'Created vehicleType',
+//                    'dataVehicleTypes' => $vehicleTypes,
+//
+//                ];
+//                return response()->json($response, 201);
+//
+//
+//                break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;
@@ -438,10 +438,12 @@ class VehicleManagementController extends Controller
     public function postDataVehicleType(Request $request)
     {
         $vehicles = \DB::table('vehicles')
-            ->join('vehicleTypes','vehicleType_id','=','vehicles.id')
+            ->join('vehicleTypes','vehicleTypes.id','=','vehicles.vehicleType_id')
             ->where('active',1)
             ->where('garage_id',$request->input('_idGarage'))
+            ->select('vehicles.*','vehicleTypes.name','vehicleTypes.id')
             ->get();
+
         $vehicleTypes = VehicleType::all();
         $response = [
             'msg' => 'Get data vehicleType success',
