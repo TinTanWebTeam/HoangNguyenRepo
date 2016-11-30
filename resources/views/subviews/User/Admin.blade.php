@@ -165,9 +165,7 @@
                                         <label for="fullName"><b>Họ và tên</b></label>
                                         <input type="text" class="form-control"
                                                id="fullName"
-                                               name="fullName"
-                                               placeholder="Nhập họ tên"
-                                               autofocus>
+                                               name="fullName">
                                     </div>
                                 </div>
                                 <div class="col-md-4 ">
@@ -175,8 +173,7 @@
                                         <label for="username"><b>Tên đăng nhập</b></label>
                                         <input type="text" class="form-control"
                                                id="username"
-                                               name="username"
-                                               placeholder="Tên đăng nhập">
+                                               name="username">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -184,8 +181,7 @@
                                         <label for="email"><b>Email</b></label>
                                         <input type="email" class="form-control"
                                                id="email"
-                                               name="email"
-                                               placeholder="email@example.com">
+                                               name="email">
                                     </div>
                                 </div>
                             </div>
@@ -197,8 +193,7 @@
                                                id="password"
                                                name="password"
                                                maxlength="20"
-                                               minlength="6"
-                                               placeholder="password">
+                                               minlength="6">
 
 
                                     </div>
@@ -210,8 +205,7 @@
                                                id="password_confirmation"
                                                name="password_confirmation"
                                                maxlength="20"
-                                               minlength="6"
-                                               placeholder="Nhập lại mật khẩu">
+                                               minlength="6">
 
                                     </div>
                                 </div>
@@ -231,8 +225,7 @@
                                         <label for="address"><b>Địa chỉ</b></label>
                                         <input type="text" class="form-control"
                                                id="address"
-                                               name="address"
-                                               placeholder="Địa chỉ">
+                                               name="address">
                                     </div>
                                 </div>
                                 <div class="col-md-4" id="datePicker">
@@ -248,8 +241,7 @@
                                         <label for="phone"><b>Số điện thoại</b></label>
                                         <input type="text" class="form-control"
                                                id="phone"
-                                               name="phone"
-                                               placeholder="090">
+                                               name="phone">
                                     </div>
                                 </div>
 
