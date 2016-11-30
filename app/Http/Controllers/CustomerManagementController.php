@@ -4,16 +4,15 @@ namespace App\Http\Controllers;
 
 use App\CostPrice;
 use App\Customer;
-
 use App\CustomerType;
 use App\Driver;
+use App\File;
 use App\Garage;
 use App\GarageType;
 use App\InvoiceCustomer;
 use App\InvoiceCustomerDetail;
 use App\Postage;
 use App\Product;
-
 use App\ProductType;
 use App\StaffCustomer;
 use App\Status;
@@ -21,10 +20,10 @@ use App\Transport;
 use App\VehicleType;
 use App\Voucher;
 use App\VoucherTransport;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-
+use File as FileSystem;
 use League\Flysystem\Exception;
 
 class CustomerManagementController extends Controller
@@ -56,6 +55,7 @@ class CustomerManagementController extends Controller
             'customerTypes' => $customerTypes,
             'dataStaff'     => $staffCustomers,
         ];
+
         return response()->json($response, 200);
     }
 
@@ -86,9 +86,9 @@ class CustomerManagementController extends Controller
             $validator = ValidateController::ValidateCustomer($request->input('_customer'), $action);
             if ($validator->fails()) {
                 return $validator->errors();
-//                return response()->json(['msg' => 'Input data fail'], 404);
+                //  return response()->json(['msg' => 'Input data fail'], 404);
             }
-            if ($action == "add") {
+            if ($action == 'add') {
                 $fullName = $request->input('_customer')['fullName'];
                 $taxCode = $request->input('_customer')['taxCode'];
                 $address = $request->input('_customer')['address'];
@@ -97,7 +97,7 @@ class CustomerManagementController extends Controller
                 $percentFuel = $request->input('_customer')['percentFuel'];
                 $percentFuelChange = $request->input('_customer')['percentFuelChange'];
                 $note = $request->input('_customer')['note'];
-            } elseif ($action == "update") {
+            } elseif ($action == 'update') {
                 $fullNameEdit = $request->input('_customer')['fullName'];
                 $taxCodeEdit = $request->input('_customer')['taxCode'];
                 $addressEdit = $request->input('_customer')['address'];
@@ -142,10 +142,12 @@ class CustomerManagementController extends Controller
 
                     $response = [
                         'msg'      => 'Created customer',
-                        'customer' => $customer
+                        'customer' => $customer,
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case 'update':
@@ -168,10 +170,12 @@ class CustomerManagementController extends Controller
                         ->get();
                     $response = [
                         'msg'      => 'Updated customer',
-                        'customer' => $customer
+                        'customer' => $customer,
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case 'delete':
@@ -180,10 +184,12 @@ class CustomerManagementController extends Controller
 
                 if ($customerDelete->update()) {
                     $response = [
-                        'msg' => 'Deleted customer'
+                        'msg' => 'Deleted customer',
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:
@@ -193,7 +199,6 @@ class CustomerManagementController extends Controller
     }
 
     /*Add staff*/
-
 
     public function postModifyStaff(Request $request)
     {
@@ -212,7 +217,7 @@ class CustomerManagementController extends Controller
             $validator = ValidateController::ValidateStaffOfCustomer($request->input('_object'));
             if ($validator->fails()) {
                 return $validator->errors();
-//                return response()->json(['msg' => 'Input data fail'], 404);
+                //  return response()->json(['msg' => 'Input data fail'], 404);
             }
             $idCustomer = $request->input('_object')['customer_id'];
             $fullNameStaff = $request->input('_object')['fullNameStaff'];
@@ -225,9 +230,7 @@ class CustomerManagementController extends Controller
             $noteStaff = $request->input('_object')['noteStaff'];
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
-
         }
-
 
         switch ($action) {
             case 'addStaff':
@@ -250,10 +253,12 @@ class CustomerManagementController extends Controller
                         ->first();
                     $response = [
                         'msg'      => 'Created customer',
-                        'staffNew' => $staff
+                        'staffNew' => $staff,
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case 'updateStaff':
@@ -276,10 +281,12 @@ class CustomerManagementController extends Controller
                         ->first();
                     $response = [
                         'msg'         => 'Updated Staff',
-                        'updateStaff' => $staff
+                        'updateStaff' => $staff,
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
 
@@ -289,10 +296,12 @@ class CustomerManagementController extends Controller
                 $staffDelete->active = 0;
                 if ($staffDelete->update()) {
                     $response = [
-                        'msg' => 'Deleted staff'
+                        'msg' => 'Deleted staff',
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:
@@ -332,10 +341,12 @@ class CustomerManagementController extends Controller
                 if ($customerTypeNew->save()) {
                     $response = [
                         'msg'          => 'Created customerType',
-                        'customerType' => $customerTypeNew
+                        'customerType' => $customerTypeNew,
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case 'update':
@@ -345,10 +356,12 @@ class CustomerManagementController extends Controller
                 if ($customerTypeUpdate->update()) {
                     $response = [
                         'msg'          => 'Updated customerType',
-                        'customerType' => $customerTypeUpdate
+                        'customerType' => $customerTypeUpdate,
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case 'delete':
@@ -357,10 +370,12 @@ class CustomerManagementController extends Controller
 
                 if ($customerTypeDelete->update()) {
                     $response = [
-                        'msg' => 'Deleted Customer Type'
+                        'msg' => 'Deleted Customer Type',
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:
@@ -382,6 +397,7 @@ class CustomerManagementController extends Controller
             'msg'      => 'Get list all Product',
             'products' => $products,
         ];
+
         return response()->json($response, 200);
     }
 
@@ -411,7 +427,7 @@ class CustomerManagementController extends Controller
 
         switch ($action) {
             case 'add':
-                if(!$productType_id){
+                if (!$productType_id) {
                     $productTypeNew = new ProductType();
                     $productTypeNew->name = $productType;
                     if ($productTypeNew->save()) {
@@ -421,15 +437,17 @@ class CustomerManagementController extends Controller
                         $productNew->productType_id = $productTypeNew->id;
                         if ($productNew->save()) {
                             $response = [
-                                'msg'     => 'Created Product',
-                                'product' => $productNew,
-                                'productType' => $productTypeNew
+                                'msg'         => 'Created Product',
+                                'product'     => $productNew,
+                                'productType' => $productTypeNew,
                             ];
+
                             return response()->json($response, 201);
                         }
                     }
+
                     return response()->json(['msg' => 'Create failed'], 404);
-                }else{
+                } else {
                     $productNew = new Product();
                     $productNew->name = $name;
                     $productNew->description = $description;
@@ -437,10 +455,12 @@ class CustomerManagementController extends Controller
                     if ($productNew->save()) {
                         $response = [
                             'msg'     => 'Created Product',
-                            'product' => $productNew
+                            'product' => $productNew,
                         ];
+
                         return response()->json($response, 201);
                     }
+
                     return response()->json(['msg' => 'Create failed'], 404);
                 }
 
@@ -453,10 +473,12 @@ class CustomerManagementController extends Controller
                 if ($productUpdate->update()) {
                     $response = [
                         'msg'     => 'Updated Product',
-                        'product' => $productUpdate
+                        'product' => $productUpdate,
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case 'delete':
@@ -465,10 +487,12 @@ class CustomerManagementController extends Controller
 
                 if ($productDelete->update()) {
                     $response = [
-                        'msg' => 'Deleted Product'
+                        'msg' => 'Deleted Product',
                     ];
+
                     return response()->json($response, 201);
                 }
+
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:
@@ -489,6 +513,7 @@ class CustomerManagementController extends Controller
             'msg'          => 'Get list all Product',
             'productTypes' => $productTypes,
         ];
+
         return response()->json($response, 200);
     }
 
@@ -502,6 +527,7 @@ class CustomerManagementController extends Controller
             'msg'      => 'Get list all Voucher',
             'vouchers' => $vouchers,
         ];
+
         return response()->json($response, 200);
     }
 
@@ -534,10 +560,12 @@ class CustomerManagementController extends Controller
                     if ($voucherNew->save()) {
                         $response = [
                             'msg'     => 'Created voucher',
-                            'voucher' => $voucherNew
+                            'voucher' => $voucherNew,
                         ];
+
                         return response()->json($response, 201);
                     }
+
                     return response()->json(['msg' => 'Create failed'], 404);
                     break;
                 case 'update':
@@ -547,10 +575,12 @@ class CustomerManagementController extends Controller
                     if ($voucherUpdate->update()) {
                         $response = [
                             'msg'     => 'Updated voucher',
-                            'voucher' => $voucherUpdate
+                            'voucher' => $voucherUpdate,
                         ];
+
                         return response()->json($response, 201);
                     }
+
                     return response()->json(['msg' => 'Update failed'], 404);
                     break;
                 case 'delete':
@@ -559,10 +589,12 @@ class CustomerManagementController extends Controller
 
                     if ($voucherDelete->update()) {
                         $response = [
-                            'msg' => 'Deleted Voucher'
+                            'msg' => 'Deleted Voucher',
                         ];
+
                         return response()->json($response, 201);
                     }
+
                     return response()->json(['msg' => 'Deletion failed'], 404);
                     break;
                 default:
@@ -606,8 +638,8 @@ class CustomerManagementController extends Controller
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
             ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-//            ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
-//            ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
+            //  ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+            //  ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
             ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
@@ -615,7 +647,7 @@ class CustomerManagementController extends Controller
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->where('transports.active', 1)
             ->orderBy('transports.receiveDate', 'desc')
-//            ->where(\DB::raw('DATE(transports.receiveDate)'), '<=', \DB::raw('DATE(driverVehicles.updated_at)'))
+            //  ->where(\DB::raw('DATE(transports.receiveDate)'), '<=', \DB::raw('DATE(driverVehicles.updated_at)'))
             ->get();
 
         $voucherTransports = VoucherTransport::all();
@@ -629,7 +661,7 @@ class CustomerManagementController extends Controller
             'voucherTransports' => $voucherTransports,
             'vouchers'          => $vouchers,
             'statuses'          => $statuses,
-            'costPrices'        => $costPrices
+            'costPrices'        => $costPrices,
         ];
 
         return $response;
@@ -669,10 +701,10 @@ class CustomerManagementController extends Controller
 
         $action = $request->input('_action');
         if ($action != 'delete') {
-//            $validator = ValidateController::ValidateVoucherTransport($request->input('_transport'));
-//            if ($validator->fails()) {
-//                return response()->json(['msg' => 'Input data fail'], 404);
-//            }
+            //  $validator = ValidateController::ValidateVoucherTransport($request->input('_transport'));
+            //  if ($validator->fails()) {
+            //      return response()->json(['msg' => 'Input data fail'], 404);
+            //  }
 
             $weight = $request->input('_transport')['weight'];
             $quantumProduct = $request->input('_transport')['quantumProduct'];
@@ -749,10 +781,11 @@ class CustomerManagementController extends Controller
 
                     if (!$transportNew->save()) {
                         DB::rollBack();
+
                         return response()->json(['msg' => 'Create Transport failed'], 404);
                     }
                     //Add VoucherTransport
-                    for ($i = 0; $i < count($array_voucherTransport); $i++) {
+                    for ($i = 0; $i < count($array_voucherTransport); ++$i) {
                         $vouTranNew = new VoucherTransport();
                         $vouTranNew->voucher_id = $array_voucherTransport[$i];
                         $vouTranNew->transport_id = $transportNew->id;
@@ -760,6 +793,7 @@ class CustomerManagementController extends Controller
                         $vouTranNew->updatedBy = \Auth::user()->id;
                         if (!$vouTranNew->save()) {
                             DB::rollBack();
+
                             return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
                         }
                     }
@@ -794,9 +828,10 @@ class CustomerManagementController extends Controller
                     $response = [
                         'msg'              => 'Created transport',
                         'transport'        => $transport,
-                        'voucherTransport' => $voucherTransport
+                        'voucherTransport' => $voucherTransport,
                     ];
                     DB::commit();
+
                     return response()->json($response, 201);
                     break;
                 case 'update':
@@ -838,6 +873,7 @@ class CustomerManagementController extends Controller
 
                     if (!$transportUpdate->update()) {
                         DB::rollBack();
+
                         return response()->json(['msg' => 'Update Transport failed'], 404);
                     }
                     //Delete VoucherTransport
@@ -848,12 +884,13 @@ class CustomerManagementController extends Controller
                         }, $vouTranDelete);
                         if (DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0) {
                             DB::rollBack();
+
                             return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
                         }
                     }
 
                     //Add VoucherTransport
-                    for ($i = 0; $i < count($array_voucherTransport); $i++) {
+                    for ($i = 0; $i < count($array_voucherTransport); ++$i) {
                         $vouTranNew = new VoucherTransport();
                         $vouTranNew->voucher_id = $array_voucherTransport[$i];
                         $vouTranNew->transport_id = $transportUpdate->id;
@@ -861,34 +898,35 @@ class CustomerManagementController extends Controller
                         $vouTranNew->updatedBy = \Auth::user()->id;
                         if (!$vouTranNew->save()) {
                             DB::rollBack();
+
                             return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
                         }
                     }
 
                     //Update InvoiceCustomer for Transport
-//                    if ($transportUpdate->invoiceCustomer_id != null) {
-//                        $invoiceCustomer = InvoiceCustomer::find($transportUpdate->invoiceCustomer_id);
-//                        $invoiceCustomer->totalPay = $invoiceCustomer->totalPay - $kp_cashRevenue + $transportUpdate->cashRevenue;
-//                        $invoiceCustomer->prePaid = $invoiceCustomer->prePaid - $kp_cashReceive + $transportUpdate->cashReceive;
-//                        $invoiceCustomer->totalPaid = $invoiceCustomer->totalPay - $invoiceCustomer->prePaid;
-//                        $invoiceCustomer->notVAT = $invoiceCustomer->totalPay;
-//                        $invoiceCustomer->hasVAT = $invoiceCustomer->notVAT * $invoiceCustomer->VAT / 100;
-//                        $invoiceCustomer->updatedBy = \Auth::user()->id;
-//                        if (!$invoiceCustomer->update()) {
-//                            DB::rollBack();
-//                            return response()->json(['msg' => 'Update InvoiceCustomer failed'], 404);
-//                        }
-//
-//                        $invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomer->id)->orderBy('created_at', 'desc')->first();
-//                        $invoiceCustomerDetail->paidAmt = $invoiceCustomerDetail->paidAmt + ($transportUpdate->cashReceive - $kp_cashReceive);
-//                        $invoiceCustomerDetail->payDate = date('Y-m-d H:i');
-//                        $invoiceCustomerDetail->modify = true;
-//                        $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
-//                        if (!$invoiceCustomerDetail->update()) {
-//                            DB::rollBack();
-//                            return response()->json(['msg' => 'Update InvoiceCustomerDetail failed'], 404);
-//                        }
-//                    }
+                    //  if ($transportUpdate->invoiceCustomer_id != null) {
+                    //      $invoiceCustomer = InvoiceCustomer::find($transportUpdate->invoiceCustomer_id);
+                    //      $invoiceCustomer->totalPay = $invoiceCustomer->totalPay - $kp_cashRevenue + $transportUpdate->cashRevenue;
+                    //      $invoiceCustomer->prePaid = $invoiceCustomer->prePaid - $kp_cashReceive + $transportUpdate->cashReceive;
+                    //      $invoiceCustomer->totalPaid = $invoiceCustomer->totalPay - $invoiceCustomer->prePaid;
+                    //      $invoiceCustomer->notVAT = $invoiceCustomer->totalPay;
+                    //      $invoiceCustomer->hasVAT = $invoiceCustomer->notVAT * $invoiceCustomer->VAT / 100;
+                    //      $invoiceCustomer->updatedBy = \Auth::user()->id;
+                    //      if (!$invoiceCustomer->update()) {
+                    //          DB::rollBack();
+                    //          return response()->json(['msg' => 'Update InvoiceCustomer failed'], 404);
+                    //      }
+
+                    //      $invoiceCustomerDetail = InvoiceCustomerDetail::where('invoiceCustomer_id', $invoiceCustomer->id)->orderBy('created_at', 'desc')->first();
+                    //      $invoiceCustomerDetail->paidAmt = $invoiceCustomerDetail->paidAmt + ($transportUpdate->cashReceive - $kp_cashReceive);
+                    //      $invoiceCustomerDetail->payDate = date('Y-m-d H:i');
+                    //      $invoiceCustomerDetail->modify = true;
+                    //      $invoiceCustomerDetail->updatedBy = \Auth::user()->id;
+                    //      if (!$invoiceCustomerDetail->update()) {
+                    //          DB::rollBack();
+                    //          return response()->json(['msg' => 'Update InvoiceCustomerDetail failed'], 404);
+                    //      }
+                    //  }
 
                     //Response
                     $transport = DB::table('transports')
@@ -920,9 +958,10 @@ class CustomerManagementController extends Controller
                     $response = [
                         'msg'              => 'Updated transport',
                         'transport'        => $transport,
-                        'voucherTransport' => $voucherTransport
+                        'voucherTransport' => $voucherTransport,
                     ];
                     DB::commit();
+
                     return response()->json($response, 201);
                     break;
                 case 'delete':
@@ -935,6 +974,7 @@ class CustomerManagementController extends Controller
                         }, $vouTranDelete);
                         if (DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0) {
                             DB::rollBack();
+
                             return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
                         }
                     }
@@ -946,32 +986,136 @@ class CustomerManagementController extends Controller
                     //Response
                     if (!$transportDelete->update()) {
                         DB::rollBack();
+
                         return response()->json(['msg' => 'Delete Transport failed'], 404);
                     }
                     $response = [
-                        'msg' => 'Deleted transport'
+                        'msg' => 'Deleted transport',
                     ];
                     DB::commit();
+
                     return response()->json($response, 201);
                     break;
                 default:
                     DB::rollBack();
+
                     return response()->json(['msg' => 'Connection to server failed'], 404);
                     break;
             }
         } catch (Exception $ex) {
             DB::rollBack();
+
             return response()->json(['msg' => $ex], 404);
         }
     }
 
     public function generateTransportCode()
     {
-        $transportCode = "DH" . date('ymd');
+        $transportCode = 'DH' . date('ymd');
 
         $stt = Transport::where('transportCode', 'like', $transportCode . '%')->get()->count() + 1;
-        $transportCode .= substr("00" . $stt, -3);
+        $transportCode .= substr('00' . $stt, -3);
+
         return $transportCode;
+    }
+
+    /*
+     * File
+     * */
+    public function postUploadMultiFile(Request $request)
+    {
+        $transportId = $request->input('transportId');
+        $files = $request->file('file');
+        if (empty($files)) {
+            return response()->json(['msg' => 'File emplty'], 203);
+        }
+        foreach ($files as $file) {
+            $fileNew = new File();
+            $fileNew->fileName = $file->getClientOriginalName();
+            $fileNew->fileExtension = $file->getClientOriginalExtension();
+            $fileNew->mimeType = $file->getClientMimeType();
+            $fileNew->size = $file->getClientSize();
+            $fileNew->id_type = ($transportId == null || $transportId == "") ? 0 : $transportId;
+            $fileNew->type = 'transport';
+            if (!$fileNew->save()) {
+                return response()->json(['msg' => 'Add File in database fail!'], 203);
+            }
+            $fileNew->filePath = "files/transport/" . "transport_" . $fileNew->id . "." . $fileNew->fileExtension;
+            if (!$fileNew->save()) {
+                return response()->json(['msg' => 'Add File in database fail!'], 203);
+            }
+
+//            Storage::put($file->getClientOriginalName(), file_get_contents($file->getRealPath()));
+            if (!$file->move('../public/files/transport', $fileNew->filePath)) {
+                return response()->json(['msg' => 'Add File in folder fail!'], 203);
+            }
+        }
+        return response()->json(['msg' => 'success'], 201);
+    }
+
+    public function postRetrieveMultiFile(Request $request)
+    {
+        $transportId = $request->input('_transportId');
+
+        $files = DB::table('files')
+            ->where('files.type', 'transport')
+            ->where('files.id_type', $transportId)
+            ->join('transports', 'transports.id', '=', 'files.id_type')
+            ->select('files.*')
+            ->get();
+        $response = [
+            'msg'   => 'success',
+            'files' => $files
+        ];
+        return response()->json($response, 201);
+    }
+
+    public function postDeleteFile(Request $request)
+    {
+        $fileId = $request->input('_fileId');
+        $file = File::findOrFail($fileId);
+
+        if (!FileSystem::delete('../public/' . $file->filePath)) {
+            return response()->json(['msg' => 'Delete file in folder fail!'], 203);
+        }
+
+        if (!$file->delete()) {
+            return response()->json(['msg' => 'Delete File in database fail!'], 203);
+        }
+
+        $files = DB::table('files')
+            ->where('files.type', 'transport')
+            ->where('files.id_type', $file->id_type)
+            ->join('transports', 'transports.id', '=', 'files.id_type')
+            ->select('files.*')
+            ->get();
+        $response = [
+            'msg'   => 'success',
+            'files' => $files
+        ];
+        return response()->json($response, 201);
+    }
+
+    public function postDownloadFile(Request $request)
+    {
+        $fileId = $request->input('_fileId');
+
+        $file = File::find($fileId);
+
+        $pathToFile = public_path() . "/" . $file->filePath;
+
+        $headers = array(
+            'Content-Type: '.$file->mimeType,
+            'Content-Disposition: attachment; filename="' . $file->fileName . '"',
+            'Content-Transfer-Encoding: binary',
+            'Accept-Ranges: bytes',
+            'Content-Length: '.$file->size
+        );
+
+        $name = $file->fileName;
+
+        return response()->download($pathToFile, $name, $headers);
+
     }
 
     /*
@@ -988,7 +1132,7 @@ class CustomerManagementController extends Controller
         $postageDetail = Postage::where([
             ['customer_id', $customerId],
             ['receivePlace', $receivePlace],
-            ['deliveryPlace', $deliveryPlace]
+            ['deliveryPlace', $deliveryPlace],
         ])
             ->where(\DB::raw('DATE(applyDate)'), '<=', $receiveDate)
             ->orderBy('applyDate', 'desc')->first();
@@ -999,8 +1143,9 @@ class CustomerManagementController extends Controller
         $response = [
             'msg'          => 'Get postage success',
             'postage'      => $postage,
-            'cashDelivery' => $cashDelivery
+            'cashDelivery' => $cashDelivery,
         ];
+
         return response()->json($response, 201);
     }
 
@@ -1015,11 +1160,7 @@ class CustomerManagementController extends Controller
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
             ->join('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
             ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
-            ->select('vehicles.*'
-                , 'vehicleTypes.name as vehicleTypes_name'
-                , 'garages.name as garages_name'
-                , 'drivers.fullName as driverName'
-                , 'drivers.id as driver_id')
+            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name', 'drivers.fullName as driverName', 'drivers.id as driver_id')
             ->where('vehicles.active', 1)
             ->orderBy('vehicles.id', 'desc')
             ->get();
@@ -1031,6 +1172,7 @@ class CustomerManagementController extends Controller
             'garageTypes'  => $garageType,
             'garages'      => $garages,
         ];
+
         return response()->json($response, 200);
     }
 }

@@ -24,8 +24,13 @@
             height: 80vh;
         }
     }
+
     .ui-autocomplete {
         z-index: 1510 !important;
+    }
+
+    span:hover {
+        color: blue;
     }
 </style>
 
@@ -297,7 +302,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="form-group form-md-line-input">
                                     <label for=""></label>
                                     <div class="form-actions">
@@ -305,14 +310,17 @@
                                             <button type="button" class="btn btn-primary marginRight"
                                                     onclick="transportView.save()">Hoàn tất
                                             </button>
-                                            <button type="button" class="btn default"
+                                            <button type="button" class="btn btn-default marginRight"
                                                     onclick="transportView.clearInput()">Nhập lại
+                                            </button>
+                                            <button type="button" class="btn btn-info" id="attach-file"
+                                                    onclick="transportView.showFormAttachFile()">Thêm tập tin
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-7">
                                 <div class="form-group form-md-line-input">
                                     <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
                                     <div class="row">
@@ -638,9 +646,9 @@
                                         </button>
                                         <button type="button" class="btn default"
                                                 onclick="
-                                                $('input[id=product_name]').val('');
-                                                $('#product_name').attr('data-productId', '');
-                                                transportView.displayModal('hide','#modal-addProduct')">Huỷ
+                                    $('input[id=product_name]').val('');
+                                    $('#product_name').attr('data-productId', '');
+                                    transportView.displayModal('hide','#modal-addProduct')">Huỷ
                                         </button>
                                     </div>
                                 </div>
@@ -666,7 +674,6 @@
                     <h5 class="modal-title"></h5>
                 </div>
                 <div class="modal-body">
-
                 </div>
             </div>
         </div>
@@ -674,12 +681,56 @@
 </div>
 <!-- end Modal notification -->
 
+<!-- Modal attach file -->
+<div class="row">
+    <div id="modal-attachFile" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Thêm tập tin cho đơn hàng</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="upload" onsubmit="return false;">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="transportId" id="transportId" value="">
+                        <label for="file">Chọn tập tin:</label>
+                        <input type="file" id="file" name="file[]" multiple class="form-control">
+                    </form>
+                    <h5>Danh sách tập tin</h5>
+                    <table class="table table-bordered table-hover table-striped" id="table-file">
+                        <thead>
+                        <tr class="active">
+                            <th>Mã</th>
+                            <th>Tên tập tin</th>
+                            <th>Xem</th>
+                            <th>Xóa</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                    <hr>
+                    <div id="thumbnail">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal attach file -->
+
 <script>
     $(function () {
         if (typeof transportView === 'undefined') {
             transportView = {
                 table: null,
                 tableVoucher: null,
+                tableFile: null,
 
                 dataTransport: null,
                 dataVehicle: null,
@@ -766,7 +817,6 @@
                         format: 'dd-mm-yyyy',
                         autoclose: true
                     }).on("input change", function (e) {
-                        console.log("Date changed: ", e.target.value);
                         transportView.postDataPostageOfCustomer();
                     });
 
@@ -810,7 +860,6 @@
                             return o.name == productName;
                         });
                         if (typeof product === "undefined") {
-//                            transportView.loadSelectBox(transportView.dataProductType, 'productType_id', 'name');
                             transportView.displayModal("show", "#modal-addProduct");
                             transportView.loadListProductType();
                             $("input[id=productName]").val(productName);
@@ -861,9 +910,6 @@
                     $("#deliveryPlace").focusout(function () {
                         transportView.postDataPostageOfCustomer();
                     });
-//                    $("#receiveDate").focusout(function () {
-//                        transportView.postDataPostageOfCustomer();
-//                    });
                 },
                 renderEventCheckbox: function (cb) {
                     transportView.transportType = (cb.checked) ? 1 : 0;
@@ -882,8 +928,6 @@
                             transportView.dataVoucher = data['vouchers'];
                             transportView.dataStatus = data['statuses'];
                             transportView.loadSelectBox(transportView.dataStatus, 'status_transport', 'status');
-//                            transportView.dataCostPrice = data['costPrices'];
-//                            transportView.loadSelectBox(transportView.dataCostPrice, 'costPrices_id', 'name');
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1074,7 +1118,7 @@
                 },
 
                 fillDataToDatatable: function (data) {
-//                    removeDataTable();
+                    //  removeDataTable();
 
                     for (var i = 0; i < data.length; i++) {
                         if (data[i]['transportType'] === 1) {
@@ -1095,7 +1139,7 @@
                                 data: 'id',
                                 visible: false
                             },
-                            {   data: 'stt'   },
+                            {data: 'stt'},
                             {
                                 data: 'receiveDate',
                                 render: function (data, type, full, meta) {
@@ -1207,9 +1251,9 @@
                             {responsivePriority: 1, targets: 19} // Sua/ xoa
                         ],
                         responsive: true,
-//                        fixedHeader: {
-//                            header: true
-//                        },
+                        //  fixedHeader: {
+                        //      header: true
+                        //  },
                         order: [[1, "asc"]],
                         dom: 'Bfrtip',
                         buttons: [
@@ -1256,7 +1300,7 @@
                     });
                     $("#table-data").css("width", "auto");
 
-//                    pushDataTable(transportView.table);
+                    //  pushDataTable(transportView.table);
                 },
                 fillCurrentObjectToForm: function () {
                     transportView.transportType = transportView.current["transportType"];
@@ -1394,6 +1438,8 @@
                     transportView.action = 'update';
                     $("#divControl").find(".titleControl").html("Cập nhật đơn hàng");
                     transportView.showControl();
+
+                    $("div[id=thumbnail]").html('');
                 },
                 addTransport: function () {
                     $("input[id=transportType]").prop('disabled', false);
@@ -1414,6 +1460,8 @@
                     $("input[id=voucherQuantumProduct]").val(0);
                     $("#divControl").find(".titleControl").html("Thêm mới đơn hàng");
                     transportView.showControl();
+
+                    $("div[id=thumbnail]").html('');
                 },
                 deleteTransport: function (id) {
                     transportView.action = 'delete';
@@ -1436,7 +1484,6 @@
                             receiver: "required",
                             receivePlace: "required",
                             deliveryPlace: "required",
-//                            voucherNumber: "required",
                             voucherQuantumProduct: "required",
                             costs_note: "required"
                         },
@@ -1454,7 +1501,6 @@
                             receiver: "Vui lòng nhập người nhận",
                             receivePlace: "Vui lòng nhập nơi nhận",
                             deliveryPlace: "Vui lòng nhập nơi giao",
-//                            voucherNumber: "Vui lòng nhập số chứng từ",
                             voucherQuantumProduct: "Vui lòng nhập số lượng hàng trên chứng từ",
                             costs_note: "Vui lòng nhập ghi chú cho chi phí"
                         }
@@ -1462,8 +1508,8 @@
                 },
                 clearValidation: function (idForm) {
                     $(idForm).find("label[class=error]").remove();
-//                    var validator = $(idForm).validate();
-//                    validator.resetForm();
+                    //  var validator = $(idForm).validate();
+                    //  validator.resetForm();
                 },
                 validateVoucher: function () {
                     $("#frmVoucher").validate({
@@ -1490,7 +1536,7 @@
 
                 save: function () {
                     if (transportView.action == 'delete') {
-                        sendToServer = {
+                        var sendToServer = {
                             _token: _token,
                             _action: transportView.action,
                             _id: transportView.idDelete
@@ -1516,7 +1562,7 @@
                             }
                         }
                         transportView.fillFormDataToCurrentObject();
-                        sendToServer = {
+                        var sendToServer = {
                             _token: _token,
                             _action: transportView.action,
                             _transport: transportView.current
@@ -1542,6 +1588,10 @@
                                         data['transport'].fullNumber = fullNumber;
                                     }
 
+                                    var mapStt = _.map(transportView.dataTransport, 'stt');
+                                    var maxStt = _.max(mapStt);
+                                    data['transport'].stt = maxStt + 1;
+
                                     transportView.dataTransport.push(data['transport']);
 
                                     transportView.dataVoucherTransport = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
@@ -1562,6 +1612,7 @@
                                         var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
                                         data['transport'].fullNumber = fullNumber;
                                     }
+                                    data['transport'].stt = Old.stt;
                                     transportView.dataTransport.splice(indexOfOld, 1, data['transport']);
 
                                     _.remove(transportView.dataVoucherTransport, function (currentObject) {
@@ -1584,6 +1635,12 @@
                                 default:
                                     break;
                             }
+
+                            if ($("input[id=file]").val() != "") {
+                                $("input[id=transportId]").val(data['transport']['id']);
+                                transportView.uploadMultiFile();
+                            }
+
                             transportView.table.clear().rows.add(transportView.dataTransport).draw();
                             transportView.clearInput();
                         } else {
@@ -1749,7 +1806,7 @@
                 },
                 showCurrentRows: function () {
                     $(transportView.table.$('tr', {"filter": "applied"}).each(function () {
-                        console.log($(this).find("td:eq(1)").text());
+                        // console.log($(this).find("td:eq(1)").text());
                     }));
                 },
 
@@ -1764,6 +1821,152 @@
                         $("input[id=cashRevenue]").val(cashReceive);
                         formatCurrency(".currency");
                     }
+                },
+
+                showFormAttachFile: function () {
+                    if (transportView.current != null){
+                        $("input[name=transportId]").val(transportView.current.id);
+                        transportView.retrieveMultiFile();
+                    }
+                    else
+                        transportView.tableFile.clear().draw();
+                    transportView.displayModal('show', '#modal-attachFile');
+                },
+                uploadMultiFile: function () {
+                    $.ajax({
+                        url: url + 'upload-file',
+                        type: 'POST',
+                        data: new FormData(document.getElementById('upload')),
+                        processData: false,  // tell jQuery not to process the data
+                        contentType: false,  // tell jQuery not to set contentType
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            showNotification("success", "Thêm tập tin thành công!");
+                            $("input[id=file]").val('');
+                            $("input[id=transportId]").val('');
+                            $("div[id=thumbnail]").html('');
+                            transportView.displayModal("hide", "#modal-attachFile");
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                retrieveMultiFile: function () {
+                    var sendToServer = {
+                        _token: _token,
+                        _transportId: transportView.current.id
+                    };
+                    $.ajax({
+                        url: url + 'retrieve-file',
+                        type: 'POST',
+                        data: sendToServer,
+                        dataType: 'json'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            var files = data['files'];
+                            console.log(files);
+                            transportView.fillFileToDatatable(files);
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                fillFileToDatatable: function (data) {
+                    if (transportView.tableFile != null)
+                        transportView.tableFile.destroy();
+
+                    transportView.tableFile = $('#table-file').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {
+                                data: 'id',
+                                visible: false
+                            },
+                            {
+                                data: 'fileName',
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+//                                    tr += "<span onclick='transportView.downloadFile("+full.id+")'>" + full.fileName + "</span>";
+                                    tr += "<a href='" + full.filePath + "' download>" + full.fileName + "</a>";
+                                    return tr;
+                                }
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div title="Xem" class="btn btn-primary btn-circle text-center" onclick="transportView.showThumbnail(\'' + full.filePath + '\')">';
+                                    tr += '<i class="fa fa-eye"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div title="Xóa" class="btn btn-danger btn-circle" onclick="transportView.deleteFile(' + full.id + ')">';
+                                    tr += '<i class="fa fa-trash"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ],
+                        dom: "t"
+                    });
+                },
+                showThumbnail: function (filePath) {
+                    var tr = "";
+                    tr += "<embed src='" + filePath + "'>";
+                    $("#thumbnail").html(tr);
+                },
+                deleteFile: function (fileId) {
+                    var sendToServer = {
+                        _token: _token,
+                        _fileId: fileId
+                    };
+                    $.ajax({
+                        url: url + 'delete-file',
+                        type: 'POST',
+                        data: sendToServer,
+                        dataType: 'json'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            var files = data['files'];
+                            transportView.tableFile.clear().rows.add(files).draw();
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                downloadFile: function (fileId) {
+                    var sendToServer = {
+                        _token: _token,
+                        _fileId: fileId
+                    };
+                    $.ajax({
+                        url: url + 'download-file',
+                        type: 'POST',
+                        data: sendToServer,
+                        dataType: 'json'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            console.log(data);
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
                 }
             };
             transportView.loadData();

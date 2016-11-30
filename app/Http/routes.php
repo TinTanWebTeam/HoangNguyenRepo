@@ -71,7 +71,10 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/customer/vehicles', 'CustomerManagementController@getDataVehicle');
 
-
+        Route::post('/upload-file', 'CustomerManagementController@postUploadMultiFile');
+        Route::post('/retrieve-file', 'CustomerManagementController@postRetrieveMultiFile');
+        Route::post('/delete-file', 'CustomerManagementController@postDeleteFile');
+        Route::post('/download-file', 'CustomerManagementController@postDownloadFile');
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         //get View
@@ -187,13 +190,3 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/history-delivery-report','ReportController@getViewTransportHistoryReport');
     });
 });
-
-
-
-
-
-
-
-
-
-
