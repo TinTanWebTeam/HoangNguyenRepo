@@ -345,7 +345,7 @@
                                                 </div>
                                             </div>
                                             <div class="row" style="padding: 0 10px">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group form-md-line-input ">
                                                         <label for="paidAmt" class="red"><b>Nhận tiền</b></label>
                                                         <input type="text" class="form-control currency defaultZero"
@@ -353,14 +353,20 @@
                                                                onkeyup="debtCustomerView.computeWhenChangePaidAmt(this.value)">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group form-md-line-input ">
                                                         <label for="debtInvoice"><b>Còn nợ lại</b></label>
                                                         <input type="text" class="form-control currency"
                                                                id="debtInvoice" name="debtInvoice" readonly>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="sendToPerson"><b>Người nhận</b></label>
+                                                        <input type="text" id="sendToPerson" name="sendToPerson" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
                                                     <div class="form-group form-md-line-input ">
                                                         <label for="invoiceCode"><b>Mã hóa đơn</b></label>
                                                         <input type="text" class="form-control"
@@ -1117,25 +1123,26 @@
                     defaultZero("#paidAmt");
                 },
                 fillCurrentObjectToForm: function () {
-                    $("input[id='invoiceCode']").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
-                    $("input[id='totalPay']").val(debtCustomerView.currentInvoiceCustomer["totalPay"]);
-                    $("input[id='totalPay']").attr('data-totalTransport', debtCustomerView.currentInvoiceCustomer["totalPay"]);
-                    $("input[id='VAT']").val(debtCustomerView.currentInvoiceCustomer["VAT"]);
-                    $("input[id='hasVAT']").val(debtCustomerView.currentInvoiceCustomer["hasVAT"]);
+                    $("input[id=invoiceCode]").val(debtCustomerView.currentInvoiceCustomer["invoiceCode"]);
+                    $("input[id=sendToPerson]").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
+                    $("input[id=totalPay]").val(debtCustomerView.currentInvoiceCustomer["totalPay"]);
+                    $("input[id=totalPay]").attr('data-totalTransport', debtCustomerView.currentInvoiceCustomer["totalPay"]);
+                    $("input[id=VAT]").val(debtCustomerView.currentInvoiceCustomer["VAT"]);
+                    $("input[id=hasVAT]").val(debtCustomerView.currentInvoiceCustomer["hasVAT"]);
 
                     var exportDate = moment(debtCustomerView.currentInvoiceCustomer["exportDate"], "YYYY-MM-DD");
-                    $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
+                    $("input[id=exportDate]").datepicker('update', exportDate.format("DD-MM-YYYY"));
 
                     var invoiceDate = moment(debtCustomerView.currentInvoiceCustomer["invoiceDate"], "YYYY-MM-DD");
-                    $("input[id='invoiceDate']").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
+                    $("input[id=invoiceDate]").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
 
                     var payDate = moment(debtCustomerView.currentInvoiceCustomer["payDate"], "YYYY-MM-DD");
-                    $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
+                    $("input[id=payDate]").datepicker('update', payDate.format("DD-MM-YYYY"));
 
-                    $("input[id='debt']").val(debtCustomerView.currentInvoiceCustomer["debt"]);
-                    $("input[id='debt-real']").val(debtCustomerView.currentInvoiceCustomer["debt"]);
-                    $("input[id='paidAmt']").val(debtCustomerView.currentInvoiceCustomer["paidAmt"]);
-                    $("textarea[id='note']").val(debtCustomerView.currentInvoiceCustomer["note"]);
+                    $("input[id=debt]").val(debtCustomerView.currentInvoiceCustomer["debt"]);
+                    $("input[id=debt-real]").val(debtCustomerView.currentInvoiceCustomer["debt"]);
+                    $("input[id=paidAmt]").val(debtCustomerView.currentInvoiceCustomer["paidAmt"]);
+                    $("textarea[id=note]").val(debtCustomerView.currentInvoiceCustomer["note"]);
                     formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
@@ -1146,14 +1153,15 @@
                         totalTransport: asNumberFromCurrency("#totalTransport"),
                         prePaid: asNumberFromCurrency("#cashReceive"),
                         totalPay: asNumberFromCurrency("#totalPay-real"),
-                        VAT: parseFloat($("input[id='VAT']").val()),
+                        VAT: parseFloat($("input[id=VAT]").val()),
                         hasVAT: asNumberFromCurrency("#hasVAT"),
                         paidAmt: asNumberFromCurrency("#paidAmt"),
 
-                        exportDate: $("input[id='exportDate']").val(),
-                        invoiceDate: $("input[id='invoiceDate']").val(),
-                        payDate: $("input[id='payDate']").val(),
-                        note: $("textarea[id='note']").val(),
+                        exportDate: $("input[id=exportDate]").val(),
+                        invoiceDate: $("input[id=invoiceDate]").val(),
+                        sendToPerson: $("input[id=sendToPerson]").val(),
+                        payDate: $("input[id=payDate]").val(),
+                        note: $("textarea[id=note]").val(),
                         statusPrePaid: ($("#statusPrePaid").prop("checked")) ? 1 : 0
                     }
                 },

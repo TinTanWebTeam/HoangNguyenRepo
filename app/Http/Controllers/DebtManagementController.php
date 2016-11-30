@@ -667,6 +667,7 @@ class DebtManagementController extends Controller
         $payDate = $request->input('_invoiceCustomer')['payDate'];
         $payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
         $statusPrePaid = $request->input('_invoiceCustomer')['statusPrePaid'];
+        $sendToPerson = $request->input('_invoiceCustomer')['sendToPerson'];
 
         $createdBy = \Auth::user()->id;
         $updatedBy = \Auth::user()->id;
@@ -710,6 +711,7 @@ class DebtManagementController extends Controller
             $invoiceCustomer->createdBy = $createdBy;
             $invoiceCustomer->updatedBy = $updatedBy;
             $invoiceCustomer->statusPrePaid = $statusPrePaid;
+            $invoiceCustomer->sendToPerson = $sendToPerson;
             $invoiceCustomer->invoiceType = 0;
             try {
                 DB::beginTransaction();
@@ -777,6 +779,7 @@ class DebtManagementController extends Controller
             $invoiceCustomer->note = $note;
             $invoiceCustomer->totalPaid += $totalPaid;
             $invoiceCustomer->updatedBy = $updatedBy;
+            $invoiceCustomer->sendToPerson = $sendToPerson;
 
             try {
                 DB::beginTransaction();
