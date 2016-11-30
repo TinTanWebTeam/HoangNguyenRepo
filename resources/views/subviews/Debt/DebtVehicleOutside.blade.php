@@ -333,7 +333,13 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="sendToPerson"><b>Người nhận</b></label>
+                                            <input type="text" id="sendToPerson" name="sendToPerson" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
                                         <div class="form-group form-md-line-input ">
                                             <label for="note"><b>Ghi chú</b></label>
                                             <textarea class="form-control" id="note" name="note" rows="2"></textarea>
@@ -986,6 +992,7 @@
                 },
                 fillCurrentObjectToForm: function () {
                     $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
+                    $("input[id=sendToPerson]").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
                     $("input[id='totalPay']").val(debtGarageView.currentInvoiceGarage["totalPay"]);
                     $("input[id='totalPay']").attr('data-totalTransport', debtGarageView.currentInvoiceGarage["totalPay"]);
                     $("input[id='VAT']").val(debtGarageView.currentInvoiceGarage["VAT"]);
@@ -1022,7 +1029,8 @@
                         totalTransport: $("input[id=totalPay]").attr('data-totalTransport'),
                         prePaid: asNumberFromCurrency("#prePaid"),
                         debt: asNumberFromCurrency("#debt-real"),
-                        paidAmt: asNumberFromCurrency("#paidAmt")
+                        paidAmt: asNumberFromCurrency("#paidAmt"),
+                        sendToPerson: $("input[id=sendToPerson]").val()
                     }
                 },
 

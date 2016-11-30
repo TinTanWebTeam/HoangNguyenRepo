@@ -1179,6 +1179,7 @@ class DebtManagementController extends Controller
             $invoiceGarage->totalPaid = $request->input('_invoiceGarage')['paidAmt'];
             $invoiceGarage->createdBy = \Auth::user()->id;
             $invoiceGarage->updatedBy = \Auth::user()->id;
+            $invoiceGarage->sendToPerson = $request->input('_invoiceGarage')['sendToPerson'];
 
             try {
                 DB::beginTransaction();
@@ -1253,6 +1254,7 @@ class DebtManagementController extends Controller
             $invoiceGarage->note = $request->input('_invoiceGarage')['note'];
             $invoiceGarage->totalPaid += $request->input('_invoiceGarage')['paidAmt'];
             $invoiceGarage->updatedBy = \Auth::user()->id;
+            $invoiceGarage->sendToPerson = $request->input('_invoiceGarage')['sendToPerson'];
 
             try {
                 DB::beginTransaction();
