@@ -854,15 +854,16 @@
                     $("#product_name").focusout(function () {
                         if (transportView.transportType === 1)
                             return;
-                        productName = this.value;
+                        var productName = this.value;
                         if (productName == '') return;
-                        product = _.find(transportView.dataProduct, function (o) {
+                        var product = _.find(transportView.dataProduct, function (o) {
                             return o.name == productName;
                         });
                         if (typeof product === "undefined") {
                             transportView.displayModal("show", "#modal-addProduct");
                             transportView.loadListProductType();
                             $("input[id=productName]").val(productName);
+                            $("input[id=productName]").attr('data-productId','');
                         } else {
                             $("#product_name").attr("data-productId", product.id);
                         }
