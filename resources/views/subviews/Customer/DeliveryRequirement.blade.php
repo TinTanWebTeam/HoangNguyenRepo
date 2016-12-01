@@ -1861,13 +1861,16 @@
                         $("input[name=transportId]").val(transportView.current.id);
                         transportView.retrieveMultiFile();
                     }
-                    else
-                        transportView.tableFile.clear().draw();
+                    else {
+                        if(driverView.tableFile != null)
+                            transportView.tableFile.clear().draw();
+                    }
+
                     transportView.displayModal('show', '#modal-attachFile');
                 },
                 uploadMultiFile: function () {
                     $.ajax({
-                        url: url + 'upload-file',
+                        url: url + 'transport/upload-file',
                         type: 'POST',
                         data: new FormData(document.getElementById('upload')),
                         processData: false,  // tell jQuery not to process the data
@@ -1892,7 +1895,7 @@
                         _transportId: transportView.current.id
                     };
                     $.ajax({
-                        url: url + 'retrieve-file',
+                        url: url + 'transport/retrieve-file',
                         type: 'POST',
                         data: sendToServer,
                         dataType: 'json'
@@ -1966,7 +1969,7 @@
                         _fileId: fileId
                     };
                     $.ajax({
-                        url: url + 'delete-file',
+                        url: url + 'transport/delete-file',
                         type: 'POST',
                         data: sendToServer,
                         dataType: 'json'
@@ -1987,7 +1990,7 @@
                         _fileId: fileId
                     };
                     $.ajax({
-                        url: url + 'download-file',
+                        url: url + 'transport/download-file',
                         type: 'POST',
                         data: sendToServer,
                         dataType: 'json'

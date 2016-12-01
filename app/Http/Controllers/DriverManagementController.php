@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Driver;
-use App\User;
+use App\File;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use DB;
+use File as FileSystem;
 
 use App\Http\Requests;
 
@@ -188,5 +190,104 @@ class DriverManagementController extends Controller
                 return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;
         }
+    }
+
+    /*
+     * File
+     * */
+    public function postUploadMultiFile(Request $request)
+    {
+        $id = $request->input('driverId');
+        $files = $request->file('file');
+        if (empty($files)) {
+            return response()->json(['msg' => 'File emplty'], 203);
+        }
+        foreach ($files as $file) {
+            $fileNew = new File();
+            $fileNew->fileName = $file->getClientOriginalName();
+            $fileNew->fileExtension = $file->getClientOriginalExtension();
+            $fileNew->mimeType = $file->getClientMimeType();
+            $fileNew->size = $file->getClientSize();
+            $fileNew->id_type = ($id == null || $id == "") ? 0 : $id;
+            $fileNew->type = 'driver';
+            if (!$fileNew->save()) {
+                return response()->json(['msg' => 'Add File in database fail!'], 203);
+            }
+            $fileNew->filePath = "files/driver/" . "driver_" . $fileNew->id . "." . $fileNew->fileExtension;
+            if (!$fileNew->save()) {
+                return response()->json(['msg' => 'Add File in database fail!'], 203);
+            }
+
+//            Storage::put($file->getClientOriginalName(), file_get_contents($file->getRealPath()));
+            if (!$file->move('../public/files/driver', $fileNew->filePath)) {
+                return response()->json(['msg' => 'Add File in folder fail!'], 203);
+            }
+        }
+        return response()->json(['msg' => 'success'], 201);
+    }
+
+    public function postRetrieveMultiFile(Request $request)
+    {
+        $id = $request->input('_id');
+
+        $files = DB::table('files')
+            ->where('files.type', 'driver')
+            ->where('files.id_type', $id)
+            ->join('drivers', 'drivers.id', '=', 'files.id_type')
+            ->select('files.*')
+            ->get();
+        $response = [
+            'msg'   => 'success',
+            'files' => $files
+        ];
+        return response()->json($response, 201);
+    }
+
+    public function postDeleteFile(Request $request)
+    {
+        $fileId = $request->input('_fileId');
+        $file = File::findOrFail($fileId);
+
+        if (!FileSystem::delete('../public/' . $file->filePath)) {
+            return response()->json(['msg' => 'Delete file in folder fail!'], 203);
+        }
+
+        if (!$file->delete()) {
+            return response()->json(['msg' => 'Delete File in database fail!'], 203);
+        }
+
+        $files = DB::table('files')
+            ->where('files.type', 'driver')
+            ->where('files.id_type', $file->id_type)
+            ->join('drivers', 'drivers.id', '=', 'files.id_type')
+            ->select('files.*')
+            ->get();
+        $response = [
+            'msg'   => 'success',
+            'files' => $files
+        ];
+        return response()->json($response, 201);
+    }
+
+    public function postDownloadFile(Request $request)
+    {
+        $fileId = $request->input('_fileId');
+
+        $file = File::find($fileId);
+
+        $pathToFile = public_path() . "/" . $file->filePath;
+
+        $headers = array(
+            'Content-Type: '.$file->mimeType,
+            'Content-Disposition: attachment; filename="' . $file->fileName . '"',
+            'Content-Transfer-Encoding: binary',
+            'Accept-Ranges: bytes',
+            'Content-Length: '.$file->size
+        );
+
+        $name = $file->fileName;
+
+        return response()->download($pathToFile, $name, $headers);
+
     }
 }

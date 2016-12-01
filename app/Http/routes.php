@@ -71,10 +71,10 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/customer/vehicles', 'CustomerManagementController@getDataVehicle');
 
-        Route::post('/upload-file', 'CustomerManagementController@postUploadMultiFile');
-        Route::post('/retrieve-file', 'CustomerManagementController@postRetrieveMultiFile');
-        Route::post('/delete-file', 'CustomerManagementController@postDeleteFile');
-        Route::post('/download-file', 'CustomerManagementController@postDownloadFile');
+        Route::post('/transport/upload-file', 'CustomerManagementController@postUploadMultiFile');
+        Route::post('/transport/retrieve-file', 'CustomerManagementController@postRetrieveMultiFile');
+        Route::post('/transport/delete-file', 'CustomerManagementController@postDeleteFile');
+        Route::post('/transport/download-file', 'CustomerManagementController@postDownloadFile');
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         //get View
@@ -189,6 +189,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/driver-management/driver', 'DriverManagementController@getDataDriver');
         //Post modify
         Route::post('/driver/modify', 'DriverManagementController@postModifyDriver');
+
+        Route::post('/driver/upload-file', 'DriverManagementController@postUploadMultiFile');
+        Route::post('/driver/retrieve-file', 'DriverManagementController@postRetrieveMultiFile');
+        Route::post('/driver/delete-file', 'DriverManagementController@postDeleteFile');
+        Route::post('/driver/download-file', 'DriverManagementController@postDownloadFile');
     });
     Route::group(['middleware' => 'Report'], function () {
         Route::get('/revenue-report','ReportController@getViewRevenueReport');

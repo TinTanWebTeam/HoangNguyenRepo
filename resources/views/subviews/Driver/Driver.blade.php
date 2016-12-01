@@ -24,28 +24,29 @@
     #divControl .panel-body {
         height: 430px;
     }
-
 </style>
-{{--start Modal delete Driver--}}
-<div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body"><h5 id="modalContent"></h5></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                        onclick="driverView.deleteDriver()">Ðồng ý
-                </button>
-                <button type="button" class="btn default" name="modalClose"
-                        onclick="driverView.cancelDelete()">Hủy
-                </button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-{{--End Modal delete Driver--}}
 
+<!--start Modal delete Driver-->
+<div class="row">
+    <div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body"><h5 id="modalContent"></h5></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary marginRight" name="modalAgree"
+                            onclick="driverView.deleteDriver()">Ðồng ý
+                    </button>
+                    <button type="button" class="btn default" name="modalClose"
+                            onclick="driverView.cancelDelete()">Hủy
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!--End Modal delete Driver-->
 
 <!-- Table -->
 <div class="row">
@@ -214,6 +215,9 @@
                                             <button type="button" class="btn default" onclick="driverView.cancel()">
                                                 Nhập lại
                                             </button>
+                                            <button type="button" class="btn btn-info" id="attach-file"
+                                                    onclick="driverView.showFormAttachFile()">Thêm tập tin
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -227,12 +231,55 @@
 </div>
 <!-- end Control -->
 
+<!-- Modal attach file -->
+<div class="row">
+    <div id="modal-attachFile" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Thêm tập tin cho đơn hàng</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="upload" onsubmit="return false;">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="driverId" id="driverId" value="">
+                        <label for="file">Chọn tập tin:</label>
+                        <input type="file" id="file" name="file[]" multiple class="form-control">
+                    </form>
+                    <h5>Danh sách tập tin</h5>
+                    <table class="table table-bordered table-hover table-striped" id="table-file">
+                        <thead>
+                        <tr class="active">
+                            <th>Mã</th>
+                            <th>Tên tập tin</th>
+                            <th>Xem</th>
+                            <th>Xóa</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                    <hr>
+                    <div id="thumbnail">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal attach file -->
 
 <script>
     $(function () {
         if (typeof driverView === 'undefined') {
             driverView = {
                 table: null,
+                tableFile: null,
                 dataDrivers: null,
                 current: null,
                 action: null,
@@ -437,16 +484,19 @@
                             }
                         ],
                         columnDefs: [
+                            {responsivePriority: 1, targets: 0},
                             {responsivePriority: 1, targets: 1},
                             {responsivePriority: 1, targets: 2},
                             {responsivePriority: 1, targets: 3},
-                            {responsivePriority: 10, targets: 4},
+                            {responsivePriority: 1, targets: 4},
                             {responsivePriority: 1, targets: 5},
                             {responsivePriority: 1, targets: 6},
                             {responsivePriority: 1, targets: 7},
                             {responsivePriority: 1, targets: 8},
                             {responsivePriority: 1, targets: 9},
-                            {responsivePriority: 1, targets: 10}
+                            {responsivePriority: 10, targets: 10},
+                            {responsivePriority: 10, targets: 11},
+                            {responsivePriority: 1, targets: 12}
                         ],
                         responsive: true,
                         order: [[0, "desc"]]
@@ -614,8 +664,10 @@
                                             data: sendToServer
                                         }).done(function (data, textStatus, jqXHR) {
                                             if (jqXHR.status == 201) {
+                                                var driverId = null;
                                                 switch (driverView.action) {
                                                     case 'add':
+                                                        driverId = data['dataAddDriver'].id;
                                                         data['dataAddDriver'].fullNumber = (data['dataAddDriver']['areaCode'] == null || data['dataAddDriver']['vehicleNumber'] == null) ? "" : data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']['vehicleNumber'];
                                                         if (data['dataAddDriver'].fullNumber == null) {
                                                             data['dataAddDriver'].fullNumber = 'chứa có xe'
@@ -624,6 +676,7 @@
                                                         showNotification("success", "Thêm thành công!");
                                                         break;
                                                     case 'update':
+                                                        driverId = data['dataUpdateDriver'].id;
                                                         data['dataUpdateDriver'].fullNumber = (data['dataUpdateDriver']['areaCode'] == null || data['dataUpdateDriver']['vehicleNumber'] == null) ? "" : data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']['vehicleNumber'];
                                                         if (data['dataUpdateDriver'].fullNumber == null) {
                                                             data['dataUpdateDriver'].fullNumber = 'chứa có xe'
@@ -639,6 +692,11 @@
                                                     default:
                                                         break;
                                                 }
+                                                if ($("input[id=file]").val() != "") {
+                                                    $("input[id=driverId]").val(driverId);
+                                                    driverView.uploadMultiFile();
+                                                }
+
                                                 driverView.table.clear().rows.add(driverView.dataDrivers).draw();
                                                 driverView.clearInput();
                                             } else {
@@ -656,17 +714,161 @@
                         } else {
                             $("form#frmDriver").find("label[class=error]").css("color", "red");
                         }
+                    }
+                },
 
+                showFormAttachFile: function () {
+                    if (driverView.current != null) {
+                        $("input[name=driverId]").val(driverView.current.id);
+                        driverView.retrieveMultiFile();
+                    }
+                    else {
+                        if(driverView.tableFile != null)
+                            driverView.tableFile.clear().draw();
                     }
 
-                }
+                    driverView.displayModal('show', '#modal-attachFile');
+                },
+                uploadMultiFile: function () {
+                    $.ajax({
+                        url: url + 'driver/upload-file',
+                        type: 'POST',
+                        data: new FormData(document.getElementById('upload')),
+                        processData: false,  // tell jQuery not to process the data
+                        contentType: false,  // tell jQuery not to set contentType
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            showNotification("success", "Thêm tập tin thành công!");
+                            $("input[id=file]").val('');
+                            $("input[id=driverId]").val('');
+                            $("div[id=thumbnail]").html('');
+                            driverView.displayModal("hide", "#modal-attachFile");
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                retrieveMultiFile: function () {
+                    var sendToServer = {
+                        _token: _token,
+                        _id: driverView.current.id
+                    };
+                    $.ajax({
+                        url: url + 'driver/retrieve-file',
+                        type: 'POST',
+                        data: sendToServer,
+                        dataType: 'json'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            var files = data['files'];
+                            console.log(files);
+                            driverView.fillFileToDatatable(files);
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                fillFileToDatatable: function (data) {
+                    if (driverView.tableFile != null)
+                        driverView.tableFile.destroy();
 
+                    driverView.tableFile = $('#table-file').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {
+                                data: 'id',
+                                visible: false
+                            },
+                            {
+                                data: 'fileName',
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    //    tr += "<span onclick='transportView.downloadFile("+full.id+")'>" + full.fileName + "</span>";
+                                    tr += "<a href='" + full.filePath + "' download>" + full.fileName + "</a>";
+                                    return tr;
+                                }
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div title="Xem" class="btn btn-primary btn-circle text-center" onclick="driverView.showThumbnail(\'' + full.filePath + '\')">';
+                                    tr += '<i class="fa fa-eye"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div title="Xóa" class="btn btn-danger btn-circle" onclick="driverView.deleteFile(' + full.id + ')">';
+                                    tr += '<i class="fa fa-trash"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ],
+                        dom: "t"
+                    });
+                },
+                showThumbnail: function (filePath) {
+                    var tr = "";
+                    tr += "<embed src='" + filePath + "'>";
+                    $("#thumbnail").html(tr);
+                },
+                deleteFile: function (fileId) {
+                    var sendToServer = {
+                        _token: _token,
+                        _fileId: fileId
+                    };
+                    $.ajax({
+                        url: url + 'driver/delete-file',
+                        type: 'POST',
+                        data: sendToServer,
+                        dataType: 'json'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            var files = data['files'];
+                            driverView.tableFile.clear().rows.add(files).draw();
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                downloadFile: function (fileId) {
+                    var sendToServer = {
+                        _token: _token,
+                        _fileId: fileId
+                    };
+                    $.ajax({
+                        url: url + 'driver/download-file',
+                        type: 'POST',
+                        data: sendToServer,
+                        dataType: 'json'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            console.log(data);
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
             };
             driverView.loadData();
         } else {
             driverView.loadData();
         }
     });
-
-
 </script>
