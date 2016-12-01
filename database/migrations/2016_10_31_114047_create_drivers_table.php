@@ -20,11 +20,11 @@ class CreateDriversTable extends Migration
             $table->string('phone')->nullable();
             $table->date('birthday')->nullable();
             // governmentId -> identityCardNumber
-            $table->string('governmentId')->nullable()->comment('Số chứng minh thư');
+            $table->string('identityCardNumber')->nullable()->comment('Số chứng minh thư');
             // issueDate_governmentId -> issueDate_identityCard
-            $table->date('issueDate_governmentId')->nullable()->comment('Ngày cấp chứng minh thư');
+            $table->date('issueDate_identityCard')->nullable()->comment('Ngày cấp chứng minh thư');
             // licenseDriverType -> driverLicenseType
-            $table->string('licenseDriverType')->nullable()->comment('Loại bằng lái');
+            $table->string('driverLicenseType')->nullable()->comment('Loại bằng lái');
             $table->string('driverLicenseNumber')->nullable()->comment('Số bằng lái');
             $table->date('issueDate_DriverLicense')->nullable()->comment('Ngày cấp bằng lái');
             $table->string('expireDate_DriverLicense')->nullable()->comment('Ngày hết hạn bằng lái');
