@@ -317,7 +317,7 @@ class DebtManagementController extends Controller
             DB::beginTransaction();
             $transportUpdate = Transport::findOrFail($transport_id);
             $transportUpdate->cashReceive = $transportUpdate->cashRevenue;
-            $transportUpdate->status_customer = 8;
+            $transportUpdate->status_customer = 6;
 
             $transportUpdate->updatedBy = \Auth::user()->id;
 
@@ -739,7 +739,7 @@ class DebtManagementController extends Controller
                 //Update InvoiceCustomer_id for Transport
                 foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
-                    $transportUpdate->status_customer = 10;
+                    $transportUpdate->status_customer = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
 
                     if (!$transportUpdate->update()) {

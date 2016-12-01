@@ -9,13 +9,12 @@ use App\Driver;
 use App\File;
 use App\Garage;
 use App\GarageType;
-use App\InvoiceCustomer;
-use App\InvoiceCustomerDetail;
 use App\Postage;
 use App\Product;
 use App\ProductType;
 use App\StaffCustomer;
 use App\Status;
+use App\SubRole;
 use App\Transport;
 use App\VehicleType;
 use App\Voucher;
@@ -655,6 +654,11 @@ class CustomerManagementController extends Controller
         $statuses = Status::where('tableName', 'transports')->get();
         $costPrices = CostPrice::all();
 
+        $isAdmin = SubRole::where([
+            ['user_id', \Auth::user()->id],
+            ['role_id', 1]
+        ])->get()->isEmpty();
+
         $response = [
             'msg'               => 'Get list all Transport',
             'transports'        => $transports,
@@ -662,6 +666,7 @@ class CustomerManagementController extends Controller
             'vouchers'          => $vouchers,
             'statuses'          => $statuses,
             'costPrices'        => $costPrices,
+            'isAdmin'           => (!$isAdmin) ? 1 : 0
         ];
 
         return $response;

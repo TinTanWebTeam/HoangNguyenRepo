@@ -96,13 +96,13 @@
                                         <th>Nơi nhận</th>
                                         <th>Nơi giao</th>
                                         <th>Khách hàng</th>
-                                        <th>Doanh thu</th>
+                                        <th id="showRevenue">Doanh thu</th>
                                         <th>Giao xe</th>
                                         <th>Nhận</th>
                                         <th>Bốc xếp</th>
                                         <th>Neo đêm</th>
                                         <th>Công an</th>
-                                        <th>Lợi nhuận</th>
+                                        <th id="showProfit">Lợi nhuận</th>
                                         <th>Người nhận</th>
                                         <th>Người tạo</th>
                                         <th>Người sửa</th>
@@ -750,6 +750,7 @@
                 tagsVehicleName: [],
                 tagsProductType: [],
                 transportType: 0,
+                isAdmin: null,
 
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -863,7 +864,7 @@
                             transportView.displayModal("show", "#modal-addProduct");
                             transportView.loadListProductType();
                             $("input[id=productName]").val(productName);
-                            $("input[id=productName]").attr('data-productId','');
+                            $("input[id=productName]").attr('data-productId', '');
                         } else {
                             $("#product_name").attr("data-productId", product.id);
                         }
@@ -923,6 +924,7 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
+                            transportView.isAdmin = data['isAdmin'];
                             transportView.dataTransport = data['transports'];
                             transportView.fillDataToDatatable(transportView.dataTransport);
                             transportView.dataVoucherTransport = data['voucherTransports'];
@@ -1038,11 +1040,11 @@
                                     {
                                         render: function (data, type, full, meta) {
                                             var tr = '';
-                                            tr += '<div class="btn btn-xs btn-primary marginRight" onclick="transportView.increaseVoucher('+full.id+')">';
+                                            tr += '<div class="btn btn-xs btn-primary marginRight" onclick="transportView.increaseVoucher(' + full.id + ')">';
                                             tr += '<i class="fa fa-plus" aria-hidden="true"></i>';
                                             tr += '</div>';
-                                            tr += '<span id="voucher_'+full.id+'" data-voucherId="' + full.id + '" class="badge marginRight">0</span>';
-                                            tr += '<div class="btn btn-xs btn-primary" onclick="transportView.reduceVoucher('+full.id+')">';
+                                            tr += '<span id="voucher_' + full.id + '" data-voucherId="' + full.id + '" class="badge marginRight">0</span>';
+                                            tr += '<div class="btn btn-xs btn-primary" onclick="transportView.reduceVoucher(' + full.id + ')">';
                                             tr += '<i class="fa fa-minus" aria-hidden="true"></i>';
                                             tr += '</div>';
                                             return tr;
@@ -1066,9 +1068,9 @@
                 loadSelectBox: function (lstData, strId, propertyName) {
                     //reset selectbox
                     $('#' + strId)
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById(strId);
                     for (var i = 0; i < lstData.length; i++) {
@@ -1116,7 +1118,7 @@
                 fillVoucher: function () {
                     if (transportView.arrayVoucher.length <= 0) return;
 
-                    for(var item in transportView.arrayVoucher){
+                    for (var item in transportView.arrayVoucher) {
                         var span = $("span[data-voucherId=" + item + "]");
                         span.text(transportView.arrayVoucher[item]);
                     }
@@ -1157,7 +1159,13 @@
                             {data: 'customers_fullName'},
                             {
                                 data: 'cashRevenue',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
+                                render: function (data, type, row, meta) {
+                                    if (transportView.isAdmin == 1)
+                                        return $.fn.dataTable.render.number(",", ".", 0).display(data);
+                                    else
+                                        return "";
+                                },
+                                visible: (transportView.isAdmin == 1) ? true : false
                             },
                             {
                                 data: 'cashDelivery',
@@ -1181,7 +1189,13 @@
                             },
                             {
                                 data: 'cashProfit',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
+                                render: function (data, type, row, meta) {
+                                    if (transportView.isAdmin == 1)
+                                        return $.fn.dataTable.render.number(",", ".", 0).display(data);
+                                    else
+                                        return "";
+                                },
+                                visible: (transportView.isAdmin == 1) ? true : false
                             },
                             {data: 'receiver'},
                             {data: 'users_createdBy'},
@@ -1305,6 +1319,15 @@
                     });
                     $("#table-data").css("width", "auto");
 
+                    if (transportView.isAdmin == 1) {
+                        $("#showRevenue").removeClass("hide");
+                        $("#showProfit").removeClass("hide");
+                    }
+                    else {
+                        $("#showRevenue").addClass("hide");
+                        $("#showProfit").addClass("hide");
+                    }
+
                     //  pushDataTable(transportView.table);
                 },
                 fillCurrentObjectToForm: function () {
@@ -1351,7 +1374,7 @@
                     $("textarea[id='costNote']").val(transportView.current["costNote"]);
 
                     var strVoucherName = "";
-                    for(var item in transportView.arrayVoucher){
+                    for (var item in transportView.arrayVoucher) {
                         var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
                             return o.id == item;
                         }), true);
@@ -1438,7 +1461,7 @@
                     }), true);
 
                     var b = [];
-                    var a = _.map(arrayVoucherTransport, function(o){
+                    var a = _.map(arrayVoucherTransport, function (o) {
                         return b[o.id] = o.quantity;
                     });
                     transportView.arrayVoucher = b;
@@ -1834,7 +1857,7 @@
                 },
 
                 showFormAttachFile: function () {
-                    if (transportView.current != null){
+                    if (transportView.current != null) {
                         $("input[name=transportId]").val(transportView.current.id);
                         transportView.retrieveMultiFile();
                     }
@@ -1901,7 +1924,7 @@
                                 data: 'fileName',
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                //    tr += "<span onclick='transportView.downloadFile("+full.id+")'>" + full.fileName + "</span>";
+                                    //    tr += "<span onclick='transportView.downloadFile("+full.id+")'>" + full.fileName + "</span>";
                                     tr += "<a href='" + full.filePath + "' download>" + full.fileName + "</a>";
                                     return tr;
                                 }
@@ -1978,32 +2001,32 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                increaseVoucher: function(voucherId){
-                    var num = parseInt($("#voucher_"+voucherId).text());
+                increaseVoucher: function (voucherId) {
+                    var num = parseInt($("#voucher_" + voucherId).text());
                     num += 1;
 
                     transportView.arrayVoucher[voucherId] = num;
 
-                    $("#voucher_"+voucherId).empty().text(num);
+                    $("#voucher_" + voucherId).empty().text(num);
 
-                    if(num == 1){
+                    if (num == 1) {
                         var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
                             return o.id == voucherId;
                         }), true);
                         $("input[id='voucher_transport']").val($("input[id='voucher_transport']").val() + objVoucher.name + ", ");
                     }
                 },
-                reduceVoucher: function(voucherId){
-                    var num = parseInt($("#voucher_"+voucherId).text());
-                    if(num == 0)
+                reduceVoucher: function (voucherId) {
+                    var num = parseInt($("#voucher_" + voucherId).text());
+                    if (num == 0)
                         return;
 
                     num -= 1;
                     transportView.arrayVoucher[voucherId] = num;
 
-                    $("#voucher_"+voucherId).text(num);
+                    $("#voucher_" + voucherId).text(num);
 
-                    if(num == 0){
+                    if (num == 0) {
                         var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
                             return o.id == voucherId;
                         }), true);
