@@ -22,7 +22,7 @@ class DriverManagementController extends Controller
             ->select(
                 'drivers.*',
                 'drivers.licenseDriverType as driverType',
-                'drivers.issueDate_licenseDriver as issueDate_driver',
+                'drivers.issueDate_DriverLicense as issueDate_driver',
                 'vehicles.areaCode',
                 'vehicles.vehicleNumber',
                 'vehicleTypes.name as vehicle_types',
@@ -98,8 +98,8 @@ class DriverManagementController extends Controller
                 $driverNew->governmentId = $governmentId;
                 $driverNew->birthday = $birthdayDate;
                 $driverNew->issueDate_governmentId = $issueDateIdDate;
-                $driverNew->issueDate_licenseDriver = $issueDateDriverDate;
-                $driverNew->expireDate = $expireDateDriverDate;
+                $driverNew->issueDate_DriverLicense = $issueDateDriverDate;
+                $driverNew->expireDate_DriverLicense = $expireDateDriverDate;
                 $driverNew->createdBy = $createdBy;
                 $driverNew->updatedBy = $updatedBy;
                 if (!$driverNew->save()) {
@@ -110,7 +110,7 @@ class DriverManagementController extends Controller
                     ->select(
                         'drivers.*',
                         'drivers.licenseDriverType as driverType',
-                        'drivers.issueDate_licenseDriver as issueDate_driver',
+                        'drivers.issueDate_DriverLicense as issueDate_driver',
                         'vehicles.areaCode',
                         'vehicles.vehicleNumber',
                         'vehicleTypes.name as vehicle_types',
@@ -142,8 +142,8 @@ class DriverManagementController extends Controller
                 $driverUpdate->governmentId = $governmentId;
                 $driverUpdate->birthday = $birthdayDate;
                 $driverUpdate->issueDate_governmentId = $issueDateIdDate;
-                $driverUpdate->issueDate_licenseDriver = $issueDateDriverDate;
-                $driverUpdate->expireDate = $expireDateDriverDate;
+                $driverUpdate->issueDate_DriverLicense = $issueDateDriverDate;
+                $driverUpdate->expireDate_DriverLicense = $expireDateDriverDate;
                 $driverUpdate->updatedBy = $updatedBy;
                 if (!$driverUpdate->update()) {
                     return response()->json(['msg' => 'Update failed'], 404);
@@ -152,7 +152,7 @@ class DriverManagementController extends Controller
                     ->select(
                         'drivers.*',
                         'drivers.licenseDriverType as driverType',
-                        'drivers.issueDate_licenseDriver as issueDate_driver',
+                        'drivers.issueDate_DriverLicense as issueDate_driver',
                         'vehicles.areaCode',
                         'vehicles.vehicleNumber',
                         'vehicleTypes.name as vehicle_types',
