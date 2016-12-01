@@ -618,7 +618,6 @@
                         'showDuration': true,
                         'timeFormat': 'H:i'
                     });
-
                     $('#dateOut .date').datepicker({
                         'format': 'dd-mm-yyyy',
                         'autoClose': true

@@ -726,19 +726,19 @@
                 },
                 lit: function () {
 
-                    price = asNumberFromCurrency('#price');
-                    hasVat = asNumberFromCurrency('#hasVat');
-                    lit = hasVat / price;
+                    var price = asNumberFromCurrency('#price');
+                    var hasVat = asNumberFromCurrency('#hasVat');
+                    var lit = hasVat / price;
                     $("input[id=literNumber]").val(lit);
-                    notVat = hasVat / 1.1;
-                    total = hasVat - (notVat * (vat / 100));
+                    var notVat = hasVat / 1.1;
+                    var total = hasVat - (notVat * (vat / 100));
                     $("input[id=totalPrice]").val(total);
                     formatCurrency(".currency");
                 },
                 totalPrice: function () {
-                    lit = $("input[id=literNumber]").val();
-                    price = asNumberFromCurrency('#price');
-                    vat = asNumberFromCurrency('#vat');
+                    var lit = $("input[id=literNumber]").val();
+                    var price = asNumberFromCurrency('#price');
+                    var vat = asNumberFromCurrency('#vat');
                     if (vat > 100) {
                         vat = 100;
                         $("input[id=vat]").val(vat);
@@ -746,10 +746,10 @@
                         vat = '';
                         $("input[id=vat]").val(vat);
                     }
-                    hasVat = lit * price;
-                    notVat = hasVat / 1.1;
+                    var hasVat = lit * price;
+                    var notVat = hasVat / 1.1;
                     $("input[id=hasVat]").val(hasVat);
-                    total = hasVat - (notVat * (vat / 100));
+                    var total = hasVat - (notVat * (vat / 100));
                     $("input[id=totalPrice]").val(total);
                     formatCurrency(".currency");
                 },
@@ -978,9 +978,9 @@
                 loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("garage_id");
                     for (var i = 0; i < lstGarage.length; i++) {
@@ -994,9 +994,9 @@
                 loadSelectBoxVehicleType: function (lstVehicleType) {
                     //reset selectbox
                     $('#vehicleType_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("vehicleType_id");
                     for (var i = 0; i < lstVehicleType.length; i++) {

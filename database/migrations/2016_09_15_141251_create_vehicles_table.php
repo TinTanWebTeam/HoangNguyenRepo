@@ -16,7 +16,7 @@ class CreateVehiclesTable extends Migration
             $table->increments('id');
             $table->string('areaCode');
             $table->string('vehicleNumber');
-            $table->float('size')->nullable();
+            $table->string('size')->nullable();
             $table->float('weight')->nullable();
             $table->string('trademark')->nullable();
             $table->integer('yearOfProduction')->nullable();

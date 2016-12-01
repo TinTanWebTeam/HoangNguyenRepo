@@ -182,7 +182,9 @@ class VehicleManagementController extends Controller
             $note = $request->input('_vehicle')['noteVehicle'];
             $vehicleType_id = $request->input('_vehicle')['vehicleType_id'];
             $owner = $request->input('_vehicle')['owner'];
-            $idGarage = $request->input('_vehicle')['idGarage'];
+            $garage_id = $request->input('_vehicle')['garage_id'];
+            $trademark = $request->input('_vehicle')['trademark'];
+            $yearOfProduction = $request->input('_vehicle')['yearOfProduction'];
         }
 
 
@@ -196,14 +198,16 @@ class VehicleManagementController extends Controller
                 $vehicleNew->owner = $owner;
                 $vehicleNew->note = $note;
                 $vehicleNew->vehicleType_id = $vehicleType_id;
-                $vehicleNew->garage_id = $idGarage;
+                $vehicleNew->garage_id = $garage_id;
+                $vehicleNew->trademark = $trademark;
+                $vehicleNew->yearOfProduction = $yearOfProduction;
                 if ($vehicleNew->save()) {
                     $vehicle = \DB::table('vehicles')
                         ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
                         ->where('active', 1)
-                        ->where('garage_id', $request->input('_vehicle')['idGarage'])
+                        ->where('garage_id', $request->input('_vehicle')['garage_id'])
                         ->where('vehicles.id', $vehicleNew->id)
-                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id')
+                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
                         ->first();
                     $response = [
                         'msg' => 'Created vehicle',
@@ -222,13 +226,15 @@ class VehicleManagementController extends Controller
                 $vehicleUpdate->note = $note;
                 $vehicleUpdate->vehicleType_id = $vehicleType_id;
                 $vehicleUpdate->owner = $owner;
-
+                $vehicleUpdate->trademark = $trademark;
+                $vehicleUpdate->yearOfProduction = $yearOfProduction;
                 if ($vehicleUpdate->update()) {
                     $vehicles = \DB::table('vehicles')
                         ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
                         ->where('active', 1)
-                        ->where('garage_id', $request->input('_vehicle')['id'])
-                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id')
+                        ->where('garage_id', $request->input('_vehicle')['garage_id'])
+                        ->where('vehicles.id', $vehicleUpdate->id)
+                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
                         ->first();
                     $response = [
                         'msg' => 'Updated Vehicle',
@@ -466,9 +472,8 @@ class VehicleManagementController extends Controller
             ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
             ->where('active', 1)
             ->where('garage_id', $request->input('_idGarage'))
-            ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id')
+            ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
             ->get();
-
         $vehicleTypes = VehicleType::all();
         $response = [
             'msg' => 'Get data vehicleType success',
