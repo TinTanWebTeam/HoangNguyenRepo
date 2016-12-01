@@ -144,16 +144,13 @@ class VehicleManagementController extends Controller
                     return response()->json(['msg' => 'Create failed'], 404);
                 }
                 $vehicleTypes = \DB::table('vehicleTypes')
-                    ->where('vehicleTypes.id',$vehicleTypeNew->id)
+                    ->where('vehicleTypes.id', $vehicleTypeNew->id)
                     ->first();
                 $response = [
                     'msg' => 'Created vehicleType',
                     'dataVehicleTypes' => $vehicleTypes,
-
                 ];
                 return response()->json($response, 201);
-
-
                 break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
@@ -161,55 +158,84 @@ class VehicleManagementController extends Controller
         }
     }
 
-    public function postModifyVehicleInside(Request $request){
+    public function postModifyVehicleInside(Request $request)
+    {
+        $areaCode = null;
+        $vehicleNumber = null;
+        $size = null;
+        $weight = null;
+        $note = null;
+        $vehicleType_id = null;
+        $owner = null;
         $action = $request->input('_action');
+        if ($action != 'deleteVehicle') {
+            $validator = ValidateController::ValidateVehicleInside($request->input('_vehicle'));
+            if ($validator->fails()) {
+                return $validator->errors();
+                //return response()->json(['msg' => 'Input data fail'], 404);
+            }
+
+            $areaCode = $request->input('_vehicle')['areaCode'];
+            $vehicleNumber = $request->input('_vehicle')['vehicleNumber'];
+            $size = $request->input('_vehicle')['size'];
+            $weight = $request->input('_vehicle')['weight'];
+            $note = $request->input('_vehicle')['noteVehicle'];
+            $vehicleType_id = $request->input('_vehicle')['vehicleType_id'];
+            $owner = $request->input('_vehicle')['owner'];
+            $idGarage = $request->input('_vehicle')['idGarage'];
+        }
+
+
         switch ($action) {
             case 'addVehicle':
-                $garageNew = new Garage();
-                $garageNew->name = $garage_name;
-                $garageNew->address = $address;
-                $garageNew->contactor = $contactor;
-                $garageNew->phone = $phone;
-                $garageNew->note = $note;
-                $garageNew->garageType_id = 1;
-                if ($garageNew->save()) {
-                    $garages = \DB::table('garages')
-                        ->where('garages.garageType_id', 1)
-                        ->where('garages.active', 1)
-                        ->where('garages.id', $garageNew->id)
-                        ->leftjoin('vehicles', 'vehicles.garage_id', '=', 'garages.id')
-                        ->select('garages.*', 'vehicles.areaCode', 'vehicles.vehicleNumber')
+                $vehicleNew = new Vehicle();
+                $vehicleNew->areaCode = $areaCode;
+                $vehicleNew->vehicleNumber = $vehicleNumber;
+                $vehicleNew->size = $size;
+                $vehicleNew->weight = $weight;
+                $vehicleNew->owner = $owner;
+                $vehicleNew->note = $note;
+                $vehicleNew->vehicleType_id = $vehicleType_id;
+                $vehicleNew->garage_id = $idGarage;
+                if ($vehicleNew->save()) {
+                    $vehicle = \DB::table('vehicles')
+                        ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
+                        ->where('active', 1)
+                        ->where('garage_id', $request->input('_vehicle')['idGarage'])
+                        ->where('vehicles.id', $vehicleNew->id)
+                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id')
                         ->first();
                     $response = [
                         'msg' => 'Created vehicle',
-                        'addGarage' => $garages
+                        'addVehicle' => $vehicle
                     ];
                     return response()->json($response, 201);
                 }
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case 'updateVehicle':
-                $garageUpdate = Garage::findOrFail($request->input('_garage')['id']);
-                $garageUpdate->name = $garage_name;
-                $garageUpdate->address = $address;
-                $garageUpdate->contactor = $contactor;
-                $garageUpdate->note = $note;
-                $garageUpdate->phone = $phone;
-                if ($garageUpdate->update()) {
-                    $garages = \DB::table('garages')
-                        ->where('garages.garageType_id', 1)
-                        ->where('garages.active', 1)
-                        ->where('garages.id', $request->input('_garage')['id'])
-                        ->leftjoin('vehicles', 'vehicles.garage_id', '=', 'garages.id')
-                        ->select('garages.*', 'vehicles.areaCode', 'vehicles.vehicleNumber')
+                $vehicleUpdate = Vehicle::findOrFail($request->input('_vehicle')['id']);
+                $vehicleUpdate->areaCode = $areaCode;
+                $vehicleUpdate->vehicleNumber = $vehicleNumber;
+                $vehicleUpdate->size = $size;
+                $vehicleUpdate->weight = $weight;
+                $vehicleUpdate->note = $note;
+                $vehicleUpdate->vehicleType_id = $vehicleType_id;
+                $vehicleUpdate->owner = $owner;
+
+                if ($vehicleUpdate->update()) {
+                    $vehicles = \DB::table('vehicles')
+                        ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
+                        ->where('active', 1)
+                        ->where('garage_id', $request->input('_vehicle')['id'])
+                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id')
                         ->first();
                     $response = [
-                        'msg' => 'Updated Garage',
-                        'updateGarage' => $garages
+                        'msg' => 'Updated Vehicle',
+                        'updateVehicle' => $vehicles
                     ];
                     return response()->json($response, 201);
                 }
-
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case 'deleteVehicle':
@@ -248,7 +274,6 @@ class VehicleManagementController extends Controller
         }
 
     }
-
 
 
     /*
@@ -438,10 +463,10 @@ class VehicleManagementController extends Controller
     public function postDataVehicleType(Request $request)
     {
         $vehicles = \DB::table('vehicles')
-            ->join('vehicleTypes','vehicleTypes.id','=','vehicles.vehicleType_id')
-            ->where('active',1)
-            ->where('garage_id',$request->input('_idGarage'))
-            ->select('vehicles.*','vehicleTypes.name','vehicleTypes.id')
+            ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
+            ->where('active', 1)
+            ->where('garage_id', $request->input('_idGarage'))
+            ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id')
             ->get();
 
         $vehicleTypes = VehicleType::all();

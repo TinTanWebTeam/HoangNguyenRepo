@@ -817,7 +817,7 @@
                             {data: 'email'},
                             {
                                 data: 'note',
-                                visible: false
+
                             },
                             {
                                 render: function (data, type, full, meta) {
