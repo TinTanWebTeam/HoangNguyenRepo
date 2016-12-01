@@ -18,11 +18,13 @@ class CreateVehiclesTable extends Migration
             $table->string('vehicleNumber');
             $table->float('size')->nullable();
             $table->float('weight')->nullable();
+            $table->string('trademark')->nullable();
+            $table->integer('yearOfProduction')->nullable();
+            $table->string('owner')->nullable();
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
             $table->integer('vehicleType_id')->unsigned();
             $table->integer('garage_id')->unsigned();
-            $table->string('owner')->nullable();
             $table->timestamps();
         });
     }

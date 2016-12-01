@@ -16,14 +16,20 @@ class CreateDriversTable extends Migration
             $table->increments('id');
             $table->string('fullName');
             $table->string('address')->nullable();
+            $table->string('permanetAddress')->nullable();
             $table->string('phone')->nullable();
             $table->date('birthday')->nullable();
-            $table->string('governmentId')->nullable();
-            $table->date('issueDate_governmentId')->nullable();
-            $table->string('licenseDriver')->nullable();
-            $table->date('issueDate_licenseDriver')->nullable();
-            $table->string('expireDate')->nullable();
-            $table->string('licenseDriverType')->nullable();
+            // governmentId -> identityCardNumber
+            $table->string('governmentId')->nullable()->comment('Số chứng minh thư');
+            // issueDate_governmentId -> issueDate_identityCard
+            $table->date('issueDate_governmentId')->nullable()->comment('Ngày cấp chứng minh thư');
+            // licenseDriverType -> driverLicenseType
+            $table->string('licenseDriverType')->nullable()->comment('Loại bằng lái');
+            $table->string('driverLicenseNumber')->nullable()->comment('Số bằng lái');
+            $table->date('issueDate_DriverLicense')->nullable()->comment('Ngày cấp bằng lái');
+            $table->string('expireDate_DriverLicense')->nullable()->comment('Ngày hết hạn bằng lái');
+            $table->date('startDate')->nullable()->comment('Ngày bắt đầu lái');
+            $table->date('finishDate')->nullable()->comment('Ngày kết thúc lái');
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
             $table->integer('createdBy')->unsigned();
