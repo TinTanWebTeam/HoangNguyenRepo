@@ -77,9 +77,10 @@
                                 <th>Địa chỉ</th>
                                 <th>Điện thoại</th>
                                 <th>Loại bằng</th>
-                                <th>Ngày cấp</th>
-                                <th>Ngày hết hạn</th>
+                                <th>Ngày cấp bằng lái</th>
+                                <th>Ngày hết hạn bằng lái</th>
                                 <th>CMND</th>
+                                <th>Ngày cấp CMND</th>
                                 <th>Số xe</th>
                                 <th>Loại xe</th>
                                 <th>Nhà xe</th>
@@ -407,7 +408,13 @@
                                     return moment(data).format("DD/MM/YYYY");
                                 }
                             },
-                            {data: 'governmentId'},
+                            {data: 'identityCardNumber'},
+                            {
+                                data: 'issueDate_identityCard',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
                             {data: 'fullNumber'},
                             {data: 'vehicle_types'},
                             {data: 'garage', visible: false},
@@ -429,8 +436,20 @@
                                 }, width: "10%"
                             }
                         ],
+                        columnDefs: [
+                            {responsivePriority: 1, targets: 1},
+                            {responsivePriority: 1, targets: 2},
+                            {responsivePriority: 1, targets: 3},
+                            {responsivePriority: 10, targets: 4},
+                            {responsivePriority: 1, targets: 5},
+                            {responsivePriority: 1, targets: 6},
+                            {responsivePriority: 1, targets: 7},
+                            {responsivePriority: 1, targets: 8},
+                            {responsivePriority: 1, targets: 9},
+                            {responsivePriority: 1, targets: 10}
+                        ],
+                        responsive: true,
                         order: [[0, "desc"]]
-
                     })
                 },
                 validateDriver: function () {
@@ -440,7 +459,7 @@
                             governmentId: {
                                 required: true,
                                 minlength: 9,
-                                maxlength:12,
+                                maxlength: 12,
                                 number: true
                             },
                             driverType: "required"
@@ -477,7 +496,7 @@
                 },
                 fillCurrentObjectToForm: function () {
                     var birthday = moment(driverView.current["birthday"], "YYYY-MM-DD");
-                    var issueDateGovernmentId = moment(driverView.current["issueDate_governmentId"], "YYYY-MM-DD");
+                    var issueDateGovernmentId = moment(driverView.current["issueDate_identityCard"], "YYYY-MM-DD");
                     var issueDateDriver = moment(driverView.current["issueDate_driver"], "YYYY-MM-DD");
                     var expireDate = moment(driverView.current["expireDate"], "YYYY-MM-DD");
                     $("input[id='birthday']").datepicker('update', birthday.format("DD-MM-YYYY"));
@@ -486,7 +505,7 @@
                     $("input[id='expireDateDriver']").datepicker('update', expireDate.format("DD-MM-YYYY"));
                     $("input[id='fullName']").val(driverView.current["fullName"]);
                     $("input[id='phone']").val(driverView.current["phone"]);
-                    $("input[id='governmentId']").val(driverView.current["governmentId"]);
+                    $("input[id='governmentId']").val(driverView.current["identityCardNumber"]);
                     $("input[id='driverType']").val(driverView.current["driverType"]);
                     $("input[id='address']").val(driverView.current["address"]);
                     $("textarea[id='note']").val(driverView.current["note"]);
@@ -565,11 +584,11 @@
                             driverView.fillFormDataToCurrentObject();
                             if (driverView.current.id == null) {
                                 var existCMND = _.find(driverView.dataDrivers, function (o) {
-                                    return o.governmentId == $("input[id=governmentId]").val();
+                                    return o.identityCardNumber == $("input[id=governmentId]").val();
                                 });
                             } else {
                                 var existCMND = _.find(driverView.dataDrivers, function (o) {
-                                    return o.governmentId == $("input[id=governmentId]").val() && o.id != driverView.current.id;
+                                    return o.identityCardNumber == $("input[id=governmentId]").val() && o.id != driverView.current.id;
                                 });
                             }
                             if (typeof existCMND !== "undefined") {

@@ -21,7 +21,7 @@ class DriverManagementController extends Controller
         $dataDrivers = \DB::table('drivers')
             ->select(
                 'drivers.*',
-                'drivers.licenseDriverType as driverType',
+                'drivers.driverLicenseType as driverType',
                 'drivers.issueDate_DriverLicense as issueDate_driver',
                 'vehicles.areaCode',
                 'vehicles.vehicleNumber',
@@ -94,10 +94,10 @@ class DriverManagementController extends Controller
                 $driverNew->address = $address;
                 $driverNew->phone = $phone;
                 $driverNew->note = $note;
-                $driverNew->licenseDriverType = $driverType;
-                $driverNew->governmentId = $governmentId;
+                $driverNew->driverLicenseType = $driverType;
+                $driverNew->identityCardNumber = $governmentId;
                 $driverNew->birthday = $birthdayDate;
-                $driverNew->issueDate_governmentId = $issueDateIdDate;
+                $driverNew->issueDate_identityCard = $issueDateIdDate;
                 $driverNew->issueDate_DriverLicense = $issueDateDriverDate;
                 $driverNew->expireDate_DriverLicense = $expireDateDriverDate;
                 $driverNew->createdBy = $createdBy;
@@ -109,7 +109,7 @@ class DriverManagementController extends Controller
                 $dataAddDriver = \DB::table('drivers')
                     ->select(
                         'drivers.*',
-                        'drivers.licenseDriverType as driverType',
+                        'drivers.driverLicenseType as driverType',
                         'drivers.issueDate_DriverLicense as issueDate_driver',
                         'vehicles.areaCode',
                         'vehicles.vehicleNumber',
@@ -138,10 +138,10 @@ class DriverManagementController extends Controller
                 $driverUpdate->address = $address;
                 $driverUpdate->phone = $phone;
                 $driverUpdate->note = $note;
-                $driverUpdate->licenseDriverType = $driverType;
-                $driverUpdate->governmentId = $governmentId;
+                $driverUpdate->driverLicenseType = $driverType;
+                $driverUpdate->identityCardNumber = $governmentId;
                 $driverUpdate->birthday = $birthdayDate;
-                $driverUpdate->issueDate_governmentId = $issueDateIdDate;
+                $driverUpdate->issueDate_identityCard = $issueDateIdDate;
                 $driverUpdate->issueDate_DriverLicense = $issueDateDriverDate;
                 $driverUpdate->expireDate_DriverLicense = $expireDateDriverDate;
                 $driverUpdate->updatedBy = $updatedBy;
@@ -151,7 +151,7 @@ class DriverManagementController extends Controller
                 $dataUpdateDriver = \DB::table('drivers')
                     ->select(
                         'drivers.*',
-                        'drivers.licenseDriverType as driverType',
+                        'drivers.driverLicenseType as driverType',
                         'drivers.issueDate_DriverLicense as issueDate_driver',
                         'vehicles.areaCode',
                         'vehicles.vehicleNumber',
