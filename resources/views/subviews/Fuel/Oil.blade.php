@@ -89,14 +89,21 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="row">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <div class="form-group">
                                             <label for="applyDate"><b>Ngày áp dụng</b></label>
                                             <input type="text" id="applyDate" name="applyDate"
                                                    class="date form-control ignore">
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="applyTime"><b>Giờ áp dụng</b></label>
+                                            <input id="applyTime" name="applyTime" type="text"
+                                                   class="time form-control ignore"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
                                         <div class="form-group">
                                             <label for="price"><b>Giá</b></label>
                                             <input type="text" id="price" name="price" value="0"
@@ -196,7 +203,8 @@
                                         id: oilPriceView.oilObject.id,
                                         price: asNumberFromCurrency("#price"),
                                         note: $("#note").val().trim(),
-                                        applyDate: $("#applyDate").val()
+                                        applyDate: $("#applyDate").val(),
+                                        applyTime: $("#applyTime").val()
                                     }
                                 }).done(function (data, textStatus, jqXHR) {
                                     if (jqXHR.status == 201) {
@@ -222,7 +230,8 @@
                                         _token: _token,
                                         price: asNumberFromCurrency("#price"),
                                         note: $("#note").val().trim(),
-                                        applyDate: $("#applyDate").val()
+                                        applyDate: $("#applyDate").val(),
+                                        applyTime: $("#applyTime").val()
                                     }
                                 }).done(function (data, textStatus, jqXHR) {
                                     if (jqXHR.status == 201) {
@@ -248,6 +257,12 @@
                         "autoclose": true
                     });
                     $("#applyDate").datepicker("setDate", new Date());
+
+                    $('#applyTime').timepicker({
+                        'showDuration': true,
+                        'timeFormat': 'H:i'
+                    });
+                    $('#applyTime').timepicker("setTime", new Date());
                 },
                 validateForm: function () {
 

@@ -48,7 +48,7 @@ class FuelManagementController extends Controller
         $oilPrice = new Fuel();
         $oilPrice->price = $request->price;
         $oilPrice->note = $request->note;
-        $oilPrice->applyDate = \Carbon\Carbon::createFromFormat('d-m-Y',$request->applyDate);
+        $oilPrice->applyDate = \Carbon\Carbon::createFromFormat('d-m-Y H:i',$request->applyDate . " " . $request->applyTime);
         $oilPrice->createdBy = Auth::user()->id;
         $oilPrice->updatedBy = Auth::user()->id;
         $oilPrice->type = 'oil';
@@ -73,7 +73,7 @@ class FuelManagementController extends Controller
                     ->get();
                 return response()->json($result->first(),201);
             }else{
-                $currentApplyDate = \Carbon\Carbon::createFromFormat('Y-m-d',$currentOilPrice->applyDate);
+                $currentApplyDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$currentOilPrice->applyDate);
                 if($oilPrice->applyDate->diffInDays($currentApplyDate,false) >= 0){
                     return response()->json(['Error' => 'Vui lòng chọn này áp dụng giá dầu phù hợp!'],500); 
                 }
@@ -151,7 +151,7 @@ class FuelManagementController extends Controller
         if($oilPrice){
             $oilPrice->price = $request->price;
             $oilPrice->note = $request->note;
-            $oilPrice->applyDate = \Carbon\Carbon::createFromFormat('d-m-Y',$request->applyDate);
+            $oilPrice->applyDate = \Carbon\Carbon::createFromFormat('d-m-Y H:i',$request->applyDate . " " . $request->applyTime);
             $oilPrice->updatedBy = Auth::user()->id;
             try{
                 if($oilPrice->save()){
@@ -215,7 +215,7 @@ class FuelManagementController extends Controller
         $lubePrice = new Fuel();
         $lubePrice->price = $request->price;
         $lubePrice->note = $request->note;
-        $lubePrice->applyDate = \Carbon\Carbon::createFromFormat('d-m-Y',$request->applyDate);
+        $lubePrice->applyDate = \Carbon\Carbon::createFromFormat('d-m-Y H:i',$request->applyDate . " " . $request->applyTime);
         $lubePrice->createdBy = Auth::user()->id;
         $lubePrice->updatedBy = Auth::user()->id;
         $lubePrice->type = 'lube';
@@ -251,7 +251,7 @@ class FuelManagementController extends Controller
         if($lubePrice){
             $lubePrice->price = $request->price;
             $lubePrice->note = $request->note;
-            $lubePrice->applyDate = \Carbon\Carbon::createFromFormat('d-m-Y',$request->applyDate);
+            $lubePrice->applyDate = \Carbon\Carbon::createFromFormat('d-m-Y H:i',$request->applyDate . " " . $request->applyTime);
             $lubePrice->updatedBy = Auth::user()->id;
             try{
                 if($lubePrice->save()){

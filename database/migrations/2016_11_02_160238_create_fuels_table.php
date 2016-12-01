@@ -16,7 +16,7 @@ class CreateFuelsTable extends Migration
             $table->increments('id');
             $table->decimal('price',18,0)->default(0);
             $table->string('type',20)->default('oil');
-            $table->date('applyDate');
+            $table->dateTime('applyDate');
             $table->text('note')->nullable();
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
