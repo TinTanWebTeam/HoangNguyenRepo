@@ -22,7 +22,7 @@
     }
 
     #divControl .panel-body {
-        height: 430px;
+        height: 550px;
     }
 </style>
 
@@ -75,17 +75,16 @@
                             <thead>
                             <tr class="active">
                                 <th>Tài xế</th>
-                                <th>Địa chỉ</th>
+                                <th>Địa chỉ thường chú</th>
                                 <th>Điện thoại</th>
                                 <th>Loại bằng</th>
+                                <th>Số bằng</th>
                                 <th>Ngày cấp bằng lái</th>
                                 <th>Ngày hết hạn bằng lái</th>
                                 <th>CMND</th>
                                 <th>Ngày cấp CMND</th>
                                 <th>Số xe</th>
                                 <th>Loại xe</th>
-                                <th>Nhà xe</th>
-                                <th>Loại nhà xe</th>
                                 <th>Sửa/ Xóa</th>
                             </tr>
                             </thead>
@@ -128,10 +127,10 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
-                                        <label for="address"><b>Địa chỉ</b></label>
-                                        <input type="text" class="form-control"
-                                               id="address"
-                                               name="address">
+                                        <label for="birthday"><b>Năm sinh</b></label>
+                                        <input type="text" class="date form-control ignore"
+                                               id="birthday"
+                                               name="birthday">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -142,35 +141,64 @@
                                                name="phone">
                                     </div>
                                 </div>
+
                             </div>
                             <div class="row ">
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
-                                        <label for="birthday"><b>Năm sinh</b></label>
-                                        <input type="text" class="date form-control ignore"
-                                               id="birthday"
-                                               name="birthday">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group form-md-line-input">
                                         <label for="governmentId"><b>CMND</b></label>
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control" onkeyup="driverView.transferNumber()"
                                                id="governmentId" maxlength="12" minlength="9"
                                                name="governmentId">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
-                                        <label for="issueDateId"><b>Ngày cấp</b></label>
+                                        <label for="issueDateId"><b>Ngày cấp CMND</b></label>
                                         <input type="text" class="form-control date ignore"
                                                id="issueDateId"
                                                name="issueDateId">
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="address"><b>Địa chỉ</b></label>
+                                        <input type="text" class="form-control"
+                                               id="address"
+                                               name="address">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="permanetAddress"><b>Địa chỉ thường chú</b></label>
+                                        <input type="text" class="form-control"
+                                               id="permanetAddress"
+                                               name="permanetAddress">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="startDate"><b>Ngày vào làm</b></label>
+                                        <input type="text" class="form-control date ignore"
+                                               id="startDate"
+                                               name="startDate">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="finishDate"><b>Ngày thôi việc</b></label>
+                                        <input type="text" class="form-control date ignore"
+                                               id="finishDate"
+                                               name="finishDate">
+                                    </div>
+                                </div>
                             </div>
                             <div class="row ">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="driverType"><b>Loại bằng</b></label>
                                         <input type="text" class="form-control"
@@ -178,7 +206,15 @@
                                                name="driverType">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="driverLicenseNumber"><b>Số bằng lái</b></label>
+                                        <input type="text" class="form-control"
+                                               id="driverLicenseNumber" onkeyup="driverView.transferNumber()"
+                                               name="driverLicenseNumber">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="issueDateDriver"><b>Ngày cấp</b></label>
                                         <input type="text" class="form-control date ignore"
@@ -186,7 +222,7 @@
                                                name="issueDateDriver">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group form-md-line-input">
                                         <label for="expireDateDriver"><b>Ngày hết hạn</b></label>
                                         <input type="text" class="form-control date ignore"
@@ -195,12 +231,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row ">
+                            <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group form-md-line-input">
                                         <label for="note"><b>Ghi chú</b></label>
                                         <textarea type="text" class="form-control"
-                                                  id="note"
+                                                  id="note" cols="4" rows="3"
                                                   name="note"></textarea>
                                     </div>
                                 </div>
@@ -393,7 +429,6 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#birthday').datepicker("setDate", new Date());
                     $('#issueDateId').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
@@ -409,6 +444,13 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    $('#startDate').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#birthday').datepicker("setDate", new Date());
+                    $('#startDate').datepicker("setDate", new Date());
                     $('#issueDateId').datepicker("setDate", new Date());
                     $('#issueDateDriver').datepicker("setDate", new Date());
                     $('#expireDateDriver').datepicker("setDate", new Date());
@@ -437,12 +479,10 @@
                         data: data,
                         columns: [
                             {data: 'fullName'},
-                            {
-                                data: 'address',
-                                visible: false
-                            },
+                            {data: 'permanetAddress'},
                             {data: 'phone'},
                             {data: 'driverType'},
+                            {data: 'driverLicenseNumber'},
                             {
                                 data: 'issueDate_driver',
                                 render: function (data, type, full, meta) {
@@ -464,8 +504,7 @@
                             },
                             {data: 'fullNumber'},
                             {data: 'vehicle_types'},
-                            {data: 'garage', visible: false},
-                            {data: 'garageTypes', visible: false},
+
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -493,10 +532,10 @@
                             {responsivePriority: 1, targets: 6},
                             {responsivePriority: 1, targets: 7},
                             {responsivePriority: 1, targets: 8},
-                            {responsivePriority: 1, targets: 9},
-                            {responsivePriority: 10, targets: 10},
-                            {responsivePriority: 10, targets: 11},
-                            {responsivePriority: 1, targets: 12}
+                            {responsivePriority: 10, targets: 9},
+                            {responsivePriority: 1, targets: 10}
+
+
                         ],
                         responsive: true,
                         order: [[0, "desc"]]
@@ -512,7 +551,13 @@
                                 maxlength: 12,
                                 number: true
                             },
-                            driverType: "required"
+                            driverType: "required",
+                            permanetAddress: "required",
+                            address: "required",
+                            driverLicenseNumber: {
+                                required: true,
+                                number: true
+                            }
                         },
                         ignore: ".ignore",
                         messages: {
@@ -523,9 +568,26 @@
                                 maxlength: "Số CMND tối đa 12 số",
                                 number: "CMND phải là số"
                             },
-                            driverType: "Vui lòng nhập loại Bằng lái"
+                            driverType: "Vui lòng nhập loại bằng lái",
+                            permanetAddress: "Vui lòng nhập địa chỉ thường chú",
+                            address: "Vui lòng nhập địa chỉ",
+                            driverLicenseNumber: {
+                                required: "Vui lòng nhập số bằng lái",
+                                number: "Số bằng lái phải là số"
+                            }
                         }
                     });
+                },
+                transferNumber: function () {
+                    if ($("input[id='governmentId']").val() != '') {
+                        var governmentId = asNumberFromCurrency('#governmentId');
+                        $("input[id='governmentId']").val(governmentId);
+                    }
+                    if ($("input[id='driverLicenseNumber']").val() != '') {
+                        var driverLicenseNumber = asNumberFromCurrency('#driverLicenseNumber');
+                        $("input[id='driverLicenseNumber']").val(driverLicenseNumber);
+                    }
+
                 },
                 msgDelete: function (id) {
                     if (id) {
@@ -549,16 +611,30 @@
                     var issueDateGovernmentId = moment(driverView.current["issueDate_identityCard"], "YYYY-MM-DD");
                     var issueDateDriver = moment(driverView.current["issueDate_driver"], "YYYY-MM-DD");
                     var expireDate = moment(driverView.current["expireDate"], "YYYY-MM-DD");
+                    var startDate = moment(driverView.current["startDate"], "YYYY-MM-DD");
+                    console.log(driverView.current["finishDate"]);
+                    if (driverView.current["finishDate"] == null) {
+                        $("input[id='finishDate']").val('')
+                    } else {
+                        var endDate = moment(driverView.current["finishDate"], "YYYY-MM-DD");
+                        $("input[id='finishDate']").datepicker('update', endDate.format("DD-MM-YYYY"));
+                    }
                     $("input[id='birthday']").datepicker('update', birthday.format("DD-MM-YYYY"));
                     $("input[id='issueDateId']").datepicker('update', issueDateGovernmentId.format("DD-MM-YYYY"));
                     $("input[id='issueDateDriver']").datepicker('update', issueDateDriver.format("DD-MM-YYYY"));
                     $("input[id='expireDateDriver']").datepicker('update', expireDate.format("DD-MM-YYYY"));
+                    $("input[id='startDate']").datepicker('update', startDate.format("DD-MM-YYYY"));
+
                     $("input[id='fullName']").val(driverView.current["fullName"]);
                     $("input[id='phone']").val(driverView.current["phone"]);
                     $("input[id='governmentId']").val(driverView.current["identityCardNumber"]);
                     $("input[id='driverType']").val(driverView.current["driverType"]);
                     $("input[id='address']").val(driverView.current["address"]);
+                    $("input[id='permanetAddress']").val(driverView.current["permanetAddress"]);
+                    $("input[id='driverLicenseNumber']").val(driverView.current["driverLicenseNumber"]);
+
                     $("textarea[id='note']").val(driverView.current["note"]);
+
                 },
                 editDriver: function (id) {
                     $('input[id=driverId]').val(id);
@@ -584,7 +660,11 @@
                             birthday: $("input[id='birthday']").val(),
                             issueDateId: $("input[id='issueDateId']").val(),
                             issueDateDriver: $("input[id='issueDateDriver']").val(),
-                            expireDateDriver: $("input[id='expireDateDriver']").val()
+                            expireDateDriver: $("input[id='expireDateDriver']").val(),
+                            permanetAddress: $("input[id='permanetAddress']").val(),
+                            driverLicenseNumber: $("input[id='driverLicenseNumber']").val(),
+                            startDate: $("input[id='startDate']").val(),
+                            finishDate: $("input[id='finishDate']").val()
                         };
 
                     } else if (driverView.action == 'update') {
@@ -598,6 +678,10 @@
                         driverView.current.issueDateId = $("input[id='issueDateId']").val();
                         driverView.current.issueDateDriver = $("input[id='issueDateDriver']").val();
                         driverView.current.expireDateDriver = $("input[id='expireDateDriver']").val();
+                        driverView.current.permanetAddress = $("input[id='permanetAddress']").val();
+                        driverView.current.driverLicenseNumber = $("input[id='driverLicenseNumber']").val();
+                        driverView.current.startDate = $("input[id='startDate']").val();
+                        driverView.current.finishDate = $("input[id='finishDate']").val();
                     }
                 },
                 save: function () {
@@ -723,7 +807,7 @@
                         driverView.retrieveMultiFile();
                     }
                     else {
-                        if(driverView.tableFile != null)
+                        if (driverView.tableFile != null)
                             driverView.tableFile.clear().draw();
                     }
 
@@ -864,7 +948,7 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
-                },
+                }
             };
             driverView.loadData();
         } else {

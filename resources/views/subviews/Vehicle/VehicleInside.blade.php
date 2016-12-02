@@ -330,17 +330,17 @@
                                     <div class="row">
                                         <div class="col-md-4 col-sm-4">
                                             <input type="text" class="form-control"
-                                                   id="long"  onkeyup="garageInsideView.transferNumber()"
+                                                   id="long"
                                                    name="long">
                                         </div>
                                         <div class="col-md-4 col-sm-4">
                                             <input type="text" class="form-control"
-                                                   id="wide" onkeyup="garageInsideView.transferNumber()"
+                                                   id="wide"
                                                    name="wide">
                                         </div>
                                         <div class="col-md-4 col-sm-4">
                                             <input type="text" class="form-control"
-                                                   id="high"  onkeyup="garageInsideView.transferNumber()"
+                                                   id="high"
                                                    name="high">
                                         </div>
                                     </div>
@@ -349,7 +349,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label for="weight"><b>Trọng tải</b></label>
                                         <input type="text" class="form-control"
-                                               id="weight" onkeyup="garageInsideView.transferNumber()"
+                                               id="weight"
                                                name="weight">
                                     </div>
                                 </div>
@@ -928,7 +928,7 @@
                         if (typeof vehicleType === "undefined") {
                             var nameType = $('input[id=vehicleType_id]').val();
                             $("#vehicleType_id").attr("data-id", '');
-                            $('input[id=vehicleType_id]').val(nameType);
+                            $('input[id=vehicleType]').val(nameType);
                             garageInsideView.displayModal('show', '#modal-addVehicleType')
                         } else {
                             $("#vehicleType_id").attr("data-id", vehicleType.id);
@@ -937,7 +937,6 @@
 
                 },
                 saveVehicleType: function () {
-
                     garageInsideView.vehicleTypeValidate();
                     var vehicleType = {
                         vehicleType: $("input[id='vehicleType']").val(),
@@ -950,7 +949,8 @@
                     };
                     if ($("#frmVehicleType").valid()) {
                         $.ajax({
-                            url: url + 'garage-inside/modify',
+                            //url: url + 'garage-inside/modify',
+                            url: url + 'vehicle-inside/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer
@@ -971,25 +971,6 @@
                     } else {
                         $("form#frmVehicleType").find("label[class=error]").css("color", "red");
                     }
-                },
-                transferNumber: function () {
-                    if ($("input[id='long']").val() != '') {
-                        var long = asNumberFromCurrency('#long');
-                        $("input[id='long']").val(long);
-                    }
-                    if ($("input[id='wide']").val() != '') {
-                        var wide = asNumberFromCurrency('#wide');
-                        $("input[id='wide']").val(wide);
-                    }
-                    if ($("input[id='high']").val() != '') {
-                        var high = asNumberFromCurrency('#high');
-                        $("input[id='high']").val(high);
-                    }
-                    if ($("input[id='weight']").val() != '') {
-                        var weight = asNumberFromCurrency('#weight');
-                        $("input[id='weight']").val(weight);
-                    }
-
                 },
                 fillFormDataToCurrentObjectVehicle: function () {
                     var long = $("input[id='long']").val();

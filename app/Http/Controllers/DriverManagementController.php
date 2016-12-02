@@ -60,6 +60,10 @@ class DriverManagementController extends Controller
         $note = null;
         $driverType = null;
         $issueDateDriver = null;
+        $start = null;
+        $finish = null;
+        $driverLicenseNumber = null;
+        $permanetAddress = null;
         $expireDateDriver = null;
         $createdBy = null;
         $updatedBy = null;
@@ -81,10 +85,31 @@ class DriverManagementController extends Controller
             $issueDateId = $request->input('_object')['issueDateId'];
             $issueDateDriver = $request->input('_object')['issueDateDriver'];
             $expireDateDriver = $request->input('_object')['expireDateDriver'];
+
+
+
+            $start = $request->input('_object')['startDate'];
+            $finish = $request->input('_object')['finishDate'];
+            $driverLicenseNumber = $request->input('_object')['driverLicenseNumber'];
+            $permanetAddress = $request->input('_object')['permanetAddress'];
+
             $birthdayDate = Carbon::createFromFormat('d-m-Y', $birthday)->toDateTimeString();
             $issueDateIdDate = Carbon::createFromFormat('d-m-Y', $issueDateId)->toDateTimeString();
             $issueDateDriverDate = Carbon::createFromFormat('d-m-Y', $issueDateDriver)->toDateTimeString();
             $expireDateDriverDate = Carbon::createFromFormat('d-m-Y', $expireDateDriver)->toDateTimeString();
+
+            $startDate = Carbon::createFromFormat('d-m-Y', $start)->toDateTimeString();
+            if($finish == ''){
+                $finishDate = null;
+            }else{
+                $finishDate = Carbon::createFromFormat('d-m-Y', $finish)->toDateTimeString();
+
+            }
+
+
+
+
+
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
         }
@@ -106,7 +131,6 @@ class DriverManagementController extends Controller
                 $driverNew->updatedBy = $updatedBy;
                 if (!$driverNew->save()) {
                     return response()->json(['msg' => 'Create failed'], 404);
-
                 }
                 $dataAddDriver = \DB::table('drivers')
                     ->select(
@@ -139,6 +163,10 @@ class DriverManagementController extends Controller
                 $driverUpdate->fullName = $fullName;
                 $driverUpdate->address = $address;
                 $driverUpdate->phone = $phone;
+                $driverUpdate->driverLicenseNumber = $driverLicenseNumber;
+                $driverUpdate->permanetAddress = $permanetAddress;
+                $driverUpdate->startDate = $startDate;
+                $driverUpdate->finishDate = $finishDate;
                 $driverUpdate->note = $note;
                 $driverUpdate->driverLicenseType = $driverType;
                 $driverUpdate->identityCardNumber = $governmentId;
