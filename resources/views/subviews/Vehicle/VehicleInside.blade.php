@@ -950,7 +950,7 @@
                     if ($("#frmVehicleType").valid()) {
                         $.ajax({
                             //url: url + 'garage-inside/modify',
-                            url: url + 'vehicle-inside/modify',
+                            url: url + 'vehicle-type/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer

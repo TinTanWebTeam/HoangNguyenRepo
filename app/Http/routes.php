@@ -80,10 +80,7 @@ Route::group(['middleware' => 'auth'], function () {
         //get View
         Route::get('/vehicle-inside', 'VehicleManagementController@getViewGarageInside');
         Route::get('/vehicle-outside', 'VehicleManagementController@getViewGarageOutside');
-
-//        Route::get('/vehicle-inside/vehicles', 'VehicleManagementController@getDataVehicle');
-//        Route::get('/vehicle-outside/garages', 'VehicleManagementController@getDataGarage');
-        //Post vehicleType + list vehicle
+        //Post vehicleType + list vehicle => get listVehicle + vehicleType
         Route::POST('/vehicle-type/vehicleTypes', 'VehicleManagementController@postDataVehicleType');
         //post Modify
         Route::post('/vehicle-outside/modify', 'VehicleManagementController@postModifyGarage');
@@ -91,9 +88,17 @@ Route::group(['middleware' => 'auth'], function () {
    //Get Data Garages
         Route::get('/garage-inside/garages', 'VehicleManagementController@getDataGarageInside');
         Route::get('/garage-outside/garages', 'VehicleManagementController@getDataGarageOutside');
-        //post Modify Garage In side
+        //post Modify Garage Inside
         Route::post('/garage-inside/modify', 'VehicleManagementController@postModifyGarageInside');
         Route::post('/vehicle-inside/modify', 'VehicleManagementController@postModifyVehicleInside');
+
+
+        //post Modify Garage Outside
+        Route::post('/garage-outside/modify', 'VehicleManagementController@postModifyGarageOutside');
+        Route::post('/vehicle-outside/modify', 'VehicleManagementController@postModifyVehicleOutside');
+
+
+
 
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
