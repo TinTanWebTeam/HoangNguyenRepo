@@ -22,7 +22,6 @@ class UserManagementController extends Controller
         try {
             $roles = DB::table('roles')
                 ->whereBetween('id', [2, 11])
-                ->where('id',27)
                 ->select('roles.*')
                 ->get();
             $positions = Position::where('active', 1)->get();
@@ -167,6 +166,8 @@ class UserManagementController extends Controller
                         $subRoleNew = new SubRole();
                         $subRoleNew->user_id = $userNew->id;
                         $subRoleNew->role_id = $item;
+                        $subRoleNew->createdBy = \Auth::user()->id;
+                        $subRoleNew->updatedBy = \Auth::user()->id;
                         if (!$subRoleNew->save()) {
                             return response()->json(['msg' => 'Create failed'], 404);
                         }
@@ -216,6 +217,9 @@ class UserManagementController extends Controller
                         $subRoleUpdate = new SubRole();
                         $subRoleUpdate->user_id = $request->get('_object')['id'];
                         $subRoleUpdate->role_id = $item;
+                        $subRoleUpdate->createdBy = \Auth::user()->id;
+                        $subRoleUpdate->updatedBy = \Auth::user()->id;
+
                         if (!$subRoleUpdate->save()) {
                             return response()->json(['msg' => 'Update failed'], 404);
                         }

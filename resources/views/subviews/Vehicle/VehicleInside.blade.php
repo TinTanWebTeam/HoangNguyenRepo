@@ -980,6 +980,7 @@
                             var nameType = $('input[id=vehicleType_id]').val();
                             if (nameType == '') {
                                 $("#vehicleType_id").attr("data-id", '');
+
                             } else {
                                 $('input[id=vehicleType]').val(nameType);
                                 $("h5.modal-title").empty().append("Thêm mới loại xe");
@@ -1005,6 +1006,7 @@
                         });
                         if (typeof name === "undefined") {
                             $("#transferGarage").attr("data-idGarage", '');
+
                         } else {
                             $("#transferGarage").attr("data-idGarage", name.id);
                         }
@@ -1171,7 +1173,13 @@
                             if ($("#vehicleType_id").attr("data-id") == '') {
                                 showNotification("warning", "Loại xe không tồn tại!");
                                 return;
-                            } else {
+                            }
+                            else if ($('input[id=transferGarage]').val() != '' && $("#transferGarage").attr("data-idGarage") == '') {
+                                showNotification("warning", "Nhà xe không tồn tại!");
+                                return;
+                            }
+
+                            else {
                                 sendToServer = {
                                     _token: _token,
                                     _action: garageInsideView.action,
@@ -1192,7 +1200,6 @@
                                                 garageInsideView.clearInputFormVehicle();
                                                 break;
                                             case 'updateVehicle':
-                                                console.log(data['updateVehicle']['garage_id']);
                                                 data['updateVehicle'].fullNumber = data['updateVehicle']['areaCode'] + "-" + data['updateVehicle']["vehicleNumber"];
                                                 var vehicleOld = _.find(garageInsideView.dataVehicle, function (o) {
                                                     return o.id == sendToServer._vehicle.id;
@@ -1203,8 +1210,6 @@
                                                 } else {
                                                     garageInsideView.dataVehicle.splice(indexOfVehicleOld, 1);
                                                 }
-
-
                                                 garageInsideView.showNotification("success", "Cập nhật thành công!");
                                                 garageInsideView.clearInputFormVehicle();
                                                 garageInsideView.action = "addVehicle";

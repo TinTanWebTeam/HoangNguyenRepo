@@ -380,10 +380,10 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
-                    $("#datePicker .date").datepicker({
-                        'format': 'dd-mm-yyyy',
-                        'autoclose': true
-                    });
+//                    $("#datePicker .date").datepicker({
+//                        'format': 'dd-mm-yyyy',
+//                        'autoclose': true
+//                    });
                     adminView.renderDateTimePicker();
                 },
                 clearValidation: function () {
@@ -412,7 +412,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#birthday').datepicker("setDate", new Date());
+                    $('#birthday').datepicker("setDate", new Date('1990'));
                 },
                 msgDelete: function (id) {
                     var userId = '{{ Auth::user()->id }}';
