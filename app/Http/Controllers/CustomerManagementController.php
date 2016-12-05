@@ -12,6 +12,7 @@ use App\GarageType;
 use App\Postage;
 use App\Product;
 use App\ProductType;
+use App\Role;
 use App\StaffCustomer;
 use App\Status;
 use App\SubRole;
@@ -654,10 +655,18 @@ class CustomerManagementController extends Controller
         $statuses = Status::where('tableName', 'transports')->get();
         $costPrices = CostPrice::all();
 
-        $isAdmin = SubRole::where([
-            ['user_id', \Auth::user()->id],
-            ['role_id', 1]
-        ])->get()->isEmpty();
+        /* Dùng role Admin để hiện doanh thu và lợi nhuận. */
+        // $isAdmin = SubRole::where([
+        //     ['user_id', \Auth::user()->id],
+        //     ['role_id', 1]
+        // ])->get()->isEmpty();
+
+        /* Dùng role RevenueManagement để hiện doanh thu và lợi nhuận. */
+       $roleRevenueManagement = Role::where('name', 'RevenueManagement')->first();
+       $isAdmin = SubRole::where([
+           ['user_id', \Auth::user()->id],
+           ['role_id', $roleRevenueManagement->id]
+       ])->get()->isEmpty();
 
         $response = [
             'msg'               => 'Get list all Transport',

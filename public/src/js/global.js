@@ -239,6 +239,20 @@ function defaultZero(id){
     });
 }
 
+// function defaultZero(arrayId){
+//     var id;
+//     for(id in arrayId){
+//         console.log(arrayId[id]);
+//         $(arrayId[id]).focusout(function(){
+//             console.log("vao event");
+//             if($(this).val() == ''){
+//                 console.log("vao if");
+//                 $(arrayId[id]).val(0);
+//             }
+//         });
+//     }
+// }
+
 function defaultOne(id){
     $(id).focusout(function(){
         if($(this).val() == ''){
@@ -246,6 +260,17 @@ function defaultOne(id){
         }
     });
 }
+
+// function defaultOne(arrayId){
+//     var id;
+//     for(id in arrayId){
+//         $(arrayId[id]).focusout(function(){
+//             if($(this).val() == ''){
+//                 $(arrayId[id]).val(1);
+//             }
+//         });
+//     }
+// }
 
 function verifyProject(){
     // var dayDeploy = moment([2016, 9, 1]);
