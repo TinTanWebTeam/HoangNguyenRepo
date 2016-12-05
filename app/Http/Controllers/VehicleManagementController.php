@@ -490,9 +490,11 @@ class VehicleManagementController extends Controller
      * */
     public function postModifyVehicleType(Request $request)
     {
+
         $vehicleType = null;
         $description = null;
         $action = $request->input('_action');
+
         if ($action != 'delete') {
             $validator = ValidateController::ValidateVehicleType($request->input('_vehicleType'));
             if ($validator->fails()) {
@@ -517,6 +519,22 @@ class VehicleManagementController extends Controller
                     'dataVehicleTypes' => $vehicleTypes,
                 ];
                 return response()->json($response, 201);
+                break;
+            case 'updateVehicleType':
+                $vehicleTypeUpdate = VehicleType::findOrFail($request->input('_vehicleType')['id']);
+                $vehicleTypeUpdate->name = $vehicleType;
+                $vehicleTypeUpdate->description = $description;
+                if ($vehicleTypeUpdate->update()) {
+                    $vehicleTypes = \DB::table('vehicleTypes')
+                        ->where('vehicleTypes.id', $vehicleTypeUpdate->id)
+                        ->first();
+                    $response = [
+                        'msg' => 'Updated Vehicle',
+                        'updateVehicleType' => $vehicleTypes
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
                 break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
