@@ -127,6 +127,7 @@ class VehicleManagementController extends Controller
 
     public function postModifyVehicleInside(Request $request)
     {
+
         $areaCode = null;
         $vehicleNumber = null;
         $size = null;
@@ -134,17 +135,10 @@ class VehicleManagementController extends Controller
         $note = null;
         $vehicleType_id = null;
         $owner = null;
-
-
-
-        /*
-         * request Vehicle Type
-        */
-//        $vehicleType = null;
-//        $description = null;
+        $garage_id = null;
+        $idUpdateGarage = null;
         $action = $request->input('_action');
 
-//        if ($request->input('_vehicle')) {
             if ($action != 'deleteVehicle') {
                 $validator = ValidateController::ValidateVehicleInside($request->input('_vehicle'));
                 if ($validator->fails()) {
@@ -162,17 +156,8 @@ class VehicleManagementController extends Controller
                 $garage_id = $request->input('_vehicle')['garage_id'];
                 $trademark = $request->input('_vehicle')['trademark'];
                 $yearOfProduction = $request->input('_vehicle')['yearOfProduction'];
+                $idUpdateGarage = $request->input('_vehicle')['idUpdateGarage'];
             }
-//        }
-//        else {
-//            /*
-//           * request Vehicle Type
-//          */
-//            $vehicleType = $request->input('_vehicleType')['vehicleType'];
-//            $description = $request->input('_vehicleType')['description'];
-//
-//        }
-
 
         switch ($action) {
             case 'addVehicle':
@@ -214,11 +199,12 @@ class VehicleManagementController extends Controller
                 $vehicleUpdate->owner = $owner;
                 $vehicleUpdate->trademark = $trademark;
                 $vehicleUpdate->yearOfProduction = $yearOfProduction;
+                $vehicleUpdate->garage_id = $idUpdateGarage;
                 if ($vehicleUpdate->update()) {
                     $vehicles = \DB::table('vehicles')
                         ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
                         ->where('active', 1)
-                        ->where('garage_id', $request->input('_vehicle')['garage_id'])
+                        ->where('garage_id', $request->input('_vehicle')['idUpdateGarage'])
                         ->where('vehicles.id', $vehicleUpdate->id)
                         ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
                         ->first();
@@ -241,23 +227,6 @@ class VehicleManagementController extends Controller
                 }
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
-//            case'vehicleType':
-//                dd();
-//                $vehicleTypeNew = new VehicleType();
-//                $vehicleTypeNew->name = $vehicleType;
-//                $vehicleTypeNew->description = $description;
-//                if (!$vehicleTypeNew->save()) {
-//                    return response()->json(['msg' => 'Create failed'], 404);
-//                }
-//                $vehicleTypes = \DB::table('vehicleTypes')
-//                    ->where('vehicleTypes.id', $vehicleTypeNew->id)
-//                    ->first();
-//                $response = [
-//                    'msg' => 'Created vehicleType',
-//                    'dataVehicleTypes' => $vehicleTypes,
-//                ];
-//                return response()->json($response, 201);
-//                break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;

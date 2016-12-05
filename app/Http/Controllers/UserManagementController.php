@@ -21,7 +21,8 @@ class UserManagementController extends Controller
     {
         try {
             $roles = DB::table('roles')
-                ->whereBetween('id', [2, 10])
+                ->whereBetween('id', [2, 11])
+                ->where('id',27)
                 ->select('roles.*')
                 ->get();
             $positions = Position::where('active', 1)->get();
