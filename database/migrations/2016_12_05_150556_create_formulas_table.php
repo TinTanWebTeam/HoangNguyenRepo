@@ -14,7 +14,7 @@ class CreateFormulasTable extends Migration
     {
         Schema::create('formulas', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('formulaCode')->comment('Mã công thức');
+            $table->string('formulaCode')->comment('Mã công thức')->nullable();
             $table->decimal('unitPrice', 18, 0)->default(0)->comment('Đơn giá');
             $table->string('unit')->comment('Đơn vị tính');
             $table->integer('customer_id')->unsigned()->comment('Mã khách hàng');

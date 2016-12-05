@@ -91,13 +91,22 @@
                         <form role="form" id="frmControl">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-8">
                                         <div class="form-group form-md-line-input">
                                             <label for="customer_id" class="red"><b>Khách hàng</b></label>
                                             <input type="text" class="form-control" id="customer_id"
                                                    name="customer_id"
                                                    placeholder="Nhập tên khách hàng"
                                                    data-customerId="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="rule"><b>Luật</b></label>
+                                            <select name="rule" id="rule" class="form-control">
+                                                <option value="">Khoảng</option>
+                                                <option value="">Giá trị</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -413,6 +422,11 @@
 //                        postageView.displayModal('show', '#myModalNorm');
 //                    });
                 },
+                renderEventChangeSelect: function(){
+                    $( "#rule" ).change(function() {
+                        alert( "Handler for .change() called." );
+                    });
+                },
 
                 loadData: function () {
                     $.ajax({
@@ -439,6 +453,7 @@
                     postageView.renderDateTimePicker();
                     postageView.renderScrollbar();
                     postageView.renderEventRowClick();
+                    postageView.renderEventChangeSelect();
 
                     renderAutoCompleteSearch('#receivePlace', array_city);
                     renderAutoCompleteSearch('#deliveryPlace', array_city);

@@ -17,9 +17,9 @@ class CreateFormulaDetailsTable extends Migration
             $table->integer('formula_id')->unsigned()->comment('Mã công thức');
             $table->integer('rule_id')->comment('Loại rule: khoảng hoặc giá trị');
             $table->string('name')->comment('Tên trường');
-            $table->string('from')->comment('Từ');
-            $table->string('to')->comment('Đến');
-            $table->string('value')->comment('Giá trị');
+            $table->string('from')->comment('Từ')->nullable();
+            $table->string('to')->comment('Đến')->nullable();
+            $table->string('value')->comment('Giá trị')->nullable();
             $table->timestamps();
         });
     }
