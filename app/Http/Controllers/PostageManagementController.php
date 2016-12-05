@@ -179,16 +179,12 @@ class PostageManagementController extends Controller
 
     public function DataPostage()
     {
-        $postageFiltered = DB::select("     
-            select p.*, customers.fullName as customers_fullName
-            from postages p
-            INNER JOIN customers ON customers.id = p.customer_id
-            INNER JOIN
-            (
-                select MAX(t.applyDate) as maxApplyDate, t.customer_id, t.receivePlace, t.deliveryPlace
-                from (select * from postages order by applyDate desc) as t
-                group by t.customer_id, t.receivePlace, t.deliveryPlace
-            ) as t1 ON p.customer_id = t1.customer_id AND t1.maxApplyDate = p.applyDate
+        $postageFiltered = DB::select("
+            SELECT i1.*, c.fullName as customers_fullName
+            FROM postages AS i1 
+            LEFT JOIN postages AS i2 ON (i1.receivePlace = i2.receivePlace AND i1.deliveryPlace = i2.deliveryPlace AND i1.applyDate < i2.applyDate)
+            INNER JOIN customers AS c ON c.id = i1.customer_id
+            WHERE i2.applyDate IS NULL;
         ");
 
         $postageFull = \DB::table('postages')
