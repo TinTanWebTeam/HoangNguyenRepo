@@ -8,6 +8,7 @@
         height: 60vh;
         width: 45%;
     }
+
     #listVehicle {
         z-index: 3;
         position: fixed;
@@ -21,6 +22,7 @@
     div.col-lg-12 {
         height: 40px;
     }
+
     @media (max-height: 500px) {
         #divControl {
             top: 53px;
@@ -259,7 +261,7 @@
             </div>
             <div class="panel-body">
                 <div class="col-md-5">
-                    <form role="form" id="frmVehicle">
+                    <form role="form" id="frmVehicle" onsubmit="return false;">
                         <input id="garage_id" style="display: none">
                         <div class="form-body">
                             <div class="row">
@@ -304,9 +306,15 @@
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicleType_id"><b>Loại xe</b></label>
                                         <div class="row">
-                                            <div class="col-sm-12 col-xs-12">
+                                            <div class="col-sm-9 col-xs-9">
                                                 <input name="vehicleType_id" id="vehicleType_id" data-id=""
-                                                       class="form-control">
+                                                       class="form-control" onkeyup="garageOutsideView.cleaIdVehicle()">
+                                            </div>
+                                            <div class="col-sm-3 col-xs-3">
+                                                <button id="editVehicleType" class="btn btn-primary btn-sm btn-circle"
+                                                        onclick="garageOutsideView.editVehicleType()">
+                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                </button>
                                             </div>
                                         </div>
 
@@ -495,9 +503,37 @@
                         garageOutsideView.fillCurrentObjectToForm();
                     }
                 },
+                cleaIdVehicle: function () {
+                    if ($('input[id=vehicleType_id]').val() == "") {
+                        $("#vehicleType_id").attr('data-id', '');
+                        if ($("#vehicleType_id").attr('data-id') == '') {
+                            $("button[id=editVehicleType]").prop("disabled", true);
+                        } else {
+                            $("button[id=editVehicleType]").prop("disabled", false);
+                        }
+                    }
+                },
+                editVehicleType: function () {
+                    var idVehicle = $("#vehicleType_id").attr('data-id');
+                    garageOutsideView.currentVehicleType = null;
+                    garageOutsideView.currentVehicleType = _.clone(_.find(garageOutsideView.dataVehicleType, function (o) {
+                        return o.id == idVehicle;
+                    }), true);
+                    garageOutsideView.action = 'updateVehicleType';
+                    var nameType = $('input[id=vehicleType_id]').val();
+                    $('input[id=vehicleType]').val(nameType);
+                    garageOutsideView.displayModal('show', '#modal-addVehicleType');
+                    $("h5.modal-title").empty().append("Cập nhật loại xe");
+
+                },
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
                     if (garageOutsideView.action == 'addVehicle') {
+                        if ($("#vehicleType_id").attr('data-id') == '') {
+                            $("button[id=editVehicleType]").prop("disabled", true);
+                        } else {
+                            $("button[id=editVehicleType]").prop("disabled", false);
+                        }
                         $('#listVehicle').fadeIn(300);
                     } else {
                         $('#divControl').fadeIn(300);
@@ -829,6 +865,8 @@
                     $("input[id='weight']").val('');
                     $("textarea[id='noteVehicle']").val('');
                     $("#listVehicle").find(".titleControl").html("Thêm mới xe");
+                    $("button[id=editVehicleType]").prop("disabled", true);
+                    $('#input-transfer-garage').hide(500);
                 },
                 clearInputFormVehicleType: function () {
                     $("input[id='vehicleType']").val('');
@@ -871,9 +909,11 @@
                     $("input[id='yearOfProduction']").val(garageOutsideView.currentVehicle["yearOfProduction"]);
                     $("#vehicleType_id").attr('data-id', garageOutsideView.currentVehicle["vehicleType_id"]);
                     $("textarea[id='noteVehicle']").val(garageOutsideView.currentVehicle["note"]);
-
+                    $("button[id=editVehicleType]").prop("disabled", false);
                     garageOutsideView.action = 'updateVehicle';
                     $("#listVehicle").find(".titleControl").html("Cập nhật xe");
+                    garageOutsideView.clearValidation();
+                    $('#input-transfer-garage').show(500);
 
                 },
                 vehicleTypeValidate: function () {
@@ -927,16 +967,34 @@
                             garageOutsideView.displayModal('show', '#modal-addVehicleType')
                         } else {
                             $("#vehicleType_id").attr("data-id", vehicleType.id);
+                            if ($("#vehicleType_id").attr('data-id') == '') {
+                                $("button[id=editVehicleType]").prop("disabled", true);
+                            } else {
+                                $("button[id=editVehicleType]").prop("disabled", false);
+                            }
                         }
                     }));
+
 
                 },
                 saveVehicleType: function () {
                     garageOutsideView.vehicleTypeValidate();
-                    var vehicleType = {
-                        vehicleType: $("input[id='vehicleType']").val(),
-                        description: $("textarea[id='description']").val()
-                    };
+                    var vehicleType = null;
+                    if (garageOutsideView.action == "updateVehicleType" && $("#vehicleType_id").attr("data-id") != "") {
+                        garageOutsideView.action = "updateVehicleType";
+                        vehicleType = {
+                            vehicleType: $("input[id='vehicleType']").val(),
+                            description: $("textarea[id='description']").val(),
+                            id: $("#vehicleType_id").attr('data-id')
+                        };
+
+                    } else {
+                        garageOutsideView.action = "vehicleType";
+                        vehicleType = {
+                            vehicleType: $("input[id='vehicleType']").val(),
+                            description: $("textarea[id='description']").val()
+                        };
+                    }
                     var sendToServer = {
                         _token: _token,
                         _action: 'vehicleType',
@@ -950,14 +1008,27 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                garageOutsideView.dataVehicleType.push(data['dataVehicleTypes']);
-                                garageOutsideView.showNotification("success", "Thêm mới loại xe thành công");
-                                garageOutsideView.displayModal("hide", "#modal-addVehicleType");
-                                var idVehicleType = data['dataVehicleTypes']['id'];
-                                var nameVehicleType = data['dataVehicleTypes']['name'];
-                                $('input[id=vehicleType_id]').val(nameVehicleType);
-                                $("#vehicleType_id").attr("data-id", idVehicleType);
-                                garageOutsideView.clearInputFormVehicleType();
+                                switch (garageOutsideView.action) {
+                                    case 'vehicleType':
+                                        garageOutsideView.dataVehicleType.push(data['dataVehicleTypes']);
+                                        garageOutsideView.showNotification("success", "Thêm mới loại xe thành công");
+                                        garageOutsideView.displayModal("hide", "#modal-addVehicleType");
+                                        var idVehicleType = data['dataVehicleTypes']['id'];
+                                        var nameVehicleType = data['dataVehicleTypes']['name'];
+                                        $('input[id=vehicleType_id]').val(nameVehicleType);
+                                        $("#vehicleType_id").attr("data-id", idVehicleType);
+                                        garageOutsideView.clearInputFormVehicleType();
+                                        break;
+                                    case 'updateVehicleType':
+                                        garageOutsideView.dataVehicleType.push(data['updateVehicleType']);
+                                        garageOutsideView.showNotification("success", "Cập nhật loại xe thành công");
+                                        garageOutsideView.displayModal("hide", "#modal-addVehicleType");
+                                        var nameVehicleType = data['updateVehicleType']['name'];
+                                        $('input[id=vehicleType_id]').val(nameVehicleType);
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             garageOutsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");

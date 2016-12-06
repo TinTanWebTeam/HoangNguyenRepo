@@ -500,6 +500,7 @@
                 table: null,
                 tableVehicle: null,
                 dataGarage: null,
+                dataAllGarages: null,
                 dataVehicle: null,
                 current: null,
                 currentVehicle: null,
@@ -533,12 +534,11 @@
                     garageInsideView.currentVehicleType = _.clone(_.find(garageInsideView.dataVehicleType, function (o) {
                         return o.id == idVehicle;
                     }), true);
-                    garageInsideView.action = 'updateVehicleType';
                     var nameType = $('input[id=vehicleType_id]').val();
                     $('input[id=vehicleType]').val(nameType);
+                    garageInsideView.action = 'updateVehicleType';
                     garageInsideView.displayModal('show', '#modal-addVehicleType');
                     $("h5.modal-title").empty().append("Cập nhật loại xe");
-
                 },
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -571,6 +571,7 @@
                         garageInsideView.action = null;
                         garageInsideView.idDelete = null;
                     }
+
                 },
                 clearValidation: function () {
                     $('label[class=error]').hide();
@@ -876,7 +877,7 @@
                     $('#vehicleType_id').attr('data-id', '');
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
-                    $("textarea[id='noteVehicle']").val('');
+                    $("textarea[id='note']").val('');
 
                     $("input[id='transferGarage']").val('');
                     $('#transferGarage').attr('data-idGarage', '');
@@ -956,6 +957,7 @@
                         if (jqXHR.status == 200) {
                             garageInsideView.dataVehicleType = data['vehicleTypes'];
                             garageInsideView.dataVehicle = data['dataVehicles'];
+                            garageInsideView.dataAllGarages = data['allGarage'];
                             garageInsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageInsideView.renderAutoCompleteSearch();
 
@@ -980,11 +982,11 @@
                             var nameType = $('input[id=vehicleType_id]').val();
                             if (nameType == '') {
                                 $("#vehicleType_id").attr("data-id", '');
-
                             } else {
                                 $('input[id=vehicleType]').val(nameType);
                                 $("h5.modal-title").empty().append("Thêm mới loại xe");
-                                garageInsideView.displayModal('show', '#modal-addVehicleType')
+                                garageInsideView.action = 'vehicleType';
+                                garageInsideView.displayModal('show', '#modal-addVehicleType');
                             }
                         } else {
                             $("#vehicleType_id").attr("data-id", vehicleType.id);
@@ -996,16 +998,20 @@
                         }
                     }));
 
-                    garageInsideView.tagsGarageVehicle = _.map(garageInsideView.dataGarage, 'name');
+                    garageInsideView.tagsGarageVehicle = _.map(garageInsideView.dataAllGarages, 'name');
                     garageInsideView.tagsGarageVehicle = _.union(garageInsideView.tagsGarageVehicle);
                     renderAutoCompleteSearch('#transferGarage', garageInsideView.tagsGarageVehicle, $("#transferGarage").focusout(function () {
                         var garageName = this.value;
                         if (garageName == '') return;
-                        var name = _.find(garageInsideView.dataGarage, function (o) {
+                        var name = _.find(garageInsideView.dataAllGarages, function (o) {
                             return o.name == garageName;
                         });
                         if (typeof name === "undefined") {
                             $("#transferGarage").attr("data-idGarage", '');
+                            showNotification("warning", "Nhà xe không tồn tại!");
+                            if($('input[id=transferGarage]').val() == ""){
+                                $("#transferGarage").attr("data-idGarage", '');
+                            }
 
                         } else {
                             $("#transferGarage").attr("data-idGarage", name.id);
@@ -1016,15 +1022,12 @@
                     garageInsideView.vehicleTypeValidate();
                     var vehicleType = null;
                     if (garageInsideView.action == "updateVehicleType" && $("#vehicleType_id").attr("data-id") != "") {
-                        garageInsideView.action = "updateVehicleType";
                         vehicleType = {
                             vehicleType: $("input[id='vehicleType']").val(),
                             description: $("textarea[id='description']").val(),
                             id: $("#vehicleType_id").attr('data-id')
                         };
-
                     } else {
-                        garageInsideView.action = "vehicleType";
                         vehicleType = {
                             vehicleType: $("input[id='vehicleType']").val(),
                             description: $("textarea[id='description']").val()
@@ -1045,7 +1048,6 @@
                             if (jqXHR.status == 201) {
                                 switch (garageInsideView.action) {
                                     case 'vehicleType':
-                                        garageInsideView.dataVehicleType.push(data['dataVehicleTypes']);
                                         garageInsideView.showNotification("success", "Thêm mới loại xe thành công");
                                         garageInsideView.displayModal("hide", "#modal-addVehicleType");
                                         var idVehicleType = data['dataVehicleTypes']['id'];
@@ -1053,19 +1055,27 @@
                                         $('input[id=vehicleType_id]').val(nameVehicleType);
                                         $("#vehicleType_id").attr("data-id", idVehicleType);
                                         garageInsideView.clearInputFormVehicleType();
+                                        if(garageInsideView.currentVehicle != null){
+                                            garageInsideView.action = "updateVehicle"
+                                        }else {
+                                            garageInsideView.action = "addVehicle"
+                                        }
                                         break;
                                     case 'updateVehicleType':
-                                        garageInsideView.dataVehicleType.push(data['updateVehicleType']);
                                         garageInsideView.showNotification("success", "Cập nhật loại xe thành công");
                                         garageInsideView.displayModal("hide", "#modal-addVehicleType");
                                         var nameVehicleType = data['updateVehicleType']['name'];
                                         $('input[id=vehicleType_id]').val(nameVehicleType);
-                                        garageInsideView.fillCurrentObjectToFormVehicleType();
+                                        if(garageInsideView.currentVehicle['id']){
+                                            garageInsideView.action = "updateVehicle"
+                                        }else {
+                                            garageInsideView.action = "addVehicle"
+                                        }
+
                                         break;
                                     default:
                                         break;
                                 }
-
                             }
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             garageInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -1086,13 +1096,14 @@
                     if (garageInsideView.action == 'addVehicle') {
                         garageInsideView.currentVehicle = {
                             garage_id: $("input[id='garage_id']").val(),
+                            idUpdateGarage : $("#transferGarage").attr('data-idGarage'),
                             areaCode: $("input[id='areaCode']").val(),
                             vehicleNumber: $("input[id='vehicleNumber']").val(),
                             vehicleType_id: $("#vehicleType_id").attr('data-id'),
                             owner: $("input[id='owner']").val(),
                             size: size,
                             weight: $("input[id='weight']").val(),
-                            noteVehicle: $("textarea[id='noteVehicle']").val(),
+                            note: $("textarea[id='noteVehicle']").val(),
                             trademark: $("input[id='trademark']").val(),
                             yearOfProduction: $("input[id='yearOfProduction']").val()
                         };
@@ -1105,7 +1116,7 @@
                         garageInsideView.currentVehicle.owner = $("input[id='owner']").val().toUpperCase();
                         garageInsideView.currentVehicle.size = size;
                         garageInsideView.currentVehicle.weight = $("input[id='weight']").val();
-                        garageInsideView.currentVehicle.noteVehicle = $("textarea[id='noteVehicle']").val();
+                        garageInsideView.currentVehicle.note = $("textarea[id='noteVehicle']").val();
                         garageInsideView.currentVehicle.trademark = $("input[id='trademark']").val();
                         garageInsideView.currentVehicle.yearOfProduction = $("input[id='yearOfProduction']").val();
 
@@ -1178,7 +1189,6 @@
                                 showNotification("warning", "Nhà xe không tồn tại!");
                                 return;
                             }
-
                             else {
                                 sendToServer = {
                                     _token: _token,
@@ -1205,7 +1215,7 @@
                                                     return o.id == sendToServer._vehicle.id;
                                                 });
                                                 var indexOfVehicleOld = _.indexOf(garageInsideView.dataVehicle, vehicleOld);
-                                                if (data['updateVehicle']['garage_id'] == 0) {
+                                                if (data['updateVehicle']['garage_id'] == vehicleOld['garage_id']) {
                                                     garageInsideView.dataVehicle.splice(indexOfVehicleOld, 1, data['updateVehicle']);
                                                 } else {
                                                     garageInsideView.dataVehicle.splice(indexOfVehicleOld, 1);
@@ -1227,7 +1237,6 @@
                                     garageInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                                 });
                             }
-
                         } else {
                             $("form#frmVehicle").find("label[class=error]").css("color", "red");
                         }

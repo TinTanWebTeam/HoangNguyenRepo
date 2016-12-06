@@ -138,27 +138,29 @@ class VehicleManagementController extends Controller
         $garage_id = null;
         $idUpdateGarage = null;
         $action = $request->input('_action');
-
-            if ($action != 'deleteVehicle') {
-                $validator = ValidateController::ValidateVehicleInside($request->input('_vehicle'));
-                if ($validator->fails()) {
-                    return $validator->errors();
-                    //return response()->json(['msg' => 'Input data fail'], 404);
-                }
-
-                $areaCode = $request->input('_vehicle')['areaCode'];
-                $vehicleNumber = $request->input('_vehicle')['vehicleNumber'];
-                $size = $request->input('_vehicle')['size'];
-                $weight = $request->input('_vehicle')['weight'];
-                $note = $request->input('_vehicle')['noteVehicle'];
-                $vehicleType_id = $request->input('_vehicle')['vehicleType_id'];
-                $owner = $request->input('_vehicle')['owner'];
-                $garage_id = $request->input('_vehicle')['garage_id'];
-                $trademark = $request->input('_vehicle')['trademark'];
-                $yearOfProduction = $request->input('_vehicle')['yearOfProduction'];
-                $idUpdateGarage = $request->input('_vehicle')['idUpdateGarage'];
+        if ($action != 'deleteVehicle') {
+            $validator = ValidateController::ValidateVehicleInside($request->input('_vehicle'));
+            if ($validator->fails()) {
+                return $validator->errors();
+                //return response()->json(['msg' => 'Input data fail'], 404);
             }
 
+            $areaCode = $request->input('_vehicle')['areaCode'];
+            $vehicleNumber = $request->input('_vehicle')['vehicleNumber'];
+            $size = $request->input('_vehicle')['size'];
+            $weight = $request->input('_vehicle')['weight'];
+            $note = $request->input('_vehicle')['note'];
+            $vehicleType_id = $request->input('_vehicle')['vehicleType_id'];
+            $owner = $request->input('_vehicle')['owner'];
+            $trademark = $request->input('_vehicle')['trademark'];
+            $yearOfProduction = $request->input('_vehicle')['yearOfProduction'];
+            $idUpdateGarage= $request->input('_vehicle')['idUpdateGarage'];
+            if($idUpdateGarage == ''){
+                $garage_id = $request->input('_vehicle')['garage_id'];
+            }else{
+                $garage_id = $idUpdateGarage;
+            }
+        }
         switch ($action) {
             case 'addVehicle':
                 $vehicleNew = new Vehicle();
@@ -176,7 +178,7 @@ class VehicleManagementController extends Controller
                     $vehicle = \DB::table('vehicles')
                         ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
                         ->where('active', 1)
-                        ->where('garage_id', $request->input('_vehicle')['garage_id'])
+                        ->where('garage_id', $garage_id)
                         ->where('vehicles.id', $vehicleNew->id)
                         ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
                         ->first();
@@ -199,14 +201,14 @@ class VehicleManagementController extends Controller
                 $vehicleUpdate->owner = $owner;
                 $vehicleUpdate->trademark = $trademark;
                 $vehicleUpdate->yearOfProduction = $yearOfProduction;
-                $vehicleUpdate->garage_id = $idUpdateGarage;
+                $vehicleUpdate->garage_id = $garage_id;
                 if ($vehicleUpdate->update()) {
                     $vehicles = \DB::table('vehicles')
                         ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
                         ->where('active', 1)
-                        ->where('garage_id', $request->input('_vehicle')['idUpdateGarage'])
+                        ->where('garage_id', $garage_id)
                         ->where('vehicles.id', $vehicleUpdate->id)
-                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
+                        ->select('vehicles.*','vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
                         ->first();
                     $response = [
                         'msg' => 'Updated Vehicle',
@@ -371,7 +373,7 @@ class VehicleManagementController extends Controller
             $vehicleNumber = $request->input('_vehicle')['vehicleNumber'];
             $size = $request->input('_vehicle')['size'];
             $weight = $request->input('_vehicle')['weight'];
-            $note = $request->input('_vehicle')['noteVehicle'];
+            $note = $request->input('_vehicle')['note'];
             $vehicleType_id = $request->input('_vehicle')['vehicleType_id'];
             $owner = $request->input('_vehicle')['owner'];
             $garage_id = $request->input('_vehicle')['garage_id'];
@@ -520,12 +522,13 @@ class VehicleManagementController extends Controller
             ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
             ->get();
         $vehicleTypes = VehicleType::all();
+        $allGarage = Garage::all();
         $response = [
             'msg' => 'Get data vehicleType success',
             'vehicleTypes' => $vehicleTypes,
-            'dataVehicles' => $vehicles
+            'dataVehicles' => $vehicles,
+            'allGarage' => $allGarage
         ];
         return response()->json($response, 200);
     }
-
 }
