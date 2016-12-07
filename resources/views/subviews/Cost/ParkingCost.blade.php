@@ -475,7 +475,6 @@
                     parkingCostView.idDelete = null;
                     $("#modalConfirm").modal('hide');
                 },
-
                 showNotification: function (type, msg) {
                     switch (type) {
                         case "info":
@@ -708,37 +707,52 @@
                     $("#price").attr('data-priceId', parkingCostView.current["price_id"]);
                     formatCurrency(".currency");
                 },
+                countDay : function (hour ) {
+                    var x = hour % 24;
+                    var y = hour / 24;
+                    if(x != 0){
+                        if(x < 1){
+                            x = 0;
+                        }
+                        else if (1 <= x <= 3) {
+                            x = 0.5;
+                        }
+                        else if (x > 3){
+                            x = 1;
+                        }
+                    }
+                    return parseInt(y) + x;
+                },
                 totalDay: function () {
                     if ($('input[id=dateCheckIn]').val() == ""
-                            || $('input[id=dateCheckOut]').val() == ""
-                            || $('input[id=timeCheckIn]').val() == ""
-                            || $('input[id=timeCheckOut]').val() == "")
+                        || $('input[id=dateCheckOut]').val() == ""
+                        || $('input[id=timeCheckIn]').val() == ""
+                        || $('input[id=timeCheckOut]').val() == "")
                         return;
-                    start = moment($('input[id=dateCheckIn]').val() + " " + $('input[id=timeCheckIn]').val(), "DD-MM-YYYY HH:mm");
-                    end = moment($('input[id=dateCheckOut]').val() + " " + $('input[id=timeCheckOut]').val(), "DD-MM-YYYY HH:mm");
+                    var start = moment($('input[id=dateCheckIn]').val() + " " + $('input[id=timeCheckIn]').val(), "DD-MM-YYYY HH:mm");
+                    var end = moment($('input[id=dateCheckOut]').val() + " " + $('input[id=timeCheckOut]').val(), "DD-MM-YYYY HH:mm");
                     if (end < start) {
                         showNotification("error", "Ngày lấy xe phải hơn ngày đậu!");
                         $('input[id=totalTime]').val(0);
                         $('input[id=totalDate]').val(0);
                         $("input[id=totalCost]").val(0);
                     } else {
-                        hour = end.diff(start, "minute") / 60;
-                        day = end.diff(start, "day");
-                        $('input[id=totalDate]').val(day);
+                        var hour = end.diff(start, "minute") / 60;
                         if (hour % 2 == 0) {
                             $('input[id=totalTime]').val(hour);
                         } else {
                             $('input[id=totalTime]').val(hour.toFixed(2));
                         }
                         parkingCostView.totalCost();
+                        $('input[id=totalDate]').val(parkingCostView.countDay(hour));
                     }
 
                 },
                 totalCost: function () {
-                    var time = $("input[id=totalTime]").val();
+                    var day = $("input[id=totalDate]").val();
                     var price = $("input[id=price]").val();
                     price = price.replace(',', '');
-                    var totalCost = time * price;
+                    var totalCost = day * price;
                     $("input[id=totalCost]").val(totalCost);
                     formatCurrency(".currency");
 
@@ -1012,13 +1026,12 @@
                     }
 
                 },
-
                 loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("garage_id");
                     for (var i = 0; i < lstGarage.length; i++) {
@@ -1032,9 +1045,9 @@
                 loadSelectBoxVehicleType: function (lstVehicleType) {
                     //reset selectbox
                     $('#vehicleType_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("vehicleType_id");
                     for (var i = 0; i < lstVehicleType.length; i++) {
@@ -1045,7 +1058,6 @@
                         select.appendChild(el);
                     }
                 },
-
                 ValidateParking: function () {
                     $("#formParkingCost").validate({
                         rules: {

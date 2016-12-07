@@ -182,6 +182,7 @@ class VehicleManagementController extends Controller
                         ->where('vehicles.id', $vehicleNew->id)
                         ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
                         ->first();
+
                     $response = [
                         'msg' => 'Created vehicle',
                         'addVehicle' => $vehicle
