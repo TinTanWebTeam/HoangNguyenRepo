@@ -53,12 +53,13 @@
                             <thead>
                             <tr class="active">
                                 <th>Mã</th>
-                                <th>Cước phí</th>
+                                <th>Khách hàng</th>
+                                <th>Mã công thức</th>
+                                <th>Đơn giá</th>
+                                <th>Đơn vị tính</th>
+                                <th>Giao xe</th>
                                 <th>Ngày tạo</th>
                                 <th>Ngày áp dụng</th>
-                                <th>Khách hàng</th>
-                                <th>Nơi nhận</th>
-                                <th>Nơi giao</th>
                                 <th>Ghi chú</th>
                                 <th>Sửa</th>
                             </tr>
@@ -93,12 +94,133 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <fieldset>
+                                            <legend>Công thức:</legend>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-12">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="customer_id" class="red"><b>Khách hàng</b></label>
+                                                        <input type="text" class="form-control" id="customer_id"
+                                                               name="customer_id"
+                                                               placeholder="Nhập tên khách hàng"
+                                                               data-customerId="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="formulaCode"><b>Mã công thức</b></label>
+                                                        <input type="text" class="form-control" id="formulaCode"
+                                                               name="formulaCode">
+                                                        <input type="hidden" id="formula_id">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="cashDelivery" class="red"><b>Phí giao xe</b></label>
+                                                        <input type="text" class="form-control currency"
+                                                               id="cashDelivery" name="cashDelivery">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="unitPrice" class="red"><b>Đơn giá</b></label>
+                                                        <input type="text" class="form-control currency" id="unitPrice" name="unitPrice">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="unit" class="red"><b>Đơn vị tính</b></label>
+                                                        <input type="text" class="form-control" id="unit" name="unit">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input ">
+                                                        <label for="createdDate"><b>Ngày tạo</b></label>
+                                                        <input type="text" class="date ignore form-control"
+                                                               id="createdDate"
+                                                               name="createdDate" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="applyDate" class="red"><b>Ngày áp dụng</b></label>
+                                                        <input type="text" class="date ignore form-control"
+                                                               id="applyDate"
+                                                               name="applyDate">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-12">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="note"><b>Ghi chú</b></label>
+                                                        <textarea class="form-control" name="note" id="note"
+                                                                  rows="2"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-sm-12">
+                                                    <fieldset>
+                                                        <legend>Thông tin giá dầu:</legend>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group form-md-line-input">
+                                                                <label for="oils_price"><b>Giá dầu</b></label>
+                                                                <input type="text" class="form-control currency"
+                                                                       name="oils_price"
+                                                                       id="oils_price" disabled>
+                                                                <input type="hidden" name="fuel_id" id="fuel_id">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group form-md-line-input">
+                                                                <label for="oils_applyDate"><b>Ngày áp dụng giá dầu</b></label>
+                                                                <input type="text" class="date ignore form-control"
+                                                                       name="oils_applyDate" id="oils_applyDate"
+                                                                       disabled>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-12">
+                                                    <div class="form-actions">
+                                                        <div class="form-group">
+                                                            <button type="button" class="btn btn-primary marginRight"
+                                                                    onclick="postageView.save()">Hoàn tất
+                                                            </button>
+                                                            <button type="button" class="btn default"
+                                                                    onclick="postageView.retype()">Nhập lại
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <form role="form" id="frmControlDetail">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <fieldset>
                                             <legend>Chi tiết công thức:</legend>
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-12">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="rule" class="marginRight"><b>Công thức: </b></label>
-                                                        <input type="radio" name="rule" value="R" checked> <span class="marginRight">Khoảng</span>
+                                                        <input type="radio" name="rule" value="R" checked> <span
+                                                                class="marginRight">Khoảng</span>
                                                         <input type="radio" name="rule" value="S"> <span>Giá trị</span>
                                                     </div>
                                                 </div>
@@ -106,14 +228,14 @@
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="name"><b>Tên trường</b></label>
+                                                        <label for="name" class="red"><b>Tên trường</b></label>
                                                         <input type="text" class="form-control" id="name" name="name">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="value"><b>Giá trị</b></label>
-                                                        <input type="text" class="form-control" id="value" name="value">
+                                                        <input type="text" class="form-control" id="value" name="value" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -136,10 +258,10 @@
                                                     <div class="form-actions">
                                                         <div class="form-group">
                                                             <button type="button" class="btn btn-primary marginRight"
-                                                                    onclick="postageView.save()">Hoàn tất
+                                                                    onclick="postageView.saveDetail()">Hoàn tất
                                                             </button>
                                                             <button type="button" class="btn default"
-                                                                    onclick="postageView.retype()">Nhập lại
+                                                                    onclick="postageView.retypeDetail()">Nhập lại
                                                             </button>
                                                         </div>
                                                     </div>
@@ -149,16 +271,15 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <span class="text text-primary">Cước phí khách hàng</span>
+                                    <span class="text text-primary">Danh sách chi tiết công thức:</span>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-hover" id="table-postageDetail">
                                             <thead>
                                             <tr class="active">
-                                                <th>Mã</th>
-                                                <th>Cước phí</th>
-                                                <th>Phí giao xe</th>
-                                                <th>Ngày áp dụng</th>
-                                                <th>Thay đổi do</th>
+                                                <th>Tên trường</th>
+                                                <th>Giá trị</th>
+                                                <th>Từ</th>
+                                                <th>Đến</th>
                                                 <th>Cập nhật</th>
                                             </tr>
                                             </thead>
@@ -168,117 +289,8 @@
                                         </table>
                                     </div>
                                 </div>
-
                             </div>
                         </form>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <fieldset>
-                                    <legend>Công thức:</legend>
-                                    <div class="row" style="padding: 0 10px">
-                                        <div class="col-md-12">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="customer_id" class="red"><b>Khách hàng</b></label>
-                                                <input type="text" class="form-control" id="customer_id"
-                                                       name="customer_id"
-                                                       placeholder="Nhập tên khách hàng"
-                                                       data-customerId="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding: 0 10px">
-                                        <div class="col-md-6">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="formulaCode"><b>Mã công thức</b></label>
-                                                <input type="text" class="form-control" id="formulaCode" name="formulaCode">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="cashDelivery" class="red"><b>Phí giao xe</b></label>
-                                                <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding: 0 10px">
-                                        <div class="col-md-6">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="unitPrice"><b>Đơn giá</b></label>
-                                                <input type="text" class="form-control" id="unitPrice" name="unitPrice">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="unit"><b>Đơn vị tính</b></label>
-                                                <input type="text" class="form-control" id="unit" name="unit">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding: 0 10px">
-                                        <div class="col-md-6">
-                                            <div class="form-group form-md-line-input ">
-                                                <label for="createdDate"><b>Ngày tạo</b></label>
-                                                <input type="text" class="date ignore form-control" id="createdDate"
-                                                       name="createdDate" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="applyDate" class="red"><b>Ngày áp dụng</b></label>
-                                                <input type="text" class="date ignore form-control" id="applyDate"
-                                                       name="applyDate">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding: 0 10px">
-                                        <div class="col-md-12">
-                                            <div class="form-group form-md-line-input">
-                                                <label for="note"><b>Ghi chú</b></label>
-                                                <textarea class="form-control" name="note" id="note" rows="2"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding: 0 10px">
-                                        <div class="col-sm-12">
-                                            <fieldset>
-                                                <legend>Thông tin giá dầu:</legend>
-                                                <div class="col-md-6">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for="oils_price"><b>Giá dầu</b></label>
-                                                        <input type="text" class="form-control currency" name="oils_price"
-                                                               id="oils_price" disabled>
-                                                        <input type="hidden" name="fuel_id" id="fuel_id">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for="oils_applyDate"><b>Ngày áp dụng giá dầu</b></label>
-                                                        <input type="text" class="date ignore form-control"
-                                                               name="oils_applyDate" id="oils_applyDate" disabled>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding: 0 10px">
-                                        <div class="col-md-12">
-                                            <div class="form-actions">
-                                                <div class="form-group">
-                                                    <button type="button" class="btn btn-primary marginRight"
-                                                            onclick="postageView.save()">Hoàn tất
-                                                    </button>
-                                                    <button type="button" class="btn default"
-                                                            onclick="postageView.retype()">Nhập lại
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -368,6 +380,7 @@
                 dataFuelLastest: null,
 
                 current: null,
+                currentDetail: null,
                 action: null,
                 idDelete: null,
                 tagsCustomerName: [],
@@ -405,8 +418,19 @@
                     $("textarea[id='note']").val('');
                 },
                 retype: function () {
-                    $("input[id='postage']").val('');
-                    $("input[id='note']").val('');
+                    $("input[id=customer_id]").val('');
+                    $("#customer_id").prop('data-customerId', '');
+                    $("input[id=formulaCode]").val('');
+                    $("input[id=cashDelivery]").val(0);
+                    $("input[id=unitPrice]").val(0);
+                    $("input[id=unit]").val('');
+                    $("input[id=note]").val('');
+                },
+                retypeDetail: function () {
+                    $("input[id=name]").val('');
+                    $("input[id=value]").val('');
+                    $("input[id=from]").val('');
+                    $("input[id=to]").val('');
                 },
 
                 renderEventClickTableModal: function () {
@@ -475,45 +499,63 @@
 //                        postageView.displayModal('show', '#myModalNorm');
 //                    });
                 },
-                renderEventChangeSelect: function(){
-                    $( "#rule" ).change(function() {
-                        alert( "Handler for .change() called." );
+                renderEventChangeRadio: function () {
+                    $('input[type=radio][name=rule]').change(function () {
+                        postageView.retypeDetail();
+                        if (this.value == 'S') {
+                            $("#value").prop('disabled', false);
+                            $("#from").prop('disabled', true);
+                            $("#to").prop('disabled', true);
+
+                            $("label[for=value]").addClass("red");
+                            $("label[for=from]").removeClass("red");
+                            $("label[for=to]").removeClass("red");
+                        }
+                        else if (this.value == 'R') {
+                            $("#value").prop('disabled', true);
+                            $("#from").prop('disabled', false);
+                            $("#to").prop('disabled', false);
+
+                            $("label[for=value]").removeClass("red");
+                            $("label[for=from]").addClass("red");
+                            $("label[for=to]").addClass("red");
+                        }
                     });
                 },
 
                 loadData: function () {
-//                    $.ajax({
-//                        url: url + 'postage/postages',
-//                        type: "GET",
-//                        dataType: "json"
-//                    }).done(function (data, textStatus, jqXHR) {
-//                        if (jqXHR.status == 200) {
-//                            postageView.dataFuel = data['fuels'];
-//                            postageView.dataPostage = data['postageFull'];
-//                            postageView.dataPostageFiltered = data['postageFiltered'];
-//                            postageView.fillDataToDatatable(postageView.dataPostageFiltered);
-//
-//                            postageView.getLatestFuel();
-//                        } else {
-//                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-//                        }
-//                    }).fail(function (jqXHR, textStatus, errorThrown) {
-//                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-//                    });
-//                    postageView.loadListCustomer();
+                    $.ajax({
+                        url: url + 'postage/postages',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            postageView.dataFuel = data['fuels'];
+                            postageView.dataPostage = data['postageFull'];
+                            postageView.dataPostageFiltered = data['postageFiltered'];
+                            postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+
+                            postageView.getLatestFuel();
+                        } else {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                    postageView.loadListCustomer();
                     postageView.renderEventClickTableModal();
                     postageView.renderEventFocusOut();
                     postageView.renderDateTimePicker();
                     postageView.renderScrollbar();
                     postageView.renderEventRowClick();
-                    postageView.renderEventChangeSelect();
+                    postageView.renderEventChangeRadio();
 
 //                    renderAutoCompleteSearch('#receivePlace', array_city);
 //                    renderAutoCompleteSearch('#deliveryPlace', array_city);
 
                     formatCurrency(".currency");
                     setEventFormatCurrency(".currency");
-                    defaultZero("#postage");
+                    defaultZero("#unitPrice");
                     defaultZero("#cashDelivery");
                     defaultZero("#oils_price");
                 },
@@ -550,10 +592,14 @@
                                 data: 'id',
                                 visible: false
                             },
+                            {data: 'customers_fullName'},
+                            {data: 'formulaCode'},
                             {
-                                data: 'postage',
+                                data: 'unitPrice',
                                 render: $.fn.dataTable.render.number(".", ",", 0)
                             },
+                            {data: 'unit'},
+                            {data: 'cashDelivery'},
                             {
                                 data: 'createdDate',
                                 render: function (data, type, full, meta) {
@@ -563,13 +609,10 @@
                             {
                                 data: 'applyDate',
                                 render: function (data, type, full, meta) {
-                                    if(data == null || data == "") return "";
+                                    if (data == null || data == "") return "";
                                     return moment(data).format("DD/MM/YYYY");
                                 }
                             },
-                            {data: 'customers_fullName'},
-                            {data: 'receivePlace'},
-                            {data: 'deliveryPlace'},
                             {data: 'note'},
                             {
                                 render: function (data, type, full, meta) {
@@ -705,25 +748,44 @@
                     if (postageView.action == 'add') {
                         postageView.current = {
                             customer_id: $("#customer_id").attr("data-customerId"),
-                            postage: asNumberFromCurrency('#postage'),
-                            createdDate: $("input[id='createdDate']").val(),
-                            note: $("textarea[id='note']").val(),
-                            receivePlace: $("input[id=receivePlace]").val(),
-                            deliveryPlace: $("input[id=deliveryPlace]").val(),
-                            applyDate: $("input[id=applyDate]").val(),
+                            formulaCode: $("input[id=formulaCode]").val(),
                             cashDelivery: asNumberFromCurrency("#cashDelivery"),
+                            unitPrice: asNumberFromCurrency('#unitPrice'),
+                            unit: $("input[id=unit]").val(),
+                            createdDate: $("input[id=createdDate]").val(),
+                            applyDate: $("input[id=applyDate]").val(),
+                            note: $("textarea[id=note]").val(),
                             fuel_id: $("input[id=fuel_id]").val()
                         };
                     } else if (postageView.action == 'update') {
                         postageView.current.customer_id = $("#customer_id").attr("data-customerId");
-                        postageView.current.postage = asNumberFromCurrency('#postage');
-                        postageView.current.createdDate = $("input[id='createdDate']").val();
-                        postageView.current.note = $("textarea[id='note']").val();
-                        postageView.current.receivePlace = $("input[id='receivePlace']").val();
-                        postageView.current.deliveryPlace = $("input[id='deliveryPlace']").val();
-                        postageView.current.applyDate = $("input[id='applyDate']").val();
+                        postageView.current.formulaCode = $("input[id=formulaCode]").val();
                         postageView.current.cashDelivery = asNumberFromCurrency("#cashDelivery");
+                        postageView.current.unitPrice = asNumberFromCurrency('#unitPrice');
+                        postageView.current.unit = $("input[id=unit]").val();
+                        postageView.current.createdDate = $("input[id=createdDate]").val();
+                        postageView.current.applyDate = $("input[id=applyDate]").val();
+                        postageView.current.note = $("textarea[id=note]").val();
                         postageView.current.fuel_id = $("input[id=fuel_id]").val();
+                    }
+                },
+                fillFormDataToCurrentObjectDetail: function () {
+                    if (postageView.action == 'add') {
+                        postageView.currentDetail = {
+                            formula_id: $("#formula_id").val(),
+                            rule: $("input[name=rule]:checked").val(),
+                            name: $("#name").val(),
+                            value: $("#value").val(),
+                            from: $("#from").val(),
+                            to: $("#to").val()
+                        };
+                    } else if (postageView.action == 'update') {
+                        postageView.currentDetail.formula_id = $("#formula_id").val();
+                        postageView.currentDetail.rule = $("input[name=rule]:checked").val();
+                        postageView.currentDetail.name = $("#name").val();
+                        postageView.currentDetail.value = $("#value").val();
+                        postageView.currentDetail.from = $("#from").val();
+                        postageView.currentDetail.to = $("#to").val();
                     }
                 },
 
@@ -762,7 +824,7 @@
                         postageView.tablePostageDetail.clear().draw();
 
                     $("input[id=oils_price]").val(0);
-                    $("input[id=postage]").val(0);
+                    $("input[id=unitPrice]").val(0);
                     $("input[id=cashDelivery]").val(0);
                     postageView.current = null;
                     postageView.action = 'add';
@@ -812,12 +874,27 @@
                     $("#frmControl").validate({
                         rules: {
                             customer_id: "required",
-                            postage: "required"
+                            cashDelivery: "required",
+                            unitPrice: "required",
+                            unit: "required"
                         },
                         ignore: ".ignore",
                         messages: {
                             customer_id: "Vui lòng chọn khách hàng",
-                            postage: "Vui lòng nhập cước phí"
+                            cashDelivery: "Vui lòng nhập tiền giao xe",
+                            unitPrice: "Vui lòng nhập đơn giá",
+                            unit: "Vui lòng nhập đơn vị tính"
+                        }
+                    });
+                },
+                formValidateJqueryDetail: function () {
+                    $("#frmControlDetail").validate({
+                        rules: {
+                            name: "required"
+                        },
+                        ignore: ".ignore",
+                        messages: {
+                            name: "Vui lòng nhập tên trường"
                         }
                     });
                 },
@@ -834,7 +911,7 @@
                     createdDate = moment(createdDate, "DD-MM-YYYY");
                     applyDate = moment(applyDate, "DD-MM-YYYY");
 
-                    if(applyDate.isBefore(createdDate)){
+                    if (applyDate.isBefore(createdDate)) {
                         showNotification('warning', 'Vui lòng chọn ngày áp dụng sau ngày tạo cước phí.');
                         isValid = false;
                     }
@@ -858,7 +935,7 @@
                         postageView.formValidateJquery();
                         if ($("#frmControl").valid()) {
 
-                            if(!postageView.formValidate()){
+                            if (!postageView.formValidate()) {
                                 return;
                             }
 
@@ -922,8 +999,79 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
+                saveDetail: function () {
+                    if (postageView.action == 'delete') {
+                        var sendToServer = {
+                            _token: _token,
+                            _action: postageView.action,
+                            _id: postageView.idDelete
+                        };
+                    } else {
+                        postageView.formValidateJqueryDetail();
+                        if ($("#frmControlDetail").valid()) {
 
-                updateApplyDate: function(){
+                            postageView.fillFormDataToCurrentObjectDetail();
+                            var sendToServer = {
+                                _token: _token,
+                                _action: postageView.action,
+                                _postageDetail: postageView.currentDetail
+                            };
+                        } else {
+                            $("form#frmControlDetail").find("label[class=error]").css("color", "red");
+                            return;
+                        }
+                    }
+                    console.log(sendToServer);
+                    $.ajax({
+                        url: url + 'postage/modify-detail',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            console.log(data);
+                            switch (postageView.action) {
+                                case 'add':
+                                    postageView.dataPostageFiltered = data['postageFiltered'];
+                                    postageView.dataPostage = data['postageFull'];
+                                    postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+
+                                    var custId = parseInt($("#customer_id").attr('data-customerId'));
+                                    var data = _.filter(postageView.dataPostage, function (o) {
+                                        return o.customer_id == custId;
+                                    });
+                                    postageView.fillDataToDatatablePostageDetail(data);
+
+                                    showNotification("success", "Thêm thành công!");
+                                    break;
+                                case 'update':
+                                    postageView.dataPostageFiltered = data['postageFiltered'];
+                                    postageView.dataPostage = data['postageFull'];
+                                    postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+
+                                    showNotification("success", "Cập nhật thành công!");
+                                    postageView.hideControl();
+                                    break;
+                                case 'delete':
+
+                                    showNotification("success", "Xóa thành công!");
+                                    postageView.displayModal("hide", "#modal-notification");
+                                    break;
+                                default:
+                                    break;
+                            }
+                            postageView.clearInput();
+                        } else if (jqXHR.status == 203) {
+                            showNotification("warning", data['msg']);
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+
+                updateApplyDate: function () {
                     var sendToServer = {
                         _token: _token,
                         _id: $("#postage-id").val(),
@@ -958,12 +1106,12 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                showUpdateApplyDate: function(detailId){
-                    var postageDetail = _.find(postageView.dataPostage, function(o){
+                showUpdateApplyDate: function (detailId) {
+                    var postageDetail = _.find(postageView.dataPostage, function (o) {
                         return o.id == detailId;
                     });
 
-                    if(postageDetail.applyDate != null){
+                    if (postageDetail.applyDate != null) {
                         showNotification("warning", "Cước phí này đã có ngày áp dụng. Vui lòng chọn cước phí chưa có này áp dụng để cập nhật.");
                         return;
                     }
@@ -971,7 +1119,7 @@
                     $("#postage-id").val(postageDetail.id);
 
                     var applyDate = moment(postageDetail.applyDate, "YYYY-MM-DD");
-                    if(applyDate.isValid()){
+                    if (applyDate.isValid()) {
                         applyDate = applyDate.format("DD-MM-YYYY");
                         $("input[id='apply-date']").datepicker('update', applyDate);
                     }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\CustomerType;
+use App\Formula;
+use App\FormulaDetail;
 use App\Postage;
 use App\PostageDetail;
 use Carbon\Carbon;
@@ -30,17 +32,18 @@ class PostageManagementController extends Controller
             return response()->json(['msg' => 'Not authorize'], 404);
         }
 
-        $postage = null;
         $customer_id = null;
-        $fuel_id = null;
-        $createdDate = null;
-        $note = null;
-        $receivePlace = null;
-        $deliveryPlace = null;
+        $formulaCode = null;
         $cashDelivery = null;
+        $unitPrice = null;
+        $unit = null;
+        $createdDate = null;
+        $applyDate = null;
+        $note = null;
+        $fuel_id = null;
         $createdBy = null;
         $updatedBy = null;
-        $applyDate = null;
+
 
         $action = $request->input('_action');
         if ($action != 'delete') {
@@ -49,21 +52,17 @@ class PostageManagementController extends Controller
                 return response()->json(['msg' => 'Input data fail'], 404);
             }
 
-            $postage = $request->input('_postage')['postage'];
             $customer_id = $request->input('_postage')['customer_id'];
-            $fuel_id = $request->input('_postage')['fuel_id'];
-
+            $formulaCode = $request->input('_postage')['formulaCode'];
+            $cashDelivery = $request->input('_postage')['cashDelivery'];
+            $unitPrice = $request->input('_postage')['unitPrice'];
+            $unit = $request->input('_postage')['unit'];
             $createdDate = $request->input('_postage')['createdDate'];
             $createdDate = Carbon::createFromFormat('d-m-Y', $createdDate)->toDateTimeString();
-
-            $note = $request->input('_postage')['note'];
-            $receivePlace = $request->input('_postage')['receivePlace'];
-            $deliveryPlace = $request->input('_postage')['deliveryPlace'];
-            $cashDelivery = $request->input('_postage')['cashDelivery'];
-
             $applyDate = $request->input('_postage')['applyDate'];
-            $applyDate = Carbon::createFromFormat('d-m-Y', $applyDate);
-
+            $applyDate = Carbon::createFromFormat('d-m-Y', $applyDate)->toDateTimeString();
+            $note = $request->input('_postage')['note'];
+            $fuel_id = $request->input('_postage')['fuel_id'];
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
         }
@@ -72,24 +71,23 @@ class PostageManagementController extends Controller
             DB::beginTransaction();
             switch ($action) {
                 case 'add':
-                    $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
-                    $postageBase = ($postageOld) ? $postageOld->postage : 0;
+                    $postageOld = Formula::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
 
                     //Check exists Customer
-                    $postageNew = new Postage();
-                    $postageNew->postage = $postage;
-                    $postageNew->postageBase = $postageBase;
+                    $postageNew = new Formula();
+                    $postageNew->customer_id = $customer_id;
+                    $postageNew->formulaCode = $formulaCode;
+                    $postageNew->cashDelivery = $cashDelivery;
+                    $postageNew->unitPrice = $unitPrice;
+                    $postageNew->unit = $unit;
                     $postageNew->createdDate = $createdDate;
                     $postageNew->applyDate = $applyDate;
-                    $postageNew->receivePlace = $receivePlace;
-                    $postageNew->deliveryPlace = $deliveryPlace;
-                    $postageNew->cashDelivery = $cashDelivery;
                     $postageNew->note = $note;
                     $postageNew->active = 1;
                     $postageNew->createdBy = $createdBy;
                     $postageNew->updatedBy = $updatedBy;
-                    $postageNew->customer_id = $customer_id;
                     $postageNew->fuel_id = $fuel_id;
+                    $postageNew->postageBase = 0;
                     $postageNew->changeByFuel = 0;
                     if (!$postageNew->save()) {
                         DB::rollBack();
@@ -104,23 +102,22 @@ class PostageManagementController extends Controller
                     $maxApplyDate = Carbon::createFromFormat('Y-m-d', Postage::where('customer_id', $customer_id)->get()->max('applyDate'));
 
                     if($maxApplyDate != null && $applyDate->diffInDays($maxApplyDate, false) < 0){
-                        $postageOld = Postage::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
-                        $postageBase = ($postageOld) ? $postageOld->postage : 0;
+                        $postageOld = Formula::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
 
                         //Add Postage
-                        $postageNew = new Postage();
-                        $postageNew->postage = $postage;
-                        $postageNew->postageBase = $postageBase;
+                        $postageNew = new Formula();
+                        $postageNew->customer_id = $customer_id;
+                        $postageNew->formulaCode = $formulaCode;
+                        $postageNew->cashDelivery = $cashDelivery;
+                        $postageNew->unitPrice = $unitPrice;
+                        $postageNew->unit = $unit;
                         $postageNew->createdDate = $createdDate;
                         $postageNew->applyDate = $applyDate;
-                        $postageNew->receivePlace = $receivePlace;
-                        $postageNew->deliveryPlace = $deliveryPlace;
-                        $postageNew->cashDelivery = $cashDelivery;
                         $postageNew->note = $note;
                         $postageNew->active = 1;
                         $postageNew->createdBy = $createdBy;
                         $postageNew->updatedBy = $updatedBy;
-                        $postageNew->customer_id = $customer_id;
+                        $postageNew->postageBase = 0;
                         $postageNew->fuel_id = $fuel_id;
                         $postageNew->changeByFuel = 0;
                         if (!$postageNew->save()) {
@@ -131,6 +128,89 @@ class PostageManagementController extends Controller
                     } else {
                         return response()->json(['msg' => 'Ngày áp dụng phải lớn hơn ngày áp dụng trước đó!'], 203);
                     }
+
+                    //Response
+                    $response = $this->DataPostage();
+                    return response()->json($response, 201);
+                    break;
+                case 'delete':
+                    break;
+                default:
+                    return response()->json(['msg' => 'Connection to server failed'], 404);
+                    break;
+            }
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
+        }
+    }
+
+    public function postModifyPostageDetail(Request $request)
+    {
+        if (!\Auth::check()) {
+            return response()->json(['msg' => 'Not authorize'], 404);
+        }
+
+        $formula_id = null;
+        $rule = null;
+        $name = null;
+        $value = null;
+        $from = null;
+        $to = null;
+
+        $action = $request->input('_action');
+        if ($action != 'delete') {
+            $formula_id = $request->input('_postageDetail')['formula_id'];
+            $rule = $request->input('_postageDetail')['rule'];
+            $name = $request->input('_postageDetail')['name'];
+            $value = $request->input('_postageDetail')['value'];
+            $from = $request->input('_postageDetail')['from'];
+            $to = $request->input('_postageDetail')['to'];
+        }
+        $formula_id = 0;
+        if($rule == 'R'){
+            $value = null;
+        } else {
+            $from = null;
+            $to = null;
+        }
+
+        try {
+            DB::beginTransaction();
+            switch ($action) {
+                case 'add':
+                    $postageNew = new FormulaDetail();
+                    $postageNew->formula_id = $formula_id;
+                    $postageNew->rule = $rule;
+                    $postageNew->name = $name;
+                    $postageNew->value = $value;
+                    $postageNew->from = $from;
+                    $postageNew->to = $to;
+
+                    if (!$postageNew->save()) {
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Create PostageDetail failed'], 404);
+                    }
+                    DB::commit();
+                    //Response
+                    $response = $this->DataPostage();
+                    return response()->json($response, 201);
+                    break;
+                case 'update':
+                    $postageNew = FormulaDetail::find($request->input('_postageDetail')['id']);
+                    $postageNew->formula_id = $formula_id;
+                    $postageNew->rule = $rule;
+                    $postageNew->name = $name;
+                    $postageNew->value = $value;
+                    $postageNew->from = $from;
+                    $postageNew->to = $to;
+
+
+                    if (!$postageNew->update()) {
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Update PostageDetail failed'], 404);
+                    }
+                    DB::commit();
 
                     //Response
                     $response = $this->DataPostage();
@@ -192,16 +272,22 @@ class PostageManagementController extends Controller
 //            ->select('postages.*', 'customers.fullName as customers_fullName')
 //            ->get();
 
-        $postageFiltered = \DB::table('formulas')->get();
+        $formulaFiltered = \DB::table('formulas')
+            ->leftJoin('customers', 'customers.id', '=', 'formulas.customer_id')
+            ->select('formulas.*', 'customers.fullName as customers_fullName')
+            ->get();
 
-        $postageFull = \DB::table('formulas')->get();
+        $formulaFull = \DB::table('formulas')
+            ->leftJoin('customers', 'customers.id', '=', 'formulas.customer_id')
+            ->select('formulas.*', 'customers.fullName as customers_fullName')
+            ->get();
 
         $fuels = \DB::table('fuels')->where('type', 'oil')->get();
 
         $response = [
             'msg'            => 'Get success',
-            'postageFull'    => $postageFull,
-            'postageFiltered'=> $postageFiltered,
+            'postageFull'    => $formulaFull,
+            'postageFiltered'=> $formulaFiltered,
             'fuels'          => $fuels
         ];
         return $response;
