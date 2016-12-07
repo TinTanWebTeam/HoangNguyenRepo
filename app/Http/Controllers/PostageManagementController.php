@@ -179,18 +179,22 @@ class PostageManagementController extends Controller
 
     public function DataPostage()
     {
-        $postageFiltered = DB::select("
-            SELECT i1.*, c.fullName as customers_fullName
-            FROM postages AS i1 
-            LEFT JOIN postages AS i2 ON (i1.receivePlace = i2.receivePlace AND i1.deliveryPlace = i2.deliveryPlace AND i1.applyDate < i2.applyDate)
-            INNER JOIN customers AS c ON c.id = i1.customer_id
-            WHERE i2.applyDate IS NULL;
-        ");
+//        $postageFiltered = DB::select("
+//            SELECT i1.*, c.fullName as customers_fullName
+//            FROM postages AS i1
+//            LEFT JOIN postages AS i2 ON (i1.receivePlace = i2.receivePlace AND i1.deliveryPlace = i2.deliveryPlace AND i1.applyDate < i2.applyDate)
+//            INNER JOIN customers AS c ON c.id = i1.customer_id
+//            WHERE i2.applyDate IS NULL;
+//        ");
+//
+//        $postageFull = \DB::table('postages')
+//            ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
+//            ->select('postages.*', 'customers.fullName as customers_fullName')
+//            ->get();
 
-        $postageFull = \DB::table('postages')
-            ->leftJoin('customers', 'customers.id', '=', 'postages.customer_id')
-            ->select('postages.*', 'customers.fullName as customers_fullName')
-            ->get();
+        $postageFiltered = \DB::table('formulas')->get();
+
+        $postageFull = \DB::table('formulas')->get();
 
         $fuels = \DB::table('fuels')->where('type', 'oil')->get();
 

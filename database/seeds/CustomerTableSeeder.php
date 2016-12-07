@@ -13,8 +13,10 @@ class CustomerTableSeeder extends Seeder
     public function run()
     {
         $array_name = [
-            'CTY TNHH BIA VÀ NƯỚC GIẢI KHÁT VN',
+            'FORMOSA',
             'CTY CP THỰC PHẨM Á CHÂU',
+            'CTY TNHH YCH-PROTRADE',
+            'CTY TNHH BIA VÀ NƯỚC GIẢI KHÁT VN',
             'CTY TNHH SX TM DV ĐOÀN KẾT',
             'CTY TNHH INDO-TRANS KEPPEL LOGISTICS VIỆT NAM',
             'CTY TNHH AUNTEX',

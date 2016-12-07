@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(StatusTableSeeder::class);
         $this->call(GarageTypeTableSeeder::class);
         $this->call(FuelPriceTableSeeder::class);
-        $this->call(RuleTableSeeder::class);
 
 //        Optional
         $this->call(PositionTableSeeder::class);
@@ -37,12 +36,17 @@ class DatabaseSeeder extends Seeder
 //         Tiền
         $this->call(PriceTableSeeder::class);
         $this->call(CostTableSeeder::class);
-        $this->call(PostageTableSeeder::class);
+//        $this->call(PostageTableSeeder::class);
 
 //         Hóa đơn
         $this->call(TransportTableSeeder::class);
         $this->call(VoucherTransportTableSeeder::class);
         $this->call(TransportInvoiceTableSeeder::class);
         $this->call(VoucherAttachFileTableSeeder::class);
+
+//        Rule
+        $this->call(RuleTableSeeder::class);
+        $this->call(FormulaTableSeeder::class);
+        $this->call(FormulaDetailTableSeeder::class);
     }
 }

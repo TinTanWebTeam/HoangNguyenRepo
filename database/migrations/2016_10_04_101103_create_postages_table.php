@@ -18,15 +18,14 @@ class CreatePostagesTable extends Migration
             $table->decimal('postageBase', 18, 0)->default(0);
             $table->date('createdDate');
             $table->date('applyDate')->nullable();
-            $table->string('receivePlace');
-            $table->string('deliveryPlace');
             $table->decimal('cashDelivery', 18, 0)->default(0);
             $table->text('note')->nullable();
             $table->boolean('active')->default(1);
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
-            $table->boolean('changeByFuel')->default(0);
+            $table->boolean('changeByFuel')->default(0)->comment('Thay đổi do giá dầu');
             $table->integer('customer_id')->unsigned();
+            $table->integer('formula_id')->unsigned();
             $table->integer('fuel_id')->unsigned();
             $table->timestamps();
         });

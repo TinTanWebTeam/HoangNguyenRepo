@@ -2,7 +2,7 @@
     #divControl {
         z-index: 3;
         position: fixed;
-        top: 15%;
+        top: 53px;
         display: none;
         right: 0;
         width: 80%;
@@ -10,7 +10,7 @@
     }
 
     #divControl .panel-body {
-        height: 519px;
+        height: 570px;
     }
 
     div.col-lg-12 {
@@ -91,140 +91,193 @@
                         <form role="form" id="frmControl">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="customer_id" class="red"><b>Khách hàng</b></label>
-                                            <input type="text" class="form-control" id="customer_id"
-                                                   name="customer_id"
-                                                   placeholder="Nhập tên khách hàng"
-                                                   data-customerId="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="rule"><b>Luật</b></label>
-                                            <select name="rule" id="rule" class="form-control">
-                                                <option value="">Khoảng</option>
-                                                <option value="">Giá trị</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group form-md-line-input">
-                                                    <label for="receivePlace" class="red"><b>Nơi nhận</b></label>
-                                                    <input type="text" class="form-control" id="receivePlace"
-                                                           name="receivePlace">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-md-line-input">
-                                                    <label for="deliveryPlace" class="red"><b>Nơi giao</b></label>
-                                                    <input type="text" class="form-control" name="deliveryPlace"
-                                                           id="deliveryPlace">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group form-md-line-input ">
-                                                    <label for="createdDate"><b>Ngày tạo</b></label>
-                                                    <input type="text" class="date ignore form-control" id="createdDate"
-                                                           name="createdDate" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-md-line-input">
-                                                    <label for="applyDate" class="red"><b>Ngày áp dụng</b></label>
-                                                    <input type="text" class="date ignore form-control" id="applyDate"
-                                                           name="applyDate">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="note"><b>Ghi chú</b></label>
-                                            <textarea class="form-control" name="note" id="note" rows="4"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="postage" class="red"><b>Cước phí</b></label>
-                                            <input type="text" class="form-control currency" id="postage"
-                                                   name="postage">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="cashDelivery" class="red"><b>Phí giao xe</b></label>
-                                            <input type="text" class="form-control currency" id="cashDelivery"
-                                                   name="cashDelivery">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12">
+                                    <div class="col-md-12">
                                         <fieldset>
-                                            <legend>Thông tin giá dầu:</legend>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-md-line-input">
-                                                    <label for="oils_price"><b>Giá dầu</b></label>
-                                                    <input type="text" class="form-control currency" name="oils_price"
-                                                           id="oils_price" disabled>
-                                                    <input type="hidden" name="fuel_id" id="fuel_id">
+                                            <legend>Chi tiết công thức:</legend>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-12">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="rule" class="marginRight"><b>Công thức: </b></label>
+                                                        <input type="radio" name="rule" value="R" checked> <span class="marginRight">Khoảng</span>
+                                                        <input type="radio" name="rule" value="S"> <span>Giá trị</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-md-line-input">
-                                                    <label for="oils_applyDate"><b>Ngày áp dụng giá dầu</b></label>
-                                                    <input type="text" class="date ignore form-control"
-                                                           name="oils_applyDate" id="oils_applyDate" disabled>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="name"><b>Tên trường</b></label>
+                                                        <input type="text" class="form-control" id="name" name="name">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="value"><b>Giá trị</b></label>
+                                                        <input type="text" class="form-control" id="value" name="value">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="from" class="red"><b>Từ</b></label>
+                                                        <input type="text" class="form-control" id="from" name="from">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="to" class="red"><b>Đến</b></label>
+                                                        <input type="text" class="form-control" name="to" id="to">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-12">
+                                                    <div class="form-actions">
+                                                        <div class="form-group">
+                                                            <button type="button" class="btn btn-primary marginRight"
+                                                                    onclick="postageView.save()">Hoàn tất
+                                                            </button>
+                                                            <button type="button" class="btn default"
+                                                                    onclick="postageView.retype()">Nhập lại
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </fieldset>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-actions">
-                                            <div class="form-group">
-                                                <button type="button" class="btn btn-primary marginRight"
-                                                        onclick="postageView.save()">Hoàn tất
-                                                </button>
-                                                <button type="button" class="btn default"
-                                                        onclick="postageView.retype()">Nhập lại
-                                                </button>
-                                            </div>
-                                        </div>
+                                    <span class="text text-primary">Cước phí khách hàng</span>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover" id="table-postageDetail">
+                                            <thead>
+                                            <tr class="active">
+                                                <th>Mã</th>
+                                                <th>Cước phí</th>
+                                                <th>Phí giao xe</th>
+                                                <th>Ngày áp dụng</th>
+                                                <th>Thay đổi do</th>
+                                                <th>Cập nhật</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
+
                             </div>
                         </form>
                     </div>
                     <div class="col-md-6">
-                        <span class="text text-primary">Cước phí khách hàng</span>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover" id="table-postageDetail">
-                                <thead>
-                                <tr class="active">
-                                    <th>Mã</th>
-                                    <th>Cước phí</th>
-                                    <th>Phí giao xe</th>
-                                    <th>Ngày áp dụng</th>
-                                    <th>Thay đổi do</th>
-                                    <th>Cập nhật</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <fieldset>
+                                    <legend>Công thức:</legend>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="customer_id" class="red"><b>Khách hàng</b></label>
+                                                <input type="text" class="form-control" id="customer_id"
+                                                       name="customer_id"
+                                                       placeholder="Nhập tên khách hàng"
+                                                       data-customerId="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="formulaCode"><b>Mã công thức</b></label>
+                                                <input type="text" class="form-control" id="formulaCode" name="formulaCode">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="cashDelivery" class="red"><b>Phí giao xe</b></label>
+                                                <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="unitPrice"><b>Đơn giá</b></label>
+                                                <input type="text" class="form-control" id="unitPrice" name="unitPrice">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="unit"><b>Đơn vị tính</b></label>
+                                                <input type="text" class="form-control" id="unit" name="unit">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input ">
+                                                <label for="createdDate"><b>Ngày tạo</b></label>
+                                                <input type="text" class="date ignore form-control" id="createdDate"
+                                                       name="createdDate" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="applyDate" class="red"><b>Ngày áp dụng</b></label>
+                                                <input type="text" class="date ignore form-control" id="applyDate"
+                                                       name="applyDate">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="note"><b>Ghi chú</b></label>
+                                                <textarea class="form-control" name="note" id="note" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-sm-12">
+                                            <fieldset>
+                                                <legend>Thông tin giá dầu:</legend>
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="oils_price"><b>Giá dầu</b></label>
+                                                        <input type="text" class="form-control currency" name="oils_price"
+                                                               id="oils_price" disabled>
+                                                        <input type="hidden" name="fuel_id" id="fuel_id">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="oils_applyDate"><b>Ngày áp dụng giá dầu</b></label>
+                                                        <input type="text" class="date ignore form-control"
+                                                               name="oils_applyDate" id="oils_applyDate" disabled>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-md-12">
+                                            <div class="form-actions">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-primary marginRight"
+                                                            onclick="postageView.save()">Hoàn tất
+                                                    </button>
+                                                    <button type="button" class="btn default"
+                                                            onclick="postageView.retype()">Nhập lại
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -429,25 +482,25 @@
                 },
 
                 loadData: function () {
-                    $.ajax({
-                        url: url + 'postage/postages',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            postageView.dataFuel = data['fuels'];
-                            postageView.dataPostage = data['postageFull'];
-                            postageView.dataPostageFiltered = data['postageFiltered'];
-                            postageView.fillDataToDatatable(postageView.dataPostageFiltered);
-
-                            postageView.getLatestFuel();
-                        } else {
-                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                    postageView.loadListCustomer();
+//                    $.ajax({
+//                        url: url + 'postage/postages',
+//                        type: "GET",
+//                        dataType: "json"
+//                    }).done(function (data, textStatus, jqXHR) {
+//                        if (jqXHR.status == 200) {
+//                            postageView.dataFuel = data['fuels'];
+//                            postageView.dataPostage = data['postageFull'];
+//                            postageView.dataPostageFiltered = data['postageFiltered'];
+//                            postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+//
+//                            postageView.getLatestFuel();
+//                        } else {
+//                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+//                        }
+//                    }).fail(function (jqXHR, textStatus, errorThrown) {
+//                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+//                    });
+//                    postageView.loadListCustomer();
                     postageView.renderEventClickTableModal();
                     postageView.renderEventFocusOut();
                     postageView.renderDateTimePicker();
@@ -455,8 +508,8 @@
                     postageView.renderEventRowClick();
                     postageView.renderEventChangeSelect();
 
-                    renderAutoCompleteSearch('#receivePlace', array_city);
-                    renderAutoCompleteSearch('#deliveryPlace', array_city);
+//                    renderAutoCompleteSearch('#receivePlace', array_city);
+//                    renderAutoCompleteSearch('#deliveryPlace', array_city);
 
                     formatCurrency(".currency");
                     setEventFormatCurrency(".currency");

@@ -15,7 +15,7 @@ class CreateFormulaDetailsTable extends Migration
         Schema::create('formulaDetails', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('formula_id')->unsigned()->comment('Mã công thức');
-            $table->integer('rule_id')->comment('Loại rule: khoảng hoặc giá trị');
+            $table->string('rule')->comment('Loại rule: khoảng(R) hoặc giá trị(S)');
             $table->string('name')->comment('Tên trường');
             $table->string('from')->comment('Từ')->nullable();
             $table->string('to')->comment('Đến')->nullable();
