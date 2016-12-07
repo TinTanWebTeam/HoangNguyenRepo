@@ -20,6 +20,7 @@ class CreatePricesTable extends Migration
             $table->string('note')->nullable();
             $table->boolean('active')->default(1);
             $table->integer('costPrice_id')->unsigned();
+            $table->integer('vehicleType_id')->nullable();
             $table->timestamps();
         });
     }
