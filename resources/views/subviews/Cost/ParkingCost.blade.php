@@ -16,6 +16,10 @@
     #divControl .panel-body {
         height: 425px;
     }
+
+    .ui-autocomplete {
+        z-index: 1510 !important;
+    }
 </style>
 
 
@@ -65,6 +69,7 @@
                         <thead>
                         <tr class="active">
                             <th>Số xe</th>
+                            <th>Loại xe</th>
                             <th>Ngày vào</th>
                             <th>Ngày ra</th>
                             <th>Số ngày đậu</th>
@@ -121,16 +126,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input ">
+                                        <label for="nameVehicleType"><b>Loại xe</b></label>
+                                        <input type="text" class="form-control"
+                                               data-idVehicleType=""
+                                               id="nameVehicleType" readonly
+                                               name="nameVehicleType">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group form-md-line-input ">
                                         <label for="price"><b>Đơn giá</b></label>
                                         <div class="row">
-                                            <div class="col-sm-9 col-xs-9">
+                                            <div class="col-sm-8 col-xs-8">
                                                 <input type="text" class="form-control currency"
                                                        id="price" readonly
                                                        name="price" data-priceId="">
                                             </div>
-                                            <div class="col-sm-3 col-xs-3">
+                                            <div class="col-sm-4 col-xs-4">
                                                 <div class="btn btn-primary btn-sm btn-circle" title="Thêm giá mới"
                                                      onclick="parkingCostView.displayModal('show', '#modal-addCostPrice')">
                                                     <i class="glyphicon glyphicon-plus"></i>
@@ -250,7 +265,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" onclick="parkingCostView.cancelPriceType()">×</span>
+                        <span aria-hidden="true" onclick="parkingCostView.clearInputPrice()">×</span>
                     </button>
                     <h5 class="modal-title">Thêm mới đơn giá</h5>
                 </div>
@@ -261,11 +276,22 @@
                                 <div class="form-group form-md-line-input">
                                     <label for="costPrice"><b>Giá tiền</b></label>
                                     <input type="text" class="form-control currency"
-                                           id="costPrice" value="0"
+                                           id="costPrice" value="0" onkeyup="parkingCostView.formatInputNumber()"
                                            name="costPrice">
                                     <label class="error" style="color: red; display: none"><p>Giá tiền phải lớn hơn
                                             1000</p></label>
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="vehicleTypeId"><b>Loại Xe</b></label>
+                                    <input type="text" data-id=""
+                                           class="form-control"
+                                           id="vehicleTypeId"
+                                           name="vehicleTypeId">
                                 </div>
                             </div>
                         </div>
@@ -282,12 +308,12 @@
                             <div class="col-md-offset-7 col-md-5">
                                 <div class="form-actions noborder">
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-primary marginRight"
+                                        <button type="button" class="btn btn-primary marginRight" id="savePriceType"
                                                 onclick="parkingCostView.savePriceType()">
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="parkingCostView.cancelPriceType()">Nhập lại
+                                                onclick="parkingCostView.clearInputPrice()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -433,7 +459,6 @@
 
 <script>
     $(function () {
-
         if (typeof (parkingCostView) === 'undefined') {
             parkingCostView = {
                 table: null,
@@ -444,10 +469,12 @@
                 tablePrice: null,
                 tableGarage: null,
                 tableVehicleType: null,
+                dataVehicleType: null,
                 tableVehicleNew: null,
                 idDelete: null,
                 current: null,
                 tagsVehicle: [],
+                tagsVehicleType: [],
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -511,7 +538,7 @@
                     parkingCostView.renderDateTimePicker();
                     parkingCostView.current = null;
                     parkingCostView.action = 'add';
-                    parkingCostView.inputPrice();
+                    // parkingCostView.inputPrice();
                     parkingCostView.show();
                     parkingCostView.clearInput();
 
@@ -536,8 +563,16 @@
                     /* form addCost*/
                     $("input[id='vehicle_id']").val('');
                     $("#vehicle_id").attr('data-id', '');
-                    $("input[id='literNumber']").val('');
                     $("textarea[id='note']").val('');
+                    $("input[id='totalCost']").val(0);
+                    $("input[id='totalDate']").val(0);
+                    $("input[id='totalTime']").val(0);
+                    $("input[id='dateCheckOut']").val('');
+                    $("input[id='timeCheckOut']").val('');
+                    $("input[id='nameVehicleType']").val('');
+                },
+                clearInputChangeVehicle: function () {
+                    /* form addCost*/
                     $("input[id='totalCost']").val(0);
                     $("input[id='totalDate']").val(0);
                     $("input[id='totalTime']").val(0);
@@ -548,8 +583,14 @@
                     /* Form addPrice*/
                     $("input[id='costPrice']").val(0);
                     $("input[id='totalCost']").val(0);
+                    $("input[id='vehicleTypeId']").val('');
+                    $("#vehicleTypeId").attr('data-id', '');
                     $("textarea[id='description']").val('');
 
+                },
+                formatInputNumber: function () {
+                    var price = asNumberFromCurrency('#costPrice');
+                    $('input[id=costPrice]').val(price);
                 },
                 clearInputVehicle: function () {
                     /* Form addVehicle*/
@@ -569,8 +610,9 @@
                             parkingCostView.tableParkingCost = data['tableParkingCost'];
                             parkingCostView.fillDataToDatatable(data['tableParkingCost']);
                             parkingCostView.tablePrice = data['tablePrice'];
-                            parkingCostView.inputPrice(data['tablePrice']);
+                            // parkingCostView.inputPrice(data['tablePrice']);
                             parkingCostView.tableVehicle = data['dataVehicle'];
+                            parkingCostView.dataVehicleType = data['dataVehicleType'];
                             parkingCostView.renderAutoCompleteSearch();
                         } else {
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -628,12 +670,12 @@
 
                 },
                 renderAutoCompleteSearch: function () {
-
                     parkingCostView.tagsVehicle = _.map(parkingCostView.tableVehicle, function (o) {
                         return o.areaCode + '-' + o.vehicleNumber;
                     });
                     parkingCostView.tagsVehicle = _.union(parkingCostView.tagsVehicle);
                     renderAutoCompleteSearch('#vehicle_id', parkingCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
+
                         var vehicleName = this.value;
                         if (vehicleName == '') return;
                         var vehicle = _.find(parkingCostView.tableVehicle, function (o) {
@@ -643,13 +685,49 @@
                             $("input[id='areaCode']").focus();
                             parkingCostView.loadListGarageAndVehicleType();
                         } else {
-                            $("#vehicle_id").attr("data-id", vehicle.id);
+                            var price = _.filter(parkingCostView.tablePrice, function (o) {
+                                return o.vehicleType_id == vehicle.vehicleType_id;
+                            });
+                            var price2 = _.maxBy(price, function (o) {
+                                return moment(o.created_at);
+                            });
+                            console.log(price2);
+                            if (price2 != null) {
+                                $("#vehicle_id").attr("data-id", vehicle.id);
+                                $('input[id=nameVehicleType]').val(vehicle.name);
+                                $('input[id=price]').val(price2.price);
+                                $("#price").attr("data-priceId", price2.id);
+                                $("#nameVehicleType").attr("data-idVehicleType", price2.vehicleType_id);
+                                formatCurrency(".currency");
+                                parkingCostView.clearInputChangeVehicle();
+                            } else {
+                                $("#vehicle_id").attr("data-id", vehicle.id);
+                                $('input[id=nameVehicleType]').val(vehicle.name);
+                                $('input[id=price]').val('');
+                                $("#price").attr("data-priceId", '');
+                                formatCurrency(".currency");
+                                parkingCostView.clearInputChangeVehicle();
+                            }
                         }
                     }));
-
+                    parkingCostView.tagsVehicleType = _.map(parkingCostView.dataVehicleType, 'name');
+                    parkingCostView.tagsVehicleType = _.union(parkingCostView.tagsVehicleType);
+                    renderAutoCompleteSearch('#vehicleTypeId', parkingCostView.tagsVehicleType, $("#vehicleTypeId").focusout(function () {
+                        var vehicleTypeName = this.value;
+                        if (vehicleTypeName == '') return;
+                        var typeName = _.find(parkingCostView.dataVehicleType, function (o) {
+                            return o.name == vehicleTypeName;
+                        });
+                        if (typeof typeName === "undefined") {
+                            showNotification("warning", "Loại xe không tồn tại!");
+                            $("button[id=savePriceType]").prop("disabled", true);
+                        } else {
+                            $("button[id=savePriceType]").prop("disabled", false);
+                            $("#vehicleTypeId").attr("data-id", typeName.id);
+                        }
+                    }));
                 },
                 renderDateTimePicker: function () {
-
                     $('#dateCheckIn').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
@@ -657,7 +735,6 @@
                     });
                     $('#dateCheckIn').datepicker("setDate", new Date());
                     $('#timeCheckIn').timepicker("setTime", new Date());
-
                 },
                 fillFormDataToCurrentObject: function () {
                     if (parkingCostView.action == 'add') {
@@ -672,9 +749,8 @@
                             timeCheckOut: $("input[id='timeCheckOut']").val(),
                             totalTime: $("input[id='totalTime']").val(),
                             totalDate: $("input[id='totalDate']").val(),
-                            totalCost: $("input[id='totalCost']").val()
-
-
+                            totalCost: $("input[id='totalCost']").val(),
+                            nameVehicleType: $("input[id='nameVehicleType']").val()
                         };
                     } else if (parkingCostView.action == 'update') {
                         parkingCostView.current.prices_price = $("input[id='price']").val();
@@ -689,6 +765,8 @@
                         parkingCostView.current.totalTime = $("input[id='totalTime']").val();
                         parkingCostView.current.totalDate = $("input[id='totalDate']").val();
                         parkingCostView.current.totalCost = $("input[id='totalCost']").val();
+                        parkingCostView.current.nameVehicleType = $("input[id='nameVehicleType']").val();
+                        parkingCostView.current.VehicleTypeId = $("#vehicle_id").attr('data-id');
 
                     }
                 },
@@ -701,23 +779,26 @@
                     $("input[id='timeCheckIn']").val(timeCheckIn.format("HH:mm"));
                     $("input[id='vehicle_id']").val(vehicle);
                     $("textarea[id='note']").val(parkingCostView.current["note"]);
-                    $("input[id='price']").val(parkingCostView.current["prices_price"]);
+                    $("input[id='nameVehicleType']").val(parkingCostView.current["vehicleType"]);
                     $("input[id='totalCost']").val(totalCost);
                     $("#vehicle_id").attr('data-id', parkingCostView.current["vehicle_id"]);
+
+                    console.log(parkingCostView.current);
                     $("#price").attr('data-priceId', parkingCostView.current["price_id"]);
+                    $("input[id='price']").val(parkingCostView.current["prices_price"]);
                     formatCurrency(".currency");
                 },
-                countDay : function (hour ) {
+                countDay: function (hour) {
                     var x = hour % 24;
                     var y = hour / 24;
-                    if(x != 0){
-                        if(x < 1){
+                    if (x != 0) {
+                        if (x < 1) {
                             x = 0;
                         }
-                        else if (1 <= x <= 3) {
+                        else if (1 <= x && x <= 3) {
                             x = 0.5;
                         }
-                        else if (x > 3){
+                        else if (x > 3) {
                             x = 1;
                         }
                     }
@@ -743,8 +824,8 @@
                         } else {
                             $('input[id=totalTime]').val(hour.toFixed(2));
                         }
-                        parkingCostView.totalCost();
                         $('input[id=totalDate]').val(parkingCostView.countDay(hour));
+                        parkingCostView.totalCost();
                     }
 
                 },
@@ -866,6 +947,7 @@
                         data: data,
                         columns: [
                             {data: 'fullNumber'},
+                            {data: 'vehicleType'},
                             {
                                 data: 'dateCheckIn',
                                 render: function (data, type, full, meta) {
@@ -1070,42 +1152,41 @@
                         }
                     });
                 },
-                inputPrice: function () {
-                    if (parkingCostView.tablePrice == null) {
+                inputPrice: function (price,id) {
+                    if (price == null) {
                         $("input[id='price']").val('0');
                     } else {
-                        $("input[id='price']").val(parkingCostView.tablePrice.price);
-                        $("#price").attr('data-priceId', parkingCostView.tablePrice.id);
+                        $("input[id='price']").val(price);
+                        $("#price").attr('data-priceId', id);
                         formatCurrency(".currency");
                     }
                 },
                 ValidateCostPrice: function () {
                     $("#formCostPrice").validate({
                         rules: {
+                            vehicleTypeId: {required: true},
                             costPrice: {
                                 required: true,
                                 number: true
                             }
                         },
                         messages: {
+                            vehicleTypeId: "Vui lòng nhập loại xe",
                             costPrice: {
                                 required: "Vui lòng nhập số tiền",
                                 number: "Giá tiền phải là số"
                             }
                         }
                     });
-
-                },
-                cancelPriceType: function () {
-                    $("input[id='costPrice']").val(0);
                 },
                 savePriceType: function () {
+                    parkingCostView.ValidateCostPrice();
                     if ($("input[id='costPrice']").val() < 1000) {
                         $("form#formCostPrice").find("label[class=error]").css("display", "block");
                     } else {
-                        parkingCostView.ValidateCostPrice();
                         var priceType = {
                             price: asNumberFromCurrency('#costPrice'),
+                            vehicleType: $('#vehicleTypeId').attr('data-id'),
                             note: $("textarea[id='description']").val()
                         };
                         var sendToServer = {
@@ -1121,14 +1202,14 @@
                                 data: sendToServer
                             }).done(function (data, textStatus, jqXHR) {
                                 if (jqXHR.status == 201) {
+                                    parkingCostView.tablePrice.push(data['prices']);
                                     parkingCostView.showNotification("success", "Thêm thành công!");
                                     parkingCostView.displayModal("hide", "#modal-addCostPrice");
-                                    parkingCostView.tablePrice = data['prices'];
-                                    parkingCostView.inputPrice();
+                                    parkingCostView.inputPrice(data['prices'].price,data['prices'].id );
                                     parkingCostView.clearInputPrice();
+                                    parkingCostView.clearInput();
                                 } else {
                                     parkingCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-
                                 }
                             }).fail(function (jqXHR, textStatus, errorThrown) {
                                 parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");

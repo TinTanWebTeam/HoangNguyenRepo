@@ -38,10 +38,10 @@ class CostManagementController extends Controller
             ->select('id', 'name')
             ->get();
         $response = [
-            'msg'              => 'Get data cost success',
-            'tableGarage'      => $tableGarage,
+            'msg' => 'Get data cost success',
+            'tableGarage' => $tableGarage,
             'tableVehicleType' => $tableVehicleType,
-            'tableVehicleNew'  => $tableVehicleNew,
+            'tableVehicleNew' => $tableVehicleNew,
         ];
         return response()->json($response, 200);
     }
@@ -74,11 +74,11 @@ class CostManagementController extends Controller
                 'vehicles.note as vehicleNote')
             ->get();
         $response = [
-            'msg'            => 'Get data cost success',
-            'tableCost'      => $tableCost,
-            'tablePrice'     => $tablePrice,
+            'msg' => 'Get data cost success',
+            'tableCost' => $tableCost,
+            'tablePrice' => $tablePrice,
             'tableCostPrice' => $tableCostPrice,
-            'dataVehicle'    => $tableVehicle,
+            'dataVehicle' => $tableVehicle,
 
         ];
         return response()->json($response, 200);
@@ -154,7 +154,7 @@ class CostManagementController extends Controller
                                 'vehicles.vehicleNumber as vehicles_vehicleNumber')
                             ->get();
                         $response = [
-                            'msg'       => 'Created vehicle',
+                            'msg' => 'Created vehicle',
                             'tableCost' => $costs
                         ];
                         return response()->json($response, 201);
@@ -197,7 +197,7 @@ class CostManagementController extends Controller
                             ->get();
 
                         $response = [
-                            'msg'       => 'Updated Cost',
+                            'msg' => 'Updated Cost',
                             'tableCost' => $tableCost
                         ];
                         return response()->json($response, 201);
@@ -249,7 +249,7 @@ class CostManagementController extends Controller
                     $pricesNew->createdBy = Auth::user()->id;
                     if ($pricesNew->save()) {
                         $response = [
-                            'msg'   => 'Created price fuel',
+                            'msg' => 'Created price fuel',
                             'price' => $pricesNew
 
                         ];
@@ -270,7 +270,7 @@ class CostManagementController extends Controller
                     $pricesNew->createdBy = Auth::user()->id;
                     if ($pricesNew->save()) {
                         $response = [
-                            'msg'    => 'Created price petroleum',
+                            'msg' => 'Created price petroleum',
                             'prices' => $pricesNew
 
                         ];
@@ -287,11 +287,12 @@ class CostManagementController extends Controller
                     $pricesNew = new Price();
                     $pricesNew->price = $price;
                     $pricesNew->note = $note;
+                    $pricesNew->vehicleType_id = $request->get('_priceType')['vehicleType'];;
                     $pricesNew->costPrice_id = 4;
                     $pricesNew->createdBy = Auth::user()->id;
                     if ($pricesNew->save()) {
                         $response = [
-                            'msg'    => 'Created Price Parking',
+                            'msg' => 'Created Price Parking',
                             'prices' => $pricesNew
 
                         ];
@@ -340,7 +341,7 @@ class CostManagementController extends Controller
                     $vehicleNew->garage_id = $garage_id;
                     if ($vehicleNew->save()) {
                         $response = [
-                            'msg'        => 'Created price',
+                            'msg' => 'Created price',
                             'vehicleNew' => $vehicleNew
                         ];
                         return response()->json($response, 201);
@@ -394,10 +395,10 @@ class CostManagementController extends Controller
             ->get();
 
         $response = [
-            'msg'           => 'Get data cost success',
+            'msg' => 'Get data cost success',
             'petroleumCost' => $petroleumCost,
-            'tablePrice'    => $tablePrice,
-            'dataVehicle'   => $tableVehicle
+            'tablePrice' => $tablePrice,
+            'dataVehicle' => $tableVehicle
 
         ];
         return response()->json($response, 200);
@@ -470,7 +471,7 @@ class CostManagementController extends Controller
                         ->get();
 
                     $response = [
-                        'msg'            => 'Created vehicle',
+                        'msg' => 'Created vehicle',
                         'tablePetrolNew' => $tablePetrolNew
                     ];
                     return response()->json($response, 201);
@@ -508,7 +509,7 @@ class CostManagementController extends Controller
                         ->get();
 
                     $response = [
-                        'msg'               => 'Updated Cost',
+                        'msg' => 'Updated Cost',
                         'tablePetrolUpdate' => $tablePetrolUpdate
                     ];
                     return response()->json($response, 201);
@@ -541,14 +542,25 @@ class CostManagementController extends Controller
 
     public function getDataParkingCost()
     {
-        $tableVehicle = Vehicle::all();
+        //$tableVehicle = Vehicle::all();
+        $tableVehicle = DB::table('vehicles')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->get();
+//        $dataPrice = DB::table('prices')
+//            ->where('active', 1)
+//            ->get();
+//        $tablePrice = DB::table('prices')
+//            ->select('prices.id', 'prices.price')
+//            ->orderBy('prices.created_at', 'desc')
+//            ->where('costPrice_id', 4)
+//            ->first();
         $tablePrice = DB::table('prices')
-            ->select('prices.id', 'prices.price')
-            ->orderBy('prices.created_at', 'desc')
             ->where('costPrice_id', 4)
-            ->first();
+            ->orderBy('prices.created_at', 'desc')
+            ->get();
         $parkingCosts = \DB::table('costs')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->join('prices', 'prices.id', '=', 'costs.price_id')
             ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
             ->where([
@@ -562,14 +574,17 @@ class CostManagementController extends Controller
                 'costs.cost as totalCost',
                 'vehicles.areaCode as vehicles_code',
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                'vehicles.note as vehicleNote')
+                'vehicles.note as vehicleNote',
+                'vehicleTypes.name as vehicleType'
+            )
             ->get();
-
+        $vehicleType = VehicleType::all();
         $response = [
-            'msg'              => 'Get data ParkingCost success',
+            'msg' => 'Get data ParkingCost success',
             'tableParkingCost' => $parkingCosts,
-            'tablePrice'       => $tablePrice,
-            'dataVehicle'      => $tableVehicle,
+            'tablePrice' => $tablePrice,
+            'dataVehicle' => $tableVehicle,
+            'dataVehicleType' => $vehicleType,
 
         ];
         return response()->json($response, 200);
@@ -577,6 +592,7 @@ class CostManagementController extends Controller
 
     public function postModifyParkingCost(Request $request)
     {
+
         $vehicle_id = null;
         $checkIn = null;
         $checkOut = null;
@@ -603,12 +619,12 @@ class CostManagementController extends Controller
             $checkIn = Carbon::createFromFormat('d-m-Y H:i', $dateIn . " " . $timeIn)->toDateTimeString();
             $dateOut = $request->get('_object')['dateCheckOut'];
             $timeOut = $request->get('_object')['timeCheckOut'];
-            if($dateOut == '' && $timeOut == ''){
+            if ($dateOut == '' && $timeOut == '') {
                 $checkOut = null;
                 $totalDate = 0;
                 $totalHour = 0;
                 $totalCost = 0;
-            }else{
+            } else {
                 $checkOut = Carbon::createFromFormat('d-m-Y H:i', $dateOut . " " . $timeOut)->toDateTimeString();
                 $totalDate = $request->get('_object')['totalDate'];
                 $totalHour = $request->get('_object')['totalTime'];
@@ -635,6 +651,7 @@ class CostManagementController extends Controller
                 if ($parkingCostNew->save()) {
                     $tableParkingNew = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+                        ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
                         ->join('prices', 'prices.id', '=', 'costs.price_id')
                         ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
                         ->where('costs.active', 1)
@@ -645,11 +662,13 @@ class CostManagementController extends Controller
                             'costs.*',
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber')
+                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                            'vehicleTypes.name as vehicleType'
+                        )
                         ->get();
 
                     $response = [
-                        'msg'             => 'Created Parking Cost',
+                        'msg' => 'Created Parking Cost',
                         'tableParkingNew' => $tableParkingNew
                     ];
                     return response()->json($response, 201);
@@ -671,6 +690,7 @@ class CostManagementController extends Controller
                 if ($parkingUpdate->update()) {
                     $tableParkingUpdate = \DB::table('costs')
                         ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+                        ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
                         ->join('prices', 'prices.id', '=', 'costs.price_id')
                         ->join('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
                         ->where('costs.active', 1)
@@ -682,11 +702,12 @@ class CostManagementController extends Controller
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
                             'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                            'vehicles.note as vehicleNote')
+                            'vehicles.note as vehicleNote','vehicleTypes.name as vehicleType'
+                        )
                         ->get();
 
                     $response = [
-                        'msg'                => 'Updated Parking Cost',
+                        'msg' => 'Updated Parking Cost',
                         'tableParkingUpdate' => $tableParkingUpdate
                     ];
                     return response()->json($response, 201);
@@ -734,9 +755,9 @@ class CostManagementController extends Controller
                 'vehicles.note as vehicleNote')
             ->get();
         $response = [
-            'msg'            => 'Get data other cost success',
+            'msg' => 'Get data other cost success',
             'tableOtherCost' => $otherCost,
-            'dataVehicle'    => $tableVehicle,
+            'dataVehicle' => $tableVehicle,
 
 
         ];
@@ -791,7 +812,7 @@ class CostManagementController extends Controller
                             'vehicles.note as vehicleNote')
                         ->first();
                     $response = [
-                        'msg'               => 'Created other Cost',
+                        'msg' => 'Created other Cost',
                         'tableOtherCostNew' => $tableOtherCostNew
                     ];
                     return response()->json($response, 201);
@@ -821,7 +842,7 @@ class CostManagementController extends Controller
                         ->first();
 
                     $response = [
-                        'msg'              => 'Updated Other Cost',
+                        'msg' => 'Updated Other Cost',
                         'tableOtherUpdate' => $tableOtherUpdate
                     ];
                     return response()->json($response, 201);

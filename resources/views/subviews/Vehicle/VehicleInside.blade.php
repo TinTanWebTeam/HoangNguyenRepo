@@ -547,7 +547,13 @@
                     $('input[id=vehicleType]').val(nameType);
                     garageInsideView.action = 'updateVehicleType';
                     garageInsideView.displayModal('show', '#modal-addVehicleType');
-                    $("h5.modal-title").empty().append("Cập nhật loại xe");
+                    if(idVehicle == ""){
+                        $("h5.modal-title").empty().append("Thêm mới loại xe");
+                        $('input[id=vehicleType]').val(nameType);
+                        garageInsideView.action = 'vehicleType';
+                    }else {
+                        $("h5.modal-title").empty().append("Cập nhật loại xe");
+                    }
                 },
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -985,6 +991,7 @@
                             return o.name == vehicleTypeName;
                         });
                         if (typeof vehicleType === "undefined") {
+                            $("#vehicleType_id").attr("data-id", '');
                             var nameType = $('input[id=vehicleType_id]').val();
                             if (nameType == '') {
                                 $("#vehicleType_id").attr("data-id", '');
@@ -1014,11 +1021,9 @@
                         });
                         if (typeof name === "undefined") {
                             $("#transferGarage").attr("data-idGarage", '');
-                            showNotification("warning", "Nhà xe không tồn tại!");
                             if($('input[id=transferGarage]').val() == ""){
                                 $("#transferGarage").attr("data-idGarage", '');
                             }
-
                         } else {
                             $("#transferGarage").attr("data-idGarage", name.id);
                         }
@@ -1054,6 +1059,7 @@
                             if (jqXHR.status == 201) {
                                 switch (garageInsideView.action) {
                                     case 'vehicleType':
+                                        garageInsideView.dataVehicleType.push(data['dataVehicleTypes']);
                                         garageInsideView.showNotification("success", "Thêm mới loại xe thành công");
                                         garageInsideView.displayModal("hide", "#modal-addVehicleType");
                                         var idVehicleType = data['dataVehicleTypes']['id'];
@@ -1068,6 +1074,7 @@
                                         }
                                         break;
                                     case 'updateVehicleType':
+                                        garageInsideView.dataVehicleType.push(data['dataVehicleTypes']);
                                         garageInsideView.showNotification("success", "Cập nhật loại xe thành công");
                                         garageInsideView.displayModal("hide", "#modal-addVehicleType");
                                         var nameVehicleType = data['updateVehicleType']['name'];

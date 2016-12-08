@@ -1,4 +1,5 @@
 <style>
+
     #divControl {
         z-index: 3;
         position: fixed;
@@ -359,6 +360,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row" id="input-transfer-garage" hidden>
+                                <div class="col-sm-12 col-xs-12">
+                                    <div class="form-group form-md-line-input">
+                                        <label for="transferGarage"><b>Chuyển nhà xe</b></label>
+                                        <input type="text" class="form-control"
+                                               id="transferGarage" data-idGarage=""
+                                               name="transferGarage">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
                                     <div class="form-group form-md-line-input">
@@ -489,13 +500,26 @@
                 table: null,
                 tableVehicle: null,
                 dataGarage: null,
+                dataAllGarages: null,
                 dataVehicle: null,
                 current: null,
+                currentVehicle: null,
+                currentVehicleType: null,
                 action: null,
                 idDelete: null,
                 idDeleteVehicle: null,
                 dataVehicleType: null,
                 tagsVehicleType: [],
+                tagsGarageVehicle: [],
+                renderEventCloseModal: function(){
+                    $('#modal-addVehicleType').on('hidden.bs.modal', function () {
+                        if(garageOutsideView.currentVehicle == null){
+                            garageOutsideView.action = "addVehicle"
+                        }else {
+                            garageOutsideView.action = "updateVehicle"
+                        }
+                    });
+                },
                 cancel: function () {
                     if (garageOutsideView.action == 'add') {
                         garageOutsideView.clearInput();
@@ -519,12 +543,17 @@
                     garageOutsideView.currentVehicleType = _.clone(_.find(garageOutsideView.dataVehicleType, function (o) {
                         return o.id == idVehicle;
                     }), true);
-                    garageOutsideView.action = 'updateVehicleType';
                     var nameType = $('input[id=vehicleType_id]').val();
                     $('input[id=vehicleType]').val(nameType);
+                    garageOutsideView.action = 'updateVehicleType';
                     garageOutsideView.displayModal('show', '#modal-addVehicleType');
-                    $("h5.modal-title").empty().append("Cập nhật loại xe");
-
+                    if(idVehicle == ""){
+                        $("h5.modal-title").empty().append("Thêm mới loại xe");
+                        $('input[id=vehicleType]').val(nameType);
+                        garageOutsideView.action = 'vehicleType';
+                    }else {
+                        $("h5.modal-title").empty().append("Cập nhật loại xe");
+                    }
                 },
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -557,6 +586,7 @@
                         garageOutsideView.action = null;
                         garageOutsideView.idDelete = null;
                     }
+
                 },
                 clearValidation: function () {
                     $('label[class=error]').hide();
@@ -643,7 +673,6 @@
                         if (jqXHR.status == 200) {
                             garageOutsideView.dataGarage = data['dataGarages'];
                             garageOutsideView.fillDataToDatatable(data['dataGarages']);
-
                         } else {
                             garageOutsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -651,6 +680,7 @@
                         garageOutsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                     garageOutsideView.renderScrollbar();
+                    garageOutsideView.renderEventCloseModal();
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -839,7 +869,6 @@
                             contactor: $("input[id='contactor']").val(),
                             phone: $("input[id='phone']").val(),
                             note: $("textarea[id='note']").val()
-
                         };
                     } else if (garageOutsideView.action == 'update') {
                         garageOutsideView.current.name = $("input[id='name']").val();
@@ -847,7 +876,6 @@
                         garageOutsideView.current.contactor = $("input[id='contactor']").val().toUpperCase();
                         garageOutsideView.current.phone = $("input[id='phone']").val();
                         garageOutsideView.current.note = $("textarea[id='note']").val();
-
                     }
                 },
                 clearInputFormVehicle: function () {
@@ -864,6 +892,8 @@
                     $("input[id='size']").val('');
                     $("input[id='weight']").val('');
                     $("textarea[id='noteVehicle']").val('');
+                    $("input[id='transferGarage']").val('');
+                    $('#transferGarage').attr('data-idGarage', '');
                     $("#listVehicle").find(".titleControl").html("Thêm mới xe");
                     $("button[id=editVehicleType]").prop("disabled", true);
                     $('#input-transfer-garage').hide(500);
@@ -878,7 +908,6 @@
                     $("input[id='contactor']").val(garageOutsideView.current["contactor"]);
                     $("input[id='phone']").val(garageOutsideView.current["phone"]);
                     $("textarea[id='note']").val(garageOutsideView.current["note"]);
-
                 },
                 editGarage: function (id) {
                     garageOutsideView.current = null;
@@ -909,8 +938,8 @@
                     $("input[id='yearOfProduction']").val(garageOutsideView.currentVehicle["yearOfProduction"]);
                     $("#vehicleType_id").attr('data-id', garageOutsideView.currentVehicle["vehicleType_id"]);
                     $("textarea[id='noteVehicle']").val(garageOutsideView.currentVehicle["note"]);
-                    $("button[id=editVehicleType]").prop("disabled", false);
                     garageOutsideView.action = 'updateVehicle';
+                    $("button[id=editVehicleType]").prop("disabled", false);
                     $("#listVehicle").find(".titleControl").html("Cập nhật xe");
                     garageOutsideView.clearValidation();
                     $('#input-transfer-garage').show(500);
@@ -940,6 +969,7 @@
                         if (jqXHR.status == 200) {
                             garageOutsideView.dataVehicleType = data['vehicleTypes'];
                             garageOutsideView.dataVehicle = data['dataVehicles'];
+                            garageOutsideView.dataAllGarages = data['allGarage'];
                             garageOutsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageOutsideView.renderAutoCompleteSearch();
 
@@ -961,10 +991,16 @@
                             return o.name == vehicleTypeName;
                         });
                         if (typeof vehicleType === "undefined") {
-                            var nameType = $('input[id=vehicleType_id]').val();
                             $("#vehicleType_id").attr("data-id", '');
-                            $('input[id=vehicleType]').val(nameType);
-                            garageOutsideView.displayModal('show', '#modal-addVehicleType')
+                            var nameType = $('input[id=vehicleType_id]').val();
+                            if (nameType == '') {
+                                $("#vehicleType_id").attr("data-id", '');
+                            } else {
+                                $('input[id=vehicleType]').val(nameType);
+                                $("h5.modal-title").empty().append("Thêm mới loại xe");
+                                garageOutsideView.action = 'vehicleType';
+                                garageOutsideView.displayModal('show', '#modal-addVehicleType');
+                            }
                         } else {
                             $("#vehicleType_id").attr("data-id", vehicleType.id);
                             if ($("#vehicleType_id").attr('data-id') == '') {
@@ -975,21 +1011,35 @@
                         }
                     }));
 
+                    garageOutsideView.tagsGarageVehicle = _.map(garageOutsideView.dataAllGarages, 'name');
+                    garageOutsideView.tagsGarageVehicle = _.union(garageOutsideView.tagsGarageVehicle);
+                    renderAutoCompleteSearch('#transferGarage', garageOutsideView.tagsGarageVehicle, $("#transferGarage").focusout(function () {
+                        var garageName = this.value;
+                        if (garageName == '') return;
+                        var name = _.find(garageOutsideView.dataAllGarages, function (o) {
+                            return o.name == garageName;
+                        });
+                        if (typeof name === "undefined") {
+                            $("#transferGarage").attr("data-idGarage", '');
+                            if($('input[id=transferGarage]').val() == ""){
+                                $("#transferGarage").attr("data-idGarage", '');
+                            }
 
+                        } else {
+                            $("#transferGarage").attr("data-idGarage", name.id);
+                        }
+                    }));
                 },
                 saveVehicleType: function () {
                     garageOutsideView.vehicleTypeValidate();
                     var vehicleType = null;
                     if (garageOutsideView.action == "updateVehicleType" && $("#vehicleType_id").attr("data-id") != "") {
-                        garageOutsideView.action = "updateVehicleType";
                         vehicleType = {
                             vehicleType: $("input[id='vehicleType']").val(),
                             description: $("textarea[id='description']").val(),
                             id: $("#vehicleType_id").attr('data-id')
                         };
-
                     } else {
-                        garageOutsideView.action = "vehicleType";
                         vehicleType = {
                             vehicleType: $("input[id='vehicleType']").val(),
                             description: $("textarea[id='description']").val()
@@ -997,7 +1047,7 @@
                     }
                     var sendToServer = {
                         _token: _token,
-                        _action: 'vehicleType',
+                        _action: garageOutsideView.action,
                         _vehicleType: vehicleType
                     };
                     if ($("#frmVehicleType").valid()) {
@@ -1018,13 +1068,24 @@
                                         $('input[id=vehicleType_id]').val(nameVehicleType);
                                         $("#vehicleType_id").attr("data-id", idVehicleType);
                                         garageOutsideView.clearInputFormVehicleType();
+                                        if(garageOutsideView.currentVehicle != null){
+                                            garageOutsideView.action = "updateVehicle"
+                                        }else {
+                                            garageOutsideView.action = "addVehicle"
+                                        }
                                         break;
                                     case 'updateVehicleType':
-                                        garageOutsideView.dataVehicleType.push(data['updateVehicleType']);
+                                        garageOutsideView.dataVehicleType.push(data['dataVehicleTypes']);
                                         garageOutsideView.showNotification("success", "Cập nhật loại xe thành công");
                                         garageOutsideView.displayModal("hide", "#modal-addVehicleType");
                                         var nameVehicleType = data['updateVehicleType']['name'];
                                         $('input[id=vehicleType_id]').val(nameVehicleType);
+                                        if(garageOutsideView.currentVehicle != null){
+                                            garageOutsideView.action = "updateVehicle"
+                                        }else {
+                                            garageOutsideView.action = "addVehicle"
+                                        }
+
                                         break;
                                     default:
                                         break;
@@ -1046,29 +1107,30 @@
                     } else {
                         var size = long.concat(' x ' + wide + ' x ' + high);
                     }
-
                     if (garageOutsideView.action == 'addVehicle') {
                         garageOutsideView.currentVehicle = {
                             garage_id: $("input[id='garage_id']").val(),
+                            idUpdateGarage : $("#transferGarage").attr('data-idGarage'),
                             areaCode: $("input[id='areaCode']").val(),
                             vehicleNumber: $("input[id='vehicleNumber']").val(),
                             vehicleType_id: $("#vehicleType_id").attr('data-id'),
                             owner: $("input[id='owner']").val(),
                             size: size,
                             weight: $("input[id='weight']").val(),
-                            noteVehicle: $("textarea[id='noteVehicle']").val(),
+                            note: $("textarea[id='noteVehicle']").val(),
                             trademark: $("input[id='trademark']").val(),
                             yearOfProduction: $("input[id='yearOfProduction']").val()
                         };
                     } else if (garageOutsideView.action == 'updateVehicle') {
                         garageOutsideView.currentVehicle.garage_id = $("input[id='garage_id']").val();
+                        garageOutsideView.currentVehicle.idUpdateGarage = $("#transferGarage").attr('data-idGarage');
                         garageOutsideView.currentVehicle.areaCode = $("input[id='areaCode']").val();
                         garageOutsideView.currentVehicle.vehicleNumber = $("input[id='vehicleNumber']").val();
                         garageOutsideView.currentVehicle.vehicleType_id = $("#vehicleType_id").attr('data-id');
                         garageOutsideView.currentVehicle.owner = $("input[id='owner']").val().toUpperCase();
                         garageOutsideView.currentVehicle.size = size;
                         garageOutsideView.currentVehicle.weight = $("input[id='weight']").val();
-                        garageOutsideView.currentVehicle.noteVehicle = $("textarea[id='noteVehicle']").val();
+                        garageOutsideView.currentVehicle.note = $("textarea[id='noteVehicle']").val();
                         garageOutsideView.currentVehicle.trademark = $("input[id='trademark']").val();
                         garageOutsideView.currentVehicle.yearOfProduction = $("input[id='yearOfProduction']").val();
 
@@ -1136,7 +1198,12 @@
                             if ($("#vehicleType_id").attr("data-id") == '') {
                                 showNotification("warning", "Loại xe không tồn tại!");
                                 return;
-                            } else {
+                            }
+                            else if ($('input[id=transferGarage]').val() != '' && $("#transferGarage").attr("data-idGarage") == '') {
+                                showNotification("warning", "Nhà xe không tồn tại!");
+                                return;
+                            }
+                            else {
                                 sendToServer = {
                                     _token: _token,
                                     _action: garageOutsideView.action,
@@ -1162,7 +1229,11 @@
                                                     return o.id == sendToServer._vehicle.id;
                                                 });
                                                 var indexOfVehicleOld = _.indexOf(garageOutsideView.dataVehicle, vehicleOld);
-                                                garageOutsideView.dataVehicle.splice(indexOfVehicleOld, 1, data['updateVehicle']);
+                                                if (data['updateVehicle']['garage_id'] == vehicleOld['garage_id']) {
+                                                    garageOutsideView.dataVehicle.splice(indexOfVehicleOld, 1, data['updateVehicle']);
+                                                } else {
+                                                    garageOutsideView.dataVehicle.splice(indexOfVehicleOld, 1);
+                                                }
                                                 garageOutsideView.showNotification("success", "Cập nhật thành công!");
                                                 garageOutsideView.clearInputFormVehicle();
                                                 garageOutsideView.action = "addVehicle";
@@ -1180,7 +1251,6 @@
                                     garageOutsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                                 });
                             }
-
                         } else {
                             $("form#frmVehicle").find("label[class=error]").css("color", "red");
                         }
