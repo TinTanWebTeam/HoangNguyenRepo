@@ -664,11 +664,11 @@ class CustomerManagementController extends Controller
         // ])->get()->isEmpty();
 
         /* Dùng role RevenueManagement để hiện doanh thu và lợi nhuận. */
-       $roleRevenueManagement = Role::where('name', 'RevenueManagement')->first();
-       $isAdmin = SubRole::where([
-           ['user_id', \Auth::user()->id],
-           ['role_id', $roleRevenueManagement->id]
-       ])->get()->isEmpty();
+        $roleRevenueManagement = Role::where('name', 'RevenueManagement')->first();
+        $isAdmin = SubRole::where([
+            ['user_id', \Auth::user()->id],
+            ['role_id', $roleRevenueManagement->id]
+        ])->get()->isEmpty();
 
         $response = [
             'msg'               => 'Get list all Transport',
@@ -754,7 +754,9 @@ class CustomerManagementController extends Controller
             }
             if (array_key_exists('voucher_transport', $request->input('_transport'))) {
                 $array_voucherTransport = $request->input('_transport')['voucher_transport'];
-                $array_voucherTransport = array_filter($array_voucherTransport, function($value) { return $value !== ''; });
+                $array_voucherTransport = array_filter($array_voucherTransport, function ($value) {
+                    return $value !== '';
+                });
             }
         }
         try {
@@ -802,7 +804,7 @@ class CustomerManagementController extends Controller
                         return response()->json(['msg' => 'Create Transport failed'], 404);
                     }
                     //Add VoucherTransport
-                    foreach($array_voucherTransport as $key => $value){
+                    foreach ($array_voucherTransport as $key => $value) {
                         $vouTranNew = new VoucherTransport();
                         $vouTranNew->voucher_id = $key;
                         $vouTranNew->transport_id = $transportNew->id;
@@ -908,7 +910,7 @@ class CustomerManagementController extends Controller
                     }
 
                     //Add VoucherTransport
-                    foreach($array_voucherTransport as $key => $value){
+                    foreach ($array_voucherTransport as $key => $value) {
                         $vouTranNew = new VoucherTransport();
                         $vouTranNew->voucher_id = $key;
                         $vouTranNew->transport_id = $transportUpdate->id;
@@ -1124,11 +1126,11 @@ class CustomerManagementController extends Controller
         $pathToFile = public_path() . "/" . $file->filePath;
 
         $headers = array(
-            'Content-Type: '.$file->mimeType,
+            'Content-Type: ' . $file->mimeType,
             'Content-Disposition: attachment; filename="' . $file->fileName . '"',
             'Content-Transfer-Encoding: binary',
             'Accept-Ranges: bytes',
-            'Content-Length: '.$file->size
+            'Content-Length: ' . $file->size
         );
 
         $name = $file->fileName;
@@ -1194,22 +1196,26 @@ class CustomerManagementController extends Controller
 
         return response()->json($response, 200);
     }
-    
+
     /* Formula */
     public function postFindFormulaDetail(Request $request)
     {
         $customer_id = $request->input('_customerId');
 
-        $formula = Formula::where('customer_id', $customer_id)
+        // Find formulaDetail
+        $formulas = Formula::where('customer_id', $customer_id)
             ->where(\DB::raw('DATE(applyDate)'), '<=', Carbon::createFromFormat('Y-m-d', date('Y-m-d'))->toDateString())
             ->orderBy('applyDate', 'desc')
-            ->first();
-
-        $formulaDetail = FormulaDetail::where('formula_id', $formula->id)->get();
+            ->get();
+        if (count($formulas) == 0) {
+            return response()->json(['msg' => 'Khách hàng này chưa có công thức.'], 203);
+        }
+        $formulaDetails = FormulaDetail::where('formula_id', $formulas->first()->id)->get();
 
         $response = [
             'msg'            => 'success',
-            'formulaDetails' => $formulaDetail
+            'formulaDetails' => $formulaDetails,
+            'formulas'       => $formulas
         ];
 
         return response()->json($response, 200);
