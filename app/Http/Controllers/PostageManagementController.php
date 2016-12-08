@@ -157,6 +157,7 @@ class PostageManagementController extends Controller
         $value = null;
         $from = null;
         $to = null;
+        $index = null;
 
         $action = $request->input('_action');
         if ($action != 'delete') {
@@ -166,6 +167,7 @@ class PostageManagementController extends Controller
             $value = $request->input('_postageDetail')['value'];
             $from = $request->input('_postageDetail')['from'];
             $to = $request->input('_postageDetail')['to'];
+            $index = $request->input('_postageDetail')['index'];
         }
         $formula_id = 0;
         if($rule == 'R'){
@@ -186,6 +188,7 @@ class PostageManagementController extends Controller
                     $postageNew->value = $value;
                     $postageNew->from = $from;
                     $postageNew->to = $to;
+                    $postageNew->index = $index;
 
                     if (!$postageNew->save()) {
                         DB::rollBack();
@@ -204,7 +207,7 @@ class PostageManagementController extends Controller
                     $postageNew->value = $value;
                     $postageNew->from = $from;
                     $postageNew->to = $to;
-
+                    $postageNew->index = $index;
 
                     if (!$postageNew->update()) {
                         DB::rollBack();

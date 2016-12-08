@@ -20,6 +20,7 @@ class CreateFormulaDetailsTable extends Migration
             $table->string('from')->comment('Từ')->nullable();
             $table->string('to')->comment('Đến')->nullable();
             $table->string('value')->comment('Giá trị')->nullable();
+            $table->integer('index')->unsigned();
             $table->timestamps();
         });
     }

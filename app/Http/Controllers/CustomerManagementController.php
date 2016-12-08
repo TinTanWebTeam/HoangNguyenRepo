@@ -7,6 +7,8 @@ use App\Customer;
 use App\CustomerType;
 use App\Driver;
 use App\File;
+use App\Formula;
+use App\FormulaDetail;
 use App\Garage;
 use App\GarageType;
 use App\Postage;
@@ -1188,6 +1190,26 @@ class CustomerManagementController extends Controller
             'drivers'      => $driver,
             'garageTypes'  => $garageType,
             'garages'      => $garages,
+        ];
+
+        return response()->json($response, 200);
+    }
+    
+    /* Formula */
+    public function postFindFormulaDetail(Request $request)
+    {
+        $customer_id = $request->input('_customerId');
+
+        $formula = Formula::where('customer_id', $customer_id)
+            ->where(\DB::raw('DATE(applyDate)'), '<=', Carbon::createFromFormat('Y-m-d', date('Y-m-d'))->toDateString())
+            ->orderBy('applyDate', 'desc')
+            ->first();
+
+        $formulaDetail = FormulaDetail::where('formula_id', $formula->id)->get();
+
+        $response = [
+            'msg'            => 'success',
+            'formulaDetails' => $formulaDetail
         ];
 
         return response()->json($response, 200);
