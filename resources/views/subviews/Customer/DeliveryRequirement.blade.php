@@ -67,13 +67,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
                                             <label for="customer_id" class="red"><b>Khách hàng</b></label>
-                                            <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Nhập tên khách hàng" data-customerId="">
+                                            <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Nhập tên khách hàng" data-customerId="" onfocusout="transportView.focusOut_getCustomer()">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
                                             <label for="unitPrice" class="red"><b>Đơn giá</b></label>
-                                            <input type="text" class="form-control" id="unitPrice" name="unitPrice" data-customerId="" readonly>
+                                            <input type="text" class="form-control currency" id="unitPrice" name="unitPrice" data-customerId="" readonly>
                                         </div>
                                     </div>
 
@@ -82,7 +82,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input">
                                             <label for="formulaCode"><b>Mã công thức</b></label>
-                                            <input type="text" class="form-control" id="formulaCode" name="formulaCode">
+                                            <input type="text" class="form-control" id="formulaCode" name="formulaCode" onfocusout="transportView.focusOut_getFormulaByFormulaCode()">
                                             <input type="hidden" id="formula_id">
                                         </div>
                                     </div>
@@ -843,7 +843,7 @@
                         format: 'dd-mm-yyyy',
                         autoclose: true
                     }).on("input change", function (e) {
-//                        transportView.postDataPostageOfCustomer();
+                        
                     });
 
                     $('#receiveDate').datepicker("setDate", new Date());
@@ -865,7 +865,6 @@
                         $('input[id=customer_id]').val($(this).find('td:eq(2)')[0].innerText);
                         transportView.displayModal("hide", "#modal-customer");
 
-//                        transportView.postDataPostageOfCustomer(cust_id);
                     });
                     $("#table-product").find("tbody").on('click', 'tr', function () {
                         $('#product_id').attr('data-productId', $(this).find('td:first')[0].innerText);
@@ -910,33 +909,6 @@
                         } else {
                             $("#vehicle_id").attr("data-vehicleId", vehicle.id);
                         }
-                    });
-                    $("#customer_id").focusout(function () {
-                        if (transportView.transportType === 1)
-                            return;
-                        var custName = this.value;
-                        if (custName == '') return;
-                        var customer = _.find(transportView.dataCustomer, function (o) {
-                            return o.fullName == custName;
-                        });
-                        if (typeof customer === "undefined") {
-                            $("#modal-notification").find(".modal-title").html("Khách hàng <label class='text text-danger'>" + custName + "</label> không tồn tại");
-                            transportView.displayModal('show', '#modal-notification');
-                            $("input[id=customer_id]").val('');
-                            $("#customer_id").attr("data-customerId", '');
-                        } else {
-                            $("#customer_id").attr("data-customerId", customer.id);
-
-                        //    transportView.postDataPostageOfCustomer();
-                            transportView.findFormulaDetail();
-                        }
-                    });
-
-                    $("#receivePlace").focusout(function () {
-//                        transportView.postDataPostageOfCustomer();
-                    });
-                    $("#deliveryPlace").focusout(function () {
-//                        transportView.postDataPostageOfCustomer();
                     });
                 },
                 renderEventCheckbox: function (cb) {
@@ -988,6 +960,7 @@
                     defaultZero("#weight");
                     defaultZero("#quantumProduct");
                     defaultZero("#voucherQuantumProduct");
+                    defaultZero("#unitPrice");
 
                     transportView.displayControl('hide', '');
                 },
@@ -1509,6 +1482,7 @@
                     transportView.current = null;
                     transportView.action = 'add';
 
+                    $("input[id=unitPrice]").val(0);
                     $("input[id=cashRevenue]").val(0);
                     $("input[id=cashDelivery]").val(0);
                     $("input[id=cashReceive]").val(0);
@@ -1803,7 +1777,7 @@
                     }
                 },
 
-                getUnitPrice: function () {
+                focusOut_getFormula: function () {
                     transportView.setValueFormulaDetail();
 
                     var kt = true;
@@ -1812,31 +1786,106 @@
                            kt = false;
                        }
                     });
-                    if(kt == false) return;
+                    if(kt == false){
+                        $("#unitPrice").val(0);
+                        $("#unit").val('');
+                        $("#formulaCode").val('');
+                        return;
+                    }
 
-                    _.each(transportView.dataFormulaDetail, function(value, key){
-                        if(transportView.dataFormulaDetail[key]['name'] == transportView.formulaDetail[key]['name']){
-                            if(transportView.dataFormulaDetail[key]['rule'] === 'R'){
-                                //Range
-                                var from = transportView.dataFormulaDetail[key]['from'] || 0;
-                                var to = transportView.dataFormulaDetail[key]['from'] || 0;
-                                if(transportView.formulaDetail[key]['value'] >= transportView.dataFormulaDetail[key]['from']
-                                    && transportView.formulaDetail[key]['value'] <= transportView.dataFormulaDetail[key]['to']){
-                                    showNotification('success', 'fdsafds');
-                                } else {
-                                    showNotification('error', 'fdsafds');
-                                }
-                            } else {
-                                // Single
-                                if(transportView.dataFormulaDetail[key]['value'] == transportView.formulaDetail[key]['value']){
-                                    showNotification('success', 'fdsafds');
-                                } else {
-                                    showNotification('error', 'fdsafds');
-                                }
-                            }
+                    var sendToServer = {
+                        _token: _token,
+                        _formulaDetail: transportView.formulaDetail
+                    };
+
+                    $.ajax({
+                        url: url + 'customer/formula/find',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 200) {
+                            $("#unitPrice").val(data['formula']['unitPrice']);
+                            $("#unit").val(data['formula']['unit']);
+                            $("#formulaCode").val(data['formula']['formulaCode']);
+                            formatCurrency(".currency");
+                        } else if (jqXHR.status == 203) {
+                            $("#unitPrice").val(0);
+                            $("#unit").val('');
+                            $("#formulaCode").val('');
+                            showNotification("error", data['msg']);
                         }
-
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                },
+                focusOut_getFormulaByFormulaCode: function () {
+                    var formulaCode = $("#formulaCode").val();
+                    if(formulaCode == ""){
+                        return;
+                    }
+                    var customerId = $("#customer_id").attr('data-customerId');
+                    if(customerId == ""){
+                        showNotification('warning', 'Vui lòng nhập khách hàng!');
+                        return;
+                    }
+
+                    var sendToServer = {
+                        _token: _token,
+                        _formulaCode: formulaCode,
+                        _customerId : customerId
+                    };
+
+                    $.ajax({
+                        url: url + 'customer/formula/find',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 200) {
+                            $("#unitPrice").val(data['formula']['unitPrice']);
+                            $("#unit").val(data['formula']['unit']);
+                            $("#formulaCode").val(data['formula']['formulaCode']);
+                            formatCurrency(".currency");
+                        } else if (jqXHR.status == 203) {
+                            $("#unitPrice").val(0);
+                            $("#unit").val('');
+                            $("#formulaCode").val('');
+                            showNotification("error", data['msg']);
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                focusOut_getCustomer: function(){
+                    if (transportView.transportType === 1)
+                        return;
+                    var custName = $("#customer_id").val();
+                    if (custName == ''){
+                        $("#customer_id").attr("data-customerId", '');
+                        $("#formula-detail").html("<legend>Chi tiết công thức:</legend>");
+                        return;
+                    }
+                    var customer = _.find(transportView.dataCustomer, function (o) {
+                        return o.fullName == custName;
+                    });
+                    if (typeof customer === "undefined") {
+                        $("#modal-notification").find(".modal-title").html("Khách hàng <label class='text text-danger'>" + custName + "</label> không tồn tại");
+                        transportView.displayModal('show', '#modal-notification');
+                        $("input[id=customer_id]").val('');
+                        $("#customer_id").attr("data-customerId", '');
+                    } else {
+                        $("#customer_id").attr("data-customerId", customer.id);
+                        transportView.findFormulaDetail();
+                        transportView.focusOut_getFormulaByFormulaCode();
+                    }
+                },
+                focusOut_calculateCashRevenue: function(){
+
                 },
                 findFormulaDetail: function () {
                     if ($("#customer_id").attr('data-customerId') == '')
@@ -1875,7 +1924,7 @@
                         str += '<div class="col-md-12">';
                         str += '<div class="form-group form-md-line-input">';
                         str += '<label for="id_'+data[key]["id"]+'" class="red"><b>'+data[key]["name"]+'</b></label>';
-                        str += '<input type="text" class="form-control" id="id_'+data[key]["id"]+'" data-rule='+data[key]["rule"]+' onfocusout="transportView.getUnitPrice()">';
+                        str += '<input type="text" class="form-control" id="id_'+data[key]["id"]+'" data-rule='+data[key]["rule"]+' onfocusout="transportView.focusOut_getFormula()">';
                         str += '</div>';
                         str += '</div>';
                         str += '</div>';
@@ -1896,6 +1945,7 @@
                         transportView.formulaDetail[i]['value'] = $(searchEles[i]).val();
                     }
                 },
+
                 searchFromDateToDate: function () {
                     var fromDate = $("#dateOnlySearch").find(".start").val();
                     var toDate = $("#dateOnlySearch").find(".end").val();

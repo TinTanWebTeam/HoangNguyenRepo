@@ -30,9 +30,7 @@ use League\Flysystem\Exception;
 
 class CustomerManagementController extends Controller
 {
-    /*
-     * Customer
-     * */
+    /* Customer */
     public function getViewCustomer()
     {
         return view('subviews.Customer.Customer');
@@ -200,7 +198,7 @@ class CustomerManagementController extends Controller
         }
     }
 
-    /*Add staff*/
+    /* Staff*/
 
     public function postModifyStaff(Request $request)
     {
@@ -312,9 +310,7 @@ class CustomerManagementController extends Controller
         }
     }
 
-    /*
-     * Customer Type
-     * */
+    /* Customer Type */
     public function postModifyCustomerType(Request $request)
     {
         if (!\Auth::check()) {
@@ -386,9 +382,7 @@ class CustomerManagementController extends Controller
         }
     }
 
-    /*
-     * Product
-     * */
+    /* Product */
     public function getDataProduct()
     {
         $products = DB::table('products')
@@ -503,9 +497,7 @@ class CustomerManagementController extends Controller
         }
     }
 
-    /*
-     * Product Type
-     * */
+    /* Product Type */
     public function getDataProductType()
     {
         $productTypes = DB::table('productTypes')
@@ -519,9 +511,7 @@ class CustomerManagementController extends Controller
         return response()->json($response, 200);
     }
 
-    /*
-     * Voucher
-     * */
+    /* Voucher */
     public function getDataVoucher()
     {
         $vouchers = Voucher::all();
@@ -608,9 +598,7 @@ class CustomerManagementController extends Controller
         }
     }
 
-    /*
-     * Transport
-     * */
+    /* Transport */
     public function getViewTransport()
     {
         return view('subviews.Customer.DeliveryRequirement');
@@ -1040,9 +1028,7 @@ class CustomerManagementController extends Controller
         return $transportCode;
     }
 
-    /*
-     * File
-     * */
+    /* File */
     public function postUploadMultiFile(Request $request)
     {
         $transportId = $request->input('transportId');
@@ -1139,9 +1125,7 @@ class CustomerManagementController extends Controller
 
     }
 
-    /*
-     * Postage
-     * */
+    /* Postage */
     public function postDataPostageOfCustomer(Request $request)
     {
         $customerId = $request->input('_customerId');
@@ -1219,5 +1203,67 @@ class CustomerManagementController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    public function postFindFormula(Request $request)
+    {
+        if (array_key_exists('_formulaCode', $request->all())) {
+            $formulaCode = $request->input('_formulaCode');
+            $customerId = $request->input('_customerId');
+            $formula_id = $this->findFormulaByFormulaCode($formulaCode, $customerId) ?? 0;
+        } else {
+            $formulaDetail = $request->input('_formulaDetail');
+            $formula_id = $this->findFormula($formulaDetail) ?? 0;
+        }
+
+        if($formula_id == 0){
+            return response()->json(['msg' => 'Công thức không tồn tại!'], 203);
+        }
+        $formula = Formula::findOrFail($formula_id);
+        $response = [
+            'formula' => $formula,
+            'msg' => 'success'
+        ];
+        return response()->json($response, 200);
+    }
+
+    public function findFormula($formulaDetail)
+    {
+        $arrayFound = [];
+        foreach ($formulaDetail as $fdFind) {
+            $found = null;
+            if($fdFind['rule'] == 'S'){
+                $found = FormulaDetail::where([
+                    ['name', $fdFind['name']],
+                    ['value', $fdFind['value']],
+                    ['rule', $fdFind['rule']]
+                ])->pluck('formula_id')->toArray();
+            } else {
+                // From ... to ...
+                $found = FormulaDetail::where([
+                    ['name', $fdFind['name']],
+                    ['rule', $fdFind['rule']]
+                ])->where('from', '<=',$fdFind['value'])
+                    ->where('to', '>',$fdFind['value'])
+                    ->pluck('formula_id')->toArray();
+            }
+            array_push($arrayFound, $found);
+        }
+        $arrayCollapse = collect($arrayFound)->collapse();
+        $arrayCount = collect(array_count_values($arrayCollapse->toArray()));
+        if(count($formulaDetail) != $arrayCount->max()){
+            return null;
+        }
+        $formula_id = $arrayCount->search($arrayCount->max());
+        return $formula_id;
+    }
+
+    public function findFormulaByFormulaCode($formulaCode, $customerId)
+    {
+        $formula = Formula::where([
+            ['formulaCode', $formulaCode],
+            ['customer_id', $customerId]
+        ])->firstOrFail();
+        return $formula->id;
     }
 }

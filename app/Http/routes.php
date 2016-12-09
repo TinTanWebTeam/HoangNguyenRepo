@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
         //post to get Data
         Route::post('/customer/postage', 'CustomerManagementController@postDataPostageOfCustomer');
         Route::post('/customer/formula-detail/find', 'CustomerManagementController@postFindFormulaDetail');
+        Route::post('/customer/formula/find', 'CustomerManagementController@postFindFormula');
 
         Route::get('/customer/vehicles', 'CustomerManagementController@getDataVehicle');
 

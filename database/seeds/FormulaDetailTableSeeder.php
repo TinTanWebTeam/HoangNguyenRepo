@@ -138,8 +138,8 @@ class FormulaDetailTableSeeder extends Seeder
             'formula_id' => 6,
             'rule'       => 'R',
             'name'       => 'CBM',
-            'from'       => null,
-            'to'         => '10',
+            'from'       => 0,
+            'to'         => 10,
             'value'      => null,
             'index'      => 3
         ]);
@@ -175,8 +175,8 @@ class FormulaDetailTableSeeder extends Seeder
             'formula_id' => 7,
             'rule'       => 'R',
             'name'       => 'CBM',
-            'from'       => '10',
-            'to'         => '27',
+            'from'       => 10,
+            'to'         => 27,
             'value'      => null,
             'index'      => 3
         ]);
@@ -213,8 +213,8 @@ class FormulaDetailTableSeeder extends Seeder
             'formula_id' => 8,
             'rule'       => 'R',
             'name'       => 'CBM',
-            'from'       => '27',
-            'to'         => null,
+            'from'       => 27,
+            'to'         => 1000000,
             'value'      => null,
             'index'      => 3
         ]);
