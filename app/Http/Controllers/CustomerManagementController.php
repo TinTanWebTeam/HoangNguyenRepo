@@ -681,6 +681,7 @@ class CustomerManagementController extends Controller
         $carrying = null;
         $parking = null;
         $fine = null;
+        $phiTangBo = null;
         $cashProfit = null;
         $voucherNumber = null;
         $voucherQuantumProduct = null;
@@ -695,6 +696,7 @@ class CustomerManagementController extends Controller
         $vehicle_id = null;
         $product_id = null;
         $customer_id = null;
+        $formula_id = null;
         $costNote = null;
         $transportType = null;
         $vehicle_name = null;
@@ -717,8 +719,9 @@ class CustomerManagementController extends Controller
             $carrying = $request->input('_transport')['carrying'];
             $parking = $request->input('_transport')['parking'];
             $fine = $request->input('_transport')['fine'];
+            $phiTangBo = $request->input('_transport')['phiTangBo'];
             $cashReceive = $request->input('_transport')['cashReceive'];
-            $cashProfit = $cashRevenue - $cashDelivery - $carrying - $parking - $fine;
+            $cashProfit = $cashRevenue - $cashDelivery - $carrying - $parking - $fine - $phiTangBo;
             $voucherNumber = $request->input('_transport')['voucherNumber'];
             $voucherQuantumProduct = $request->input('_transport')['voucherQuantumProduct'];
             $receiver = $request->input('_transport')['receiver'];
@@ -733,6 +736,7 @@ class CustomerManagementController extends Controller
             $vehicle_id = $request->input('_transport')['vehicle_id'];
             $product_id = $request->input('_transport')['product_id'];
             $customer_id = $request->input('_transport')['customer_id'];
+            $formula_id = $request->input('_transport')['formula_id'];
             $costNote = $request->input('_transport')['costNote'];
             $transportType = $request->input('_transport')['transportType'];
             if ($transportType == 1) {
@@ -761,6 +765,7 @@ class CustomerManagementController extends Controller
                     $transportNew->carrying = $carrying;
                     $transportNew->parking = $parking;
                     $transportNew->fine = $fine;
+                    $transportNew->phiTangBo = $phiTangBo;
                     $transportNew->cashReceive = $cashReceive;
                     $transportNew->cashProfit = $cashProfit;
                     $transportNew->voucherNumber = $voucherNumber;
@@ -780,6 +785,7 @@ class CustomerManagementController extends Controller
                     $transportNew->transportType = $transportType;
                     $transportNew->costNote = $costNote;
                     $transportNew->vehicle_id = $vehicle_id;
+                    $transportNew->formula_id = $formula_id;
                     if ($transportType == 1) {
                         $transportNew->vehicle_name = $vehicle_name;
                         $transportNew->customer_name = $customer_name;
@@ -854,6 +860,10 @@ class CustomerManagementController extends Controller
                     $transportUpdate->cashRevenue = $cashRevenue;
                     $transportUpdate->cashDelivery = $cashDelivery;
                     $transportUpdate->cashPreDelivery = 0;
+                    $transportUpdate->carrying = $carrying;
+                    $transportUpdate->parking = $parking;
+                    $transportUpdate->fine = $fine;
+                    $transportUpdate->phiTangBo = $phiTangBo;
                     $transportUpdate->cashReceive = $cashReceive;
                     $transportUpdate->cashProfit = $cashProfit;
                     $transportUpdate->voucherNumber = $voucherNumber;
@@ -872,6 +882,7 @@ class CustomerManagementController extends Controller
                     $transportUpdate->customer_id = $customer_id;
                     $transportUpdate->costNote = $costNote;
                     $transportUpdate->vehicle_id = $vehicle_id;
+                    $transportUpdate->formula_id = $formula_id;
 
                     if ($transportType == 1) {
                         $transportUpdate->vehicle_name = $vehicle_name;
@@ -1052,7 +1063,7 @@ class CustomerManagementController extends Controller
                 return response()->json(['msg' => 'Add File in database fail!'], 203);
             }
 
-//            Storage::put($file->getClientOriginalName(), file_get_contents($file->getRealPath()));
+            // Storage::put($file->getClientOriginalName(), file_get_contents($file->getRealPath()));
             if (!$file->move('../public/files/transport', $fileNew->filePath)) {
                 return response()->json(['msg' => 'Add File in folder fail!'], 203);
             }

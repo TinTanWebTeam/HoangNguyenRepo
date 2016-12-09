@@ -38,7 +38,8 @@ class TransportTableSeeder extends Seeder
             'note'                  => '',
             'status_transport'      => 1,
             'status_customer'       => 5,
-            'status_garage'         => 8
+            'status_garage'         => 8,
+            'formula_id'            => 1
         ]);
 
         \App\Transport::create([
@@ -68,7 +69,8 @@ class TransportTableSeeder extends Seeder
             'note'                  => 'Giao hàng cho Vedan',
             'status_transport'      => 2,
             'status_customer'       => 6,
-            'status_garage'         => 9
+            'status_garage'         => 9,
+            'formula_id'            => 4
         ]);
 
         \App\Transport::create([
@@ -98,7 +100,8 @@ class TransportTableSeeder extends Seeder
             'note'                  => 'Giao cho HĐH',
             'status_transport'      => 3,
             'status_customer'       => 7,
-            'status_garage'         => 10
+            'status_garage'         => 10,
+            'formula_id'            => 6
         ]);
 
         //
@@ -130,6 +133,7 @@ class TransportTableSeeder extends Seeder
             'status_transport'      => 1,
             'status_customer'       => 5,
             'status_garage'         => 8,
+            'formula_id'            => 0
         ]);
 
         \App\Transport::create([
@@ -159,7 +163,8 @@ class TransportTableSeeder extends Seeder
             'note'                  => 'Giao hàng cho Vedan',
             'status_transport'      => 2,
             'status_customer'       => 6,
-            'status_garage'         => 9
+            'status_garage'         => 9,
+            'formula_id'            => 0
         ]);
 
         \App\Transport::create([
@@ -189,7 +194,8 @@ class TransportTableSeeder extends Seeder
             'note'                  => 'Giao cho HĐH',
             'status_transport'      => 3,
             'status_customer'       => 7,
-            'status_garage'         => 10
+            'status_garage'         => 10,
+            'formula_id'            => 0
         ]);
     }
 }

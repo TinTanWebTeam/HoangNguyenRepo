@@ -47,10 +47,10 @@
                         <li class="active">Đơn hàng</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed" id="button-box">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="transportView.displayControl('show', 'add');">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="transportView.addTransport();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
-                        <div class="btn btn-primary btn-circle btn-md" title="Ẩn thêm mới" onclick="transportView.displayControl('hide', '');">
+                        <div class="btn btn-primary btn-circle btn-md" title="Ẩn thêm mới" onclick="transportView.displayControl('hide');">
                             <i class="glyphicon glyphicon-minus icon-center"></i>
                         </div>
                     </div>
@@ -90,7 +90,6 @@
                                         <div class="form-group form-md-line-input">
                                             <label for="unit"><b>Đơn vị tính</b></label>
                                             <input type="text" class="form-control" id="unit" name="unit" readonly>
-                                            <input type="hidden" id="formula_id">
                                         </div>
                                     </div>
                                 </div>
@@ -100,6 +99,7 @@
                             </fieldset>
                         </div>
                         <div class="col-md-6" style="height: auto;">
+                        <form id="frmControl">
                             <fieldset>
                                 <legend>Đơn hàng:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span style="font-size: 13px;">ĐH khống: </span>
@@ -109,8 +109,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group form-md-line-input">
                                             <label for="quantumProduct"><b>Lượng hàng</b></label>
-                                            <input type="number" class="form-control" id="quantumProduct"
-                                                   name="quantumProduct">
+                                            <input type="number" class="form-control" id="quantumProduct" name="quantumProduct" onfocusout="transportView.focusOut_calculateCashRevenue()">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -295,6 +294,7 @@
                                     </div>
                                 </div>
                             </fieldset>
+                        </form>
                         </div>
                     </div>
                     <!-- Chú thích -->
@@ -770,16 +770,11 @@
                 isAdmin: null,
                 formulaDetail: [],
 
-                displayControl: function (mode, action) {
+                displayControl: function (mode) {
                     if(mode === 'show'){
                         $("#control-box").fadeIn(300);
                         $("#button-box div").eq(0).fadeOut(0);
                         $("#button-box div").eq(1).fadeIn(0);
-
-                        if(action === 'add')
-                            transportView.addTransport();
-                        else
-                            transportView.editTransport();
                     } else {
                         $("#control-box").fadeOut(300);
                         $("#button-box div").eq(0).fadeIn(0);
@@ -916,6 +911,8 @@
                 },
 
                 loadData: function () {
+                    transportView.displayControl('hide');
+
                     $.ajax({
                         url: url + 'transport/transports',
                         type: "GET",
@@ -961,8 +958,6 @@
                     defaultZero("#quantumProduct");
                     defaultZero("#voucherQuantumProduct");
                     defaultZero("#unitPrice");
-
-                    transportView.displayControl('hide', '');
                 },
                 loadListVehicle: function () {
                     $.ajax({
@@ -1338,42 +1333,44 @@
                     $("input[id=transportType]").attr('checked', status);
 
                     if (transportView.transportType === 1) {
-                        $("input[id='vehicle_id']").val(transportView.current["vehicle_name"]);
+                        $("input[id=vehicle_id]").val(transportView.current["vehicle_name"]);
                         $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicle_id"]);
-                        $("input[id='customer_id']").val(transportView.current["customer_name"]);
+                        $("input[id=customer_id]").val(transportView.current["customer_name"]);
                         $("#customer_id").attr('data-customerId', transportView.current["customer_id"]);
-                        $("input[id='product_name']").val(transportView.current["product_name"]);
+                        $("input[id=product_name]").val(transportView.current["product_name"]);
                         $("#product_name").attr("data-productId", transportView.current["product_id"]);
                     } else {
                         var fullNumber = (transportView.current["vehicles_areaCode"] == null || transportView.current["vehicles_vehicleNumber"] == null) ? "" : transportView.current["vehicles_areaCode"] + '-' + transportView.current["vehicles_vehicleNumber"];
-                        $("input[id='vehicle_id']").val(fullNumber);
+                        $("input[id=vehicle_id]").val(fullNumber);
                         $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicle_id"]);
-                        $("input[id='customer_id']").val(transportView.current["customers_fullName"]);
+                        $("input[id=customer_id]").val(transportView.current["customers_fullName"]);
                         $("#customer_id").attr('data-customerId', transportView.current["customer_id"]);
-                        $("input[id='product_name']").val(transportView.current["products_name"]);
+                        $("input[id=product_name]").val(transportView.current["products_name"]);
                         $("#product_name").attr("data-productId", transportView.current["product_id"]);
                     }
 
-                    $("input[id='quantumProduct']").val(transportView.current["quantumProduct"]);
-                    $("input[id='weight']").val(transportView.current["weight"]);
-                    $("input[id='cashRevenue']").val(transportView.current["cashRevenue"]);
-                    $("input[id='cashDelivery']").val(transportView.current["cashDelivery"]);
-                    $("input[id='cashReceive']").val(transportView.current["cashReceive"]);
-                    $("input[id='carrying']").val(transportView.current["carrying"]);
-                    $("input[id='parking']").val(transportView.current["parking"]);
-                    $("input[id='fine']").val(transportView.current["fine"]);
-                    $("input[id='receiver']").val(transportView.current["receiver"]);
+                    $("input[id=quantumProduct]").val(transportView.current["quantumProduct"]);
+                    $("input[id=weight]").val(transportView.current["weight"]);
+                    $("input[id=cashRevenue]").val(transportView.current["cashRevenue"]);
+                    $("input[id=cashDelivery]").val(transportView.current["cashDelivery"]);
+                    $("input[id=cashReceive]").val(transportView.current["cashReceive"]);
+                    $("input[id=carrying]").val(transportView.current["carrying"]);
+                    $("input[id=parking]").val(transportView.current["parking"]);
+                    $("input[id=fine]").val(transportView.current["fine"]);
+                    $("input[id=phiTangBo]").val(transportView.current["phiTangBo"]);
+                    $("input[id=receiver]").val(transportView.current["receiver"]);
 
                     var receiveDate = moment(transportView.current["receiveDate"], "YYYY-MM-DD");
-                    $("input[id='receiveDate']").datepicker('update', receiveDate.format("DD-MM-YYYY"));
+                    $("input[id=receiveDate]").datepicker('update', receiveDate.format("DD-MM-YYYY"));
 
-                    $("input[id='receivePlace']").val(transportView.current["receivePlace"]);
-                    $("input[id='deliveryPlace']").val(transportView.current["deliveryPlace"]);
-                    $("input[id='voucherNumber']").val(transportView.current["voucherNumber"]);
-                    $("input[id='voucherQuantumProduct']").val(transportView.current["voucherQuantumProduct"]);
-                    $("textarea[id='note']").val(transportView.current["note"]);
-                    $("select[id='status_transport']").val(transportView.current["status_transport"]);
-                    $("textarea[id='costNote']").val(transportView.current["costNote"]);
+                    $("input[id=receivePlace]").val(transportView.current["receivePlace"]);
+                    $("input[id=deliveryPlace]").val(transportView.current["deliveryPlace"]);
+                    $("input[id=voucherNumber]").val(transportView.current["voucherNumber"]);
+                    $("input[id=voucherQuantumProduct]").val(transportView.current["voucherQuantumProduct"]);
+                    $("textarea[id=note]").val(transportView.current["note"]);
+                    $("select[id=status_transport]").val(transportView.current["status_transport"]);
+                    $("textarea[id=costNote]").val(transportView.current["costNote"]);
+                    $("input[id=formula_id]").val(transportView.current["formula_id"]);
 
                     var strVoucherName = "";
                     for (var item in transportView.arrayVoucher) {
@@ -1382,7 +1379,7 @@
                         }), true);
                         strVoucherName += objVoucher.name + ", ";
                     }
-                    $("input[id='voucher_transport']").val(strVoucherName);
+                    $("input[id=voucher_transport]").val(strVoucherName);
                     formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
@@ -1399,6 +1396,7 @@
                             carrying: asNumberFromCurrency("#carrying"),
                             parking: asNumberFromCurrency("#parking"),
                             fine: asNumberFromCurrency("#fine"),
+                            phiTangBo: asNumberFromCurrency("#phiTangBo"),
                             receiver: $("input[id='receiver']").val(),
                             receiveDate: $("input[id='receiveDate']").val(),
                             receivePlace: $("input[id='receivePlace']").val(),
@@ -1409,7 +1407,8 @@
                             status_transport: $("select[id='status_transport']").val(),
                             costNote: $("textarea[id='costNote']").val(),
                             voucher_transport: transportView.arrayVoucher,
-                            transportType: transportView.transportType
+                            transportType: transportView.transportType,
+                            formula_id: $("input[id=formula_id]").val()
                         };
                     } else if (transportView.action == 'update') {
                         transportView.current.vehicle_id = $("#vehicle_id").attr("data-vehicleId");
@@ -1423,6 +1422,7 @@
                         transportView.current.carrying = asNumberFromCurrency("#carrying");
                         transportView.current.parking = asNumberFromCurrency("#parking");
                         transportView.current.fine = asNumberFromCurrency("#fine");
+                        transportView.current.phiTangBo = asNumberFromCurrency("#phiTangBo");
                         transportView.current.receiver = $("input[id='receiver']").val();
                         transportView.current.receiveDate = $("input[id='receiveDate']").val();
                         transportView.current.receivePlace = $("input[id='receivePlace']").val();
@@ -1434,6 +1434,7 @@
                         transportView.current.costNote = $("textarea[id='costNote']").val();
                         transportView.current.voucher_transport = transportView.arrayVoucher;
                         transportView.current.transportType = transportView.transportType;
+                        transportView.current.formula_id = $("input[id=formula_id]").val();
                     }
                     if (transportView.transportType === 1) {
                         transportView.current.vehicle_name = $("input[id='vehicle_id']").val();
@@ -1443,6 +1444,8 @@
                 },
 
                 editTransport: function (id) {
+                    transportView.displayControl('show');
+
                     $("input[id=transportType]").prop('disabled', true);
 
                     transportView.current = null;
@@ -1476,6 +1479,8 @@
                     $("div[id=thumbnail]").html('');
                 },
                 addTransport: function () {
+                    transportView.displayControl('show');
+
                     $("input[id=transportType]").prop('disabled', false);
 
                     transportView.arrayVoucher = [];
@@ -1603,6 +1608,7 @@
                             _transport: transportView.current
                         };
                     }
+                    console.log('aaaaaaaaaa');
                     $.ajax({
                         url: url + 'transport/modify',
                         type: "POST",
@@ -1790,6 +1796,7 @@
                         $("#unitPrice").val(0);
                         $("#unit").val('');
                         $("#formulaCode").val('');
+                        $("#cashDelivery").val('');
                         return;
                     }
 
@@ -1810,11 +1817,15 @@
                             $("#unitPrice").val(data['formula']['unitPrice']);
                             $("#unit").val(data['formula']['unit']);
                             $("#formulaCode").val(data['formula']['formulaCode']);
+                            $("#cashDelivery").val(data['formula']['cashDelivery']);
+                            $("#formula_id").val(data['formula']['id']);
                             formatCurrency(".currency");
                         } else if (jqXHR.status == 203) {
                             $("#unitPrice").val(0);
                             $("#unit").val('');
                             $("#formulaCode").val('');
+                            $("#cashDelivery").val('');
+                            $("#formula_id").val('');
                             showNotification("error", data['msg']);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -1850,11 +1861,15 @@
                             $("#unitPrice").val(data['formula']['unitPrice']);
                             $("#unit").val(data['formula']['unit']);
                             $("#formulaCode").val(data['formula']['formulaCode']);
+                            $("#cashDelivery").val(data['formula']['cashDelivery']);
+                            $("#formula_id").val(data['formula']['id']);
                             formatCurrency(".currency");
                         } else if (jqXHR.status == 203) {
                             $("#unitPrice").val(0);
                             $("#unit").val('');
                             $("#formulaCode").val('');
+                            $("#cashDelivery").val('');
+                            $("#formula_id").val('');
                             showNotification("error", data['msg']);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -1885,7 +1900,12 @@
                     }
                 },
                 focusOut_calculateCashRevenue: function(){
+                    var quantumProduct = parseInt($("#quantumProduct").val());
+                    var unitPrice = asNumberFromCurrency("#unitPrice");
 
+                    var cashRevenue = quantumProduct * unitPrice;
+                    $("#cashRevenue").val(cashRevenue);
+                    formatCurrency(".currency");
                 },
                 findFormulaDetail: function () {
                     if ($("#customer_id").attr('data-customerId') == '')

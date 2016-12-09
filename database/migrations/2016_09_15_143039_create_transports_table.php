@@ -47,6 +47,7 @@ class CreateTransportsTable extends Migration
             $table->string('vehicle_name')->nullable()->comment('Số xe cho đơn hàng khống');;
             $table->string('product_name')->nullable()->comment('Sản phẩm cho đơn hàng khống');
             $table->string('customer_name')->nullable()->comment('Khách hàng cho đơn hàng khống');
+            $table->integer('formula_id')->unsigned()->comment('Mã công thức');
             $table->timestamps();
         });
     }
