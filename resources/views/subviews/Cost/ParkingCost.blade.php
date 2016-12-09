@@ -691,7 +691,7 @@
                             var price2 = _.maxBy(price, function (o) {
                                 return moment(o.created_at);
                             });
-                            console.log(price2);
+
                             if (price2 != null) {
                                 $("#vehicle_id").attr("data-id", vehicle.id);
                                 $('input[id=nameVehicleType]').val(vehicle.name);
@@ -733,6 +733,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoClose': true
                     });
+
                     $('#dateCheckIn').datepicker("setDate", new Date());
                     $('#timeCheckIn').timepicker("setTime", new Date());
                 },
@@ -773,17 +774,21 @@
                 fillCurrentObjectToForm: function () {
                     var dateCheckIn = moment(parkingCostView.current["dateCheckIn"], "YYYY-MM-DD");
                     var timeCheckIn = moment(parkingCostView.current["dateCheckIn"], "YYYY-MM-DD HH:mm:ss");
+                    var dateCheckOut = moment(parkingCostView.current["dateCheckOut"], "YYYY-MM-DD");
+                    var timeCheckOut = moment(parkingCostView.current["dateCheckOut"], "YYYY-MM-DD HH:mm:ss");
                     var vehicle = parkingCostView.current["vehicles_code"] + "-" + parkingCostView.current["vehicles_vehicleNumber"];
                     var totalCost = parkingCostView.current["totalHour"] * parkingCostView.current["prices_price"];
                     $("input[id='dateCheckIn']").datepicker('update', dateCheckIn.format("DD-MM-YYYY"));
                     $("input[id='timeCheckIn']").val(timeCheckIn.format("HH:mm"));
+                    $("input[id='dateCheckOut']").datepicker('update', dateCheckOut.format("DD-MM-YYYY"));
+                    $("input[id='timeCheckOut']").val(timeCheckOut.format("HH:mm"));
                     $("input[id='vehicle_id']").val(vehicle);
                     $("textarea[id='note']").val(parkingCostView.current["note"]);
                     $("input[id='nameVehicleType']").val(parkingCostView.current["vehicleType"]);
                     $("input[id='totalCost']").val(totalCost);
+                    $("input[id='totalDate']").val(parkingCostView.current["totalDate"]);
+                    $("input[id='totalTime']").val(parkingCostView.current["totalHour"]);
                     $("#vehicle_id").attr('data-id', parkingCostView.current["vehicle_id"]);
-
-                    console.log(parkingCostView.current);
                     $("#price").attr('data-priceId', parkingCostView.current["price_id"]);
                     $("input[id='price']").val(parkingCostView.current["prices_price"]);
                     formatCurrency(".currency");
@@ -1152,7 +1157,7 @@
                         }
                     });
                 },
-                inputPrice: function (price,id) {
+                inputPrice: function (price, id) {
                     if (price == null) {
                         $("input[id='price']").val('0');
                     } else {
@@ -1205,7 +1210,7 @@
                                     parkingCostView.tablePrice.push(data['prices']);
                                     parkingCostView.showNotification("success", "Thêm thành công!");
                                     parkingCostView.displayModal("hide", "#modal-addCostPrice");
-                                    parkingCostView.inputPrice(data['prices'].price,data['prices'].id );
+                                    parkingCostView.inputPrice(data['prices'].price, data['prices'].id);
                                     parkingCostView.clearInputPrice();
                                     parkingCostView.clearInput();
                                 } else {

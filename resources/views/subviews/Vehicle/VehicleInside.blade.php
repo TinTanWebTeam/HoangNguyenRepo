@@ -296,7 +296,7 @@
                                 <div class="col-sm-6 col-xs-6">
                                     <div class="form-group form-md-line-input">
                                         <label for="yearOfProduction"><b>Năm sản xuất</b></label>
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="date-own form-control"
                                                id="yearOfProduction"
                                                name="yearOfProduction">
                                     </div>
@@ -494,6 +494,7 @@
 
 
 <script>
+
     $(function () {
         if (typeof (garageInsideView) === 'undefined') {
             garageInsideView = {
@@ -681,6 +682,10 @@
                     });
                     garageInsideView.renderScrollbar();
                     garageInsideView.renderEventCloseModal();
+                    $('.date-own').datepicker({
+                        minViewMode: 2,
+                        format: 'yyyy'
+                    });
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
