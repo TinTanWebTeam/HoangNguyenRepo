@@ -50,7 +50,7 @@
                         <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="transportView.addTransport();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
-                        <div class="btn btn-primary btn-circle btn-md" title="Ẩn thêm mới" onclick="transportView.displayControl('hide');">
+                        <div class="btn btn-primary btn-circle btn-md" style="display: none" title="Ẩn thêm mới" onclick="transportView.displayControl('hide');">
                             <i class="glyphicon glyphicon-minus icon-center"></i>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <div class="row" id="control-box">
+                    <div class="row" id="control-box" style="display: none">
                         <div class="col-md-6" style="height: auto;">
                             <fieldset>
                                 <legend>Công thức:</legend>
@@ -758,17 +758,21 @@
                 dataProductType: null,
                 dataFormula: null,
                 dataFormulaDetail: null,
-                arrayVoucher: {},
-                current: null,
-                action: null,
-                idDelete: null,
+                dataTransportFormulaDetail: null,
+
                 tagsProductName: [],
                 tagsCustomerName: [],
                 tagsVehicleName: [],
                 tagsProductType: [],
+                tagsValueFormulaDetail: [],
+
+                arrayVoucher: {},
+                current: null,
+                formulaDetail: [],
+                action: null,
+                idDelete: null,
                 transportType: 0,
                 isAdmin: null,
-                formulaDetail: [],
 
                 displayControl: function (mode) {
                     if(mode === 'show'){
@@ -820,6 +824,10 @@
                     $("input[id=phiTangBo]").val(0);
                     $("textarea[id=costNote]").val('');
                     $("input[id=transportType]").attr('checked', false);
+                    $("input[unitPrice]").val(0);
+                    $("input[unit]").val('');
+                    $("input[formulaCode]").val('');
+                    $("#formula-detail").html("<legend>Chi tiết công thức:</legend>");
 
                     transportView.arrayVoucher = {};
                 },
@@ -911,20 +919,22 @@
                 },
 
                 loadData: function () {
-                    transportView.displayControl('hide');
-
                     $.ajax({
                         url: url + 'transport/transports',
                         type: "GET",
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            transportView.isAdmin = data['isAdmin'];
                             transportView.dataTransport = data['transports'];
-                            transportView.fillDataToDatatable(transportView.dataTransport);
                             transportView.dataVoucherTransport = data['voucherTransports'];
                             transportView.dataVoucher = data['vouchers'];
                             transportView.dataStatus = data['statuses'];
+                            transportView.dataCostPrice = data['costPrices'];
+                            transportView.dataFormula = data['formulas'];
+                            transportView.dataFormulaDetail = data['formulaDetails'];
+                            transportView.dataTransportFormulaDetail = data['transportFormulaDetails'];
+                            transportView.isAdmin = data['isAdmin'];
+                            transportView.fillDataToDatatable(transportView.dataTransport);
                             transportView.loadSelectBox(transportView.dataStatus, 'status_transport', 'status');
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -1123,6 +1133,8 @@
 
                 fillDataToDatatable: function (data) {
                     //  removeDataTable();
+                    if(transportView.table != null)
+                        transportView.table.destroy();
 
                     for (var i = 0; i < data.length; i++) {
                         if (data[i]['transportType'] === 1) {
@@ -1372,6 +1384,7 @@
                     $("textarea[id=costNote]").val(transportView.current["costNote"]);
                     $("input[id=formula_id]").val(transportView.current["formula_id"]);
 
+                    debugger;
                     var strVoucherName = "";
                     for (var item in transportView.arrayVoucher) {
                         var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
@@ -1380,6 +1393,27 @@
                         strVoucherName += objVoucher.name + ", ";
                     }
                     $("input[id=voucher_transport]").val(strVoucherName);
+
+                    var formula = _.find(transportView.dataFormula, function(o){
+                        return o.id == transportView.current['formula_id'];
+                    });
+                    if(typeof formula === 'undefined') return; 
+                    $("input[id=unitPrice]").val(formula.unitPrice);
+                    $("input[id=unit]").val(formula.unit);
+                    $("input[id=formulaCode]").val(formula.formulaCode);
+
+                    var formulaDetail = _.filter(transportView.dataFormulaDetail, function(o){
+                        return o.formula_id == formula.id;
+                    });
+                    if(typeof formulaDetail === 'undefined') return;
+                    transportView.appendViewFormulaDetail(formulaDetail);
+
+                    var transportFormulaDetail = _.filter(transportView.dataTransportFormulaDetail, function(o){
+                        return o.transport_id == transportView.current['id'];
+                    });
+                    if(typeof transportFormulaDetail === 'undefined') return;
+                    transportView.setValueFormFormulaDetail(transportFormulaDetail);
+
                     formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
@@ -1605,10 +1639,10 @@
                         var sendToServer = {
                             _token: _token,
                             _action: transportView.action,
-                            _transport: transportView.current
+                            _transport: transportView.current,
+                            _formulaDetail: transportView.formulaDetail
                         };
                     }
-                    console.log('aaaaaaaaaa');
                     $.ajax({
                         url: url + 'transport/modify',
                         type: "POST",
@@ -1618,58 +1652,26 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
+                            transportView.dataTransport = data['transports'];
+                            transportView.dataVoucherTransport = data['voucherTransports'];
+                            transportView.dataVoucher = data['vouchers'];
+                            transportView.dataStatus = data['statuses'];
+                            transportView.dataCostPrice = data['costPrices'];
+                            transportView.dataFormula = data['formulas'];
+                            transportView.dataFormulaDetail = data['formulaDetails'];
+                            transportView.dataTransportFormulaDetail = data['transportFormulaDetails'];
+                            transportView.isAdmin = data['isAdmin'];
+                            transportView.fillDataToDatatable(transportView.dataTransport);
+
                             switch (transportView.action) {
                                 case 'add':
-                                    if (data['transport']['transportType'] === 1) {
-                                        data['transport'].fullNumber = data['transport']['vehicle_name'];
-                                        data['transport'].products_name = data['transport']['product_name'];
-                                        data['transport'].customers_fullName = data['transport']['customer_name'];
-                                    } else {
-                                        var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
-                                        data['transport'].fullNumber = fullNumber;
-                                    }
-
-                                    var mapStt = _.map(transportView.dataTransport, 'stt');
-                                    var maxStt = _.max(mapStt);
-                                    data['transport'].stt = maxStt + 1;
-
-                                    transportView.dataTransport.push(data['transport']);
-
-                                    transportView.dataVoucherTransport = _.union(transportView.dataVoucherTransport, data['voucherTransport']);
-
                                     showNotification("success", "Thêm thành công!");
                                     break;
                                 case 'update':
-                                    var Old = _.find(transportView.dataTransport, function (o) {
-                                        return o.id == sendToServer._transport.id;
-                                    });
-                                    var indexOfOld = _.indexOf(transportView.dataTransport, Old);
-
-                                    if (data['transport']['transportType'] === 1) {
-                                        data['transport'].fullNumber = data['transport']['vehicle_name'];
-                                        data['transport'].products_name = data['transport']['product_name'];
-                                        data['transport'].customers_fullName = data['transport']['customer_name'];
-                                    } else {
-                                        var fullNumber = (data['transport']['vehicles_areaCode'] == null || data['transport']['vehicles_vehicleNumber'] == null) ? "" : data['transport']['vehicles_areaCode'] + '-' + data['transport']['vehicles_vehicleNumber'];
-                                        data['transport'].fullNumber = fullNumber;
-                                    }
-                                    data['transport'].stt = Old.stt;
-                                    transportView.dataTransport.splice(indexOfOld, 1, data['transport']);
-
-                                    _.remove(transportView.dataVoucherTransport, function (currentObject) {
-                                        return currentObject.transport_id === sendToServer._transport.id;
-                                    });
-                                    transportView.dataVoucherTransport = transportView.dataVoucherTransport.concat(data['voucherTransport']);
-
                                     showNotification("success", "Cập nhật thành công!");
                                     transportView.hideControl();
                                     break;
                                 case 'delete':
-                                    var Old = _.find(transportView.dataTransport, function (o) {
-                                        return o.id == sendToServer._id;
-                                    });
-                                    var indexOfOld = _.indexOf(transportView.dataTransport, Old);
-                                    transportView.dataTransport.splice(indexOfOld, 1);
                                     showNotification("success", "Xóa thành công!");
                                     transportView.displayModal("hide", "#modal-confirmDelete");
                                     break;
@@ -1682,7 +1684,7 @@
                                 transportView.uploadMultiFile();
                             }
 
-                            transportView.table.clear().rows.add(transportView.dataTransport).draw();
+                            // transportView.table.clear().rows.add(transportView.dataTransport).draw();
                             transportView.clearInput();
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
@@ -1784,7 +1786,7 @@
                 },
 
                 focusOut_getFormula: function () {
-                    transportView.setValueFormulaDetail();
+                    transportView.getValueFormFormulaDetail();
 
                     var kt = true;
                     _.each(transportView.formulaDetail, function(value, key){
@@ -1929,6 +1931,13 @@
                             transportView.dataFormula = data['formulas'];
                             transportView.dataFormulaDetail = data['formulaDetails'];
                             transportView.appendViewFormulaDetail(data['formulaDetails']);
+
+                            var dataSingle = _.filter(transportView.dataFormulaDetail, function(o){
+                                return o.rule == 'S';
+                            });
+                            transportView.tagsValueFormulaDetail = _.map(dataSingle, 'value');
+                            transportView.tagsValueFormulaDetail = _.union(transportView.tagsValueFormulaDetail);
+                            renderAutoCompleteSearch('.name', transportView.tagsValueFormulaDetail);
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1944,7 +1953,7 @@
                         str += '<div class="col-md-12">';
                         str += '<div class="form-group form-md-line-input">';
                         str += '<label for="id_'+data[key]["id"]+'" class="red"><b>'+data[key]["name"]+'</b></label>';
-                        str += '<input type="text" class="form-control" id="id_'+data[key]["id"]+'" data-rule='+data[key]["rule"]+' onfocusout="transportView.focusOut_getFormula()">';
+                        str += '<input type="text"  class="form-control name" id="id_'+data[key]["id"]+'" data-rule='+data[key]["rule"]+' onfocusout="transportView.focusOut_getFormula()">';
                         str += '</div>';
                         str += '</div>';
                         str += '</div>';
@@ -1959,10 +1968,16 @@
                         transportView.formulaDetail.push(formulaDetail);
                     });
                 },
-                setValueFormulaDetail: function(){
+                getValueFormFormulaDetail: function(){
                     var searchEles = $("#formula-detail input");
                     for(var i = 0; i < searchEles.length; i++) {
                         transportView.formulaDetail[i]['value'] = $(searchEles[i]).val();
+                    }
+                },
+                setValueFormFormulaDetail: function(formulaDetail){
+                    var searchEles = $("#formula-detail input");
+                    for(var i = 0; i < searchEles.length; i++) {
+                        $(searchEles[i]).val(formulaDetail[i]['value']); 
                     }
                 },
 

@@ -22,6 +22,7 @@ use App\Transport;
 use App\VehicleType;
 use App\Voucher;
 use App\VoucherTransport;
+use App\TransportFormulaDetail;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -30,6 +31,17 @@ use League\Flysystem\Exception;
 
 class CustomerManagementController extends Controller
 {
+    /* Normal Function */
+    public function generateTransportCode()
+    {
+        $transportCode = 'DH' . date('ymd');
+
+        $stt = Transport::where('transportCode', 'like', $transportCode . '%')->get()->count() + 1;
+        $transportCode .= substr('00' . $stt, -3);
+
+        return $transportCode;
+    }
+
     /* Customer */
     public function getViewCustomer()
     {
@@ -121,7 +133,7 @@ class CustomerManagementController extends Controller
                     return response()->json(['msg' => 'fullName exists'], 203);
                 }
 
-                $customerNew = new Customer();
+                $customerNew = new Customer;
                 $customerNew->customerType_id = $customerType_id;
                 $customerNew->fullName = $fullName;
                 $customerNew->taxCode = $taxCode;
@@ -199,7 +211,6 @@ class CustomerManagementController extends Controller
     }
 
     /* Staff*/
-
     public function postModifyStaff(Request $request)
     {
         if (!\Auth::check()) {
@@ -234,7 +245,7 @@ class CustomerManagementController extends Controller
 
         switch ($action) {
             case 'addStaff':
-                $staffNew = new StaffCustomer();
+                $staffNew = new StaffCustomer;
                 $staffNew->fullName = $fullNameStaff;
                 $staffNew->position = $positionStaff;
                 $staffNew->address = $addressStaff;
@@ -333,7 +344,7 @@ class CustomerManagementController extends Controller
 
         switch ($action) {
             case 'add':
-                $customerTypeNew = new CustomerType();
+                $customerTypeNew = new CustomerType;
                 $customerTypeNew->name = $name;
                 $customerTypeNew->description = $description;
                 if ($customerTypeNew->save()) {
@@ -424,10 +435,10 @@ class CustomerManagementController extends Controller
         switch ($action) {
             case 'add':
                 if (!$productType_id) {
-                    $productTypeNew = new ProductType();
+                    $productTypeNew = new ProductType;
                     $productTypeNew->name = $productType;
                     if ($productTypeNew->save()) {
-                        $productNew = new Product();
+                        $productNew = new Product;
                         $productNew->name = $name;
                         $productNew->description = $description;
                         $productNew->productType_id = $productTypeNew->id;
@@ -444,7 +455,7 @@ class CustomerManagementController extends Controller
 
                     return response()->json(['msg' => 'Create failed'], 404);
                 } else {
-                    $productNew = new Product();
+                    $productNew = new Product;
                     $productNew->name = $name;
                     $productNew->description = $description;
                     $productNew->productType_id = $productType_id;
@@ -546,7 +557,7 @@ class CustomerManagementController extends Controller
         try {
             switch ($action) {
                 case 'add':
-                    $voucherNew = new Voucher();
+                    $voucherNew = new Voucher;
                     $voucherNew->name = $name;
                     $voucherNew->description = $description;
                     if ($voucherNew->save()) {
@@ -599,18 +610,6 @@ class CustomerManagementController extends Controller
     }
 
     /* Transport */
-    public function getViewTransport()
-    {
-        return view('subviews.Customer.DeliveryRequirement');
-    }
-
-    public function getDataTransport()
-    {
-        $response = $this->DataTransport();
-
-        return response()->json($response, 200);
-    }
-
     public function DataTransport()
     {
         $transports = DB::table('transports')
@@ -644,6 +643,9 @@ class CustomerManagementController extends Controller
         $vouchers = Voucher::all();
         $statuses = Status::where('tableName', 'transports')->get();
         $costPrices = CostPrice::all();
+        $formulas = Formula::all();
+        $formulaDetails = FormulaDetail::all();
+        $transportFormulaDetails = TransportFormulaDetail::all();
 
         /* Dùng role Admin để hiện doanh thu và lợi nhuận. */
         // $isAdmin = SubRole::where([
@@ -659,17 +661,32 @@ class CustomerManagementController extends Controller
         ])->get()->isEmpty();
 
         $response = [
-            'msg'               => 'Get list all Transport',
-            'transports'        => $transports,
-            'voucherTransports' => $voucherTransports,
-            'vouchers'          => $vouchers,
-            'statuses'          => $statuses,
-            'costPrices'        => $costPrices,
-            'isAdmin'           => (!$isAdmin) ? 1 : 0
+            'msg'                     => 'Get list all Transport',
+            'transports'              => $transports,
+            'voucherTransports'       => $voucherTransports,
+            'vouchers'                => $vouchers,
+            'statuses'                => $statuses,
+            'costPrices'              => $costPrices,
+            'formulas'                => $formulas,
+            'formulaDetails'          => $formulaDetails,
+            'transportFormulaDetails' => $transportFormulaDetails,
+            'isAdmin'                 => (!$isAdmin) ? 1: 0
         ];
 
         return $response;
     }
+    
+    public function getViewTransport()
+    {
+        return view('subviews.Customer.DeliveryRequirement');
+    }
+
+    public function getDataTransport()
+    {
+        $response = $this->DataTransport();
+
+        return response()->json($response, 200);
+    }    
 
     public function postModifyTransport(Request $request)
     {
@@ -704,6 +721,8 @@ class CustomerManagementController extends Controller
         $product_name = null;
 
         $array_voucherTransport = [];
+
+        $formulaDetail = null;
 
         $action = $request->input('_action');
         if ($action != 'delete') {
@@ -750,12 +769,13 @@ class CustomerManagementController extends Controller
                     return $value !== '';
                 });
             }
+            $formulaDetail = $request->input('_formulaDetail');
         }
         try {
             DB::beginTransaction();
             switch ($action) {
                 case 'add':
-                    $transportNew = new Transport();
+                    $transportNew = new Transport;
                     $transportNew->transportCode = $this->generateTransportCode();
                     $transportNew->weight = $weight;
                     $transportNew->quantumProduct = $quantumProduct;
@@ -799,7 +819,7 @@ class CustomerManagementController extends Controller
                     }
                     //Add VoucherTransport
                     foreach ($array_voucherTransport as $key => $value) {
-                        $vouTranNew = new VoucherTransport();
+                        $vouTranNew = new VoucherTransport;
                         $vouTranNew->voucher_id = $key;
                         $vouTranNew->transport_id = $transportNew->id;
                         $vouTranNew->quantity = $value;
@@ -807,43 +827,25 @@ class CustomerManagementController extends Controller
                         $vouTranNew->updatedBy = \Auth::user()->id;
                         if (!$vouTranNew->save()) {
                             DB::rollBack();
-
                             return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
                         }
                     }
 
-                    //Response
-                    $transport = DB::table('transports')
-                        ->select('transports.*',
-                            'products.name as products_name',
-                            'customers.fullName as customers_fullName',
-                            'vehicles.areaCode as vehicles_areaCode',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                            'statuses_tran.status as status_transport_',
-                            'statuses_cust.status as status_customer_',
-                            'statuses_gar.status as status_garage_',
-                            'users_createdBy.fullName as users_createdBy',
-                            'users_updatedBy.fullName as users_updatedBy'
-                        )
-                        ->leftJoin('products', 'products.id', '=', 'transports.product_id')
-                        ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-                        ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-                        ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-                        ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-                        ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-                        ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                        ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                        ->where('transports.id', $transportNew->id)
-                        ->where('transports.active', 1)
-                        ->first();
+                    //Add TransportFormulaDetail
+                    foreach($formulaDetail as $item){
+                        $transportFormulaDetail = new TransportFormulaDetail;
+                        $transportFormulaDetail->name = $item['name'];
+                        $transportFormulaDetail->value = $item['value'];
+                        $transportFormulaDetail->rule = $item['rule'];
+                        $transportFormulaDetail->transport_id = $transportNew->id;
+                        if (!$transportFormulaDetail->save()) {
+                            DB::rollBack();
+                            return response()->json(['msg' => 'Create TransportFormulaDetail failed'], 404);
+                        }
+                    }
 
-                    $voucherTransport = VoucherTransport::where('transport_id', $transportNew->id)->get();
-
-                    $response = [
-                        'msg'              => 'Created transport',
-                        'transport'        => $transport,
-                        'voucherTransport' => $voucherTransport,
-                    ];
+                    // Response
+                    $response = $this->DataTransport();
                     DB::commit();
 
                     return response()->json($response, 201);
@@ -910,7 +912,7 @@ class CustomerManagementController extends Controller
 
                     //Add VoucherTransport
                     foreach ($array_voucherTransport as $key => $value) {
-                        $vouTranNew = new VoucherTransport();
+                        $vouTranNew = new VoucherTransport;
                         $vouTranNew->voucher_id = $key;
                         $vouTranNew->transport_id = $transportUpdate->id;
                         $vouTranNew->quantity = $value;
@@ -949,69 +951,42 @@ class CustomerManagementController extends Controller
                     //  }
 
                     //Response
-                    $transport = DB::table('transports')
-                        ->select('transports.*',
-                            'products.name as products_name',
-                            'customers.fullName as customers_fullName',
-                            'vehicles.areaCode as vehicles_areaCode',
-                            'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                            'statuses_tran.status as status_transport_',
-                            'statuses_cust.status as status_customer_',
-                            'statuses_gar.status as status_garage_',
-                            'users_createdBy.fullName as users_createdBy',
-                            'users_updatedBy.fullName as users_updatedBy'
-                        )
-                        ->leftJoin('products', 'products.id', '=', 'transports.product_id')
-                        ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
-                        ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-                        ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
-                        ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
-                        ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
-                        ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-                        ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-                        ->where('transports.id', $transportUpdate->id)
-                        ->where('transports.active', 1)
-                        ->first();
-
-                    $voucherTransport = VoucherTransport::where('transport_id', $transportUpdate->id)->get();
-
-                    $response = [
-                        'msg'              => 'Updated transport',
-                        'transport'        => $transport,
-                        'voucherTransport' => $voucherTransport,
-                    ];
+                    $response = $this->DataTransport();
                     DB::commit();
 
                     return response()->json($response, 201);
                     break;
                 case 'delete':
                     $transport_id = $request->input('_id');
-                    //Delete VoucherTransport
-                    $vouTranDelete = VoucherTransport::where('transport_id', $transport_id)->get()->toArray();
-                    if (count($vouTranDelete) > 0) {
-                        $ids_to_delete = array_map(function ($item) {
-                            return $item['id'];
-                        }, $vouTranDelete);
-                        if (DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->delete() <= 0) {
+                    //Deactive VoucherTransport
+                    $ids_to_delete = VoucherTransport::where('transport_id', $transport_id)->pluck('id')->toArray();
+                    if (count($ids_to_delete) > 0) {
+                        if (DB::table('voucherTransports')->whereIn('id', $ids_to_delete)->update(['active' => 0]) <= 0) {
                             DB::rollBack();
-
                             return response()->json(['msg' => 'Delete VoucherTransport failed'], 404);
                         }
                     }
 
+                    //Deactive TransportFormulaDetail
+                    $ids_to_delete = TransportFormulaDetail::where('transport_id', $transport_id)->pluck('id')->toArray();
+                    if (count($ids_to_delete) > 0) {
+                        if (DB::table('transportFormulaDetails')->whereIn('id', $ids_to_delete)->update(['active' => 0]) <= 0) {
+                            DB::rollBack();
+                            return response()->json(['msg' => 'Delete TranposrtFormulaDetail failed'], 404);
+                        }
+                    }
+
+                    //Deactive Transport
                     $transportDelete = Transport::findOrFail($request->input('_id'));
                     $transportDelete->active = 0;
                     $transportDelete->updatedBy = \Auth::user()->id;
-
-                    //Response
                     if (!$transportDelete->update()) {
                         DB::rollBack();
-
                         return response()->json(['msg' => 'Delete Transport failed'], 404);
                     }
-                    $response = [
-                        'msg' => 'Deleted transport',
-                    ];
+
+                    //Response
+                    $response = $this->DataTransport();
                     DB::commit();
 
                     return response()->json($response, 201);
@@ -1029,16 +1004,6 @@ class CustomerManagementController extends Controller
         }
     }
 
-    public function generateTransportCode()
-    {
-        $transportCode = 'DH' . date('ymd');
-
-        $stt = Transport::where('transportCode', 'like', $transportCode . '%')->get()->count() + 1;
-        $transportCode .= substr('00' . $stt, -3);
-
-        return $transportCode;
-    }
-
     /* File */
     public function postUploadMultiFile(Request $request)
     {
@@ -1048,7 +1013,7 @@ class CustomerManagementController extends Controller
             return response()->json(['msg' => 'File emplty'], 203);
         }
         foreach ($files as $file) {
-            $fileNew = new File();
+            $fileNew = new File;
             $fileNew->fileName = $file->getClientOriginalName();
             $fileNew->fileExtension = $file->getClientOriginalExtension();
             $fileNew->mimeType = $file->getClientMimeType();
