@@ -648,17 +648,19 @@ class CustomerManagementController extends Controller
         $transportFormulaDetails = TransportFormulaDetail::all();
 
         /* Dùng role Admin để hiện doanh thu và lợi nhuận. */
-        // $isAdmin = SubRole::where([
-        //     ['user_id', \Auth::user()->id],
-        //     ['role_id', 1]
-        // ])->get()->isEmpty();
-
-        /* Dùng role RevenueManagement để hiện doanh thu và lợi nhuận. */
-        $roleRevenueManagement = Role::where('name', 'RevenueManagement')->first();
         $isAdmin = SubRole::where([
             ['user_id', \Auth::user()->id],
-            ['role_id', $roleRevenueManagement->id]
+            ['role_id', 1]
         ])->get()->isEmpty();
+
+        if($isAdmin){
+            /* Dùng role RevenueManagement để hiện doanh thu và lợi nhuận. */
+            $roleRevenueManagement = Role::where('name', 'RevenueManagement')->first();
+            $isAdmin = SubRole::where([
+                ['user_id', \Auth::user()->id],
+                ['role_id', $roleRevenueManagement->id]
+            ])->get()->isEmpty();
+        }
 
         $response = [
             'msg'                     => 'Get list all Transport',

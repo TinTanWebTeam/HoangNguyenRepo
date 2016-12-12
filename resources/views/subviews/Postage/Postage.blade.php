@@ -276,11 +276,12 @@
                                         <table class="table table-bordered table-hover" id="table-postageDetail">
                                             <thead>
                                             <tr class="active">
+                                                <th>STT</th>
                                                 <th>Tên trường</th>
                                                 <th>Giá trị</th>
                                                 <th>Từ</th>
                                                 <th>Đến</th>
-                                                <th>Cập nhật</th>
+                                                <th>Xóa</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -373,16 +374,18 @@
                 table: null,
                 tablePostageDetail: null,
 
-                dataPostageFiltered: null,
                 dataPostage: null,
+                dataPostageDetail: null,
                 dataCustomer: null,
                 dataFuel: null,
                 dataFuelLastest: null,
 
                 current: null,
                 currentDetail: null,
+                arrayDetail: [],
                 action: null,
                 idDelete: null,
+                idDeleteDetail: null,
                 tagsCustomerName: [],
 
                 showControl: function () {
@@ -407,15 +410,8 @@
                     //Clear Validate
                 },
                 clearInput: function () {
-                    $("input[id='customer_id']").val('');
-                    $("#customer_id").attr("data-customerId", "");
-                    $("input[id='receivePlace']").val('');
-                    $("input[id='deliveryPlace']").val('');
-                    $("input[id='createdDate']").val('');
-                    $("input[id='applyDate']").val('');
-                    $("input[id='postage']").val('');
-                    $("input[id='cashDelivery']").val('');
-                    $("textarea[id='note']").val('');
+                    postageView.retype();
+                    postageView.retypeDetail();
                 },
                 retype: function () {
                     $("input[id=customer_id]").val('');
@@ -491,14 +487,6 @@
                         theme: "dark"
                     });
                 },
-                renderEventRowClick: function () {
-//                    $("#table-postageDetail").find("tbody").on('click', 'tr', function () {
-//                        $("#postage-id").val($(this).find('td:first')[0].innerText);
-//                        var applyDate = moment($(this).find('td:eq(4)')[0].innerText, "DD/MM/YYYY");
-//                        $("input[id='apply-date']").datepicker('update', applyDate.format("DD-MM-YYYY"));
-//                        postageView.displayModal('show', '#myModalNorm');
-//                    });
-                },
                 renderEventChangeRadio: function () {
                     $('input[type=radio][name=rule]').change(function () {
                         postageView.retypeDetail();
@@ -531,9 +519,9 @@
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
                             postageView.dataFuel = data['fuels'];
-                            postageView.dataPostage = data['postageFull'];
-                            postageView.dataPostageFiltered = data['postageFiltered'];
-                            postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+                            postageView.dataPostage = data['postages'];
+                            postageView.dataPostageDetail = data['postageDetails'];
+                            postageView.fillDataToDatatable(postageView.dataPostage);
 
                             postageView.getLatestFuel();
                         } else {
@@ -547,11 +535,7 @@
                     postageView.renderEventFocusOut();
                     postageView.renderDateTimePicker();
                     postageView.renderScrollbar();
-                    postageView.renderEventRowClick();
                     postageView.renderEventChangeRadio();
-
-//                    renderAutoCompleteSearch('#receivePlace', array_city);
-//                    renderAutoCompleteSearch('#deliveryPlace', array_city);
 
                     formatCurrency(".currency");
                     setEventFormatCurrency(".currency");
@@ -579,7 +563,7 @@
                 },
 
                 fillDataToDatatable: function (data) {
-//                    removeDataTable();
+                    // removeDataTable();
 
                     if (postageView.table != null)
                         postageView.table.destroy();
@@ -625,9 +609,9 @@
                             }
                         ],
                         order: [[0, "desc"]],
-//                        fixedHeader: {
-//                            header: true
-//                        },
+                    //    fixedHeader: {
+                    //        header: true
+                    //    },
                         dom: 'Bfrtip',
                         buttons: [
                             {
@@ -672,7 +656,7 @@
                         ]
                     });
                     $("#table-data").css("width", "auto");
-//                    pushDataTable(postageView.table);
+                    // pushDataTable(postageView.table);
                 },
                 fillDataToDatatablePostageDetail: function (data) {
                     if (postageView.tablePostageDetail != null)
@@ -683,41 +667,25 @@
                         data: data,
                         columns: [
                             {
-                                data: 'id',
+                                data: 'stt',
                                 visible: false
                             },
                             {
-                                data: 'postage',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                data: 'name',
                             },
                             {
-                                data: 'cashDelivery',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                data: 'value',
                             },
                             {
-                                data: 'applyDate',
-                                render: function (data, type, full, meta) {
-                                    if (data != null)
-                                        return moment(data).format("DD/MM/YYYY");
-                                    else
-                                        return "";
-                                }
+                                data: 'from'
                             },
                             {
-                                data: 'changeByFuel',
-                                render: function (data, type, full, meta) {
-                                    var tr = "";
-                                    if (full.changeByFuel == 0)
-                                        tr = "Nhập tay";
-                                    else
-                                        tr = "Giá dầu tăng"
-                                    return tr;
-                                }
+                                data: 'to'
                             },
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn btn-success btn-circle" onclick="postageView.showUpdateApplyDate(' + full.id + ')">';
+                                    tr += '<div class="btn btn-success btn-circle" onclick="postageView.idDeleteDetail = ' + full.stt + ';postageView.action = \'delete\';postageView.saveDetail()">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     return tr;
@@ -731,13 +699,11 @@
                 fillCurrentObjectToForm: function () {
                     $("input[id=customer_id]").val(postageView.current["customers_fullName"]);
                     $("#customer_id").attr('data-customerId', postageView.current["customer_id"]);
-
-                    $("input[id=postage]").val(postageView.current["postage"]);
+                    $("input[id=formulaCode]").val(postageView.current["formulaCode"]);
+                    $("input[id=unitPrice]").val(postageView.current["unitPrice"]);
+                    $("input[id=unit]").val(postageView.current["unit"]);
                     $("textarea[id=note]").val(postageView.current["note"]);
-                    $("input[id=receivePlace]").val(postageView.current["receivePlace"]);
-                    $("input[id=deliveryPlace]").val(postageView.current["deliveryPlace"]);
                     $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
-
                     var applyDate = moment(postageView.current["applyDate"], "YYYY-MM-DD");
                     $("input[id='applyDate']").datepicker('update', applyDate.format("DD-MM-YYYY"));
                     var createdDate = moment(postageView.current["createdDate"], "YYYY-MM-DD");
@@ -798,14 +764,14 @@
                     postageView.fillCurrentObjectToForm();
                     postageView.action = 'update';
                     postageView.showControl();
-
-                    var data = _.find(postageView.dataPostage, function (o) {
-                        return o.id == id;
+                    
+                    postageView.arrayDetail = _.filter(postageView.dataPostageDetail, function (o) {
+                        return o.formula_id == id;
                     });
-                    var dataDetail = _.filter(postageView.dataPostage, function (o) {
-                        return o.customer_id == data['customer_id'] && o.receivePlace == data['receivePlace'] && o.deliveryPlace == data['deliveryPlace'];
-                    });
-                    postageView.fillDataToDatatablePostageDetail(dataDetail);
+                    for(var i=0; i<postageView.arrayDetail.length; i++){
+                        postageView.arrayDetail[i].stt = i + 1;
+                    }
+                    postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
 
                     var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
                     $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
@@ -920,8 +886,8 @@
                 },
                 clearValidation: function (idForm) {
                     $(idForm).find("label[class=error]").remove();
-//                    var validator = $(idForm).validate();
-//                    validator.resetForm();
+                    // var validator = $(idForm).validate();
+                    // validator.resetForm();
                 },
 
                 save: function () {
@@ -943,7 +909,8 @@
                             var sendToServer = {
                                 _token: _token,
                                 _action: postageView.action,
-                                _postage: postageView.current
+                                _postage: postageView.current,
+                                _postageDetail: postageView.arrayDetail
                             };
                         } else {
                             $("form#frmControl").find("label[class=error]").css("color", "red");
@@ -961,35 +928,43 @@
                             console.log(data);
                             switch (postageView.action) {
                                 case 'add':
-                                    postageView.dataPostageFiltered = data['postageFiltered'];
-                                    postageView.dataPostage = data['postageFull'];
-                                    postageView.fillDataToDatatable(postageView.dataPostageFiltered);
-
-                                    var custId = parseInt($("#customer_id").attr('data-customerId'));
-                                    var data = _.filter(postageView.dataPostage, function (o) {
-                                        return o.customer_id == custId;
-                                    });
-                                    postageView.fillDataToDatatablePostageDetail(data);
+                                    postageView.arrayDetail = [];
+                                    postageView.dataPostage = data['postages'];
+                                    postageView.dataPostageDetail = data['postageDetails'];
+                                    postageView.fillDataToDatatable(postageView.dataPostage);
 
                                     showNotification("success", "Thêm thành công!");
-                                    break;
-                                case 'update':
-                                    postageView.dataPostageFiltered = data['postageFiltered'];
-                                    postageView.dataPostage = data['postageFull'];
-                                    postageView.fillDataToDatatable(postageView.dataPostageFiltered);
-
-                                    showNotification("success", "Cập nhật thành công!");
+                                    postageView.clearInput();
                                     postageView.hideControl();
                                     break;
-                                case 'delete':
+                                case 'update':
+                                    postageView.dataPostage = data['postages'];
+                                    postageView.dataPostageDetail = data['postageDetails'];
+                                    postageView.fillDataToDatatable(postageView.dataPostage);
 
+                                    var formula_id = data['id'];
+                                    var dataDetail = _.filter(postageView.dataPostageDetail, function (o) {
+                                        return o.formula_id == formula_id;
+                                    });
+                                    if(dataDetail.length > 0){
+                                        for (var i = 0; i < postageView.arrayDetail.length; i++) {
+                                            postageView.arrayDetail[i].stt = i + 1;
+                                        }
+                                        postageView.fillDataToDatatablePostageDetail(dataDetail);
+                                    }
+
+                                    showNotification("success", "Cập nhật thành công!");
+                                    postageView.retypeDetail();
+                                    break;
+                                case 'delete':
+                                    postageView.arrayDetail = [];
                                     showNotification("success", "Xóa thành công!");
                                     postageView.displayModal("hide", "#modal-notification");
+                                    postageView.hideControl();
                                     break;
                                 default:
                                     break;
                             }
-                            postageView.clearInput();
                         } else if (jqXHR.status == 203) {
                             showNotification("warning", data['msg']);
                         } else {
@@ -999,7 +974,7 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                saveDetail: function () {
+                saveDetail2: function () {
                     if (postageView.action == 'delete') {
                         var sendToServer = {
                             _token: _token,
@@ -1032,9 +1007,8 @@
                             console.log(data);
                             switch (postageView.action) {
                                 case 'add':
-                                    postageView.dataPostageFiltered = data['postageFiltered'];
-                                    postageView.dataPostage = data['postageFull'];
-                                    postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+                                    postageView.dataPostage = data['postages'];
+                                    postageView.fillDataToDatatable(postageView.dataPostage);
 
                                     var custId = parseInt($("#customer_id").attr('data-customerId'));
                                     var data = _.filter(postageView.dataPostage, function (o) {
@@ -1045,9 +1019,8 @@
                                     showNotification("success", "Thêm thành công!");
                                     break;
                                 case 'update':
-                                    postageView.dataPostageFiltered = data['postageFiltered'];
-                                    postageView.dataPostage = data['postageFull'];
-                                    postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+                                    postageView.dataPostage = data['postages'];
+                                    postageView.fillDataToDatatable(postageView.dataPostage);
 
                                     showNotification("success", "Cập nhật thành công!");
                                     postageView.hideControl();
@@ -1070,6 +1043,38 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
+                saveDetail: function () {
+                    if (postageView.action == 'delete') {
+                        var find = _.find(postageView.arrayDetail, function(o){
+                            return o.stt == postageView.idDeleteDetail;
+                        });
+                        postageView.arrayDetail.splice(find, 1);
+                    } else {
+                        postageView.formValidateJqueryDetail();
+                        if ($("#frmControlDetail").valid()) {
+
+                            postageView.fillFormDataToCurrentObjectDetail();
+
+                            postageView.arrayDetail.push({
+                                'action': postageView.action,
+                                'rule': postageView.currentDetail['rule'],
+                                'name': postageView.currentDetail['name'],
+                                'value': postageView.currentDetail['value'],
+                                'from': postageView.currentDetail['from'],
+                                'to': postageView.currentDetail['to']
+                            });
+
+                            for (var i = 0; i < postageView.arrayDetail.length; i++) {
+                                postageView.arrayDetail[i].stt = i + 1;
+                            }
+                            console.log(postageView.arrayDetail);
+                            postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
+                        } else {
+                            $("form#frmControlDetail").find("label[class=error]").css("color", "red");
+                            return;
+                        }
+                    }
+                },
 
                 updateApplyDate: function () {
                     var sendToServer = {
@@ -1085,9 +1090,8 @@
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 201) {
-                            postageView.dataPostageFiltered = data['postageFiltered'];
-                            postageView.dataPostage = data['postageFull'];
-                            postageView.fillDataToDatatable(postageView.dataPostageFiltered);
+                            postageView.dataPostage = data['postages'];
+                            postageView.fillDataToDatatable(postageView.dataPostage);
 
                             var custId = parseInt($("#customer_id").attr('data-customerId'));
                             var receivePlace = $("#receivePlace").val();

@@ -1384,7 +1384,6 @@
                     $("textarea[id=costNote]").val(transportView.current["costNote"]);
                     $("input[id=formula_id]").val(transportView.current["formula_id"]);
 
-                    debugger;
                     var strVoucherName = "";
                     for (var item in transportView.arrayVoucher) {
                         var objVoucher = _.clone(_.find(transportView.dataVoucher, function (o) {
@@ -1504,7 +1503,6 @@
                         return b[o.id] = o.quantity;
                     });
                     transportView.arrayVoucher = b;
-                    console.log(transportView.arrayVoucher);
 
                     transportView.fillCurrentObjectToForm();
                     transportView.action = 'update';
@@ -2067,7 +2065,6 @@
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 201) {
                             var files = data['files'];
-                            console.log(files);
                             transportView.fillFileToDatatable(files);
                         } else {
                             showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
@@ -2161,7 +2158,7 @@
                         dataType: 'json'
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 201) {
-                            console.log(data);
+                            
                         } else {
                             showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
