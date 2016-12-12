@@ -532,11 +532,13 @@ class VehicleManagementController extends Controller
             ->get();
         $vehicleTypes = VehicleType::all();
         $allGarage = Garage::all();
+        $driver = Driver::all();
         $response = [
             'msg' => 'Get data vehicleType success',
             'vehicleTypes' => $vehicleTypes,
             'dataVehicles' => $vehicles,
-            'allGarage' => $allGarage
+            'allGarage' => $allGarage,
+            'dataDriver' => $driver
         ];
         return response()->json($response, 200);
     }
