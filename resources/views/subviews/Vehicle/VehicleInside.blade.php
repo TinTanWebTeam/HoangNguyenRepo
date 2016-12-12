@@ -1,6 +1,5 @@
-
-<link rel="stylesheet" type="text/css" href="{{URL::to('tableAutocomplete/tautocomplete.css')}}" />
-<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="{{URL::to('tableAutocomplete/tautocomplete.css')}}"/>
+{{--<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>--}}
 <script src=" {{ URL::to('tableAutocomplete/tautocomplete.js') }} "></script>
 
 <style>
@@ -57,12 +56,15 @@
     table.table-autocomplete {
         width: 100%;
     }
+
     table.table-autocomplete thead tr {
         border-bottom: solid 1px #B6B6B6;
     }
+
     table.table-autocomplete thead tr th {
         padding: 5px;
     }
+
     table.table-autocomplete .ui-menu-item td {
         border-left: solid 1px #B6B6B6;
         padding: 5px;
@@ -521,49 +523,12 @@
     </div>
 </div>
 <!-- Modal Add vehicleType -->
-<div style="width: 100%; text-align:center;">
-    <input type="text" id="Text2" style="width: 200px;" /><br /><br />
-    Text: <span id="ta-txt"></span><br />
-    ID: <span id="ta-id"></span><br />
-    All: <span id="ta-all"></span><br />
-</div>
+
+
 <script>
-
     $(function () {
-        var text2 = $("#Text2").tautocomplete({
-            width: "300px",
-            columns: ['Country ID', 'Code', 'Capital'],
-            data: function () {
-                try{
-                    var data = [{ "id": 1, "country": "abc", "code": "AFG", "capital": "Kabul" },
-                        { "id": 194, "country": "tâm", "code": "YEM", "capital": "Sanaa" },
-                        { "id": 195, "country": "lãm", "code": "ZMB", "capital": "Lusaka" },
-                        { "id": 196, "country": "nghĩa", "code": "ZMB", "capital": "Harare" }];
-                }
-                catch(e)
-                {
-                    alert(e)
-                }
-                var filterData = [];
 
-                var searchData = eval("/" + text2.searchdata() + "/gi");
-
-                $.each(data, function(i,v)
-                {
-                    if (v.country.search(new RegExp(searchData)) != -1) {
-                        filterData.push(v);
-                    }
-                });
-                return filterData;
-            },
-            onchange: function () {
-                $("#ta-txt").html(text2.text());
-                $("#ta-id").html(text2.id());
-                $("#ta-all").html(JSON.stringify(text2.all()));
-            }
-        });
-
-        if ( typeof (garageInsideView) === 'undefined') {
+        if (typeof (garageInsideView) === 'undefined') {
             garageInsideView = {
                 table: null,
                 tableVehicle: null,
@@ -580,74 +545,28 @@
                 dataVehicleType: null,
                 tagsVehicleType: [],
                 tagsGarageVehicle: [],
-                tableAutoCompleteSearch:function () {
-                    $.widget('custom.tableAutocomplete', $.ui.autocomplete, {
-                        options: {
-                            open: function (event, ui) {
-                                // Hack to prevent a 'menufocus' error when doing sequential searches using only the keyboard
-                                $('.ui-autocomplete .ui-menu-item:first').trigger('mouseover');
-                            },
-                            focus: function (event, ui) {
-                                event.preventDefault();
+                tableAutoCompleteSearch: function () {
+                    var text2 = $("#driver").tautocomplete({
+                        width: "400px",
+                        columns: ['Tài xế', 'CMND', 'Loại bằng'],
+                        data: function () {
+                            try {
+                                var data = garageInsideView.dataDriver;
                             }
-                        },
-                        _create: function () {
-                            this._super();
-                            // Using a table makes the autocomplete forget how to menu.
-                            // With this we can skip the header row and navigate again via keyboard.
-                            this.widget().menu("option", "items", ".ui-menu-item");
-                        },
-                        _renderMenu: function (ul, items) {
-                            var self = this;
-                            var $table = $('<table class="table-autocomplete">'),
-                                $thead = $('<thead>'),
-                                $headerRow = $('<tr>'),
-                                $tbody = $('<tbody>');
-                            $.each(self.options.columns, function (index, columnMapping) {
-                                $('<th>').text(columnMapping.title).appendTo($headerRow);
-                            });
-                            $thead.append($headerRow);
-                            $table.append($thead);
-                            $table.append($tbody);
-                            ul.html($table);
-                            $.each(items, function (index, item) {
-                                self._renderItemData(ul, ul.find("table tbody"), item);
-                            });
-                        },
-                        _renderItemData: function (ul, table, item) {
-                            return this._renderItem(table, item).data("ui-autocomplete-item", item);
-                        },
-                        _renderItem: function (table, item) {
-                            var self = this;
-                            var $tr = $('<tr class="ui-menu-item" role="presentation">');
-
-                            $.each(self.options.columns, function (index, columnMapping) {
-                                var cellContent = !item[columnMapping.field] ? '' : item[columnMapping.field];
-                                $('<td>').text(cellContent).appendTo($tr);
-                            });
-
-                            return $tr.appendTo(table);
-                        }
-                    });
-                    $('input#driver').tableAutocomplete({
-                        source: garageInsideView.dataDriver,
-                        columns: [{
-                            field: 'fullName',
-                            title: 'klkl'
-                        }, {
-                            field: 'identityCardNumber',
-                            title: 'CMND'
-                        }, {
-                            field: 'driverLicenseType',
-                            title: 'Loại bằng'
-                        }],
-                        delay: 500,
-                        select: function (event, ui) {
-                            if (ui.item != undefined) {
-                                $(this).val(ui.item.value);
-                                $('#driver').attr('data-idDriver',ui.item.id);
+                            catch (e) {
+                                alert(e)
                             }
-                            return false;
+                            var filterData = [];
+                            var searchData = eval("/" + text2.searchdata() + "/gi");
+                            $.each(data, function (i, v) {
+                                if (v.fullName.search(new RegExp(searchData)) != -1) {
+                                    filterData.push(v);
+                                }
+                            });
+                            return filterData;
+                        },
+                        onchange: function () {
+                            $('#driver').attr('data-idDriver', text2.id());
                         }
                     });
                 },
@@ -825,6 +744,7 @@
                         minViewMode: 2,
                         format: 'yyyy'
                     });
+                    garageInsideView.tableAutoCompleteSearch();
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -1117,7 +1037,7 @@
                             garageInsideView.dataDriver = data['dataDriver'];
                             garageInsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageInsideView.renderAutoCompleteSearch();
-                            garageInsideView.tableAutoCompleteSearch();
+
                         } else {
                             garageInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1173,6 +1093,8 @@
                             $("#transferGarage").attr("data-idGarage", name.id);
                         }
                     }));
+
+
                 },
                 saveVehicleType: function () {
                     garageInsideView.vehicleTypeValidate();

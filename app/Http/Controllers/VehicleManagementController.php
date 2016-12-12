@@ -153,10 +153,10 @@ class VehicleManagementController extends Controller
             $owner = $request->input('_vehicle')['owner'];
             $trademark = $request->input('_vehicle')['trademark'];
             $yearOfProduction = $request->input('_vehicle')['yearOfProduction'];
-            $idUpdateGarage= $request->input('_vehicle')['idUpdateGarage'];
-            if($idUpdateGarage == ''){
+            $idUpdateGarage = $request->input('_vehicle')['idUpdateGarage'];
+            if ($idUpdateGarage == '') {
                 $garage_id = $request->input('_vehicle')['garage_id'];
-            }else{
+            } else {
                 $garage_id = $idUpdateGarage;
             }
         }
@@ -208,7 +208,7 @@ class VehicleManagementController extends Controller
                         ->where('active', 1)
                         ->where('garage_id', $garage_id)
                         ->where('vehicles.id', $vehicleUpdate->id)
-                        ->select('vehicles.*','vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
+                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
                         ->first();
                     $response = [
                         'msg' => 'Updated Vehicle',
@@ -380,10 +380,10 @@ class VehicleManagementController extends Controller
             $owner = $request->input('_vehicle')['owner'];
             $trademark = $request->input('_vehicle')['trademark'];
             $yearOfProduction = $request->input('_vehicle')['yearOfProduction'];
-            $idUpdateGarage= $request->input('_vehicle')['idUpdateGarage'];
-            if($idUpdateGarage == ''){
+            $idUpdateGarage = $request->input('_vehicle')['idUpdateGarage'];
+            if ($idUpdateGarage == '') {
                 $garage_id = $request->input('_vehicle')['garage_id'];
-            }else{
+            } else {
                 $garage_id = $idUpdateGarage;
             }
 
@@ -436,7 +436,7 @@ class VehicleManagementController extends Controller
                         ->where('active', 1)
                         ->where('garage_id', $garage_id)
                         ->where('vehicles.id', $vehicleUpdate->id)
-                        ->select('vehicles.*','vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
+                        ->select('vehicles.*', 'vehicleTypes.name', 'vehicleTypes.id as vehicleType_id')
                         ->first();
                     $response = [
                         'msg' => 'Updated Vehicle',
@@ -532,7 +532,10 @@ class VehicleManagementController extends Controller
             ->get();
         $vehicleTypes = VehicleType::all();
         $allGarage = Garage::all();
-        $driver = Driver::all();
+        $driver = \DB::table('drivers')
+            ->where('active', 1)
+            ->select('id','fullName', 'identityCardNumber', 'driverLicenseType')
+            ->get();
         $response = [
             'msg' => 'Get data vehicleType success',
             'vehicleTypes' => $vehicleTypes,

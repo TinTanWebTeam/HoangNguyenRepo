@@ -9,7 +9,7 @@
             columns: [],
             hide: [false],
             onchange: null,
-            norecord: "No Records Found",
+            norecord: "Không có dữ liệu !",
             dataproperty: null,
             regex: "^[a-zA-Z0-9\b]+$",
             data: null,
@@ -32,7 +32,7 @@
             ddDiv: $("<div>", { class: settings.theme }),
             ddTable: $("<table></table>", { style: "width:" + settings.width }),
             ddTableCaption: $("<caption>" + settings.norecord + "</caption>"),
-            ddTextbox: $("<input type='text'>")
+            ddTextbox: $("<input class='form-control' type='text' style='width:100%'>")
         };
 
         var keys = {
@@ -103,7 +103,7 @@
         // create a textbox for input
         this.after(el.ddTextbox);
         el.ddTextbox.attr("autocomplete", "off");
-        el.ddTextbox.css("width", this.width + "px"); 
+        el.ddTextbox.css("width", this.width + "px");
         el.ddTextbox.css("font-size", this.css("font-size"));
         el.ddTextbox.attr("placeholder", settings.placeholder);
 
@@ -114,7 +114,7 @@
         else if ((settings.data == "" || settings.data == null) && settings.ajax == null) {
             el.ddTextbox.attr("placeholder", errors.dataNA);
         }
-        
+
         // append div after the textbox
         this.after(el.ddDiv);
 
@@ -133,7 +133,7 @@
         for (var i = 0; i <= cols - 1; i++) {
             header = header + "<th>" + settings.columns[i] + "</th>"
         }
-        header = header + "</thead></tr>"
+        header = header + "</thead></tr>";
         el.ddTable.append(header);
 
         // assign data fields to the textbox, helpful in case of .net postbacks
