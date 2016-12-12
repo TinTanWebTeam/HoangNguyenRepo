@@ -11,7 +11,7 @@
             onchange: null,
             norecord: "Không có dữ liệu !",
             dataproperty: null,
-            regex: "^[a-zA-Z0-9\b]+$",
+            regex: '',
             data: null,
             placeholder: null,
             theme: "default",
