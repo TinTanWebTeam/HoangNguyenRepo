@@ -285,6 +285,7 @@
                 <div class="col-md-5">
                     <form role="form" id="frmVehicle" onsubmit="return false;">
                         <input id="garage_id" style="display: none">
+                        <input id="vehicle_id" style="display: block">
                         <div class="form-body">
                             <div class="row">
                                 <div class="col-md-6 col-sm-6">
@@ -991,6 +992,7 @@
                     garageInsideView.currentVehicle = _.clone(_.find(garageInsideView.dataVehicle, function (o) {
                         return o.id == id;
                     }), true);
+                    console.log(garageInsideView.currentVehicle);
                     var sizeOld = garageInsideView.currentVehicle["size"];
                     var size = sizeOld.split("x");
                     $("input[id='areaCode']").val(garageInsideView.currentVehicle["areaCode"]);
@@ -1003,6 +1005,7 @@
                     $("input[id='vehicleType_id']").val(garageInsideView.currentVehicle["name"]);
                     $("input[id='trademark']").val(garageInsideView.currentVehicle["trademark"]);
                     $("input[id='yearOfProduction']").val(garageInsideView.currentVehicle["yearOfProduction"]);
+                    $("input[id='vehicle_id']").val(garageInsideView.currentVehicle["vehicle_id"]);
                     $("#vehicleType_id").attr('data-id', garageInsideView.currentVehicle["vehicleType_id"]);
                     garageInsideView.text2.settext(garageInsideView.currentVehicle["fullName"]);
                     $("#driver").attr('data-idDriver', garageInsideView.currentVehicle["idDriver"]);
