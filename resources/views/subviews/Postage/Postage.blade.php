@@ -581,7 +581,7 @@
                             {data: 'formulaCode'},
                             {
                                 data: 'unitPrice',
-                                render: $.fn.dataTable.render.number(".", ",", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {data: 'unit'},
                             {data: 'cashDelivery'},

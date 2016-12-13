@@ -36,14 +36,11 @@ class DatabaseSeeder extends Seeder
 //         Tiền
         $this->call(PriceTableSeeder::class);
         $this->call(CostTableSeeder::class);
-//        $this->call(PostageTableSeeder::class);
 
 //         Hóa đơn
         $this->call(TransportTableSeeder::class);
         $this->call(VoucherTransportTableSeeder::class);
         $this->call(TransportFormulaDetailTableSeeder::class);
-        $this->call(TransportInvoiceTableSeeder::class);
-        $this->call(VoucherAttachFileTableSeeder::class);
 
 //        Rule
         $this->call(RuleTableSeeder::class);

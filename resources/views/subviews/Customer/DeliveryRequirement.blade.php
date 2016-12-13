@@ -1813,7 +1813,6 @@
                     }).done(function (data, textStatus, jqXHR) {
                         console.log("SERVER");
                         console.log(data);
-                        debugger;
                         if (jqXHR.status == 200) {
                             $("#unitPrice").val(data['formula']['unitPrice']);
                             $("#unit").val(data['formula']['unit']);
@@ -1878,6 +1877,9 @@
                     });
                 },
                 focusOut_getCustomer: function(){
+                    $("#unitPrice").val('');
+                    $("#unit").val('');
+
                     if (transportView.transportType === 1)
                         return;
                     var custName = $("#customer_id").val();
@@ -1945,6 +1947,7 @@
                     });
                 },
                 appendViewFormulaDetail: function(data){
+                    transportView.formulaDetail = [];
                     $("#formula-detail").html("<legend>Chi tiết công thức:</legend>");
                     _.each(data, function(value, key){
                         var str = '';
