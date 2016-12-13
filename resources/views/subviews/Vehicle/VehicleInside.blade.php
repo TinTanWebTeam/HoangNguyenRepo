@@ -1,6 +1,5 @@
-<link rel="stylesheet" type="text/css" href="{{URL::to('tableAutocomplete/tautocomplete.css')}}"/>
-{{--<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>--}}
-<script src=" {{ URL::to('tableAutocomplete/tautocomplete.js') }} "></script>
+{{--<link rel="stylesheet" type="text/css" href="{{URL::to('tableAutocomplete/tautocomplete.css')}}"/>--}}
+{{--<script src=" {{ URL::to('tableAutocomplete/tautocomplete.js') }} "></script>--}}
 
 <style>
 
@@ -527,7 +526,6 @@
 
 <script>
     $(function () {
-
         if (typeof (garageInsideView) === 'undefined') {
             garageInsideView = {
                 table: null,
@@ -545,8 +543,9 @@
                 dataVehicleType: null,
                 tagsVehicleType: [],
                 tagsGarageVehicle: [],
+                text2: null,
                 tableAutoCompleteSearch: function () {
-                    var text2 = $("#driver").tautocomplete({
+                    garageInsideView.text2 = $("#driver").tautocomplete({
                         width: "400px",
                         columns: ['Tài xế', 'CMND', 'Loại bằng'],
                         data: function () {
@@ -557,7 +556,7 @@
                                 alert(e)
                             }
                             var filterData = [];
-                            var searchData = eval("/" + text2.searchdata() + "/gi");
+                            var searchData = eval("/" + garageInsideView.text2.searchdata() + "/gi");
                             $.each(data, function (i, v) {
                                 if (v.fullName.search(new RegExp(searchData)) != -1) {
                                     filterData.push(v);
@@ -566,7 +565,11 @@
                             return filterData;
                         },
                         onchange: function () {
-                            $('#driver').attr('data-idDriver', text2.id());
+                            if ($('input[id=driver]').val() == '') {
+                                $('#driver').attr('data-idDriver', '');
+                            } else {
+                                $('#driver').attr('data-idDriver', garageInsideView.text2.id());
+                            }
                         }
                     });
                 },
@@ -1001,6 +1004,8 @@
                     $("input[id='trademark']").val(garageInsideView.currentVehicle["trademark"]);
                     $("input[id='yearOfProduction']").val(garageInsideView.currentVehicle["yearOfProduction"]);
                     $("#vehicleType_id").attr('data-id', garageInsideView.currentVehicle["vehicleType_id"]);
+                    garageInsideView.text2.settext(garageInsideView.currentVehicle["fullName"]);
+                    $("#driver").attr('data-idDriver', garageInsideView.currentVehicle["idDriver"]);
                     $("textarea[id='noteVehicle']").val(garageInsideView.currentVehicle["note"]);
                     garageInsideView.action = 'updateVehicle';
                     $("button[id=editVehicleType]").prop("disabled", false);
@@ -1037,7 +1042,6 @@
                             garageInsideView.dataDriver = data['dataDriver'];
                             garageInsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageInsideView.renderAutoCompleteSearch();
-
                         } else {
                             garageInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1165,6 +1169,7 @@
                     }
                 },
                 fillFormDataToCurrentObjectVehicle: function () {
+                    //var driver_id = garageInsideView.currentVehicle.idDriver;
                     var long = $("input[id='long']").val();
                     var wide = $("input[id='wide']").val();
                     var high = $("input[id='high']").val();
@@ -1173,10 +1178,17 @@
                     } else {
                         var size = long.concat(' x ' + wide + ' x ' + high);
                     }
+//                    if ($("#driver").attr('data-idDriver') != driver_id || $("#driver").attr('data-idDriver') == driver_id) {
+//                        driverId = $("#driver").attr('data-idDriver');
+//                    } else if ($("#driver").attr('data-idDriver') == '') {
+//                        driverId = 'a';
+//                    }
+
                     if (garageInsideView.action == 'addVehicle') {
                         garageInsideView.currentVehicle = {
                             garage_id: $("input[id='garage_id']").val(),
                             idUpdateGarage: $("#transferGarage").attr('data-idGarage'),
+                            idDriver: $("#driver").attr('data-idDriver'),
                             areaCode: $("input[id='areaCode']").val(),
                             vehicleNumber: $("input[id='vehicleNumber']").val(),
                             vehicleType_id: $("#vehicleType_id").attr('data-id'),
@@ -1199,7 +1211,7 @@
                         garageInsideView.currentVehicle.note = $("textarea[id='noteVehicle']").val();
                         garageInsideView.currentVehicle.trademark = $("input[id='trademark']").val();
                         garageInsideView.currentVehicle.yearOfProduction = $("input[id='yearOfProduction']").val();
-
+                        garageInsideView.currentVehicle.idDriver = $("#driver").attr('data-idDriver');
                     }
                 },
                 vehicleValidate: function () {
