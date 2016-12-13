@@ -384,6 +384,7 @@
                 currentDetail: null,
                 arrayDetail: [],
                 action: null,
+                actionDetail: null,
                 idDelete: null,
                 idDeleteDetail: null,
                 tagsCustomerName: [],
@@ -685,7 +686,7 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn btn-success btn-circle" onclick="postageView.idDeleteDetail = ' + full.stt + ';postageView.action = \'delete\';postageView.saveDetail()">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="postageView.idDeleteDetail = ' + full.stt + ';postageView.actionDetail = \'delete\';postageView.saveDetail()">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     return tr;
@@ -736,23 +737,14 @@
                     }
                 },
                 fillFormDataToCurrentObjectDetail: function () {
-                    if (postageView.action == 'add') {
-                        postageView.currentDetail = {
-                            formula_id: $("#formula_id").val(),
-                            rule: $("input[name=rule]:checked").val(),
-                            name: $("#name").val(),
-                            value: $("#value").val(),
-                            from: $("#from").val(),
-                            to: $("#to").val()
-                        };
-                    } else if (postageView.action == 'update') {
-                        postageView.currentDetail.formula_id = $("#formula_id").val();
-                        postageView.currentDetail.rule = $("input[name=rule]:checked").val();
-                        postageView.currentDetail.name = $("#name").val();
-                        postageView.currentDetail.value = $("#value").val();
-                        postageView.currentDetail.from = $("#from").val();
-                        postageView.currentDetail.to = $("#to").val();
-                    }
+                    postageView.currentDetail = {
+                        formula_id: $("#formula_id").val(),
+                        rule: $("input[name=rule]:checked").val(),
+                        name: $("#name").val(),
+                        value: $("#value").val(),
+                        from: $("#from").val(),
+                        to: $("#to").val()
+                    };
                 },
 
                 editPostage: function (id) {
@@ -882,6 +874,11 @@
                         isValid = false;
                     }
 
+                    if(postageView.arrayDetail.length <= 0){
+                        showNotification('warning', 'Vui lòng thêm chi tiết công thức trước khi thêm công thức!');
+                        isValid = false;
+                    }
+
                     return isValid;
                 },
                 clearValidation: function (idForm) {
@@ -943,14 +940,14 @@
                                     postageView.fillDataToDatatable(postageView.dataPostage);
 
                                     var formula_id = data['id'];
-                                    var dataDetail = _.filter(postageView.dataPostageDetail, function (o) {
+                                    postageView.arrayDetail = _.filter(postageView.dataPostageDetail, function (o) {
                                         return o.formula_id == formula_id;
                                     });
-                                    if(dataDetail.length > 0){
+                                    if(postageView.arrayDetail.length > 0){
                                         for (var i = 0; i < postageView.arrayDetail.length; i++) {
                                             postageView.arrayDetail[i].stt = i + 1;
                                         }
-                                        postageView.fillDataToDatatablePostageDetail(dataDetail);
+                                        postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
                                     }
 
                                     showNotification("success", "Cập nhật thành công!");
@@ -974,81 +971,15 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                saveDetail2: function () {
-                    if (postageView.action == 'delete') {
-                        var sendToServer = {
-                            _token: _token,
-                            _action: postageView.action,
-                            _id: postageView.idDelete
-                        };
-                    } else {
-                        postageView.formValidateJqueryDetail();
-                        if ($("#frmControlDetail").valid()) {
-
-                            postageView.fillFormDataToCurrentObjectDetail();
-                            var sendToServer = {
-                                _token: _token,
-                                _action: postageView.action,
-                                _postageDetail: postageView.currentDetail
-                            };
-                        } else {
-                            $("form#frmControlDetail").find("label[class=error]").css("color", "red");
-                            return;
-                        }
-                    }
-                    console.log(sendToServer);
-                    $.ajax({
-                        url: url + 'postage/modify-detail',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 201) {
-                            console.log(data);
-                            switch (postageView.action) {
-                                case 'add':
-                                    postageView.dataPostage = data['postages'];
-                                    postageView.fillDataToDatatable(postageView.dataPostage);
-
-                                    var custId = parseInt($("#customer_id").attr('data-customerId'));
-                                    var data = _.filter(postageView.dataPostage, function (o) {
-                                        return o.customer_id == custId;
-                                    });
-                                    postageView.fillDataToDatatablePostageDetail(data);
-
-                                    showNotification("success", "Thêm thành công!");
-                                    break;
-                                case 'update':
-                                    postageView.dataPostage = data['postages'];
-                                    postageView.fillDataToDatatable(postageView.dataPostage);
-
-                                    showNotification("success", "Cập nhật thành công!");
-                                    postageView.hideControl();
-                                    break;
-                                case 'delete':
-
-                                    showNotification("success", "Xóa thành công!");
-                                    postageView.displayModal("hide", "#modal-notification");
-                                    break;
-                                default:
-                                    break;
-                            }
-                            postageView.clearInput();
-                        } else if (jqXHR.status == 203) {
-                            showNotification("warning", data['msg']);
-                        } else {
-                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                },
                 saveDetail: function () {
-                    if (postageView.action == 'delete') {
+                    if (postageView.actionDetail == 'delete') {
                         var find = _.find(postageView.arrayDetail, function(o){
                             return o.stt == postageView.idDeleteDetail;
                         });
-                        postageView.arrayDetail.splice(find, 1);
+                        var index = postageView.arrayDetail.indexOf(find); 
+                        postageView.arrayDetail.splice(index, 1);
+                        postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
+                        postageView.actionDetail = null;
                     } else {
                         postageView.formValidateJqueryDetail();
                         if ($("#frmControlDetail").valid()) {

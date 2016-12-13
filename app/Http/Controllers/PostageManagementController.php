@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\CustomerType;
 use App\Formula;
 use App\FormulaDetail;
-use App\Postage;
-use App\PostageDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DB;
@@ -58,9 +56,9 @@ class PostageManagementController extends Controller
             $unitPrice    = $request->input('_postage')['unitPrice'];
             $unit         = $request->input('_postage')['unit'];
             $createdDate  = $request->input('_postage')['createdDate'];
-            $createdDate  = Carbon::createFromFormat('d-m-Y', $createdDate)->toDateTimeString();
+            $createdDate  = Carbon::createFromFormat('d-m-Y', $createdDate);
             $applyDate    = $request->input('_postage')['applyDate'];
-            $applyDate    = Carbon::createFromFormat('d-m-Y', $applyDate)->toDateTimeString();
+            $applyDate    = Carbon::createFromFormat('d-m-Y', $applyDate);
             $note         = $request->input('_postage')['note'];
             $fuel_id      = $request->input('_postage')['fuel_id'];
             $createdBy    = \Auth::user()->id;
@@ -81,8 +79,8 @@ class PostageManagementController extends Controller
                     $postageNew->cashDelivery = $cashDelivery;
                     $postageNew->unitPrice    = $unitPrice;
                     $postageNew->unit         = $unit;
-                    $postageNew->createdDate  = $createdDate;
-                    $postageNew->applyDate    = $applyDate;
+                    $postageNew->createdDate  = $createdDate->toDateString();
+                    $postageNew->applyDate    = $applyDate->toDateString();
                     $postageNew->note         = $note;
                     $postageNew->active       = 1;
                     $postageNew->createdBy    = $createdBy;
@@ -122,7 +120,8 @@ class PostageManagementController extends Controller
                     return response()->json($response, 201);
                     break;
                 case 'update':
-                    $maxApplyDate = Carbon::createFromFormat('Y-m-d', Postage::where('customer_id', $customer_id)->get()->max('applyDate'));
+                    $maxApplyDate = Formula::where('customer_id', $customer_id)->get()->max('applyDate');
+                    $maxApplyDate = Carbon::createFromFormat('Y-m-d', $maxApplyDate);
 
                     if($maxApplyDate != null && $applyDate->diffInDays($maxApplyDate, false) < 0){
                         $postageOld = Formula::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
@@ -134,8 +133,8 @@ class PostageManagementController extends Controller
                         $postageNew->cashDelivery = $cashDelivery;
                         $postageNew->unitPrice    = $unitPrice;
                         $postageNew->unit         = $unit;
-                        $postageNew->createdDate  = $createdDate;
-                        $postageNew->applyDate    = $applyDate;
+                        $postageNew->createdDate  = $createdDate->toDateString();
+                        $postageNew->applyDate    = $applyDate->toDateString();
                         $postageNew->note         = $note;
                         $postageNew->active       = 1;
                         $postageNew->createdBy    = $createdBy;
@@ -298,7 +297,7 @@ class PostageManagementController extends Controller
 
         try {
             DB::beginTransaction();
-            $postage = Postage::find($postageId);
+            $postage = Formula::find($postageId);
             $postage->applyDate = $applyDate;
             if(!$postage->update()){
                 DB::rollBack();

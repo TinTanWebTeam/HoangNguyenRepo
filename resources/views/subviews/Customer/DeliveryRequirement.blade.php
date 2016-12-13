@@ -824,9 +824,9 @@
                     $("input[id=phiTangBo]").val(0);
                     $("textarea[id=costNote]").val('');
                     $("input[id=transportType]").attr('checked', false);
-                    $("input[unitPrice]").val(0);
-                    $("input[unit]").val('');
-                    $("input[formulaCode]").val('');
+                    $("input[id=unitPrice]").val(0);
+                    $("input[id=unit]").val('');
+                    $("input[id=formulaCode]").val('');
                     $("#formula-detail").html("<legend>Chi tiết công thức:</legend>");
 
                     transportView.arrayVoucher = {};
@@ -1813,6 +1813,7 @@
                     }).done(function (data, textStatus, jqXHR) {
                         console.log("SERVER");
                         console.log(data);
+                        debugger;
                         if (jqXHR.status == 200) {
                             $("#unitPrice").val(data['formula']['unitPrice']);
                             $("#unit").val(data['formula']['unit']);

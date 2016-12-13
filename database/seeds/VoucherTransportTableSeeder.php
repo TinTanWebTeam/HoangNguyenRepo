@@ -11,14 +11,79 @@ class VoucherTransportTableSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 1; $i < 4; $i++) {
-            \App\VoucherTransport::create([
-                'voucher_id'   => $i,
-                'transport_id' => 1,
-                'createdBy'    => 1,
-                'updatedBy'    => 1,
-                'quantity'     => 1
-            ]);
-        }
+        /* FORMOSA */
+        \App\VoucherTransport::create([
+            'voucher_id'   => 1,
+            'transport_id' => 1,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 2
+        ]);
+
+        \App\VoucherTransport::create([
+            'voucher_id'   => 2,
+            'transport_id' => 1,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 1
+        ]);
+
+        \App\VoucherTransport::create([
+            'voucher_id'   => 3,
+            'transport_id' => 2,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 1
+        ]);
+
+        \App\VoucherTransport::create([
+            'voucher_id'   => 4,
+            'transport_id' => 2,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 1
+        ]);
+
+        /* A Chau */
+        \App\VoucherTransport::create([
+            'voucher_id'   => 7,
+            'transport_id' => 3,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 1
+        ]);
+
+        \App\VoucherTransport::create([
+            'voucher_id'   => 8,
+            'transport_id' => 3,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 1
+        ]);
+
+        \App\VoucherTransport::create([
+            'voucher_id'   => 3,
+            'transport_id' => 4,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 1
+        ]);
+
+        \App\VoucherTransport::create([
+            'voucher_id'   => 4,
+            'transport_id' => 4,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 2
+        ]);
+
+        /*  */
+        \App\VoucherTransport::create([
+            'voucher_id'   => 1,
+            'transport_id' => 5,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'quantity'     => 2
+        ]);
     }
 }
