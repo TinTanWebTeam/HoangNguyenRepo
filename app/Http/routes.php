@@ -83,7 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/vehicle-inside', 'VehicleManagementController@getViewGarageInside');
         Route::get('/vehicle-outside', 'VehicleManagementController@getViewGarageOutside');
         //Post vehicleType + list vehicle => get listVehicle + vehicleType
-        Route::POST('/vehicle-type/vehicleTypes', 'VehicleManagementController@postDataVehicleType');
+        Route::POST('/load-vehicle/vehicle', 'VehicleManagementController@postDataVehicle');
         //post Modify
         Route::post('/vehicle-outside/modify', 'VehicleManagementController@postModifyGarage');
         Route::post('/vehicle-type/modify', 'VehicleManagementController@postModifyVehicleType');

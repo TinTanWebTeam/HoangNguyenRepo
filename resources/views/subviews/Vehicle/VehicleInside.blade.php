@@ -284,8 +284,7 @@
             <div class="panel-body">
                 <div class="col-md-5">
                     <form role="form" id="frmVehicle" onsubmit="return false;">
-                        <input id="garage_id" style="display: none">
-                        <input id="vehicle_id" style="display: block">
+                        <input id="vehicle_id" style="display: none">
                         <div class="form-body">
                             <div class="row">
                                 <div class="col-md-6 col-sm-6">
@@ -444,6 +443,7 @@
                                     <tr class="active">
                                         <th>Số xe</th>
                                         <th>Chủ xe</th>
+                                        <th>Tài xế</th>
                                         <th>Hãng Xe</th>
                                         <th>Năm sản xuất</th>
                                         <th>Loại xe</th>
@@ -692,6 +692,7 @@
                         columns: [
                             {data: 'fullNumber'},
                             {data: 'owner'},
+                            {data: 'fullName'},
                             {data: 'trademark'},
                             {data: 'yearOfProduction'},
                             {data: 'name'},
@@ -922,7 +923,7 @@
                     var name = _.find(garageInsideView.dataGarage, function (o) {
                         return o.id == id;
                     });
-                    $('input[id=garage_id]').val(id);
+                    $('#transferGarage').attr('data-idGarage', id);
                     $("#listVehicle").find(".titleListVehicle").html("Danh sách xe trong nhà xe " + name.name);
                     garageInsideView.action = 'addVehicle';
                     $("#listVehicle").find(".titleControl").html("Thêm mới xe");
@@ -961,6 +962,9 @@
                     $("input[id='weight']").val('');
                     $("textarea[id='noteVehicle']").val('');
                     $("input[id='transferGarage']").val('');
+                    $("input[id='driver']").val('');
+                    garageInsideView.text2.settext('');
+                    $('#driver').attr('data-iddriver', '');
                     $('#transferGarage').attr('data-idGarage', '');
                     $("#listVehicle").find(".titleControl").html("Thêm mới xe");
                     $("button[id=editVehicleType]").prop("disabled", true);
@@ -992,7 +996,6 @@
                     garageInsideView.currentVehicle = _.clone(_.find(garageInsideView.dataVehicle, function (o) {
                         return o.id == id;
                     }), true);
-                    console.log(garageInsideView.currentVehicle);
                     var sizeOld = garageInsideView.currentVehicle["size"];
                     var size = sizeOld.split("x");
                     $("input[id='areaCode']").val(garageInsideView.currentVehicle["areaCode"]);
@@ -1002,6 +1005,8 @@
                     $("input[id='wide']").val(size[1]);
                     $("input[id='high']").val(size[2]);
                     $("input[id='weight']").val(garageInsideView.currentVehicle["weight"]);
+                    $("input[id='transferGarage']").val(garageInsideView.currentVehicle["garageName"]);
+                    $('#transferGarage').attr('data-idGarage', garageInsideView.currentVehicle["garage_id"]);
                     $("input[id='vehicleType_id']").val(garageInsideView.currentVehicle["name"]);
                     $("input[id='trademark']").val(garageInsideView.currentVehicle["trademark"]);
                     $("input[id='yearOfProduction']").val(garageInsideView.currentVehicle["yearOfProduction"]);
@@ -1015,7 +1020,6 @@
                     $("#listVehicle").find(".titleControl").html("Cập nhật xe");
                     garageInsideView.clearValidation();
                     $('#input-transfer-garage').show(500);
-
                 },
                 vehicleTypeValidate: function () {
                     $("#frmVehicleType").validate({
@@ -1033,7 +1037,7 @@
                         _idGarage: id
                     };
                     $.ajax({
-                        url: url + 'vehicle-type/vehicleTypes',
+                        url: url + 'load-vehicle/vehicle',
                         type: "POST",
                         dataType: "json",
                         data: sendToServer
@@ -1172,7 +1176,6 @@
                     }
                 },
                 fillFormDataToCurrentObjectVehicle: function () {
-                    //var driver_id = garageInsideView.currentVehicle.idDriver;
                     var long = $("input[id='long']").val();
                     var wide = $("input[id='wide']").val();
                     var high = $("input[id='high']").val();
@@ -1181,11 +1184,6 @@
                     } else {
                         var size = long.concat(' x ' + wide + ' x ' + high);
                     }
-//                    if ($("#driver").attr('data-idDriver') != driver_id || $("#driver").attr('data-idDriver') == driver_id) {
-//                        driverId = $("#driver").attr('data-idDriver');
-//                    } else if ($("#driver").attr('data-idDriver') == '') {
-//                        driverId = 'a';
-//                    }
 
                     if (garageInsideView.action == 'addVehicle') {
                         garageInsideView.currentVehicle = {
@@ -1337,7 +1335,6 @@
                         }
                     }
                 }
-
             };
             garageInsideView.loadData();
         } else {

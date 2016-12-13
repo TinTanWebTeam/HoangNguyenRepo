@@ -32,7 +32,7 @@
             ddDiv: $("<div>", { class: settings.theme }),
             ddTable: $("<table></table>", { style: "width:" + settings.width }),
             ddTableCaption: $("<caption>" + settings.norecord + "</caption>"),
-            ddTextbox: $("<input class='form-control' type='text' style='width:100%'>")
+            ddTextbox: $("<input class='form-control' style='width:100%'>")
         };
 
         var keys = {
@@ -292,7 +292,7 @@
 
                 $(this).data("text", "");
                 $(this).data("id", "");
-                $(this).val("");
+                //$(this).val("");
                 orginalTextBox.val("");
 
                 if (change) {
