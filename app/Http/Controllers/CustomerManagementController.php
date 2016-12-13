@@ -11,7 +11,6 @@ use App\Formula;
 use App\FormulaDetail;
 use App\Garage;
 use App\GarageType;
-use App\Postage;
 use App\Product;
 use App\ProductType;
 use App\Role;

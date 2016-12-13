@@ -32,6 +32,7 @@ class CreateFormulasTable extends Migration
             $table->integer('updatedBy')->unsigned();
             $table->boolean('changeByFuel')->default(0)->comment('Thay đổi do giá dầu');
             $table->integer('fuel_id')->unsigned();
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }
