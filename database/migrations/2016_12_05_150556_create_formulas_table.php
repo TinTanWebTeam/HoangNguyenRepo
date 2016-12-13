@@ -27,12 +27,12 @@ class CreateFormulasTable extends Migration
             $table->string('deliveryPlace')->nullable();
             $table->decimal('cashDelivery', 18, 0)->default(0);
             $table->text('note')->nullable();
-            $table->boolean('active')->default(1);
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();
             $table->boolean('changeByFuel')->default(0)->comment('Thay đổi do giá dầu');
             $table->integer('fuel_id')->unsigned();
-            $table->boolean('status')->default(0);
+            $table->boolean('status')->default(0)->comment('Trạng thái để làm mốc cộng dồn % thay đổi giá dầu');
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }

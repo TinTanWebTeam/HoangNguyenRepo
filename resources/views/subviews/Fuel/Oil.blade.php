@@ -213,11 +213,14 @@
                                             });
                                         oilPriceView.dataForTableOilPrice.splice(indexOilPriceOld, 1, data);     
                                         oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
+                                        oilPriceView.hideFormControl();
+                                    } else {
+                                        showNotification('error', data['Error']);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
-
+                                    showNotification("error","Vui lòng nhập giá dầu và ngày áp dụng phù hợp!")
                                 }).always(function () {
-                                    oilPriceView.hideFormControl();
+                                    
                                 });
                             } else {
                                 /* ADD */
@@ -237,11 +240,14 @@
                                     if (jqXHR.status == 201) {
                                         oilPriceView.dataForTableOilPrice.push(data);
                                         oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
+                                        oilPriceView.hideFormControl();
+                                    } else {
+                                        showNotification('error', data['Error']);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
                                     showNotification("error","Vui lòng nhập giá dầu và ngày áp dụng phù hợp!")     
                                 }).always(function () {
-                                    oilPriceView.hideFormControl();
+                                    
                                 });
                             }
                         }

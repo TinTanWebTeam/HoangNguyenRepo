@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Fuel;
 use App\Http\Requests;
 use App\Customer;
+use App\Formula;
+use App\FormulaDetail;
 use DB;
 
 class FuelManagementController extends Controller
@@ -74,7 +76,7 @@ class FuelManagementController extends Controller
             } else {
                 $currentApplyDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $currentOilPrice->applyDate);
                 if ($oilPrice->applyDate->diffInDays($currentApplyDate, false) >= 0) {
-                    return response()->json(['Error' => 'Vui lòng chọn này áp dụng giá dầu phù hợp!'], 500);
+                    return response()->json(['Error' => 'Vui lòng chọn ngày áp dụng giá dầu phù hợp!'], 500);
                 }
                 DB::beginTransaction();
                 if ($oilPrice->save()) {
@@ -83,33 +85,45 @@ class FuelManagementController extends Controller
                     $customersToChangePostage = Customer::where('percentOilLimitToChangePostage', '<', abs($changePercent))->get();
                     try {
                         foreach ($customersToChangePostage as $customer) {
-                            $postagesToChange = Postage::where('customer_id', $customer->id)->groupBy(['receivePlace', 'deliveryPlace'])->get();
+                            $postagesToChange = Formula::where('customer_id', $customer->id)->get();
                             foreach ($postagesToChange as $postage) {
-                                $postageReference = Postage::where('receivePlace', $postage->receivePlace)
-                                    ->where('deliveryPlace', $postage->deliveryPlace)
-                                    ->where('customer_id', $customer->id)
-                                    ->orderBy('applyDate', 'desc')
-                                    ->first();
-                                $postageNew = new Postage;
+                                $formula = new Formula;
                                 if ($changePercent < 0) {
-                                    $postageNew->postage = $postageReference->postage * (1 - abs($changePercent) * $customer->percentOilPerPostage / 10000);
-                                    $postageNew->note = "Giảm cước phí vận chuyển và giao xe do giá dầu giảm từ " . number_format($currentOilPrice->price) . " xuống " . number_format($oilPrice->price);
+                                    $formula->unitPrice = $postage->unitPrice * (1 - abs($changePercent) * $customer->percentOilPerPostage / 10000);
+                                    $formula->note = "Giảm cước phí vận chuyển và giao xe do giá dầu giảm từ " . number_format($currentOilPrice->price) . " xuống " . number_format($oilPrice->price);
                                 } else {
-                                    $postageNew->postage = $postageReference->postage * (1 + abs($changePercent) * $customer->percentOilPerPostage / 10000);
-                                    $postageNew->note = "Tăng cước vận chuyển và giao xe do giá dầu tăng từ " . number_format($currentOilPrice->price) . " lên " . number_format($oilPrice->price);
+                                    $formula->unitPrice = $postage->unitPrice * (1 + abs($changePercent) * $customer->percentOilPerPostage / 10000);
+                                    $formula->note = "Tăng cước vận chuyển và giao xe do giá dầu tăng từ " . number_format($currentOilPrice->price) . " lên " . number_format($oilPrice->price);
                                 }
-                                $postageNew->postageBase = $postageReference->postageBase;
-                                $postageNew->createdDate = date('Y-m-d');
-                                $postageNew->receivePlace = $postageReference->receivePlace;
-                                $postageNew->deliveryPlace = $postageReference->deliveryPlace;
-                                $postageNew->cashDelivery = $postageReference->cashDelivery * $postageNew->postage / $postageReference->postage;
-                                $postageNew->active = true;
-                                $postageNew->createdBy = Auth::user()->id;
-                                $postageNew->updatedBy = Auth::user()->id;
-                                $postageNew->changeByFuel = true;
-                                $postageNew->customer_id = $postageReference->customer_id;
-                                $postageNew->fuel_id = $oilPrice->id;
-                                $postageNew->save();
+                                $formula->formulaCode = $postage->formulaCode;
+                                $formula->unit = $postage->unit;
+                                $formula->customer_id = $postage->customer_id;
+                                $formula->extendData = $postage->extendData;
+                                $formula->postageBase = $postage->postageBase;
+                                $formula->createdDate = date('Y-m-d');
+                                $formula->cashDelivery = $postage->cashDelivery * $formula->unitPrice / $postage->unitPrice;
+                                $formula->active = true;
+                                $formula->createdBy = Auth::user()->id;
+                                $formula->updatedBy = Auth::user()->id;
+                                $formula->changeByFuel = true;
+                                $formula->fuel_id = $oilPrice->id;
+                                $formula->status = true;
+                                $formula->save();
+
+                                $postageDetailToChange = FormulaDetail::where('formula_id', $postage->id)->get();
+                                foreach($postageDetailToChange as $postageDetail){
+                                    $formulaDetail = new FormulaDetail;
+                                    $formulaDetail->formula_id = $formula->id;
+                                    $formulaDetail->rule = $postageDetail->rule;
+                                    $formulaDetail->name = $postageDetail->name;
+                                    if($formulaDetail->rule == 'S'){
+                                        $formulaDetail->value = $postageDetail->value;
+                                    } else {
+                                        $formulaDetail->from = $postageDetail->from;
+                                        $formulaDetail->to = $postageDetail->to;
+                                    }
+                                    $formulaDetail->save();
+                                }
                             }
                         }
                         DB::commit();
