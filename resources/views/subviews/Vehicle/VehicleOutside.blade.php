@@ -961,7 +961,6 @@
                     $("input[id='driver']").val('');
                     garageOutsideView.text2.settext('');
                     $('#my-id').attr('data-id', '');
-                    $('#transferGarage').attr('data-idGarage', '');
                     $("#listVehicle").find(".titleControl").html("Thêm mới xe");
                     $("button[id=editVehicleType]").prop("disabled", true);
                     $('#input-transfer-garage').hide(500);

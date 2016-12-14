@@ -557,6 +557,7 @@
                                 alert(e)
                             }
                             var filterData = [];
+
                             var searchData = eval("/" + garageInsideView.text2.searchdata() + "/gi");
                             $.each(data, function (i, v) {
                                 if (v.fullName.search(new RegExp(searchData)) != -1) {
@@ -961,10 +962,10 @@
                     $("input[id='driver']").val('');
                     garageInsideView.text2.settext('');
                     $('#my-id').attr('data-id', '');
-                    $('#transferGarage').attr('data-idGarage', '');
                     $("#listVehicle").find(".titleControl").html("Thêm mới xe");
                     $("button[id=editVehicleType]").prop("disabled", true);
                     $('#input-transfer-garage').hide(500);
+
                 },
                 clearInputFormVehicleType: function () {
                     $("input[id='vehicleType']").val('');
@@ -1045,6 +1046,7 @@
                             garageInsideView.dataDriver = data['dataDriver'];
                             garageInsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageInsideView.renderAutoCompleteSearch();
+                            console.log(garageInsideView.dataDriver);
                         } else {
                             garageInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1296,7 +1298,6 @@
                                                 data['addVehicle'].fullNumber = data['addVehicle']['areaCode'] + "-" + data['addVehicle']["vehicleNumber"];
                                                 garageInsideView.dataVehicle.push(data['addVehicle']);
                                                 garageInsideView.showNotification("success", "Thêm thành công!");
-                                                garageInsideView.clearInputFormVehicle();
                                                 break;
                                             case 'updateVehicle':
                                                 data['updateVehicle'].fullNumber = data['updateVehicle']['areaCode'] + "-" + data['updateVehicle']["vehicleNumber"];
@@ -1310,14 +1311,17 @@
                                                     garageInsideView.dataVehicle.splice(indexOfVehicleOld, 1);
                                                 }
                                                 garageInsideView.showNotification("success", "Cập nhật thành công!");
-                                                garageInsideView.clearInputFormVehicle();
                                                 garageInsideView.action = "addVehicle";
                                                 break;
                                             default:
                                                 break;
                                         }
                                         garageInsideView.tableVehicle.clear().rows.add(garageInsideView.dataVehicle).draw();
-                                        garageInsideView.clearInput();
+                                        garageInsideView.clearInputFormVehicle();
+                                        garageInsideView.dataDriver = data['drivers'];
+                                        $("#my-id").remove();
+                                        garageInsideView.tableAutoCompleteSearch();
+
                                     } else {
                                         garageInsideView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
 

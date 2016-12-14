@@ -415,6 +415,32 @@
                 tableVehicleType: null,
                 tableVehicleNew: null,
                 current: null,
+                text2: null,
+                tableAutoCompleteSearch: function () {
+                    fuelCostView.text2 = $("#vehicle_id").tautocomplete({
+                        width: "300px",
+                        columns: ['Xe','Loại xe', 'Tài xế'],
+                        data: function () {
+                            try {
+                                var data = [];
+                            }
+                            catch (e) {
+                                alert(e)
+                            }
+                            var filterData = [];
+                            var searchData = eval("/" + fuelCostView.text2.searchdata() + "/gi");
+                            $.each(data, function (i, v) {
+                                if (v.fullName.search(new RegExp(searchData)) != -1) {
+                                    filterData.push(v);
+                                }
+                            });
+                            return filterData;
+                        },
+                        onchange: function () {
+                            $('#my-id').attr('data-id', fuelCostView.text2.id());
+                        }
+                    });
+                },
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -462,7 +488,9 @@
                             fuelCostView.tablePrice = data['tablePrice'];
                             fuelCostView.inputPrice(data['tablePrice']);
                             fuelCostView.tableVehicle = data['dataVehicle'];
-                            fuelCostView.renderAutoCompleteSearch();
+//                            fuelCostView.renderAutoCompleteSearch();
+                            fuelCostView.tableAutoCompleteSearch();
+                            console.log( fuelCostView.tableVehicle);
                         } else {
                             fuelCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }

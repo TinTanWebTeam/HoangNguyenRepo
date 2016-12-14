@@ -73,6 +73,8 @@ class CostManagementController extends Controller
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'vehicles.note as vehicleNote')
             ->get();
+        $dataSearchVehicle = DB::table('')
+            ->get();
         $response = [
             'msg' => 'Get data cost success',
             'tableCost' => $tableCost,

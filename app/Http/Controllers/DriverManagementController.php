@@ -20,26 +20,49 @@ class DriverManagementController extends Controller
 
     public function getDataDriver()
     {
+//        $dataDrivers = \DB::table('drivers')
+//            ->select(
+//                'drivers.*',
+//                'drivers.driverLicenseType as driverType',
+//                'drivers.issueDate_DriverLicense as issueDate_driver',
+//                'vehicles.areaCode',
+//                'vehicles.vehicleNumber',
+//                'vehicleTypes.name as vehicle_types',
+//                'garages.name as garage',
+//                'garageTypes.name as garageTypes'
+//            )
+//            ->leftJoin('driverVehicles', 'drivers.id', '=', 'driverVehicles.driver_id')
+//            ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+//            ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+//            ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+//            ->leftJoin('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
+//            ->where('drivers.active', 1)
+//            ->where('driverVehicles.active', 1)
+//            ->get();
+
+
         $dataDrivers = \DB::table('drivers')
             ->select(
                 'drivers.*',
                 'drivers.driverLicenseType as driverType',
-                'drivers.issueDate_DriverLicense as issueDate_driver',
-                'vehicles.areaCode',
-                'vehicles.vehicleNumber',
-                'vehicleTypes.name as vehicle_types',
-                'garages.name as garage',
-                'garageTypes.name as garageTypes'
+                'drivers.issueDate_DriverLicense as issueDate_driver'
+//                'vehicles.areaCode',
+//                'vehicles.vehicleNumber',
+//                'vehicleTypes.name as vehicle_types',
+//                'garages.name as garage',
+//                'garageTypes.name as garageTypes'
             )
-            ->leftJoin('driverVehicles', 'drivers.id', '=', 'driverVehicles.driver_id')
-            ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
-            ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-            ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->leftJoin('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
+//            ->leftJoin('driverVehicles', 'drivers.id', '=', 'driverVehicles.driver_id')
+//            ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+//            ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+//            ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+//            ->leftJoin('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
             ->where('drivers.active', 1)
+//            ->where('driverVehicles.active', 1)
             ->get();
+
         $response = [
-            'msg'         => 'Get list all Driver',
+            'msg' => 'Get list all Driver',
             'dataDrivers' => $dataDrivers
         ];
 
@@ -85,30 +108,22 @@ class DriverManagementController extends Controller
             $issueDateId = $request->input('_object')['issueDateId'];
             $issueDateDriver = $request->input('_object')['issueDateDriver'];
             $expireDateDriver = $request->input('_object')['expireDateDriver'];
-
-
-
             $start = $request->input('_object')['startDate'];
             $finish = $request->input('_object')['finishDate'];
             $driverLicenseNumber = $request->input('_object')['driverLicenseNumber'];
             $permanetAddress = $request->input('_object')['permanetAddress'];
-
             $birthdayDate = Carbon::createFromFormat('d-m-Y', $birthday)->toDateTimeString();
             $issueDateIdDate = Carbon::createFromFormat('d-m-Y', $issueDateId)->toDateTimeString();
             $issueDateDriverDate = Carbon::createFromFormat('d-m-Y', $issueDateDriver)->toDateTimeString();
             $expireDateDriverDate = Carbon::createFromFormat('d-m-Y', $expireDateDriver)->toDateTimeString();
 
             $startDate = Carbon::createFromFormat('d-m-Y', $start)->toDateTimeString();
-            if($finish == ''){
+            if ($finish == '') {
                 $finishDate = null;
-            }else{
+            } else {
                 $finishDate = Carbon::createFromFormat('d-m-Y', $finish)->toDateTimeString();
 
             }
-
-
-
-
 
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
@@ -152,8 +167,8 @@ class DriverManagementController extends Controller
                     ->where('drivers.id', $driverNew->id)
                     ->first();
                 $response = [
-                    'msg'         => 'Get list all Driver',
-                    'dataAddDriver' =>$dataAddDriver
+                    'msg' => 'Get list all Driver',
+                    'dataAddDriver' => $dataAddDriver
                 ];
                 return response()->json($response, 201);
 
@@ -198,8 +213,8 @@ class DriverManagementController extends Controller
                     ->where('drivers.id', $request->input('_object')['id'])
                     ->first();
                 $response = [
-                    'msg'         => 'Get list all Driver',
-                    'dataUpdateDriver' =>$dataUpdateDriver
+                    'msg' => 'Get list all Driver',
+                    'dataUpdateDriver' => $dataUpdateDriver
                 ];
                 return response()->json($response, 201);
                 break;
@@ -265,7 +280,7 @@ class DriverManagementController extends Controller
             ->select('files.*')
             ->get();
         $response = [
-            'msg'   => 'success',
+            'msg' => 'success',
             'files' => $files
         ];
         return response()->json($response, 201);
@@ -291,7 +306,7 @@ class DriverManagementController extends Controller
             ->select('files.*')
             ->get();
         $response = [
-            'msg'   => 'success',
+            'msg' => 'success',
             'files' => $files
         ];
         return response()->json($response, 201);
@@ -306,11 +321,11 @@ class DriverManagementController extends Controller
         $pathToFile = public_path() . "/" . $file->filePath;
 
         $headers = array(
-            'Content-Type: '.$file->mimeType,
+            'Content-Type: ' . $file->mimeType,
             'Content-Disposition: attachment; filename="' . $file->fileName . '"',
             'Content-Transfer-Encoding: binary',
             'Accept-Ranges: bytes',
-            'Content-Length: '.$file->size
+            'Content-Length: ' . $file->size
         );
 
         $name = $file->fileName;

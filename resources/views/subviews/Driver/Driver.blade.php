@@ -83,8 +83,8 @@
                                 <th>Ngày hết hạn bằng lái</th>
                                 <th>CMND</th>
                                 <th>Ngày cấp CMND</th>
-                                <th>Số xe</th>
-                                <th>Loại xe</th>
+                                {{--<th>Số xe</th>--}}
+                                {{--<th>Loại xe</th>--}}
                                 <th>Sửa/ Xóa</th>
                             </tr>
                             </thead>
@@ -471,9 +471,12 @@
 
                 },
                 fillDataToDatatable: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        data[i].fullNumber = (data[i]['areaCode'] == null || data[i]['vehicleNumber'] == null) ? "" : data[i]['areaCode'] + "-" + data[i]['vehicleNumber'];
-                    }
+//                    for (var i = 0; i < data.length; i++) {
+//                        data[i].fullNumber = (data[i]['areaCode'] == null || data[i]['vehicleNumber'] == null) ? "" : data[i]['areaCode'] + "-" + data[i]['vehicleNumber'];
+//                    }
+//                    if (driverView.table != null) {
+//                        driverView.table.destroy();
+//                    }
                     driverView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -502,9 +505,6 @@
                                     return moment(data).format("DD/MM/YYYY");
                                 }
                             },
-                            {data: 'fullNumber'},
-                            {data: 'vehicle_types'},
-
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -522,23 +522,24 @@
                                 }, width: "10%"
                             }
                         ],
-                        columnDefs: [
-                            {responsivePriority: 1, targets: 0},
-                            {responsivePriority: 1, targets: 1},
-                            {responsivePriority: 1, targets: 2},
-                            {responsivePriority: 1, targets: 3},
-                            {responsivePriority: 1, targets: 4},
-                            {responsivePriority: 1, targets: 5},
-                            {responsivePriority: 1, targets: 6},
-                            {responsivePriority: 1, targets: 7},
-                            {responsivePriority: 1, targets: 8},
-                            {responsivePriority: 10, targets: 9},
-                            {responsivePriority: 1, targets: 10}
-
-
-                        ],
-                        responsive: true,
                         order: [[0, "desc"]]
+//                        columnDefs: [
+//                            {responsivePriority: 1, targets: 0},
+//                            {responsivePriority: 1, targets: 1},
+//                            {responsivePriority: 1, targets: 2},
+//                            {responsivePriority: 1, targets: 3},
+//                            {responsivePriority: 1, targets: 4},
+//                            {responsivePriority: 1, targets: 5},
+//                            {responsivePriority: 1, targets: 6},
+//                            {responsivePriority: 1, targets: 7},
+//                            {responsivePriority: 1, targets: 8},
+//                            {responsivePriority: 10, targets: 9},
+//                            {responsivePriority: 1, targets: 10}
+//
+//
+//                        ],
+//                        responsive: true,
+
                     })
                 },
                 validateDriver: function () {
@@ -728,10 +729,10 @@
                             if (typeof existCMND !== "undefined") {
                                 showNotification("error", "CMND đã tồn tại!");
                             } else {
-                                dateBirthday = $("input[id='birthday']").val();
-                                birthday = moment(dateBirthday, "DD-MM-YYYY").year();
-                                yearNow = moment().year();
-                                old = yearNow - birthday;
+                                var dateBirthday = $("input[id='birthday']").val();
+                                var birthday = moment(dateBirthday, "DD-MM-YYYY").year();
+                                var yearNow = moment().year();
+                                var old = yearNow - birthday;
                                 if (old >= 18) {
                                     if (old >= 60) {
                                         driverView.showNotification("error", "Người dùng đã hết tuổi lao động");
@@ -752,19 +753,19 @@
                                                 switch (driverView.action) {
                                                     case 'add':
                                                         driverId = data['dataAddDriver'].id;
-                                                        data['dataAddDriver'].fullNumber = (data['dataAddDriver']['areaCode'] == null || data['dataAddDriver']['vehicleNumber'] == null) ? "" : data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']['vehicleNumber'];
-                                                        if (data['dataAddDriver'].fullNumber == null) {
-                                                            data['dataAddDriver'].fullNumber = 'chứa có xe'
-                                                        }
+//                                                        data['dataAddDriver'].fullNumber = (data['dataAddDriver']['areaCode'] == null || data['dataAddDriver']['vehicleNumber'] == null) ? "" : data['dataAddDriver']['areaCode'] + "-" + data['dataAddDriver']['vehicleNumber'];
+//                                                        if (data['dataAddDriver'].fullNumber == null) {
+//                                                            data['dataAddDriver'].fullNumber = 'chứa có xe'
+//                                                        }
                                                         driverView.dataDrivers.push(data['dataAddDriver']);
                                                         showNotification("success", "Thêm thành công!");
                                                         break;
                                                     case 'update':
                                                         driverId = data['dataUpdateDriver'].id;
-                                                        data['dataUpdateDriver'].fullNumber = (data['dataUpdateDriver']['areaCode'] == null || data['dataUpdateDriver']['vehicleNumber'] == null) ? "" : data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']['vehicleNumber'];
-                                                        if (data['dataUpdateDriver'].fullNumber == null) {
-                                                            data['dataUpdateDriver'].fullNumber = 'chứa có xe'
-                                                        }
+//                                                        data['dataUpdateDriver'].fullNumber = (data['dataUpdateDriver']['areaCode'] == null || data['dataUpdateDriver']['vehicleNumber'] == null) ? "" : data['dataUpdateDriver']['areaCode'] + "-" + data['dataUpdateDriver']['vehicleNumber'];
+//                                                        if (data['dataUpdateDriver'].fullNumber == null) {
+//                                                            data['dataUpdateDriver'].fullNumber = 'chứa có xe'
+//                                                        }
                                                         var driverOld = _.find(driverView.dataDrivers, function (o) {
                                                             return o.id == sendToServer._object.id;
                                                         });

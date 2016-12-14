@@ -215,9 +215,16 @@ class VehicleManagementController extends Controller
                         , 'driverVehicles.vehicle_id as vehicle_id '
                         , 'garages.name as garageName')
                     ->first();
+                $array_driverVehicleId = DriverVehicle::where('active', 1)->pluck('driver_id')->toArray();
+                $driver = \DB::table('drivers')
+                    ->whereNotIn('id', $array_driverVehicleId)
+                    ->where('active', 1)
+                    ->select('id', 'fullName', 'identityCardNumber', 'driverLicenseType')
+                    ->get();
                 $response = [
                     'msg' => 'Created vehicle',
-                    'addVehicle' => $vehicle
+                    'addVehicle' => $vehicle,
+                    'drivers' => $driver
                 ];
                 return response()->json($response, 201);
 
@@ -274,9 +281,17 @@ class VehicleManagementController extends Controller
                         , 'garages.name as garageName'
                     )
                     ->first();
+
+                $array_driverVehicleId = DriverVehicle::where('active', 1)->pluck('driver_id')->toArray();
+                $driver = \DB::table('drivers')
+                    ->whereNotIn('id', $array_driverVehicleId)
+                    ->where('active', 1)
+                    ->select('id', 'fullName', 'identityCardNumber', 'driverLicenseType')
+                    ->get();
                 $response = [
                     'msg' => 'Updated Vehicle',
-                    'updateVehicle' => $vehicles
+                    'updateVehicle' => $vehicles,
+                    'drivers' => $driver
                 ];
                 return response()->json($response, 201);
 
@@ -661,7 +676,6 @@ class VehicleManagementController extends Controller
 
     public function postDataVehicle(Request $request)
     {
-
         $vehicles = \DB::table('vehicles')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
             ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
@@ -680,10 +694,14 @@ class VehicleManagementController extends Controller
             ->get();
         $vehicleTypes = VehicleType::all();
         $allGarage = Garage::all();
+
+        $array_driverVehicleId = DriverVehicle::where('active', 1)->pluck('driver_id')->toArray();
         $driver = \DB::table('drivers')
+            ->whereNotIn('id', $array_driverVehicleId)
             ->where('active', 1)
             ->select('id', 'fullName', 'identityCardNumber', 'driverLicenseType')
             ->get();
+
         $response = [
             'msg' => 'Get data vehicleType success',
             'vehicleTypes' => $vehicleTypes,
