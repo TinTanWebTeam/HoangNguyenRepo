@@ -566,7 +566,7 @@
                             return filterData;
                         },
                         onchange: function () {
-                            $('#my-id').attr('data-id', garageInsideView.text2.id());
+                            $('#my-id').attr('data-id', garageOutsideView.text2.id());
                         }
                     });
                 },
@@ -959,7 +959,7 @@
                     $("textarea[id='noteVehicle']").val('');
                     $("input[id='transferGarage']").val('');
                     $("input[id='driver']").val('');
-                    garageInsideView.text2.settext('');
+                    garageOutsideView.text2.settext('');
                     $('#my-id').attr('data-id', '');
                     $('#transferGarage').attr('data-idGarage', '');
                     $("#listVehicle").find(".titleControl").html("Thêm mới xe");
@@ -1009,7 +1009,7 @@
                     $("input[id='vehicle_id']").val(garageOutsideView.currentVehicle["vehicle_id"]);
                     $("#vehicleType_id").attr('data-id', garageOutsideView.currentVehicle["vehicleType_id"]);
                     garageOutsideView.text2.settext(garageOutsideView.currentVehicle["fullName"]);
-                    $("#my-id").attr('data-id', garageInsideView.currentVehicle["idDriver"]);
+                    $("#my-id").attr('data-id', garageOutsideView.currentVehicle["idDriver"]);
                     $("textarea[id='noteVehicle']").val(garageOutsideView.currentVehicle["note"]);
                     garageOutsideView.action = 'updateVehicle';
                     $("button[id=editVehicleType]").prop("disabled", false);

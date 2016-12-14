@@ -127,24 +127,6 @@ class VehicleManagementController extends Controller
 
     public function postModifyVehicleInside(Request $request)
     {
-        /*
-            ### action = 'add'
-            if(co tai xe){
-                them vao driverVehicle
-            } else {
-                them vao driverVehicle vs driver_id = 0
-            }
-
-            ### action = 'update'
-            if(co tai xe){
-                edit vao driverVehicle (cap nhat lai driver_id)
-            } else {
-                xoa driverVehicle
-            }
-        
-        */
-
-
         $areaCode = null;
         $vehicleNumber = null;
         $size = null;
@@ -157,7 +139,9 @@ class VehicleManagementController extends Controller
         $idDriver = null;
         $vehicle_id = null;
         $action = $request->input('_action');
-        if ($action != 'deleteVehicle') {
+        if ($action == 'deleteVehicle') {
+            $vehicle_id = $request->input('_id');
+        } else {
             $validator = ValidateController::ValidateVehicleInside($request->input('_vehicle'));
             if ($validator->fails()) {
                 return $validator->errors();
@@ -179,7 +163,6 @@ class VehicleManagementController extends Controller
             } else {
                 $idDriver = 0;
             }
-
             if (array_key_exists('vehicle_id', $request->input('_vehicle'))) {
                 $vehicle_id = $request->input('_vehicle')['vehicle_id'];
             } else {
@@ -240,8 +223,6 @@ class VehicleManagementController extends Controller
 
                 break;
             case 'updateVehicle':
-
-
                 $vehicleUpdate = Vehicle::findOrFail($request->input('_vehicle')['id']);
                 $vehicleUpdate->areaCode = $areaCode;
                 $vehicleUpdate->vehicleNumber = $vehicleNumber;
@@ -301,7 +282,7 @@ class VehicleManagementController extends Controller
 
                 break;
             case 'deleteVehicle':
-                $vehicleDelete = Vehicle::findOrFail($request->input('_id'));
+                $vehicleDelete = Vehicle::findOrFail($vehicle_id);
                 $vehicleDelete->active = 0;
                 if ($vehicleDelete->update()) {
                     $deleteDriver = DriverVehicle::findOrFail($driverVehicle->id);
@@ -455,13 +436,14 @@ class VehicleManagementController extends Controller
         $driverVehiclesId = null;
         $action = $request->input('_action');
 
-        if ($action != 'deleteVehicle') {
+        if ($action == 'deleteVehicle') {
+            $vehicle_id = $request->input('_id');
+        } else {
             $validator = ValidateController::ValidateVehicleOutside($request->input('_vehicle'));
             if ($validator->fails()) {
                 return $validator->errors();
                 //return response()->json(['msg' => 'Input data fail'], 404);
             }
-
             $areaCode = $request->input('_vehicle')['areaCode'];
             $vehicleNumber = $request->input('_vehicle')['vehicleNumber'];
             $size = $request->input('_vehicle')['size'];
@@ -476,13 +458,12 @@ class VehicleManagementController extends Controller
             if (array_key_exists('idDriver', $request->input('_vehicle'))) {
                 $idDriver = $request->input('_vehicle')['idDriver'];
             } else {
-                $idDriver = '';
+                $idDriver = 0;
             }
-
             if (array_key_exists('vehicle_id', $request->input('_vehicle'))) {
                 $vehicle_id = $request->input('_vehicle')['vehicle_id'];
             } else {
-                $vehicle_id = '';
+                $vehicle_id = 0;
             }
         }
         $driverVehicle = \DB::table('driverVehicles')
@@ -566,7 +547,6 @@ class VehicleManagementController extends Controller
                     $addDriver = new DriverVehicle();
                     $addDriver->driver_id = $idDriver;
                     $addDriver->vehicle_id = $vehicleUpdate->id;
-                    $addDriver->createdBy = \Auth::id();
                     $addDriver->updatedBy = \Auth::id();
                     if (!$addDriver->save()) {
                         return response()->json(['msg' => 'Update failed'], 404);
