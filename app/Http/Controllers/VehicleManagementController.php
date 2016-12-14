@@ -186,6 +186,11 @@ class VehicleManagementController extends Controller
                 $vehicle_id = 0;
             }
         }
+        $driverVehicle = \DB::table('driverVehicles')
+            ->where('vehicle_id', $vehicle_id)
+            ->where('active', 1)
+            ->select('*')
+            ->first();
         switch ($action) {
             case 'addVehicle':
                 $vehicleNew = new Vehicle();
@@ -235,11 +240,7 @@ class VehicleManagementController extends Controller
 
                 break;
             case 'updateVehicle':
-                $driverVehicle = \DB::table('driverVehicles')
-                ->where('vehicle_id', $vehicle_id)
-                ->where('active', 1)
-                ->select('*')
-                ->first();
+
 
                 $vehicleUpdate = Vehicle::findOrFail($request->input('_vehicle')['id']);
                 $vehicleUpdate->areaCode = $areaCode;
@@ -254,7 +255,7 @@ class VehicleManagementController extends Controller
                 $vehicleUpdate->garage_id = $garage_id;
                 if (!$vehicleUpdate->update()) {
                     return response()->json(['msg' => 'Update failed'], 404);
-                } 
+                }
                 if ($driverVehicle->driver_id == 0 && $idDriver != 0) {
                     $updateDriverVehicle = DriverVehicle::findOrFail($driverVehicle->id);
                     $updateDriverVehicle->driver_id = $idDriver;
@@ -276,22 +277,22 @@ class VehicleManagementController extends Controller
                     $deleteDriver->update();
                 }
                 $vehicles = \DB::table('vehicles')
-                ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-                ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
-                ->leftjoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
-                ->leftjoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
-                ->where('vehicles.active', 1)
-                ->where('driverVehicles.active', 1)
-                ->where('vehicles.id', $vehicleUpdate->id)
-                ->where('vehicles.garage_id', $garage_id)
-                ->select('driverVehicles.driver_id', 'vehicles.*', 'vehicleTypes.name'
-                    , 'vehicleTypes.id as vehicleType_id'
-                    , 'drivers.fullName'
-                    , 'drivers.id as idDriver'
-                    , 'driverVehicles.vehicle_id as vehicle_id '
-                    , 'garages.name as garageName'
-                )
-                ->first();
+                    ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+                    ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
+                    ->leftjoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+                    ->leftjoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
+                    ->where('vehicles.active', 1)
+                    ->where('driverVehicles.active', 1)
+                    ->where('vehicles.id', $vehicleUpdate->id)
+                    ->where('vehicles.garage_id', $garage_id)
+                    ->select('driverVehicles.driver_id', 'vehicles.*', 'vehicleTypes.name'
+                        , 'vehicleTypes.id as vehicleType_id'
+                        , 'drivers.fullName'
+                        , 'drivers.id as idDriver'
+                        , 'driverVehicles.vehicle_id as vehicle_id '
+                        , 'garages.name as garageName'
+                    )
+                    ->first();
                 $response = [
                     'msg' => 'Updated Vehicle',
                     'updateVehicle' => $vehicles
@@ -303,10 +304,15 @@ class VehicleManagementController extends Controller
                 $vehicleDelete = Vehicle::findOrFail($request->input('_id'));
                 $vehicleDelete->active = 0;
                 if ($vehicleDelete->update()) {
-                    $response = [
-                        'msg' => 'Deleted Vehicle'
-                    ];
-                    return response()->json($response, 201);
+                    $deleteDriver = DriverVehicle::findOrFail($driverVehicle->id);
+                    $deleteDriver->active = 0;
+                    if($deleteDriver->update()){
+                        $response = [
+                            'msg' => 'Deleted Vehicle'
+                        ];
+                        return response()->json($response, 201);
+                    };
+
                 }
 
                 //Deactive DriverVehicle
@@ -598,6 +604,9 @@ class VehicleManagementController extends Controller
                 $vehicleDelete = Vehicle::findOrFail($request->input('_id'));
                 $vehicleDelete->active = 0;
                 if ($vehicleDelete->update()) {
+                    $deleteDriver = DriverVehicle::findOrFail($driverVehicle->id);
+                    $deleteDriver->active = 0;
+                    $deleteDriver->update();
                     $response = [
                         'msg' => 'Deleted Vehicle'
                     ];
@@ -612,6 +621,7 @@ class VehicleManagementController extends Controller
         }
 
     }
+
     /*
      * VehicleType
      * */

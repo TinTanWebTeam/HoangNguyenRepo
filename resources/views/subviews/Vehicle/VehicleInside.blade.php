@@ -386,7 +386,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label for="driver"><b>Tài xế</b></label>
                                         <input type="text" class="form-control"
-                                               id="driver" data-idDriver=""
+                                               id="driver"
                                                name="driver">
                                     </div>
                                 </div>
@@ -566,11 +566,7 @@
                             return filterData;
                         },
                         onchange: function () {
-                            if ($('input[id=driver]').val() == '') {
-                                $('#driver').attr('data-idDriver', '');
-                            } else {
-                                $('#driver').attr('data-idDriver', garageInsideView.text2.id());
-                            }
+                            $('#my-id').attr('data-id', garageInsideView.text2.id());
                         }
                     });
                 },
@@ -964,7 +960,7 @@
                     $("input[id='transferGarage']").val('');
                     $("input[id='driver']").val('');
                     garageInsideView.text2.settext('');
-                    $('#driver').attr('data-iddriver', '');
+                    $('#my-id').attr('data-id', '');
                     $('#transferGarage').attr('data-idGarage', '');
                     $("#listVehicle").find(".titleControl").html("Thêm mới xe");
                     $("button[id=editVehicleType]").prop("disabled", true);
@@ -1013,7 +1009,7 @@
                     $("input[id='vehicle_id']").val(garageInsideView.currentVehicle["vehicle_id"]);
                     $("#vehicleType_id").attr('data-id', garageInsideView.currentVehicle["vehicleType_id"]);
                     garageInsideView.text2.settext(garageInsideView.currentVehicle["fullName"]);
-                    $("#driver").attr('data-idDriver', garageInsideView.currentVehicle["idDriver"]);
+                    $("#my-id").attr('data-id', garageInsideView.currentVehicle["idDriver"]);
                     $("textarea[id='noteVehicle']").val(garageInsideView.currentVehicle["note"]);
                     garageInsideView.action = 'updateVehicle';
                     $("button[id=editVehicleType]").prop("disabled", false);
@@ -1189,7 +1185,7 @@
                         garageInsideView.currentVehicle = {
                             garage_id: $("input[id='garage_id']").val(),
                             idUpdateGarage: $("#transferGarage").attr('data-idGarage'),
-                            idDriver: $("#driver").attr('data-idDriver'),
+                            idDriver: $("#my-id").attr('data-id'),
                             areaCode: $("input[id='areaCode']").val(),
                             vehicleNumber: $("input[id='vehicleNumber']").val(),
                             vehicleType_id: $("#vehicleType_id").attr('data-id'),
@@ -1212,7 +1208,7 @@
                         garageInsideView.currentVehicle.note = $("textarea[id='noteVehicle']").val();
                         garageInsideView.currentVehicle.trademark = $("input[id='trademark']").val();
                         garageInsideView.currentVehicle.yearOfProduction = $("input[id='yearOfProduction']").val();
-                        garageInsideView.currentVehicle.idDriver = $("#driver").attr('data-idDriver');
+                        garageInsideView.currentVehicle.idDriver = $("#my-id").attr('data-id');
                     }
                 },
                 vehicleValidate: function () {

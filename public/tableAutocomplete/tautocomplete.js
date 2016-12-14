@@ -32,7 +32,7 @@
             ddDiv: $("<div>", { class: settings.theme }),
             ddTable: $("<table></table>", { style: "width:" + settings.width }),
             ddTableCaption: $("<caption>" + settings.norecord + "</caption>"),
-            ddTextbox: $("<input class='form-control' style='width:100%'>")
+            ddTextbox: $("<input id='my-id' class='form-control' style='width:100%'>")
         };
 
         var keys = {
@@ -281,6 +281,9 @@
 
         // textbox blur event
         el.ddTextbox.focusout(function () {
+            if($('#my-id').val() ==''){
+                $("#my-id").attr('data-id', '');
+            }
             hideDropDown();
             // clear if the text value is invalid 
             if ($(this).val() != $(this).data("text")) {
