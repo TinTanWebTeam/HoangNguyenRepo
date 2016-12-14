@@ -127,6 +127,24 @@ class VehicleManagementController extends Controller
 
     public function postModifyVehicleInside(Request $request)
     {
+        /*
+            ### action = 'add'
+            if(co tai xe){
+                them vao driverVehicle
+            } else {
+                them vao driverVehicle vs driver_id = 0
+            }
+
+            ### action = 'update'
+            if(co tai xe){
+                edit vao driverVehicle (cap nhat lai driver_id)
+            } else {
+                xoa driverVehicle
+            }
+        
+        */
+
+
         $areaCode = null;
         $vehicleNumber = null;
         $size = null;
@@ -159,20 +177,15 @@ class VehicleManagementController extends Controller
             if (array_key_exists('idDriver', $request->input('_vehicle'))) {
                 $idDriver = $request->input('_vehicle')['idDriver'];
             } else {
-                $idDriver = '';
+                $idDriver = 0;
             }
 
             if (array_key_exists('vehicle_id', $request->input('_vehicle'))) {
                 $vehicle_id = $request->input('_vehicle')['vehicle_id'];
             } else {
-                $vehicle_id = '';
+                $vehicle_id = 0;
             }
         }
-        $driverVehicle = \DB::table('driverVehicles')
-            ->where('vehicle_id', $vehicle_id)
-            ->where('active', 1)
-            ->select('*')
-            ->first();
         switch ($action) {
             case 'addVehicle':
                 $vehicleNew = new Vehicle();
@@ -202,9 +215,11 @@ class VehicleManagementController extends Controller
                     ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
                     ->leftjoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
                     ->leftjoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
-                    ->where('vehicles.active', 1)
-                    ->where('garage_id', $garage_id)
-                    ->where('vehicles.id', $vehicleNew->id)
+                    ->where([
+                        ['vehicles.active', 1],
+                        ['garage_id', $garage_id],
+                        ['vehicles.id', $vehicleNew->id]
+                    ])
                     ->select('driverVehicles.driver_id', 'vehicles.*', 'vehicleTypes.name'
                         , 'vehicleTypes.id as vehicleType_id'
                         , 'drivers.fullName'
@@ -220,6 +235,12 @@ class VehicleManagementController extends Controller
 
                 break;
             case 'updateVehicle':
+                $driverVehicle = \DB::table('driverVehicles')
+                ->where('vehicle_id', $vehicle_id)
+                ->where('active', 1)
+                ->select('*')
+                ->first();
+
                 $vehicleUpdate = Vehicle::findOrFail($request->input('_vehicle')['id']);
                 $vehicleUpdate->areaCode = $areaCode;
                 $vehicleUpdate->vehicleNumber = $vehicleNumber;
@@ -233,11 +254,11 @@ class VehicleManagementController extends Controller
                 $vehicleUpdate->garage_id = $garage_id;
                 if (!$vehicleUpdate->update()) {
                     return response()->json(['msg' => 'Update failed'], 404);
-                } else if ($driverVehicle->driver_id == 0 && $idDriver != '') {
+                } 
+                if ($driverVehicle->driver_id == 0 && $idDriver != 0) {
                     $updateDriverVehicle = DriverVehicle::findOrFail($driverVehicle->id);
                     $updateDriverVehicle->driver_id = $idDriver;
                     $updateDriverVehicle->vehicle_id = $vehicleUpdate->id;
-                    $updateDriverVehicle->createdBy = \Auth::id();
                     $updateDriverVehicle->updatedBy = \Auth::id();
                     if (!$updateDriverVehicle->update()) {
                         return response()->json(['msg' => 'Update failed'], 404);
@@ -246,7 +267,6 @@ class VehicleManagementController extends Controller
                     $addDriver = new DriverVehicle();
                     $addDriver->driver_id = $idDriver;
                     $addDriver->vehicle_id = $vehicleUpdate->id;
-                    $addDriver->createdBy = \Auth::id();
                     $addDriver->updatedBy = \Auth::id();
                     if (!$addDriver->save()) {
                         return response()->json(['msg' => 'Update failed'], 404);
@@ -288,6 +308,9 @@ class VehicleManagementController extends Controller
                     ];
                     return response()->json($response, 201);
                 }
+
+                //Deactive DriverVehicle
+
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:
