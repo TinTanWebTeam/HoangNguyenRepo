@@ -1823,7 +1823,7 @@
                             $("#formulaCode").val(data['formula']['formulaCode']);
                             $("#cashDelivery").val(data['formula']['cashDelivery']);
                             $("#formula_id").val(data['formula']['id']);
-                            $("label[for=quantumProduct] b").html('Số ' + data['formula']['unit'].toLowerCase());
+                            $("label[for=quantumProduct] b").html('Số lượng (' + data['formula']['unit'].toLowerCase() +')');
                             formatCurrency(".currency");
                         } else if (jqXHR.status == 203) {
                             $("#unitPrice").val(0);
@@ -1869,7 +1869,7 @@
                             $("#formulaCode").val(data['formula']['formulaCode']);
                             $("#cashDelivery").val(data['formula']['cashDelivery']);
                             $("#formula_id").val(data['formula']['id']);
-                            $("label[for=quantumProduct] b").html('Số ' + data['formula']['unit'].toLowerCase());
+                            $("label[for=quantumProduct] b").html('Số lượng (' + data['formula']['unit'].toLowerCase() +')');
                             formatCurrency(".currency");
                         } else if (jqXHR.status == 203) {
                             $("#unitPrice").val(0);
@@ -1971,7 +1971,10 @@
                         $("#formula-detail").append(str);
 
                         if(data[key]["rule"] == 'O'){
+                            $("#id_"+data[key]["id"]).prop('readonly', true);
                             $("#id_"+data[key]["id"]).val(transportView.oilPrice);
+                        } else {
+                            $("#id_"+data[key]["id"]).prop('readonly', false);
                         }
 
                         var formulaDetail = {
