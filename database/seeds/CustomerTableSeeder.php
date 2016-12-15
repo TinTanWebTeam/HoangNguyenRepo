@@ -16,7 +16,7 @@ class CustomerTableSeeder extends Seeder
             'FORMOSA',
             'CTY CP THỰC PHẨM Á CHÂU',
             'CTY TNHH YCH-PROTRADE',
-            'CTY TNHH BIA VÀ NƯỚC GIẢI KHÁT VN',
+            'CTY TNHH SGC TRADING VIET NAM',
             'CTY TNHH SX TM DV ĐOÀN KẾT',
             'CTY TNHH INDO-TRANS KEPPEL LOGISTICS VIỆT NAM',
             'CTY TNHH AUNTEX',

@@ -100,11 +100,28 @@ class PostageManagementController extends Controller
                         $postageDetailNew->rule       = $detail['rule'];
                         $postageDetailNew->name       = $detail['name'];
 
-                        if($detail['rule'] == 'S'){
-                            $postageDetailNew->value      = $detail['value'];
-                        } else {
-                            $postageDetailNew->from       = $detail['from'];
-                            $postageDetailNew->to         = $detail['to'];
+                        switch ($detail['rule']) {
+                            case 'S':
+                                $postageDetailNew->value      = $detail['value'];
+                                break;
+                            case 'R':
+                                $postageDetailNew->from       = $detail['from'];
+                                $postageDetailNew->to         = $detail['to'];
+                                break;
+                            case 'O':
+                                $postageDetailNew->from       = $detail['from'];
+                                $postageDetailNew->to         = $detail['to'];
+                                $postageNew->status = 2;
+                                if (!$postageNew->update()) {
+                                    DB::rollBack();
+                                    return response()->json(['msg' => 'Update status for Postage failed'], 404);
+                                };
+                                break;
+                            
+                            default:
+                                DB::rollBack();
+                                return response()->json(['msg' => 'Rule invalid'], 404);
+                                break;
                         }
 
                         if (!$postageDetailNew->save()) {
@@ -163,11 +180,24 @@ class PostageManagementController extends Controller
                             $postageDetailNew->rule       = $detail['rule'];
                             $postageDetailNew->name       = $detail['name'];
 
-                            if($detail['rule'] == 'S'){
-                                $postageDetailNew->value      = $detail['value'];
-                            } else {
-                                $postageDetailNew->from       = $detail['from'];
-                                $postageDetailNew->to         = $detail['to'];
+                            switch ($detail['rule']) {
+                                case 'S':
+                                    $postageDetailNew->value      = $detail['value'];
+                                    break;
+                                case 'R':
+                                    $postageDetailNew->from       = $detail['from'];
+                                    $postageDetailNew->to         = $detail['to'];
+                                    break;
+                                case 'O':
+                                    $postageDetailNew->from       = $detail['from'];
+                                    $postageDetailNew->to         = $detail['to'];
+                                    $postageNew->update(['status' => 2]);
+                                    break;
+                                
+                                default:
+                                    DB::rollBack();
+                                    return response()->json(['msg' => 'Rule invalid'], 404);
+                                    break;
                             }
 
                             if (!$postageDetailNew->save()) {

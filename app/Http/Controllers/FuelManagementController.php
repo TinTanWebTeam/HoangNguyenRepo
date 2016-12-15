@@ -82,6 +82,7 @@ class FuelManagementController extends Controller
                 if ($oilPrice->save()) {
                     /* Check Oil Change Margin Percent */
                     $changePercent = ($oilPrice->price - $currentOilPrice->price) / ($currentOilPrice->price) * 100;
+                    // Tính lại
                     $customersToChangePostage = Customer::where('percentOilLimitToChangePostage', '<', abs($changePercent))->get();
                     try {
                         foreach ($customersToChangePostage as $customer) {

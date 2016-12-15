@@ -22,6 +22,7 @@ use App\VehicleType;
 use App\Voucher;
 use App\VoucherTransport;
 use App\TransportFormulaDetail;
+use App\Fuel;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -645,6 +646,8 @@ class CustomerManagementController extends Controller
         $formulas = Formula::all();
         $formulaDetails = FormulaDetail::all();
         $transportFormulaDetails = TransportFormulaDetail::all();
+        $oilPrice = Fuel::where('type', 'oil')->orderBy('applyDate', 'desc')->first();
+        $oilPrice = $oilPrice->price;
 
         /* Dùng role Admin để hiện doanh thu và lợi nhuận. */
         $isAdmin = SubRole::where([
@@ -671,6 +674,7 @@ class CustomerManagementController extends Controller
             'formulas'                => $formulas,
             'formulaDetails'          => $formulaDetails,
             'transportFormulaDetails' => $transportFormulaDetails,
+            'oilPrice'                => $oilPrice,
             'isAdmin'                 => (!$isAdmin) ? 1: 0
         ];
 

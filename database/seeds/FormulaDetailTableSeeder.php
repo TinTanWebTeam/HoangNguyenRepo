@@ -228,6 +228,86 @@ class FormulaDetailTableSeeder extends Seeder
             'index'      => 4
         ]);
 
+        # CTY TNHH SCG TRADING VIET NAM #
+        \App\FormulaDetail::create([
+            'formula_id' => 9,
+            'rule'       => 'O',
+            'name'       => 'Giá dầu',
+            'from'       => 8601,
+            'to'         => 9600,
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 9,
+            'rule'       => 'R',
+            'name'       => 'Khoảng cách',
+            'from'       => 0,
+            'to'         => 10,
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 10,
+            'rule'       => 'O',
+            'name'       => 'Giá dầu',
+            'from'       => 9601,
+            'to'         => 10600,
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 10,
+            'rule'       => 'R',
+            'name'       => 'Khoảng cách',
+            'from'       => 0,
+            'to'         => 10,
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 11,
+            'rule'       => 'O',
+            'name'       => 'Giá dầu',
+            'from'       => 8601,
+            'to'         => 9600,
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 11,
+            'rule'       => 'R',
+            'name'       => 'Khoảng cách',
+            'from'       => 11,
+            'to'         => 30,
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 12,
+            'rule'       => 'O',
+            'name'       => 'Giá dầu',
+            'from'       => 9601,
+            'to'         => 10600,
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 12,
+            'rule'       => 'R',
+            'name'       => 'Khoảng cách',
+            'from'       => 11,
+            'to'         => 30,
+            'value'      => null,
+            'index'      => null
+        ]);
 
     }
 }

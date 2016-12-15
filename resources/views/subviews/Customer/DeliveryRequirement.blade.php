@@ -773,6 +773,7 @@
                 idDelete: null,
                 transportType: 0,
                 isAdmin: null,
+                oilPrice: null,
 
                 displayControl: function (mode) {
                     if(mode === 'show'){
@@ -933,6 +934,7 @@
                             transportView.dataFormula = data['formulas'];
                             transportView.dataFormulaDetail = data['formulaDetails'];
                             transportView.dataTransportFormulaDetail = data['transportFormulaDetails'];
+                            transportView.oilPrice = data['oilPrice'];
                             transportView.isAdmin = data['isAdmin'];
                             transportView.fillDataToDatatable(transportView.dataTransport);
                             transportView.loadSelectBox(transportView.dataStatus, 'status_transport', 'status');
@@ -1658,6 +1660,7 @@
                             transportView.dataFormula = data['formulas'];
                             transportView.dataFormulaDetail = data['formulaDetails'];
                             transportView.dataTransportFormulaDetail = data['transportFormulaDetails'];
+                            transportView.oilPrice = data['oilPrice'];
                             transportView.isAdmin = data['isAdmin'];
                             transportView.fillDataToDatatable(transportView.dataTransport);
 
@@ -1797,6 +1800,7 @@
                         $("#unit").val('');
                         $("#formulaCode").val('');
                         $("#cashDelivery").val('');
+                        $("label[for=quantumProduct] b").html('Lượng hàng');
                         return;
                     }
 
@@ -1819,6 +1823,7 @@
                             $("#formulaCode").val(data['formula']['formulaCode']);
                             $("#cashDelivery").val(data['formula']['cashDelivery']);
                             $("#formula_id").val(data['formula']['id']);
+                            $("label[for=quantumProduct] b").html('Số ' + data['formula']['unit'].toLowerCase());
                             formatCurrency(".currency");
                         } else if (jqXHR.status == 203) {
                             $("#unitPrice").val(0);
@@ -1826,7 +1831,8 @@
                             $("#formulaCode").val('');
                             $("#cashDelivery").val('');
                             $("#formula_id").val('');
-                            showNotification("error", data['msg']);
+                            $("label[for=quantumProduct] b").html('Lượng hàng');
+                            showNotification("warning", data['msg']);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -1863,6 +1869,7 @@
                             $("#formulaCode").val(data['formula']['formulaCode']);
                             $("#cashDelivery").val(data['formula']['cashDelivery']);
                             $("#formula_id").val(data['formula']['id']);
+                            $("label[for=quantumProduct] b").html('Số ' + data['formula']['unit'].toLowerCase());
                             formatCurrency(".currency");
                         } else if (jqXHR.status == 203) {
                             $("#unitPrice").val(0);
@@ -1870,7 +1877,8 @@
                             $("#formulaCode").val('');
                             $("#cashDelivery").val('');
                             $("#formula_id").val('');
-                            showNotification("error", data['msg']);
+                            $("label[for=quantumProduct] b").html('Lượng hàng');
+                            showNotification("warning", data['msg']);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -1879,6 +1887,7 @@
                 focusOut_getCustomer: function(){
                     $("#unitPrice").val('');
                     $("#unit").val('');
+                    $("label[for=quantumProduct] b").html('Lượng hàng');
 
                     if (transportView.transportType === 1)
                         return;
@@ -1955,11 +1964,15 @@
                         str += '<div class="col-md-12">';
                         str += '<div class="form-group form-md-line-input">';
                         str += '<label for="id_'+data[key]["id"]+'" class="red"><b>'+data[key]["name"]+'</b></label>';
-                        str += '<input type="text"  class="form-control name" id="id_'+data[key]["id"]+'" data-rule='+data[key]["rule"]+' onfocusout="transportView.focusOut_getFormula()">';
+                        str += '<input value="" type="text" class="form-control name" id="id_'+data[key]["id"]+'" data-rule='+data[key]["rule"]+' onfocusout="transportView.focusOut_getFormula()">';
                         str += '</div>';
                         str += '</div>';
                         str += '</div>';
                         $("#formula-detail").append(str);
+
+                        if(data[key]["rule"] == 'O'){
+                            $("#id_"+data[key]["id"]).val(transportView.oilPrice);
+                        }
 
                         var formulaDetail = {
                             id : data[key]["id"],

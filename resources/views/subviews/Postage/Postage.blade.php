@@ -221,7 +221,8 @@
                                                         <label for="rule" class="marginRight"><b>Công thức: </b></label>
                                                         <input type="radio" name="rule" value="R" checked> <span
                                                                 class="marginRight">Khoảng</span>
-                                                        <input type="radio" name="rule" value="S"> <span>Giá trị</span>
+                                                        <input type="radio" name="rule" value="S"> <span class="marginRight">Giá trị</span>
+                                                        <input type="radio" name="rule" value="O"> <span>Giá dầu</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -424,7 +425,8 @@
                     $("input[id=note]").val('');
                 },
                 retypeDetail: function () {
-                    $("input[id=name]").val('');
+                    if($("input[name=rule]:checked").val() != 'O')
+                        $("input[id=name]").val('');
                     $("input[id=value]").val('');
                     $("input[id=from]").val('');
                     $("input[id=to]").val('');
@@ -492,6 +494,7 @@
                     $('input[type=radio][name=rule]').change(function () {
                         postageView.retypeDetail();
                         if (this.value == 'S') {
+                            $("#name").prop('readonly', false);
                             $("#value").prop('disabled', false);
                             $("#from").prop('disabled', true);
                             $("#to").prop('disabled', true);
@@ -501,6 +504,17 @@
                             $("label[for=to]").removeClass("red");
                         }
                         else if (this.value == 'R') {
+                            $("#name").prop('readonly', false);
+                            $("#value").prop('disabled', true);
+                            $("#from").prop('disabled', false);
+                            $("#to").prop('disabled', false);
+
+                            $("label[for=value]").removeClass("red");
+                            $("label[for=from]").addClass("red");
+                            $("label[for=to]").addClass("red");
+                        } else if (this.value == 'O'){
+                            $("#name").val("Giá dầu");
+                            $("#name").prop('readonly', true);
                             $("#value").prop('disabled', true);
                             $("#from").prop('disabled', false);
                             $("#to").prop('disabled', false);

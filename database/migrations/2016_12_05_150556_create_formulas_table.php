@@ -31,7 +31,7 @@ class CreateFormulasTable extends Migration
             $table->integer('updatedBy')->unsigned();
             $table->boolean('changeByFuel')->default(0)->comment('Thay đổi do giá dầu');
             $table->integer('fuel_id')->unsigned();
-            $table->boolean('status')->default(0)->comment('Trạng thái để làm mốc cộng dồn % thay đổi giá dầu');
+            $table->integer('status')->default(0)->comment('1: để làm mốc cộng dồn % thay đổi giá dầu, 2: Không thay đổi khi đổi giá dầu');
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

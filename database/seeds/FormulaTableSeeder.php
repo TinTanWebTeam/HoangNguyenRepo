@@ -13,131 +13,198 @@ class FormulaTableSeeder extends Seeder
     {
         # FORMOSA #
         \App\Formula::create([
-            'formulaCode' => 'TRSCN303',
-            'unitPrice'   => 144500,
-            'unit'        => 'Tấn',
-            'customer_id' => 1,
-            'extendData'  => '',
-            'createdDate'   => date('Y-m-d'),
-            'applyDate'     => '2016-10-10',
-            'fuel_id'       => 1,
-            'cashDelivery'  => 1000000,
-            'createdBy'     => 1,
-            'updatedBy'     => 1,
-            'changeByFuel'  => 0,
-            'note'          => 'lorem ipsum'
+            'formulaCode'  => 'TRSCN303',
+            'unitPrice'    => 144500,
+            'unit'         => 'Tấn',
+            'customer_id'  => 1,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 1000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
         ]);
         \App\Formula::create([
-            'formulaCode' => 'TRSCN304',
-            'unitPrice'   => 234300,
-            'unit'        => 'Tấn',
-            'customer_id' => 1,
-            'extendData'  => '',
-            'createdDate'   => date('Y-m-d'),
-            'applyDate'     => '2016-10-10',
-            'fuel_id'       => 1,
-            'cashDelivery'  => 1000000,
-            'createdBy'     => 1,
-            'updatedBy'     => 1,
-            'changeByFuel'  => 0,
-            'note'          => 'lorem ipsum'
+            'formulaCode'  => 'TRSCN304',
+            'unitPrice'    => 234300,
+            'unit'         => 'Tấn',
+            'customer_id'  => 1,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 1000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
         ]);
         \App\Formula::create([
-            'formulaCode' => 'TRSCN305',
-            'unitPrice'   => 814700,
-            'unit'        => 'Tấn',
-            'customer_id' => 1,
-            'extendData'  => '',
-            'createdDate'   => date('Y-m-d'),
-            'applyDate'     => '2016-10-10',
-            'fuel_id'       => 1,
-            'cashDelivery'  => 1000000,
-            'createdBy'     => 1,
-            'updatedBy'     => 1,
-            'changeByFuel'  => 0,
-            'note'          => 'lorem ipsum'
+            'formulaCode'  => 'TRSCN305',
+            'unitPrice'    => 814700,
+            'unit'         => 'Tấn',
+            'customer_id'  => 1,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 1000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
         ]);
 
         # A CHAU #
         \App\Formula::create([
-            'formulaCode' => '',
-            'unitPrice'   => 1513,
-            'unit'        => 'Thùng',
-            'customer_id' => 2,
-            'extendData'  => '',
-            'createdDate'   => date('Y-m-d'),
-            'applyDate'     => '2016-10-10',
-            'fuel_id'       => 1,
-            'cashDelivery'  => 1000000,
-            'createdBy'     => 1,
-            'updatedBy'     => 1,
-            'changeByFuel'  => 0,
-            'note'          => 'lorem ipsum'
+            'formulaCode'  => null,
+            'unitPrice'    => 1513,
+            'unit'         => 'Thùng',
+            'customer_id'  => 2,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 1000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
         ]);
 
         \App\Formula::create([
-            'formulaCode' => '',
-            'unitPrice'   => 5036,
-            'unit'        => 'Thùng',
-            'customer_id' => 2,
-            'extendData'  => '',
-            'createdDate'   => date('Y-m-d'),
-            'applyDate'     => '2016-10-10',
-            'fuel_id'       => 1,
-            'cashDelivery'  => 1000000,
-            'createdBy'     => 1,
-            'updatedBy'     => 1,
-            'changeByFuel'  => 0,
-            'note'          => 'lorem ipsum'
+            'formulaCode'  => null,
+            'unitPrice'    => 5036,
+            'unit'         => 'Thùng',
+            'customer_id'  => 2,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 1000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
         ]);
 
         # YCH-PROTRADE #
         \App\Formula::create([
-            'formulaCode' => '',
-            'unitPrice'   => 51929,
-            'unit'        => 'm3',
-            'customer_id' => 3,
-            'extendData'  => '',
-            'createdDate'   => date('Y-m-d'),
-            'applyDate'     => '2016-10-10',
-            'fuel_id'       => 1,
-            'cashDelivery'  => 1000000,
-            'createdBy'     => 1,
-            'updatedBy'     => 1,
-            'changeByFuel'  => 0,
-            'note'          => 'lorem ipsum'
+            'formulaCode'  => null,
+            'unitPrice'    => 51929,
+            'unit'         => 'm3',
+            'customer_id'  => 3,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 1000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
         ]);
 
         \App\Formula::create([
-            'formulaCode' => '',
-            'unitPrice'   => 48684,
-            'unit'        => 'm3',
-            'customer_id' => 3,
-            'extendData'  => '',
-            'createdDate'   => date('Y-m-d'),
-            'applyDate'     => '2016-10-10',
-            'fuel_id'       => 1,
-            'cashDelivery'  => 1000000,
-            'createdBy'     => 1,
-            'updatedBy'     => 1,
-            'changeByFuel'  => 0,
-            'note'          => 'lorem ipsum'
+            'formulaCode'  => null,
+            'unitPrice'    => 48684,
+            'unit'         => 'm3',
+            'customer_id'  => 3,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 1000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
         ]);
 
         \App\Formula::create([
-            'formulaCode'   => '',
-            'unitPrice'     => 45438,
-            'unit'          => 'm3',
-            'customer_id'   => 2,
-            'extendData'    => '',
-            'createdDate'   => date('Y-m-d'),
-            'applyDate'     => '2016-10-10',
-            'fuel_id'       => 1,
-            'cashDelivery'  => 1000000,
-            'createdBy'     => 1,
-            'updatedBy'     => 1,
-            'changeByFuel'  => 0,
-            'note'          => 'lorem ipsum'
+            'formulaCode'  => null,
+            'unitPrice'    => 45438,
+            'unit'         => 'm3',
+            'customer_id'  => 2,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 1000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
+        ]);
+
+        # CTY TNHH SCG TRADING VIET NAM #
+
+        //9
+        \App\Formula::create([
+            'formulaCode'  => null,
+            'unitPrice'    => 312749,
+            'unit'         => 'Xe',
+            'customer_id'  => 4,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 2000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
+        ]);
+
+        \App\Formula::create([
+            'formulaCode'  => null,
+            'unitPrice'    => 319132,
+            'unit'         => 'Xe',
+            'customer_id'  => 4,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 2000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
+        ]);
+
+        \App\Formula::create([
+            'formulaCode'  => null,
+            'unitPrice'    => 380946,
+            'unit'         => 'Xe',
+            'customer_id'  => 4,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 2000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
+        ]);
+
+        \App\Formula::create([
+            'formulaCode'  => null,
+            'unitPrice'    => 388721,
+            'unit'         => 'Xe',
+            'customer_id'  => 4,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 2000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
         ]);
     }
 }
