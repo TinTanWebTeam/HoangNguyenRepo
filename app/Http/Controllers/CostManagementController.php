@@ -32,16 +32,17 @@ class CostManagementController extends Controller
             ->select('id', 'areaCode', 'vehicleNumber')
             ->orderBy('created_at', 'Desc')
             ->first();
-
         $tableGarage = DB::table('garages')
             ->where('active', 1)
             ->select('id', 'name')
             ->get();
+
         $response = [
             'msg' => 'Get data cost success',
             'tableGarage' => $tableGarage,
             'tableVehicleType' => $tableVehicleType,
             'tableVehicleNew' => $tableVehicleNew,
+
         ];
         return response()->json($response, 200);
     }
@@ -73,16 +74,28 @@ class CostManagementController extends Controller
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'vehicles.note as vehicleNote')
             ->get();
-        $dataSearchVehicle = DB::table('vehicles')
-            ->where('active', 1)
+        $dataAllVehicle = DB::table('vehicles')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+            ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
+            ->where([
+                ['driverVehicles.active', 1],
+                ['vehicles.active', 1],
+                ['driverVehicles.driver_id', '!=', 0]
+            ])
+            ->select('vehicles.id'
+                , DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
+                , 'vehicleTypes.name'
+                , 'drivers.fullName')
             ->get();
-        dd($dataSearchVehicle);
+
         $response = [
             'msg' => 'Get data cost success',
             'tableCost' => $tableCost,
             'tablePrice' => $tablePrice,
             'tableCostPrice' => $tableCostPrice,
             'dataVehicle' => $tableVehicle,
+            'dataAllVehicle' => $dataAllVehicle,
 
         ];
         return response()->json($response, 200);
@@ -397,12 +410,26 @@ class CostManagementController extends Controller
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'vehicles.note as vehicleNote')
             ->get();
-
+        $dataAllVehicle = DB::table('vehicles')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+            ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
+            ->where([
+                ['driverVehicles.active', 1],
+                ['vehicles.active', 1],
+                ['driverVehicles.driver_id', '!=', 0]
+            ])
+            ->select('vehicles.id'
+                , DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
+                , 'vehicleTypes.name'
+                , 'drivers.fullName')
+            ->get();
         $response = [
             'msg' => 'Get data cost success',
             'petroleumCost' => $petroleumCost,
             'tablePrice' => $tablePrice,
-            'dataVehicle' => $tableVehicle
+            'dataVehicle' => $tableVehicle,
+            'dataAllVehicle' => $dataAllVehicle
 
         ];
         return response()->json($response, 200);
@@ -546,18 +573,9 @@ class CostManagementController extends Controller
 
     public function getDataParkingCost()
     {
-        //$tableVehicle = Vehicle::all();
         $tableVehicle = DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
             ->get();
-//        $dataPrice = DB::table('prices')
-//            ->where('active', 1)
-//            ->get();
-//        $tablePrice = DB::table('prices')
-//            ->select('prices.id', 'prices.price')
-//            ->orderBy('prices.created_at', 'desc')
-//            ->where('costPrice_id', 4)
-//            ->first();
         $tablePrice = DB::table('prices')
             ->where('costPrice_id', 4)
             ->orderBy('prices.created_at', 'desc')
@@ -583,12 +601,27 @@ class CostManagementController extends Controller
             )
             ->get();
         $vehicleType = VehicleType::all();
+        $dataAllVehicle = DB::table('vehicles')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+            ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
+            ->where([
+                ['driverVehicles.active', 1],
+                ['vehicles.active', 1],
+                ['driverVehicles.driver_id', '!=', 0]
+            ])
+            ->select('vehicles.id'
+                , DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
+                , 'vehicleTypes.name'
+                , 'drivers.fullName')
+            ->get();
         $response = [
             'msg' => 'Get data ParkingCost success',
             'tableParkingCost' => $parkingCosts,
             'tablePrice' => $tablePrice,
             'dataVehicle' => $tableVehicle,
             'dataVehicleType' => $vehicleType,
+            'dataAllVehicle' => $dataAllVehicle,
 
         ];
         return response()->json($response, 200);
@@ -596,7 +629,7 @@ class CostManagementController extends Controller
 
     public function postModifyParkingCost(Request $request)
     {
-
+dd($request->all());
         $vehicle_id = null;
         $checkIn = null;
         $checkOut = null;
@@ -758,10 +791,25 @@ class CostManagementController extends Controller
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'vehicles.note as vehicleNote')
             ->get();
+        $dataAllVehicle = DB::table('vehicles')
+            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+            ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
+            ->where([
+                ['driverVehicles.active', 1],
+                ['vehicles.active', 1],
+                ['driverVehicles.driver_id', '!=', 0]
+            ])
+            ->select('vehicles.id'
+                , DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
+                , 'vehicleTypes.name'
+                , 'drivers.fullName')
+            ->get();
         $response = [
             'msg' => 'Get data other cost success',
             'tableOtherCost' => $otherCost,
             'dataVehicle' => $tableVehicle,
+            'dataAllVehicle' => $dataAllVehicle,
 
 
         ];

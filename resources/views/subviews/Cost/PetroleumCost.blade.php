@@ -104,7 +104,7 @@
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
                                         <div class="row">
                                             <div class="col-sm-9 col-xs-9">
-                                                <input type="text" data-id=""
+                                                <input type="text"
                                                        class="form-control"
                                                        id="vehicle_id"
                                                        name="vehicle_id">
@@ -445,7 +445,35 @@
                 tableVehicleNew: null,
                 idDelete: null,
                 current: null,
+                text2: null,
+                dataAllVehicle:null,
                 tagsVehicle: [],
+                tableAutoCompleteSearch: function () {
+                    petroleumCostView.text2 = $("#vehicle_id").tautocomplete({
+                        width: "300px",
+                        columns: ['Số xe', 'Loại xe', 'Tài xế'],
+                        data: function () {
+                            try {
+                                var data = petroleumCostView.dataAllVehicle;
+                            }
+                            catch (e) {
+                                alert(e)
+                            }
+                            var filterData = [];
+                            var searchData = eval("/" + petroleumCostView.text2.searchdata() + "/gi");
+                            $.each(data, function (i, v) {
+                                if (v.fullNumber.search(new RegExp(searchData)) != -1) {
+                                    filterData.push(v);
+                                }
+                            });
+
+                            return filterData;
+                        },
+                        onchange: function () {
+                            $('#my-id').attr('data-id', petroleumCostView.text2.id());
+                        }
+                    });
+                },
                 loadData: function () {
                     $.ajax({
                         url: url + 'petroleum-cost/petroleum-cost',
@@ -458,7 +486,9 @@
                             petroleumCostView.tablePrice = data['tablePrice'];
                             petroleumCostView.inputPrice(data['tablePrice']);
                             petroleumCostView.tableVehicle = data['dataVehicle'];
-                            petroleumCostView.renderAutoCompleteSearch();
+                            petroleumCostView.dataAllVehicle = data['dataAllVehicle'];
+                            //petroleumCostView.renderAutoCompleteSearch();
+                            petroleumCostView.tableAutoCompleteSearch();
 
 
                         } else {
@@ -498,12 +528,12 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $("#table-vehicles").find("tbody").on('click', 'tr', function () {
-                        var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
-                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
-                        $('#vehicle_id').val(vehicle);
-                        petroleumCostView.displayModal("hide", "#modal-searchVehicle");
-                    });
+//                    $("#table-vehicles").find("tbody").on('click', 'tr', function () {
+//                        var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
+//                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
+//                        $('#vehicle_id').val(vehicle);
+//                        petroleumCostView.displayModal("hide", "#modal-searchVehicle");
+//                    });
                     petroleumCostView.renderDateTimePicker();
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
@@ -528,36 +558,37 @@
                     $('label[class=error]').hide();
                 },
                 lit: function () {
-                    price = asNumberFromCurrency('#price');
-                    hasVat = asNumberFromCurrency('#hasVat');
-                    lit = hasVat / price;
+                    var price = asNumberFromCurrency('#price');
+                    var hasVat = asNumberFromCurrency('#hasVat');
+                    var vat = asNumberFromCurrency('#vat');
+                    var lit = hasVat / price;
                     $("input[id=literNumber]").val(lit);
-                    notVat = hasVat / 1.1;
-                    total = hasVat-(notVat *(vat/100));
+                    var notVat = hasVat / 1.1;
+                    var total = hasVat - (notVat * (vat / 100));
                     $("input[id=totalPrice]").val(total);
                     formatCurrency(".currency");
                 },
                 totalPrice: function () {
-                    lit = $("input[id=literNumber]").val();
-                    price = asNumberFromCurrency('#price');
-                    vat = asNumberFromCurrency('#vat');
-                    if(vat >100){
+                    var lit = $("input[id=literNumber]").val();
+                    var price = asNumberFromCurrency('#price');
+                    var vat = asNumberFromCurrency('#vat');
+                    if (vat > 100) {
                         vat = 100;
                         $("input[id=vat]").val(vat);
-                    }else if (vat < 0 || vat == 0){
+                    } else if (vat < 0 || vat == 0) {
                         vat = '';
                         $("input[id=vat]").val(vat);
                     }
-                    hasVat = lit * price;
-                    notVat = hasVat / 1.1;
+                    var hasVat = lit * price;
+                    var notVat = hasVat / 1.1;
                     $("input[id=hasVat]").val(hasVat);
-                    total = hasVat-(notVat *(vat/100));
+                    var total = hasVat - (notVat * (vat / 100));
                     $("input[id=totalPrice]").val(total);
                     formatCurrency(".currency");
                 },
                 clearInput: function () {
-                    $("input[id='vehicle_id']").val('');
-                    $("#vehicle_id").attr('data-id', '');
+                    petroleumCostView.text2.settext('');
+                    $('#my-id').attr('data-id', '');
                     $("input[id='noted']").val('');
                     petroleumCostView.totalDefault();
 
@@ -645,29 +676,29 @@
 
                 },
 
-                renderAutoCompleteSearch: function () {
-                    petroleumCostView.tagsVehicle = _.map(petroleumCostView.tableVehicle, function (o) {
-                        return o.areaCode + '-' + o.vehicleNumber;
-                    });
-                    petroleumCostView.tagsVehicle = _.union(petroleumCostView.tagsVehicle);
-
-                    renderAutoCompleteSearch('#vehicle_id', petroleumCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
-
-                        var vehicleName = this.value;
-                        if (vehicleName == '') return;
-                        var vehicle = _.find(petroleumCostView.tableVehicle, function (o) {
-                            return o.areaCode + '-' + o.vehicleNumber == vehicleName;
-                        });
-                        if (typeof vehicle === "undefined") {
-                            petroleumCostView.loadListGarageAndVehicleType();
-                            petroleumCostView.displayModal("show", "#modal-addVehicle");
-                            $("input[id=areaCode]").focus();
-                        } else {
-                            $("#vehicle_id").attr("data-id", vehicle.id);
-                        }
-                    }));
-
-                },
+//                renderAutoCompleteSearch: function () {
+//                    petroleumCostView.tagsVehicle = _.map(petroleumCostView.tableVehicle, function (o) {
+//                        return o.areaCode + '-' + o.vehicleNumber;
+//                    });
+//                    petroleumCostView.tagsVehicle = _.union(petroleumCostView.tagsVehicle);
+//
+//                    renderAutoCompleteSearch('#vehicle_id', petroleumCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
+//
+//                        var vehicleName = this.value;
+//                        if (vehicleName == '') return;
+//                        var vehicle = _.find(petroleumCostView.tableVehicle, function (o) {
+//                            return o.areaCode + '-' + o.vehicleNumber == vehicleName;
+//                        });
+//                        if (typeof vehicle === "undefined") {
+//                            petroleumCostView.loadListGarageAndVehicleType();
+//                            petroleumCostView.displayModal("show", "#modal-addVehicle");
+//                            $("input[id=areaCode]").focus();
+//                        } else {
+//                            $("#vehicle_id").attr("data-id", vehicle.id);
+//                        }
+//                    }));
+//
+//                },
                 renderDateTimePicker: function () {
                     $('#dateFuel').datepicker({
                         "setDate": new Date(),
@@ -680,7 +711,7 @@
                 fillFormDataToCurrentObject: function () {
                     if (petroleumCostView.action == 'add') {
                         petroleumCostView.current = {
-                            vehicle_id: $("#vehicle_id").attr('data-id'),
+                            vehicle_id: $("#my-id").attr('data-id'),
                             dateFuel: $("input[id='dateFuel']").val(),
                             timeFuel: $("input[id='timeFuel']").val(),
                             totalPrice: $("input[id='totalprice']").val(),
@@ -700,7 +731,7 @@
                         petroleumCostView.current.dateFuel = $("input[id='dateFuel']").val();
                         petroleumCostView.current.timeFuel = $("input[id='timeFuel']").val();
                         petroleumCostView.current.noted = $("input[id='noted']").val();
-                        petroleumCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
+                        petroleumCostView.current.vehicle_id = $("#my-id").attr('data-id');
                         petroleumCostView.current.vat = $("input[id='vat']").val();
                         petroleumCostView.current.hasVat = $("input[id='hasVat']").val();
 
@@ -719,8 +750,8 @@
                     $("input[id='dateFuel']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
                     $("input[id='timeFuel']").val(timeFuel.format("HH:mm"));
                     var vehicle = petroleumCostView.current["vehicles_code"] + "-" + petroleumCostView.current["vehicles_vehicleNumber"];
-                    $("input[id='vehicle_id']").val(vehicle);
-                    $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
+                    petroleumCostView.text2.settext(vehicle);
+                    $("#my-id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     $("input[id='literNumber']").val(petroleumCostView.current["literNumber"]);
                     $("input[id='noted']").val(petroleumCostView.current["note"]);
                     $("input[id='price']").val(petroleumCostView.current["prices_price"]);
@@ -728,7 +759,7 @@
                     $("input[id='hasVat']").val(petroleumCostView.current["hasVat"]);
                     $("input[id='totalPrice']").val(petroleumCostView.current["totalCost"]);
                     $("#price").attr('data-priceId', petroleumCostView.current["price_id"]);
-                    $("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
+                    //$("#vehicle_id").attr('data-id', petroleumCostView.current["vehicle_id"]);
                     formatCurrency(".currency");
 
                 },
@@ -790,7 +821,6 @@
                 ValidatePetrol: function () {
                     $("#formPetroleum").validate({
                         rules: {
-                            vehicle_id: "required",
                             literNumber: {
                                 required: true,
                                 number: true
@@ -799,7 +829,6 @@
                         },
                         ignore: ".ignore",
                         messages: {
-                            vehicle_id: "Vui lòng chọn xe",
                             literNumber: {
                                 required: "Vui lòng nhập số lít",
                                 number: "Số lít phải là số"
@@ -841,7 +870,10 @@
                         });
                     } else {
                         petroleumCostView.ValidatePetrol();
-                        if ($('input[id=price]').val() == 0) {
+                        if ($('#my-id').attr('data-id') == '') {
+                            showNotification("error", "Vui lòng chọn xe");
+                        }
+                        else if ($('input[id=price]').val() == 0) {
                             showNotification("error", "Đơn giá phải lớn hơn 0");
                         } else {
                             if ($("#formPetroleum").valid()) {
@@ -960,8 +992,8 @@
                 inputVehicle: function () {
 
                     var numberVehicle = petroleumCostView.tableVehicleNew.areaCode + '-' + petroleumCostView.tableVehicleNew.vehicleNumber
-                    $("input[id='vehicle_id']").val(numberVehicle);
-                    $("#vehicle_id").attr('data-id', petroleumCostView.tableVehicleNew.id);
+                    $("input[id='my-id']").val(numberVehicle);
+                    $("#my-id").attr('data-id', petroleumCostView.tableVehicleNew.id);
 
                 },
                 addVehicles: function () {
@@ -1007,9 +1039,9 @@
                 loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("garage_id");
                     for (var i = 0; i < lstGarage.length; i++) {
@@ -1023,9 +1055,9 @@
                 loadSelectBoxVehicleType: function (lstVehicleType) {
                     //reset selectbox
                     $('#vehicleType_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("vehicleType_id");
                     for (var i = 0; i < lstVehicleType.length; i++) {

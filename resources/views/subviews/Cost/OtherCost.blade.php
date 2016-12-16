@@ -106,7 +106,7 @@
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-10">
-                                                <input type="text" data-id=""
+                                                <input type="text"
                                                        class="form-control"
                                                        id="vehicle_id"
                                                        name="vehicle_id">
@@ -320,6 +320,34 @@
                 idDelete: null,
                 current: null,
                 tagsVehicle: [],
+                text2: null,
+                dataAllVehicle: null,
+                tableAutoCompleteSearch: function () {
+                    otherCostView.text2 = $("#vehicle_id").tautocomplete({
+                        width: "300px",
+                        columns: ['Số xe', 'Loại xe', 'Tài xế'],
+                        data: function () {
+                            try {
+                                var data = otherCostView.dataAllVehicle;
+                            }
+                            catch (e) {
+                                alert(e)
+                            }
+                            var filterData = [];
+                            var searchData = eval("/" + otherCostView.text2.searchdata() + "/gi");
+                            $.each(data, function (i, v) {
+                                if (v.fullNumber.search(new RegExp(searchData)) != -1) {
+                                    filterData.push(v);
+                                }
+                            });
+
+                            return filterData;
+                        },
+                        onchange: function () {
+                            $('#my-id').attr('data-id', otherCostView.text2.id());
+                        }
+                    });
+                },
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
@@ -385,7 +413,7 @@
                 fillFormDataToCurrentObject: function () {
                     if (otherCostView.action == 'add') {
                         otherCostView.current = {
-                            vehicle_id: $("#vehicle_id").attr('data-id'),
+                            vehicle_id: $("#my-id").attr('data-id'),
                             cost: $("input[id='cost']").val(),
                             note: $("textarea[id='note']").val()
                         };
@@ -393,13 +421,13 @@
 
                         otherCostView.current.cost = $("input[id='cost']").val();
                         otherCostView.current.note = $("textarea[id='note']").val();
-                        otherCostView.current.vehicle_id = $("#vehicle_id").attr('data-id');
+                        otherCostView.current.vehicle_id = $("#my-id").attr('data-id');
                     }
                 },
                 fillCurrentObjectToForm: function () {
                     var vehicle = otherCostView.current["vehicles_code"] + "-" + otherCostView.current["vehicles_vehicleNumber"];
-                    $("input[id='vehicle_id']").val(vehicle);
-                    $("#vehicle_id").attr('data-id', otherCostView.current["vehicle_id"]);
+                    $("input[id='my-id']").val(vehicle);
+                    $("#my-id").attr('data-id', otherCostView.current["vehicle_id"]);
                     $("textarea[id='note']").val(otherCostView.current["note"]);
                     $("input[id='cost']").val(otherCostView.current["cost"])
 
@@ -431,7 +459,8 @@
                             otherCostView.tableOtherCost = data['tableOtherCost'];
                             otherCostView.fillDataToDatatable(data['tableOtherCost']);
                             otherCostView.tableVehicle = data['dataVehicle'];
-                            otherCostView.renderAutoCompleteSearch();
+                            otherCostView.dataAllVehicle = data['dataAllVehicle'];
+                            otherCostView.tableAutoCompleteSearch();
                         } else {
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -463,28 +492,7 @@
                     defaultZero("#cost");
 
                 },
-                renderAutoCompleteSearch: function () {
-                    otherCostView.tagsVehicle = _.map(otherCostView.tableVehicle, function (o) {
-                        return o.areaCode + '-' + o.vehicleNumber;
-                    });
-                    otherCostView.tagsVehicle = _.union(otherCostView.tagsVehicle);
 
-                    renderAutoCompleteSearch('#vehicle_id', otherCostView.tagsVehicle, $("#vehicle_id").focusout(function () {
-                        var vehicleName = this.value;
-                        if (vehicleName == '') return;
-                        var vehicle = _.find(otherCostView.tableVehicle, function (o) {
-                            return o.areaCode + '-' + o.vehicleNumber == vehicleName;
-                        });
-                        if (typeof vehicle === "undefined") {
-                            otherCostView.loadListGarageAndVehicleType();
-                            otherCostView.displayModal("show", "#modal-addVehicle");
-                            $("input[id=areaCode]").focus();
-                        } else {
-                            $("#vehicle_id").attr("data-id", vehicle.id);
-                        }
-                    }));
-
-                },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_code'] + '-' + data[i]['vehicles_vehicleNumber'];
@@ -522,17 +530,17 @@
                     });
                     $("#table-vehicles").find("tbody").on('click', 'tr', function () {
                         var vehicle = $(this).find('td:eq(1)')[0].innerText + '-' + $(this).find('td:eq(2)')[0].innerText;
-                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
-                        $('#vehicle_id').val(vehicle);
+                        $('#my-id').attr('data-id', $(this).find('td:first')[0].innerText);
+                        $('#my-id').val(vehicle);
                         otherCostView.displayModal("hide", "#modal-searchVehicle");
                     });
                 },
                 clearInput: function () {
                     /* form addOtherCost*/
-                    $("input[id='vehicle_id']").val('');
-                    $("#vehicle_id").attr('data-id', '');
+                    otherCostView.text2.settext('');
+                    $("#my-id").attr('data-id', '');
                     $("textarea[id='note']").val('');
-                    $("input[id='cost']").val('');
+                    $("input[id='cost']").val(0);
                 },
                 cancelVehicle: function () {
                     $("input[id='areaCode']").val('');
@@ -552,13 +560,12 @@
                 },
                 inputVehicle: function () {
                     var numberVehicle = otherCostView.tableVehicleNew.areaCode + '-' + otherCostView.tableVehicleNew.vehicleNumber
-                    $("input[id='vehicle_id']").val(numberVehicle);
-                    $("#vehicle_id").attr('data-id', otherCostView.tableVehicleNew.id);
+                    $("input[id='my-id']").val(numberVehicle);
+                    $("#my-id").attr('data-id', otherCostView.tableVehicleNew.id);
                 },
                 ValidateOtherCost: function () {
                     $("#formOtherCost").validate({
                         rules: {
-                            vehicle_id: "required",
                             cost: {
                                 required: true,
                                 number: true
@@ -566,7 +573,6 @@
 
                         },
                         messages: {
-                            vehicle_id: "Vui lòng chọn xe",
                             cost: {
                                 required: "Vui lòng nhập số tiền",
                                 number: "Đơn giá phải là số"
@@ -603,7 +609,9 @@
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        if ($('input[id=cost]').val() < 1000) {
+                        if ($('#my-id').attr('data-id') == '') {
+                            showNotification("error", "Vui lòng chọn xe");
+                        } else if($('input[id=cost]').val() < 1000) {
                             showNotification("error", "Đơn giá phải lớn hơn 1000");
                         } else {
                             otherCostView.ValidateOtherCost();
@@ -641,7 +649,8 @@
                                             default:
                                                 break;
                                         }
-                                        otherCostView.table.clear().rows.add(otherCostView.tableOtherCost).draw();                                        otherCostView.clearInput();
+                                        otherCostView.table.clear().rows.add(otherCostView.tableOtherCost).draw();
+                                        otherCostView.clearInput();
                                     } else {
                                         otherCostView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                     }
@@ -761,9 +770,9 @@
                 loadSelectBoxGarage: function (lstGarage) {
                     //reset selectbox
                     $('#garage_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("garage_id");
                     for (var i = 0; i < lstGarage.length; i++) {
@@ -777,9 +786,9 @@
                 loadSelectBoxVehicleType: function (lstVehicleType) {
                     //reset selectbox
                     $('#vehicleType_id')
-                            .find('option')
-                            .remove()
-                            .end();
+                        .find('option')
+                        .remove()
+                        .end();
                     //fill option to selectbox
                     var select = document.getElementById("vehicleType_id");
                     for (var i = 0; i < lstVehicleType.length; i++) {
