@@ -73,8 +73,10 @@ class CostManagementController extends Controller
                 'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'vehicles.note as vehicleNote')
             ->get();
-        $dataSearchVehicle = DB::table('')
+        $dataSearchVehicle = DB::table('vehicles')
+            ->where('active', 1)
             ->get();
+        dd($dataSearchVehicle);
         $response = [
             'msg' => 'Get data cost success',
             'tableCost' => $tableCost,
@@ -704,7 +706,7 @@ class CostManagementController extends Controller
                             'costs.cost as totalCost',
                             'vehicles.areaCode as vehicles_code',
                             'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                            'vehicles.note as vehicleNote','vehicleTypes.name as vehicleType'
+                            'vehicles.note as vehicleNote', 'vehicleTypes.name as vehicleType'
                         )
                         ->get();
 

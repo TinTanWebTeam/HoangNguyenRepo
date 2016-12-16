@@ -449,7 +449,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#birthday').datepicker("setDate", new Date());
+                    $('#birthday').datepicker("setDate", new Date('1990'));
                     $('#startDate').datepicker("setDate", new Date());
                     $('#issueDateId').datepicker("setDate", new Date());
                     $('#issueDateDriver').datepicker("setDate", new Date());

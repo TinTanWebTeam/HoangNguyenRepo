@@ -1,5 +1,3 @@
-{{--<link rel="stylesheet" type="text/css" href="{{URL::to('tableAutocomplete/tautocomplete.css')}}"/>--}}
-{{--<script src=" {{ URL::to('tableAutocomplete/tautocomplete.js') }} "></script>--}}
 
 <style>
 
@@ -533,6 +531,7 @@
                 tableVehicle: null,
                 dataGarage: null,
                 dataAllGarages: null,
+                dataAllVehicle:null,
                 dataVehicle: null,
                 dataDriver: null,
                 current: null,
@@ -1042,11 +1041,12 @@
                         if (jqXHR.status == 200) {
                             garageInsideView.dataVehicleType = data['vehicleTypes'];
                             garageInsideView.dataVehicle = data['dataVehicles'];
+                            garageInsideView.dataAllVehicle = data['allVehicles'];
                             garageInsideView.dataAllGarages = data['allGarage'];
                             garageInsideView.dataDriver = data['dataDriver'];
                             garageInsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageInsideView.renderAutoCompleteSearch();
-                            console.log(garageInsideView.dataDriver);
+
                         } else {
                             garageInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }

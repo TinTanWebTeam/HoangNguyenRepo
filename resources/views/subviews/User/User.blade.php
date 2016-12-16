@@ -388,7 +388,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#birthday').datepicker("setDate", new Date());
+                    $('#birthday').datepicker("setDate", new Date('1990'));
                 },
                 msgDelete: function (id) {
                     var userId = '{{ Auth::user()->id }}';
