@@ -475,11 +475,11 @@
                 tagsVehicle: [],
                 tagsVehicleType: [],
                 text2: null,
-                dataAllVehicle:null,
+                dataAllVehicle: null,
                 tableAutoCompleteSearch: function () {
                     parkingCostView.text2 = $("#vehicle_id").tautocomplete({
                         width: "300px",
-                        columns: ['Số xe','Loại xe', 'Tài xế'],
+                        columns: ['Số xe', 'Loại xe', 'Tài xế'],
                         data: function () {
                             try {
                                 var data = parkingCostView.dataAllVehicle;
@@ -494,13 +494,54 @@
                                     filterData.push(v);
                                 }
                             });
-
                             return filterData;
                         },
+//                        hide: [false, true, true, true, false],
                         onchange: function () {
-                            $('#my-id').attr('data-id', parkingCostView.text2.id());
+                            var vehicle = _.find(parkingCostView.tableVehicle, function (o) {
+                                return o.idVehicle == parkingCostView.text2.id();
+                            });
+                            var price = _.filter(parkingCostView.tablePrice, function (o) {
+                                return o.vehicleType_id == vehicle.idVehicleType;
+                            });
+                            var price2 = _.maxBy(price, function (o) {
+                                return moment(o.created_at);
+                            });
+                            if ($('#my-id').attr('data-id', parkingCostView.text2.id())) {
+                                if (price2 != null) {
+                                    $('input[id=nameVehicleType]').val(vehicle.nameVehicleType);
+                                    $('input[id=price]').val(price2.price);
+                                    $("#price").attr("data-priceId", price2.id);
+                                    formatCurrency(".currency");
+                                    parkingCostView.clearInputChangeVehicle();
+                                } else {
+                                    $('input[id=nameVehicleType]').val(vehicle.nameVehicleType);
+                                    $('input[id=price]').val('');
+                                    $("#price").attr("data-priceId", '');
+                                    formatCurrency(".currency");
+                                    parkingCostView.clearInputChangeVehicle();
+                                }
+                            }
                         }
                     });
+                },
+                renderAutoCompleteSearch: function () {
+                    parkingCostView.tagsVehicleType = _.map(parkingCostView.dataVehicleType, 'name');
+                    parkingCostView.tagsVehicleType = _.union(parkingCostView.tagsVehicleType);
+                    renderAutoCompleteSearch('#vehicleTypeId', parkingCostView.tagsVehicleType, $("#vehicleTypeId").focusout(function () {
+                        var vehicleTypeName = this.value;
+                        if (vehicleTypeName == '') return;
+                        var typeName = _.find(parkingCostView.dataVehicleType, function (o) {
+                            return o.name == vehicleTypeName;
+                        });
+                        if (typeof typeName === "undefined") {
+                            showNotification("warning", "Loại xe không tồn tại!");
+                            $("button[id=savePriceType]").prop("disabled", true);
+                        } else {
+                            $("button[id=savePriceType]").prop("disabled", false);
+                            $("#vehicleTypeId").attr("data-id", typeName.id);
+                        }
+                    }));
                 },
                 show: function () {
                     $('.menu-toggle').fadeOut();
@@ -597,6 +638,7 @@
                     $("input[id='dateCheckOut']").val('');
                     $("input[id='timeCheckOut']").val('');
                     $("input[id='nameVehicleType']").val('');
+                    $("input[id='price']").val('');
                 },
                 clearInputChangeVehicle: function () {
                     /* form addCost*/
@@ -637,11 +679,11 @@
                             parkingCostView.tableParkingCost = data['tableParkingCost'];
                             parkingCostView.fillDataToDatatable(data['tableParkingCost']);
                             parkingCostView.tablePrice = data['tablePrice'];
-                            // parkingCostView.inputPrice(data['tablePrice']);
                             parkingCostView.tableVehicle = data['dataVehicle'];
                             parkingCostView.dataVehicleType = data['dataVehicleType'];
                             parkingCostView.dataAllVehicle = data['dataAllVehicle'];
                             parkingCostView.tableAutoCompleteSearch();
+                            parkingCostView.renderAutoCompleteSearch();
                         } else {
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -836,9 +878,9 @@
                             parkingCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-                        if($('#my-id').attr('data-id') == ''){
+                        if ($('#my-id').attr('data-id') == '') {
                             showNotification("error", "Vui lòng chọn xe");
-                        }else if($('input[id=price]').val() == 0) {
+                        } else if ($('input[id=price]').val() == 0) {
                             showNotification("error", "Đơn giá phải lớn hơn 0");
                         } else {
                             parkingCostView.ValidateParking();

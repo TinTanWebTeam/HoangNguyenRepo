@@ -575,6 +575,9 @@ class CostManagementController extends Controller
     {
         $tableVehicle = DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->select('vehicles.id as idVehicle'
+                ,'vehicleTypes.id as idVehicleType'
+                ,'vehicleTypes.name as nameVehicleType')
             ->get();
         $tablePrice = DB::table('prices')
             ->where('costPrice_id', 4)
@@ -613,7 +616,7 @@ class CostManagementController extends Controller
             ->select('vehicles.id'
                 , DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
                 , 'vehicleTypes.name'
-                , 'drivers.fullName')
+                , 'drivers.fullName', 'vehicles.vehicleType_id')
             ->get();
         $response = [
             'msg' => 'Get data ParkingCost success',
