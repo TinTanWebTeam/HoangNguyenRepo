@@ -632,7 +632,7 @@ class CostManagementController extends Controller
 
     public function postModifyParkingCost(Request $request)
     {
-dd($request->all());
+
         $vehicle_id = null;
         $checkIn = null;
         $checkOut = null;
