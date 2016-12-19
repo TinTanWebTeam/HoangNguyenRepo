@@ -19,7 +19,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'Đồng Nai',
-            'index'      => 1
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 2,
@@ -28,7 +28,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'Tp HCM',
-            'index'      => 1
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 3,
@@ -37,7 +37,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'Nha Trang',
-            'index'      => 1
+            'index'      => null
         ]);
 
         # A CHAU #
@@ -48,7 +48,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'An Giang',
-            'index'      => 1
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 4,
@@ -57,7 +57,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'TX Châu Đốc',
-            'index'      => 2
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 4,
@@ -66,7 +66,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => '310',
-            'index'      => 3
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 4,
@@ -75,7 +75,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'M',
-            'index'      => 4
+            'index'      => null
         ]);
 
         \App\FormulaDetail::create([
@@ -85,7 +85,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'An Giang',
-            'index'      => 1
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 5,
@@ -94,7 +94,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'TX Châu Đốc',
-            'index'      => 2
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 5,
@@ -103,7 +103,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => '310',
-            'index'      => 3
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 5,
@@ -112,7 +112,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'P',
-            'index'      => 4
+            'index'      => null
         ]);
 
         # YCH-PROTRADE #
@@ -123,7 +123,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'HCM',
-            'index'      => 1
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 6,
@@ -132,7 +132,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => '1',
-            'index'      => 2
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 6,
@@ -141,7 +141,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => 0,
             'to'         => 10,
             'value'      => null,
-            'index'      => 3
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 6,
@@ -150,7 +150,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => '24',
-            'index'      => 4
+            'index'      => null
         ]);
 
         \App\FormulaDetail::create([
@@ -160,7 +160,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'HCM',
-            'index'      => 1
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 7,
@@ -169,7 +169,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => '1',
-            'index'      => 2
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 7,
@@ -178,7 +178,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => 10,
             'to'         => 27,
             'value'      => null,
-            'index'      => 3
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 7,
@@ -187,7 +187,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => '24',
-            'index'      => 4
+            'index'      => null
         ]);
 
 
@@ -198,7 +198,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => 'HCM',
-            'index'      => 1
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 8,
@@ -207,7 +207,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => '1',
-            'index'      => 2
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 8,
@@ -216,7 +216,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => 27,
             'to'         => 1000000,
             'value'      => null,
-            'index'      => 3
+            'index'      => null
         ]);
         \App\FormulaDetail::create([
             'formula_id' => 8,
@@ -225,7 +225,7 @@ class FormulaDetailTableSeeder extends Seeder
             'from'       => null,
             'to'         => null,
             'value'      => '24',
-            'index'      => 4
+            'index'      => null
         ]);
 
         # CTY TNHH SCG TRADING VIET NAM #

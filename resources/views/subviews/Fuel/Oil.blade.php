@@ -215,7 +215,7 @@
                                         oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
                                         oilPriceView.hideFormControl();
                                     } else {
-                                        showNotification('error', data['Error']);
+                                        showNotification('warning', data['Error']);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
                                     showNotification("error","Vui lòng nhập giá dầu và ngày áp dụng phù hợp!")

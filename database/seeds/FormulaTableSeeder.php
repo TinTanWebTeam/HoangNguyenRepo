@@ -156,7 +156,8 @@ class FormulaTableSeeder extends Seeder
             'createdBy'    => 1,
             'updatedBy'    => 1,
             'changeByFuel' => 0,
-            'note'         => 'lorem ipsum'
+            'note'         => 'lorem ipsum',
+            'status'       => 2
         ]);
 
         \App\Formula::create([
@@ -172,7 +173,8 @@ class FormulaTableSeeder extends Seeder
             'createdBy'    => 1,
             'updatedBy'    => 1,
             'changeByFuel' => 0,
-            'note'         => 'lorem ipsum'
+            'note'         => 'lorem ipsum',
+            'status'       => 2
         ]);
 
         \App\Formula::create([
@@ -188,7 +190,8 @@ class FormulaTableSeeder extends Seeder
             'createdBy'    => 1,
             'updatedBy'    => 1,
             'changeByFuel' => 0,
-            'note'         => 'lorem ipsum'
+            'note'         => 'lorem ipsum',
+            'status'       => 2
         ]);
 
         \App\Formula::create([
@@ -204,7 +207,8 @@ class FormulaTableSeeder extends Seeder
             'createdBy'    => 1,
             'updatedBy'    => 1,
             'changeByFuel' => 0,
-            'note'         => 'lorem ipsum'
+            'note'         => 'lorem ipsum',
+            'status'       => 2
         ]);
     }
 }

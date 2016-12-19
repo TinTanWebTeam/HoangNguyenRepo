@@ -57,7 +57,7 @@ class FuelManagementController extends Controller
             /* Select Max Oil Apply Date */
             $currentOilPrice = Fuel::whereRaw('applyDate = (select max(`applyDate`) from fuels where `type` = \'oil\')')->first();
             if (!$currentOilPrice) {
-                $oilPrice->save();
+                // $oilPrice->save();
                 $result = Fuel::where('type', 'oil')
                     ->where('fuels.id', $oilPrice->id)
                     ->leftJoin('users as userCreated', 'fuels.createdBy', '=', 'userCreated.id')
@@ -108,7 +108,7 @@ class FuelManagementController extends Controller
                                 $formula->updatedBy = Auth::user()->id;
                                 $formula->changeByFuel = true;
                                 $formula->fuel_id = $oilPrice->id;
-                                $formula->status = true;
+                                $formula->status = 1;
                                 $formula->save();
 
                                 $postageDetailToChange = FormulaDetail::where('formula_id', $postage->id)->get();
