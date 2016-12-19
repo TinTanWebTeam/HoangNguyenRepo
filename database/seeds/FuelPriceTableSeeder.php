@@ -13,7 +13,7 @@ class FuelPriceTableSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
         \App\Fuel::create([
-            'price' => 20000,
+            'price' => 10000,
             'type' => 'oil',
             'note' => $faker->sentence,
             'applyDate' => date('Y-m-d'),
