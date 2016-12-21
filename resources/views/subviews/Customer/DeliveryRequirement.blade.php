@@ -47,10 +47,12 @@
                         <li class="active">Đơn hàng</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed" id="button-box">
-                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới" onclick="transportView.addTransport();">
+                        <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"
+                             onclick="transportView.addTransport();">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
-                        <div class="btn btn-primary btn-circle btn-md" style="display: none" title="Ẩn thêm mới" onclick="transportView.displayControl('hide');">
+                        <div class="btn btn-primary btn-circle btn-md" style="display: none" title="Ẩn thêm mới"
+                             onclick="transportView.displayControl('hide');">
                             <i class="glyphicon glyphicon-minus icon-center"></i>
                         </div>
                     </div>
@@ -59,242 +61,262 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <div class="row" id="control-box" style="display: none">
-                        <div class="col-md-6" style="height: auto;">
-                            <fieldset>
-                                <legend>Công thức:</legend>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="customer_id" class="red"><b>Khách hàng</b></label>
-                                            <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Nhập tên khách hàng" data-customerId="" onfocusout="transportView.focusOut_getCustomer()">
+                    <div id="control-box" style="display: none">
+                        <div class="row" style="height: auto;">
+                            <div class="col-md-6">
+                                <fieldset>
+                                    <legend>Công thức:</legend>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="customer_id" class="red"><b>Khách hàng</b></label>
+                                                <input type="text" class="form-control" id="customer_id" name="customer_id"
+                                                       placeholder="Nhập tên khách hàng" data-customerId=""
+                                                       onfocusout="transportView.focusOut_getCustomer()">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="unitPrice" class="red"><b>Đơn giá</b></label>
-                                            <input type="text" class="form-control currency" id="unitPrice" name="unitPrice" data-customerId="" readonly>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="unitPrice" class="red"><b>Đơn giá</b></label>
+                                                <input type="text" class="form-control currency" id="unitPrice"
+                                                       name="unitPrice" data-customerId="" readonly>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                </div>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="formulaCode"><b>Mã công thức</b></label>
-                                            <input type="text" class="form-control" id="formulaCode" name="formulaCode" onfocusout="transportView.focusOut_getFormulaByFormulaCode()">
-                                            <input type="hidden" id="formula_id">
-                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="unit"><b>Đơn vị tính</b></label>
-                                            <input type="text" class="form-control" id="unit" name="unit" readonly>
+                                    <div class="row" style="padding: 0 10px">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="formulaCode"><b>Mã công thức</b></label>
+                                                <input type="text" class="form-control" id="formulaCode" name="formulaCode"
+                                                       onfocusout="transportView.focusOut_getFormulaByFormulaCode()">
+                                                <input type="hidden" id="formula_id">
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <fieldset id="formula-detail">
-                                <legend>Chi tiết công thức:</legend>
-                            </fieldset>
-                        </div>
-                        <div class="col-md-6" style="height: auto;">
-                        <form id="frmControl">
-                            <fieldset>
-                                <legend>Đơn hàng:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <span style="font-size: 13px;">ĐH khống: </span>
-                                    <input type="checkbox" id="transportType" name="transportType" onchange="transportView.renderEventCheckbox(this)">
-                                </legend>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="quantumProduct"><b>Lượng hàng</b></label>
-                                            <input type="number" class="form-control" id="quantumProduct" name="quantumProduct" onfocusout="transportView.focusOut_calculateCashRevenue()">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="cashRevenue" class="red"><b>Doanh thu</b></label>
-                                            <input type="text" class="form-control currency" id="cashRevenue"
-                                                   name="cashRevenue">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="cashDelivery" class="red"><b>Giao xe</b></label>
-                                            <input type="text" class="form-control currency" id="cashDelivery"
-                                                   name="cashDelivery">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="cashReceive" class="red"><b>Nhận</b></label>
-                                            <input type="text" class="form-control currency" id="cashReceive"
-                                                   name="cashReceive"
-                                                   onkeyup="transportView.computeWhenCashReceiveChange(this.value)">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="vehicle_id" class="red"><b>Xe</b></label>
-                                            <input type="text" class="form-control" id="vehicle_id" name="vehicle_id"
-                                                   placeholder="Nhập số xe" data-vehicleId="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="product_name"><b>Hàng</b></label>
-                                            <div class="ui-widget">
-                                                <input type="text" class="form-control" id="product_name"
-                                                       name="product_name" data-productId=""
-                                                       placeholder="Nhập tên hàng">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <label for="unit"><b>Đơn vị tính</b></label>
+                                                <input type="text" class="form-control" id="unit" name="unit" readonly>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="weight"><b>Trọng tải</b></label>
-                                            <input type="number" class="form-control" id="weight" name="weight">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="status_transport"><b>Trạng thái</b></label>
-                                            <select id="status_transport" name="status_transport" class="form-control"></select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="receivePlace" class="red"><b>Nơi nhận</b></label>
-                                            <input type="text" class="form-control" id="receivePlace"
-                                                   name="receivePlace">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="deliveryPlace" class="red"><b>Nơi giao</b></label>
-                                            <input type="text" class="form-control" id="deliveryPlace"
-                                                   name="deliveryPlace">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="receiveDate" class="red"><b>Ngày nhận</b></label>
-                                            <input type="text" class="date form-control ignore" id="receiveDate"
-                                                   name="receiveDate">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="receiver"><b>Người nhận</b></label>
-                                            <input type="text" class="form-control" id="receiver" name="receiver">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="carrying"><b>Bốc xếp</b></label>
-                                            <input type="text" name="carrying" id="carrying"
-                                                   class="form-control currency">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="parking"><b>Neo đêm</b></label>
-                                            <input type="text" name="parking" id="parking"
-                                                   class="form-control currency">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="fine"><b>Công an</b></label>
-                                            <input type="text" name="fine" id="fine" class="form-control currency">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="phiTangBo"><b>Phí tăng bo</b></label>
-                                            <input type="text" name="phiTangBo" id="phiTangBo" class="form-control currency">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="voucherNumber"><b>Số chứng từ</b></label>
-                                            <input type="text" class="form-control" id="voucherNumber" name="voucherNumber">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
-                                            <input type="number" class="form-control" id="voucherQuantumProduct"
-                                                   name="voucherQuantumProduct">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
-                                            <div class="row">
-                                                <div class="col-xs-9">
-                                                    <input type="text" class="form-control cursor-copy"
-                                                           id="voucher_transport" data-id="" readonly
-                                                           name="voucher_transport"
-                                                           placeholder="Nhấp đôi để chọn chứng từ"
-                                                           ondblclick="transportView.loadListVoucher()">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6">
+                                <fieldset id="formula-detail">
+                                    <legend>Chi tiết công thức:</legend>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row" style="height: auto;">
+                            <div class="col-md-12" style="height: auto;">
+                                <form id="frmControl">
+                                    <fieldset>
+                                        <legend>Đơn hàng:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <span style="font-size: 13px;">ĐH khống: </span>
+                                            <input type="checkbox" id="transportType" name="transportType"
+                                                   onchange="transportView.renderEventCheckbox(this)">
+                                        </legend>
+                                        <div class="row" style="padding: 0 10px">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="quantumProduct"><b>Lượng hàng</b></label>
+                                                    <input type="number" class="form-control" id="quantumProduct"
+                                                           name="quantumProduct"
+                                                           onfocusout="transportView.focusOut_calculateCashRevenue()">
                                                 </div>
-                                                <div class="col-xs-3">
-                                                    <div class="btn btn-primary btn-sm btn-circle"
-                                                         title="Thêm mới chứng từ"
-                                                         onclick="transportView.displayModal('show', '#modal-addVoucher')">
-                                                        <i class="glyphicon glyphicon-plus"></i>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input ">
+                                                    <label for="cashRevenue" class="red"><b>Doanh thu</b></label>
+                                                    <input type="text" class="form-control currency" id="cashRevenue"
+                                                           name="cashRevenue">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="cashDelivery" class="red"><b>Giao xe</b></label>
+                                                    <input type="text" class="form-control currency" id="cashDelivery"
+                                                           name="cashDelivery">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="cashReceive" class="red"><b>Nhận</b></label>
+                                                    <input type="text" class="form-control currency" id="cashReceive"
+                                                           name="cashReceive"
+                                                           onkeyup="transportView.computeWhenCashReceiveChange(this.value)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0 10px">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="vehicle_id" class="red"><b>Xe</b></label>
+                                                    <input type="text" class="form-control" id="vehicle_id"
+                                                           name="vehicle_id"
+                                                           placeholder="Nhập số xe" data-vehicleId="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input ">
+                                                    <label for="product_name"><b>Hàng</b></label>
+                                                    <div class="ui-widget">
+                                                        <input type="text" class="form-control" id="product_name"
+                                                               name="product_name" data-productId=""
+                                                               placeholder="Nhập tên hàng">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="weight"><b>Trọng tải</b></label>
+                                                    <input type="number" class="form-control" id="weight" name="weight">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="status_transport"><b>Trạng thái</b></label>
+                                                    <select id="status_transport" name="status_transport"
+                                                            class="form-control"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0 10px">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="receivePlace" class="red"><b>Nơi nhận</b></label>
+                                                    <input type="text" class="form-control" id="receivePlace"
+                                                           name="receivePlace">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="deliveryPlace" class="red"><b>Nơi giao</b></label>
+                                                    <input type="text" class="form-control" id="deliveryPlace"
+                                                           name="deliveryPlace">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="receiveDate" class="red"><b>Ngày nhận</b></label>
+                                                    <input type="text" class="date form-control ignore" id="receiveDate"
+                                                           name="receiveDate">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="receiver"><b>Người nhận</b></label>
+                                                    <input type="text" class="form-control" id="receiver" name="receiver">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0 10px">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="carrying"><b>Bốc xếp</b></label>
+                                                    <input type="text" name="carrying" id="carrying"
+                                                           class="form-control currency">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="parking"><b>Neo đêm</b></label>
+                                                    <input type="text" name="parking" id="parking"
+                                                           class="form-control currency">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="fine"><b>Công an</b></label>
+                                                    <input type="text" name="fine" id="fine" class="form-control currency">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="phiTangBo"><b>Phí tăng bo</b></label>
+                                                    <input type="text" name="phiTangBo" id="phiTangBo"
+                                                           class="form-control currency">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0 10px">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="voucherNumber"><b>Số chứng từ</b></label>
+                                                    <input type="text" class="form-control" id="voucherNumber"
+                                                           name="voucherNumber">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
+                                                    <input type="number" class="form-control" id="voucherQuantumProduct"
+                                                           name="voucherQuantumProduct">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
+                                                    <div class="row">
+                                                        <div class="col-xs-9">
+                                                            <input type="text" class="form-control cursor-copy"
+                                                                   id="voucher_transport" data-id="" readonly
+                                                                   name="voucher_transport"
+                                                                   placeholder="Nhấp đôi để chọn chứng từ"
+                                                                   ondblclick="transportView.loadListVoucher()">
+                                                        </div>
+                                                        <div class="col-xs-3">
+                                                            <div class="btn btn-primary btn-sm btn-circle"
+                                                                 title="Thêm mới chứng từ"
+                                                                 onclick="transportView.displayModal('show', '#modal-addVoucher')">
+                                                                <i class="glyphicon glyphicon-plus"></i>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="costNote"><b>Ghi chú chi phí</b></label>
-                                            <textarea type="text" class="form-control" id="costNote" name="costNote" rows="3"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input">
-                                            <label for="note"><b>Ghi chú đơn hàng</b></label>
-                                            <textarea type="text" class="form-control" id="note" name="note" rows="3"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding: 0 10px">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-md-line-input">
-                                            <label for=""></label>
-                                            <div class="form-actions">
-                                                <div class="form-group">
-                                                    <button type="button" class="btn btn-primary marginRight"
-                                                            onclick="transportView.save()">Hoàn tất
-                                                    </button>
-                                                    <button type="button" class="btn btn-default marginRight"
-                                                            onclick="transportView.clearInput()">Nhập lại
-                                                    </button>
-                                                    <button type="button" class="btn btn-info" id="attach-file"
-                                                            onclick="transportView.showFormAttachFile()">Thêm tập tin
-                                                    </button>
+                                        <div class="row" style="padding: 0 10px">
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="costNote"><b>Ghi chú chi phí</b></label>
+                                                    <textarea type="text" class="form-control" id="costNote" name="costNote"
+                                                              rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="note"><b>Ghi chú đơn hàng</b></label>
+                                                    <textarea type="text" class="form-control" id="note" name="note"
+                                                              rows="3"></textarea>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
+                                        <div class="row" style="padding: 0 10px">
+                                            <div class="col-md-12">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for=""></label>
+                                                    <div class="form-actions">
+                                                        <div class="form-group">
+                                                            <button type="button" class="btn btn-primary marginRight"
+                                                                    onclick="transportView.save()">Hoàn tất
+                                                            </button>
+                                                            <button type="button" class="btn btn-default marginRight"
+                                                                    onclick="transportView.clearInput()">Nhập lại
+                                                            </button>
+                                                            <button type="button" class="btn btn-info" id="attach-file"
+                                                                    onclick="transportView.showFormAttachFile()">Thêm tập
+                                                                tin
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <!-- Chú thích -->
@@ -776,7 +798,7 @@
                 oilPrice: null,
 
                 displayControl: function (mode) {
-                    if(mode === 'show'){
+                    if (mode === 'show') {
                         $("#control-box").fadeIn(300);
                         $("#button-box div").eq(0).fadeOut(0);
                         $("#button-box div").eq(1).fadeIn(0);
@@ -847,7 +869,7 @@
                         format: 'dd-mm-yyyy',
                         autoclose: true
                     }).on("input change", function (e) {
-                        
+
                     });
 
                     $('#receiveDate').datepicker("setDate", new Date());
@@ -1135,7 +1157,7 @@
 
                 fillDataToDatatable: function (data) {
                     //  removeDataTable();
-                    if(transportView.table != null)
+                    if (transportView.table != null)
                         transportView.table.destroy();
 
                     for (var i = 0; i < data.length; i++) {
@@ -1395,24 +1417,24 @@
                     }
                     $("input[id=voucher_transport]").val(strVoucherName);
 
-                    var formula = _.find(transportView.dataFormula, function(o){
+                    var formula = _.find(transportView.dataFormula, function (o) {
                         return o.id == transportView.current['formula_id'];
                     });
-                    if(typeof formula === 'undefined') return; 
+                    if (typeof formula === 'undefined') return;
                     $("input[id=unitPrice]").val(formula.unitPrice);
                     $("input[id=unit]").val(formula.unit);
                     $("input[id=formulaCode]").val(formula.formulaCode);
 
-                    var formulaDetail = _.filter(transportView.dataFormulaDetail, function(o){
+                    var formulaDetail = _.filter(transportView.dataFormulaDetail, function (o) {
                         return o.formula_id == formula.id;
                     });
-                    if(typeof formulaDetail === 'undefined') return;
+                    if (typeof formulaDetail === 'undefined') return;
                     transportView.appendViewFormulaDetail(formulaDetail);
 
-                    var transportFormulaDetail = _.filter(transportView.dataTransportFormulaDetail, function(o){
+                    var transportFormulaDetail = _.filter(transportView.dataTransportFormulaDetail, function (o) {
                         return o.transport_id == transportView.current['id'];
                     });
-                    if(typeof transportFormulaDetail === 'undefined') return;
+                    if (typeof transportFormulaDetail === 'undefined') return;
                     transportView.setValueFormFormulaDetail(transportFormulaDetail);
 
                     formatCurrency(".currency");
@@ -1790,12 +1812,12 @@
                     transportView.getValueFormFormulaDetail();
 
                     var kt = true;
-                    _.each(transportView.formulaDetail, function(value, key){
-                       if(transportView.formulaDetail[key]['value'] == null || transportView.formulaDetail[key]['value'] == ""){
-                           kt = false;
-                       }
+                    _.each(transportView.formulaDetail, function (value, key) {
+                        if (transportView.formulaDetail[key]['value'] == null || transportView.formulaDetail[key]['value'] == "") {
+                            kt = false;
+                        }
                     });
-                    if(kt == false){
+                    if (kt == false) {
                         $("#unitPrice").val(0);
                         $("#unit").val('');
                         $("#formulaCode").val('');
@@ -1823,7 +1845,7 @@
                             $("#formulaCode").val(data['formula']['formulaCode']);
                             $("#cashDelivery").val(data['formula']['cashDelivery']);
                             $("#formula_id").val(data['formula']['id']);
-                            $("label[for=quantumProduct] b").html('Số lượng (' + data['formula']['unit'].toLowerCase() +')');
+                            $("label[for=quantumProduct] b").html('Số lượng (' + data['formula']['unit'].toLowerCase() + ')');
                             formatCurrency(".currency");
                         } else if (jqXHR.status == 203) {
                             $("#unitPrice").val(0);
@@ -1840,11 +1862,11 @@
                 },
                 focusOut_getFormulaByFormulaCode: function () {
                     var formulaCode = $("#formulaCode").val();
-                    if(formulaCode == ""){
+                    if (formulaCode == "") {
                         return;
                     }
                     var customerId = $("#customer_id").attr('data-customerId');
-                    if(customerId == ""){
+                    if (customerId == "") {
                         showNotification('warning', 'Vui lòng nhập khách hàng!');
                         return;
                     }
@@ -1852,7 +1874,7 @@
                     var sendToServer = {
                         _token: _token,
                         _formulaCode: formulaCode,
-                        _customerId : customerId
+                        _customerId: customerId
                     };
 
                     $.ajax({
@@ -1869,7 +1891,7 @@
                             $("#formulaCode").val(data['formula']['formulaCode']);
                             $("#cashDelivery").val(data['formula']['cashDelivery']);
                             $("#formula_id").val(data['formula']['id']);
-                            $("label[for=quantumProduct] b").html('Số lượng (' + data['formula']['unit'].toLowerCase() +')');
+                            $("label[for=quantumProduct] b").html('Số lượng (' + data['formula']['unit'].toLowerCase() + ')');
                             formatCurrency(".currency");
                         } else if (jqXHR.status == 203) {
                             $("#unitPrice").val(0);
@@ -1884,7 +1906,7 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                focusOut_getCustomer: function(){
+                focusOut_getCustomer: function () {
                     $("#unitPrice").val('');
                     $("#unit").val('');
                     $("label[for=quantumProduct] b").html('Lượng hàng');
@@ -1892,7 +1914,7 @@
                     if (transportView.transportType === 1)
                         return;
                     var custName = $("#customer_id").val();
-                    if (custName == ''){
+                    if (custName == '') {
                         $("#customer_id").attr("data-customerId", '');
                         $("#formula-detail").html("<legend>Chi tiết công thức:</legend>");
                         return;
@@ -1911,7 +1933,7 @@
                         transportView.focusOut_getFormulaByFormulaCode();
                     }
                 },
-                focusOut_calculateCashRevenue: function(){
+                focusOut_calculateCashRevenue: function () {
                     var quantumProduct = parseInt($("#quantumProduct").val());
                     var unitPrice = asNumberFromCurrency("#unitPrice");
 
@@ -1942,7 +1964,7 @@
                             transportView.dataFormulaDetail = data['formulaDetails'];
                             transportView.appendViewFormulaDetail(data['formulaDetails']);
 
-                            var dataSingle = _.filter(transportView.dataFormulaDetail, function(o){
+                            var dataSingle = _.filter(transportView.dataFormulaDetail, function (o) {
                                 return o.rule == 'S';
                             });
                             transportView.tagsValueFormulaDetail = _.map(dataSingle, 'value');
@@ -1955,47 +1977,47 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
-                appendViewFormulaDetail: function(data){
+                appendViewFormulaDetail: function (data) {
                     transportView.formulaDetail = [];
                     $("#formula-detail").html("<legend>Chi tiết công thức:</legend>");
-                    _.each(data, function(value, key){
+                    _.each(data, function (value, key) {
                         var str = '';
                         str += '<div class="row" style="padding: 0 10px">';
                         str += '<div class="col-md-12">';
                         str += '<div class="form-group form-md-line-input">';
-                        str += '<label for="id_'+data[key]["id"]+'" class="red"><b>'+data[key]["name"]+'</b></label>';
-                        str += '<input value="" type="text" class="form-control name" id="id_'+data[key]["id"]+'" data-rule='+data[key]["rule"]+' onfocusout="transportView.focusOut_getFormula()">';
+                        str += '<label for="id_' + data[key]["id"] + '" class="red"><b>' + data[key]["name"] + '</b></label>';
+                        str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
                         str += '</div>';
                         str += '</div>';
                         str += '</div>';
                         $("#formula-detail").append(str);
 
-                        if(data[key]["rule"] == 'O'){
-                            $("#id_"+data[key]["id"]).prop('readonly', true);
-                            $("#id_"+data[key]["id"]).val(transportView.oilPrice);
+                        if (data[key]["rule"] == 'O') {
+                            $("#id_" + data[key]["id"]).prop('readonly', true);
+                            $("#id_" + data[key]["id"]).val(transportView.oilPrice);
                         } else {
-                            $("#id_"+data[key]["id"]).prop('readonly', false);
+                            $("#id_" + data[key]["id"]).prop('readonly', false);
                         }
 
                         var formulaDetail = {
-                            id : data[key]["id"],
-                            rule : data[key]["rule"],
-                            name : data[key]["name"],
+                            id: data[key]["id"],
+                            rule: data[key]["rule"],
+                            name: data[key]["name"],
                             value: null
                         };
                         transportView.formulaDetail.push(formulaDetail);
                     });
                 },
-                getValueFormFormulaDetail: function(){
+                getValueFormFormulaDetail: function () {
                     var searchEles = $("#formula-detail input");
-                    for(var i = 0; i < searchEles.length; i++) {
+                    for (var i = 0; i < searchEles.length; i++) {
                         transportView.formulaDetail[i]['value'] = $(searchEles[i]).val();
                     }
                 },
-                setValueFormFormulaDetail: function(formulaDetail){
+                setValueFormFormulaDetail: function (formulaDetail) {
                     var searchEles = $("#formula-detail input");
-                    for(var i = 0; i < searchEles.length; i++) {
-                        $(searchEles[i]).val(formulaDetail[i]['value']); 
+                    for (var i = 0; i < searchEles.length; i++) {
+                        $(searchEles[i]).val(formulaDetail[i]['value']);
                     }
                 },
 
@@ -2045,7 +2067,7 @@
                         transportView.retrieveMultiFile();
                     }
                     else {
-                        if(driverView.tableFile != null)
+                        if (driverView.tableFile != null)
                             transportView.tableFile.clear().draw();
                     }
 
@@ -2178,7 +2200,7 @@
                         dataType: 'json'
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 201) {
-                            
+
                         } else {
                             showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
