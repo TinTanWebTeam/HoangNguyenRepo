@@ -46,7 +46,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="tableRevenueProfitTransport">
+                                <table class="table table-bordered table-striped table-hover" id="tableRevenueProfitTransport">
                                     <thead>
                                     <tr class="active">
                                         <th>Khách hàng</th>
@@ -84,7 +84,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover"
+                                <table class="table table-striped table-bordered table-hover"
                                        id="tableRevenueOilLubePackingSomethingElse">
                                     <thead>
                                     <tr class="active">
@@ -113,7 +113,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover"
+                                <table class="table table-bordered table-striped table-hover"
                                        id="tableRevenueOilLubePackingSomethingElseDetail">
                                     <thead>
                                     <tr class="active">
@@ -154,7 +154,7 @@
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="table table-bordered table-hover" id="tableRevenueProfitTransport">
+                                    <table class="table table-bordered table-striped table-hover" id="tableRevenueProfitTransport">
                                         <thead>
                                         <tr class="active">
                                             <th>Tháng</th>

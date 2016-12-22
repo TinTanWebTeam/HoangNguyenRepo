@@ -209,4 +209,9 @@ Route::group(['middleware' => 'auth'], function () {
         /*--------------------------------------*/
         Route::get('/history-delivery-report','ReportController@getViewTransportHistoryReport');
     });
+
+    Route::group(['middleware' => 'VehicleAllManagement'], function () {
+        Route::get('/vehicle-all-management','VehicleAllManagement@getViewVehicleAll');
+        Route::get('/vehicle-all-management/get-data-vehicle','VehicleAllManagement@getDataVehicleAll');
+     });
 });

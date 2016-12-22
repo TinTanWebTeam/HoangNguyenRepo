@@ -68,7 +68,7 @@
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <table class="table table-bordered table-hover" id="table-data">
+                    <table class="table table-bordered table-striped table-hover" id="table-data">
                         <thead>
                         <tr class="active">
                             <th>Số xe</th>

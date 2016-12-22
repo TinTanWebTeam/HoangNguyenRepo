@@ -60,7 +60,6 @@
                             <span class="label label-info" style="font-size: 1em;">Đã xuất hóa đơn</span>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-6" id="dateSearchTransport">
                             <input type="text" class="date start"/> đến
@@ -68,8 +67,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="ui-widget">
-                                <input type="text" class="form-control" id="garaName_transport"
-                                       name="garaName_transport" placeholder="Nhập tên nhà xe">
+                                <input type="text" class="form-control" id="fullNumber_transport"
+                                       name="fullNumber_transport" placeholder="Nhập số xe">
                             </div>
                         </div>
                     </div>
@@ -116,7 +115,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="table-data">
+                                <table class="table table-bordered table-striped table-hover" id="table-data">
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
@@ -142,17 +141,75 @@
                             </div>
                         </div>
                     </div>
-
-
+                    {{--Chi phí xe--}}
                     <hr>
-                    <p class="lead text-primary text-left"><strong>Hóa đơn nhà xe</strong></p>
+                    <p class="lead text-primary text-left"><strong>Chi phí xe</strong></p>
+                    <div class="row">
+                        <div class="col-md-6" id="dateSearchVehicleCost">
+                            <input type="text" class="date start"/> đến
+                            <input type="text" class="date end"/>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="fullNumber_cost" name="fullNumber_cost"
+                                   placeholder="Nhập số xe">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="radio" id="costDown">
+                                <label style="margin-right: 10px"><input type="radio" name="rdoCost" checked
+                                                                         value="All">Tất cả</label>
+                                <label style="margin-right: 10px"><input type="radio" name="rdoCost"
+                                                                         value="StillDebt">Còn nợ</label>
+                                <label><input type="radio" name="rdoCost" value="FullPay">Trả đủ</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="radio">
+                                <button onclick="debtGarageView.searchVehicleCost()" id="btnSearchInvoice"
+                                        class="btn btn-sm btn-info marginRight"><i
+                                            class="fa fa-search" aria-hidden="true"></i> Tìm
+                                </button>
+                                <button class="btn btn-sm btn-default"
+                                        onclick="debtGarageView.clearSearch('vehicleCost')">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover" id="table-transportCost">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Số xe</th>
+                                        <th>Nhà xe</th>
+                                        <th>Phí thay nhớt</th>
+                                        <th>Phí đổ xăng</th>
+                                        <th>Phí Đậu bãi</th>
+                                        <th>Phí khác</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {{--Phiếu Thanh Toán--}}
+                    <hr>
+                    <p class="lead text-primary text-left"><strong>Phiếu thanh toán</strong></p>
                     <div class="row">
                         <div class="col-md-6" id="dateSearchInvoice">
                             <input type="text" class="date start"/> đến
                             <input type="text" class="date end"/>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="garaName_invoice" name="garaName_transport"
+                            <input type="text" class="form-control" id="fullNumber_invoice" name="fullNumber_invoice"
                                    placeholder="Nhập tên nhà xe">
                         </div>
                     </div>
@@ -181,20 +238,15 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="table-garageInvoice">
+                                <table class="table table-bordered  table-striped table-hover" id="table-garageInvoice">
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
+                                        <th>Số xe</th>
                                         <th>Nhà xe</th>
-                                        <th>Mã HĐ</th>
-                                        <th>Ngày xuất</th>
-                                        <th>Ngày HĐ</th>
-                                        <th>Tổng tiền (+VAT)</th>
-                                        <th>Trả trước</th>
-                                        <th>Trả trên HĐ</th>
-                                        <th>Nợ</th>
-                                        <th>Người tạo</th>
-                                        <th>Người sửa</th>
+                                        <th>Tiền giao hàng</th>
+                                        <th>Chi phí</th>
+                                        <th>Trạng thái</th>
                                         <th>Chi tiết</th>
                                     </tr>
                                     </thead>
@@ -336,7 +388,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="sendToPerson"><b>Người nhận</b></label>
-                                            <input type="text" id="sendToPerson" name="sendToPerson" class="form-control">
+                                            <input type="text" id="sendToPerson" name="sendToPerson"
+                                                   class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-md-8">
@@ -369,7 +422,7 @@
                             <div class="col-md-12">
                                 <span class="text text-primary">Lịch sử trả nợ</span>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="table-invoiceGarageDetail">
+                                    <table class="table table-bordered table-striped table-hover" id="table-invoiceGarageDetail">
                                         <thead>
                                         <tr class="active">
                                             <th>Mã</th>
@@ -389,7 +442,7 @@
                             <div class="col-md-12">
                                 <span class="text text-primary">Lịch sử in</span>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="table-printHistory">
+                                    <table class="table table-bordered table-striped table-hover" id="table-printHistory">
                                         <thead>
                                         <tr class="active">
                                             <th>Mã in</th>
@@ -457,27 +510,28 @@
         if (typeof debtGarageView === 'undefined') {
             debtGarageView = {
                 table: null,
+                tableVehicleCost: null,
                 tableInvoiceGarage: null,
                 tableInvoiceGarageDetail: null,
                 tablePrintHistory: null,
-
                 dataTransport: null,
+                dataVehicleCost: null,
                 dataInvoiceGarage: null,
                 dataInvoiceGarageDetail: null,
                 dataPrintHistory: null,
                 dataTransportInvoice: null,
-
                 dataSearch: null,
                 dataSearchInvoiceGarage: null,
-
+                dataSearchVehicleCost: null,
                 action: null, //new, edit, autoEdit
                 current: null, //for autoEdit
                 currentInvoiceGarage: null, //for new & edit
                 invoiceGarageId: null, //for edit
                 array_transportId: [], //array_transportId of InvoiceGarage current
                 invoiceCode: null, //Get invoiceCode newest form Server
-                tagsGarageNameTransport: [], //for search
-                tagsGarageNameInvoice: [], //for search
+                tagsFullNumberTransport: [], //for search
+                tagsFullNumberInvoice: [], //for search
+                tagsFullNumberCost: [], //for search
 
                 showControl: function (flag) {
                     if (flag == 0) {
@@ -541,6 +595,10 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    $('#dateSearchVehicleCost .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
 
                     $('#divInvoice').find('.date').datepicker({
                         "setDate": new Date(),
@@ -561,22 +619,24 @@
                     });
                 },
                 renderAutoCompleteSearch: function () {
-                    $("#garaName_transport").autocomplete({
-                        source: debtGarageView.tagsGarageNameTransport
+                    $("#fullNumber_transport").autocomplete({
+                        source: debtGarageView.tagsFullNumberTransport
                     });
-
-                    $("#garaName_invoice").autocomplete({
-                        source: debtGarageView.tagsGarageNameInvoice
+                    $("#fullNumber_invoice").autocomplete({
+                        source: debtGarageView.tagsFullNumberInvoice
+                    });
+                    $("#fullNumber_cost").autocomplete({
+                        source: debtGarageView.tagsFullNumberCost
                     });
                 },
                 renderEventKeyCode: function () {
-                    $("#garaName_transport").keyup(function (event) {
+                    $("#fullNumber_transport").keyup(function (event) {
                         if (event.keyCode == 13) { //Enter
                             $("#btnSearchTransport").click();
                         }
                     });
 
-                    $("#garaName_invoice").keyup(function (event) {
+                    $("#fullNumber_invoice").keyup(function (event) {
                         if (event.keyCode == 13) { //Enter
                             $("#btnSearchInvoice").click();
                         }
@@ -587,7 +647,7 @@
                         var td = $(this);
                         var tr = $(this).parent();
                         if (tr.find('td:eq(1)').text() == td.text()) {
-                            $("input[id=garaName_transport]").val(td.text());
+                            $("input[id=fullNumber_transport]").val(td.text());
                             debtGarageView.searchTransport();
                             debtGarageView.selectAll();
                         }
@@ -597,7 +657,7 @@
                         var td = $(this);
                         var tr = $(this).parent();
                         if (tr.find('td:eq(0)').text() == td.text()) {
-                            $("input[id=garaName_invoice]").val(td.text());
+                            $("input[id=fullNumber_invoice]").val(td.text());
                             debtGarageView.searchInvoice();
                         }
                     });
@@ -613,23 +673,23 @@
 
                 fillDataToDatatable: function (data) {
 //                    removeDataTable();
-                    if(debtGarageView.table != null)
+                    if (debtGarageView.table != null)
                         debtGarageView.table.destroy();
 
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
                         data[i].debt = parseInt(data[i]['cashDelivery']) - parseInt(data[i]['cashPreDelivery']);
 
-                        var transportInvoice = _.filter(debtGarageView.dataTransportInvoice, function(o){
+                        var transportInvoice = _.filter(debtGarageView.dataTransportInvoice, function (o) {
                             return o.transport_id == data[i]['id'];
                         });
 
-                        if(transportInvoice.length > 0){
+                        if (transportInvoice.length > 0) {
                             transportInvoice = _.map(transportInvoice, 'invoiceGarage_id');
-                            var invoice = _.filter(debtGarageView.dataInvoiceGarage, function(o){
+                            var invoice = _.filter(debtGarageView.dataInvoiceGarage, function (o) {
                                 return _.includes(transportInvoice, o.id);
                             });
-                            if(invoice.length > 0){
+                            if (invoice.length > 0) {
                                 invoice = _.map(invoice, 'invoiceCode');
                                 data[i].invoiceCode = invoice.toString();
                             }
@@ -659,7 +719,7 @@
                                 render: function (data, type, full, meta) {
                                     var arr = data.split(",");
                                     var tr = "";
-                                    for(var i in arr){
+                                    for (var i in arr) {
                                         tr += arr[i] + "<br>";
                                     }
                                     return tr;
@@ -690,27 +750,26 @@
                                     var color = 'btn-default';
                                     var text = '';
 
-                                    if (full.cashPreDelivery == 0 && full.invoiceCode == ""){
+                                    if (full.cashPreDelivery == 0 && full.invoiceCode == "") {
                                         color = 'btn-danger';
                                         text = 'Click để trả đủ';
                                     }
-                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode != ""){
+                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode != "") {
                                         color = 'btn-info';
                                         text = 'Đã trả đủ và xuất hóa đơn';
                                     }
-                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode == ""){
+                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode == "") {
                                         color = 'btn-success';
                                         text = 'Đã trả đủ';
                                     }
-                                    else if (full.cashPreDelivery > 0 && full.invoiceCode == ""){
+                                    else if (full.cashPreDelivery > 0 && full.invoiceCode == "") {
                                         color = 'btn-primary';
                                         text = 'Đã xuất hóa đơn';
-                                    } else if (full.invoiceCode != ""){
+                                    } else if (full.invoiceCode != "") {
                                         color = 'btn-info';
                                         text = 'Đã xuất hóa đơn';
                                     }
-                                    console.log(full.invoiceCode);
-                                    console.log(color);
+
 
                                     var tr = '';
                                     tr += '<div class="text-center">';
@@ -794,7 +853,7 @@
 //                    pushDataTable(debtGarageView.table);
                 },
                 fillDataToDatatableInvoiceGarage: function (data) {
-                    if(debtGarageView.tableInvoiceGarage != null)
+                    if (debtGarageView.tableInvoiceGarage != null)
                         debtGarageView.tableInvoiceGarage.destroy();
 
                     for (var i = 0; i < data.length; i++) {
@@ -809,25 +868,23 @@
                                 visible: false
                             },
                             {data: 'garages_name'},
-                            {data: 'invoiceCode'},
                             {
-                                data: 'exportDate',
-                                render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY");
-                                }
+                                data: 'invoiceCode'
+
                             },
                             {
-                                data: 'invoiceDate',
-                                render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY");
-                                }
+                                data: 'invoiceCode'
+
                             },
-                            {data: 'hasVAT', render: $.fn.dataTable.render.number(",", ".", 0)},
-                            {data: 'prePaid', render: $.fn.dataTable.render.number(",", ".", 0)},
-                            {data: 'totalPaid', render: $.fn.dataTable.render.number(",", ".", 0)},
-                            {data: 'debt', render: $.fn.dataTable.render.number(",", ".", 0)},
-                            {data: 'users_createdBy'},
-                            {data: 'users_updatedBy'},
+                            {
+                                data: 'invoiceCode'
+
+                            },
+                            {
+                                data: 'invoiceCode'
+
+                            },
+
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -946,6 +1003,90 @@
                         ]
                     })
                 },
+                fillDataToDatatableTransportCost: function (data) {
+
+                    if (debtGarageView.tableTransportCost != null)
+                        debtGarageView.tableTransportCost.destroy();
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+
+                    }
+                    debtGarageView.tableTransportCost = $('#table-transportCost').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [],
+//                        fixedHeader: {
+//                            header: true
+//                        },
+                        responsive: true,
+                        columnDefs: [
+                            {responsivePriority: 1, targets: 1},
+                            {responsivePriority: 1, targets: 2},
+                            {responsivePriority: 1, targets: 3},
+                            {responsivePriority: 1, targets: 4},
+                            {responsivePriority: 1, targets: 5},
+                            {responsivePriority: 1, targets: 6},
+                            {responsivePriority: 1, targets: 7},
+                            {responsivePriority: 1, targets: 8},
+                            {responsivePriority: 1, targets: 9},
+                            {responsivePriority: 1, targets: 10},
+                            {responsivePriority: 10, targets: 11},
+                            {responsivePriority: 1, targets: 12},
+                            {responsivePriority: 1, targets: 13}
+                        ],
+                        order: [[1, "asc"]],
+                        dom: 'T<"clear">Bfrtip',
+                        tableTools: {
+                            "sRowSelect": "multi",
+                            "aButtons": ["select_all", "select_none"]
+                        },
+                        buttons: [
+                            {
+                                extend: 'copyHtml5',
+                                text: 'Sao chép',
+                                exportOptions: {
+                                    columns: [0, ':visible']
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Xuất Excel',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                customize: function (xlsx) {
+                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                }
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'Xuất PDF',
+                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
+                                customize: function (doc) {
+                                    doc.content.splice(0, 1);
+                                    doc.styles.tableBodyEven.alignment = 'center';
+                                    doc.styles.tableBodyOdd.alignment = 'center';
+                                    doc.content.columnGap = 10;
+                                    doc.pageOrientation = 'landscape';
+                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                            doc.content[1].table.body[i].splice(6, 1);
+                                        }
+                                    }
+                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
+                                }
+                            },
+                            {
+                                extend: 'colvis',
+                                text: 'Ẩn cột'
+                            }
+                        ]
+                    });
+                    $("#table-transportCost").css("width", "auto");
+
+//                    pushDataTable(debtGarageView.table);
+                },
+
 
                 loadData: function () {
                     if (debtGarageView.table != null)
@@ -964,12 +1105,13 @@
                             debtGarageView.dataPrintHistory = data['printHistories'];
                             debtGarageView.dataTransportInvoice = data['transportInvoices'];
                             debtGarageView.invoiceCode = data['invoiceCode'];
-
+                            debtGarageView.dataVehicleCost = data['vehicleCost'];
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                             debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
                             debtGarageView.searchTransport();
                             debtGarageView.searchInvoice();
+                            debtGarageView.searchTransportVehicleCost();
+
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -987,8 +1129,6 @@
                     defaultZero("#VAT");
                     defaultZero("#hasVAT");
                     defaultZero("#paidAmt");
-
-
                 },
                 fillCurrentObjectToForm: function () {
                     $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
@@ -1202,16 +1342,12 @@
                         _token: _token,
                         _invoiceGarage_id: invoiceGarage_id
                     };
-                    console.log("CLIENT");
-                    console.log(sendToServer._invoiceGarage_id);
                     $.ajax({
                         url: url + 'invoice-garage/delete',
                         type: "POST",
                         dataType: "json",
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
-                        console.log("SERVER");
-                        console.log(data);
                         if (jqXHR.status == 201) {
                             debtGarageView.dataTransport = data['transports'];
                             debtGarageView.dataSearch = data['transports'];
@@ -1263,19 +1399,17 @@
                         _action: action,
                         _invoiceGarageDetail_id: invoiceGarageDetail_id
                     };
-                    console.log("CLIENT");
-                    console.log(sendToServer._invoiceGarageDetail_id);
+
                     $.ajax({
                         url: url + 'invoice-garage-detail/delete',
                         type: "POST",
                         dataType: "json",
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
-                        console.log("SERVER");
-                        console.log(data);
+
                         if (jqXHR.status == 201) {
                             if (action == 'delete1') {
-                                var invoiceDetail = _.find(debtGarageView.dataInvoiceGarageDetail, function(o){
+                                var invoiceDetail = _.find(debtGarageView.dataInvoiceGarageDetail, function (o) {
                                     return o.id == invoiceGarageDetail_id;
                                 });
 
@@ -1291,7 +1425,7 @@
                                 debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                                 debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
 
-                                var dataDetail = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
+                                var dataDetail = _.filter(debtGarageView.dataInvoiceGarageDetail, function (o) {
                                     return o.invoiceGarage_id == invoiceDetail.invoiceGarage_id;
                                 });
                                 debtGarageView.fillDataToDatatableInvoiceGarageDetail(dataDetail);
@@ -1299,7 +1433,7 @@
                                 debtGarageView.searchTransport();
                                 debtGarageView.searchInvoice();
 
-                                var invoice = _.find(debtGarageView.dataInvoiceGarage, function(o){
+                                var invoice = _.find(debtGarageView.dataInvoiceGarage, function (o) {
                                     return o.id == invoiceDetail.invoiceGarage_id;
                                 });
 
@@ -1457,16 +1591,14 @@
                         _token: _token,
                         _transport: debtGarageView.current.id
                     };
-                    console.log("CLIENT");
-                    console.log(sendToServer._transport);
+
                     $.ajax({
                         url: url + 'debt-garage/modify',
                         type: "POST",
                         dataType: "json",
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
-                        console.log("SERVER");
-                        console.log(data);
+
                         if (jqXHR.status == 201) {
                             debtGarageView.dataTransport = data['transports'];
                             debtGarageView.dataSearch = data['transports'];
@@ -1507,16 +1639,13 @@
                             _invoiceGarage: debtGarageView.currentInvoiceGarage,
                             _array_transportId: debtGarageView.array_transportId
                         };
-                        console.log("CLIENT");
-                        console.log(sendToServer);
+
                         $.ajax({
                             url: url + 'invoice-garage/modify',
                             type: "POST",
                             dataType: "json",
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
-                            console.log("SERVER");
-                            console.log(data);
                             if (jqXHR.status == 201) {
                                 debtGarageView.dataTransport = data['transports'];
                                 debtGarageView.dataSearch = data['transports'];
@@ -1526,12 +1655,11 @@
                                 debtGarageView.dataPrintHistory = data['printHistories'];
                                 debtGarageView.dataTransportInvoice = data['transportInvoices'];
                                 debtGarageView.invoiceCode = data['invoiceCode'];
-
                                 debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                                 debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
                                 debtGarageView.searchTransport();
                                 debtGarageView.searchInvoice();
+
 
 
                                 if (debtGarageView.action == 'new') {
@@ -1543,7 +1671,7 @@
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 } else {
-                                    var dataDetail = _.filter(debtGarageView.dataInvoiceGarageDetail, function(o){
+                                    var dataDetail = _.filter(debtGarageView.dataInvoiceGarageDetail, function (o) {
                                         return o.invoiceGarage_id == sendToServer._invoiceGarage.id;
                                     });
                                     debtGarageView.fillDataToDatatableInvoiceGarageDetail(dataDetail);
@@ -1575,69 +1703,150 @@
                         $("#frmInvoice").find("label[class=error]").css("color", "red");
                     }
                 },
-
                 printReview: function (invoiceGarageDetail_id) {
                     debtGarageView.displayModal('show', '#modal-printReview');
-                    console.log(invoiceGarageDetail_id);
                 },
                 attachFile: function (invoiceGarageDetail_id) {
-                    console.log(invoiceGarageDetail_id);
+//                    console.log(invoiceGarageDetail_id);
                 },
 
                 clearSearch: function (tableName) {
                     if (tableName == "transport") {
                         $("#dateSearchTransport").find(".start").datepicker('update', '');
                         $("#dateSearchTransport").find(".end").datepicker('update', '');
-                        $("input[id=garaName_transport]").val('');
+                        $("input[id=fullNumber_transport]").val('');
                         debtGarageView.searchTransport();
+                    } else if (tableName == "vehicleCost") {
+                        $("#dateSearchVehicleCost").find(".start").datepicker('update', '');
+                        $("#dateSearchVehicleCost").find(".end").datepicker('update', '');
+                        $("input[id=fullNumber_cost]").val('');
+                        debtGarageView.searchVehicleCost();
                     } else {
                         $("#dateSearchInvoice").find(".start").datepicker('update', '');
                         $("#dateSearchInvoice").find(".end").datepicker('update', '');
-                        $("input[id=garaName_invoice]").val('');
+                        $("input[id=fullNumber_invoice]").val('');
                         debtGarageView.searchInvoice();
                     }
 
                 },
                 searchTransport: function (money) {
-                    found = debtGarageView.searchExportInvoice(debtGarageView.dataTransport);
-
+                    var found = debtGarageView.searchExportInvoice(debtGarageView.dataTransport);
                     if (typeof money === 'undefined')
                         found = debtGarageView.searchStatusMoney(found);
                     else
                         found = debtGarageView.searchStatusMoney(found, money.value);
-
-                    found = debtGarageView.searchGarage(found);
+                    found = debtGarageView.searchVehicle(found);
                     found = debtGarageView.searchDate(found);
-
                     debtGarageView.dataSearch = found;
-                    debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
 
+                    debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
                     //fill data to listSearch
-                    debtGarageView.tagsGarageNameTransport = _.map(debtGarageView.dataSearch, 'garages_name');
-                    debtGarageView.tagsGarageNameTransport = _.union(debtGarageView.tagsGarageNameTransport);
+                    debtGarageView.tagsFullNumberTransport = _.map(debtGarageView.dataSearch, 'fullNumber');
+                    debtGarageView.tagsFullNumberTransport = _.union(debtGarageView.tagsFullNumberTransport);
+
                     debtGarageView.renderAutoCompleteSearch();
+
+                    // fill data to input
+//                    var fromDate = $("#dateSearchTransport").find(".start").val();
+//                    var toDate = $("#dateSearchTransport").find(".end").val();
+//                    $('input[id=fullNumber_cost]').val($('input[id=fullNumber_transport]').val());
+//                    $("#dateSearchVehicleCost").find(".start").val(fromDate);
+//                    $("#dateSearchVehicleCost").find(".end").val(toDate);
+//                    if($('input[id=fullNumber_cost]').val() != '') {
+//                        $('#searchVehicleCost').trigger();
+//                    }
+//
+                    // call search invoice
+
                 },
                 searchInvoice: function () {
                     found = debtGarageView.searchStatusMoneyInvoice(debtGarageView.dataInvoiceGarage);
-
                     found = debtGarageView.searchGarageInvoice(found);
                     found = debtGarageView.searchDateInvoice(found);
-
                     debtGarageView.dataSearchInvoiceGarage = found;
                     debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataSearchInvoiceGarage).draw();
 
                     //fill data to listSearch
-                    debtGarageView.tagsGarageNameInvoice = _.map(debtGarageView.dataSearchInvoiceGarage, 'garages_name');
-                    debtGarageView.tagsGarageNameInvoice = _.union(debtGarageView.tagsGarageNameInvoice);
+                    debtGarageView.tagsFullNumberInvoice = _.map(debtGarageView.dataSearchInvoiceGarage, 'fullNumber');
+                    debtGarageView.tagsFullNumberInvoice = _.union(debtGarageView.tagsFullNumberInvoice);
                     debtGarageView.renderAutoCompleteSearch();
                 },
+                searchTransportVehicleCost: function () {
+
+                    var found = debtGarageView.searchStatusMoneyVehicleCost(debtGarageView.dataVehicleCost);
+                    found = debtGarageView.searchVehicleCost(found);
+
+                    debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearch, 'fullNumber');
+                    debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
+                    debtGarageView.renderAutoCompleteSearch();
+                },
+                searchVehicleCost: function (data) {
+
+                    var vehicle = $("#fullNumber_cost").val();
+                    if (vehicle == '')
+                        return data;
+
+                    var found = _.filter(data, function (o) {
+                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
+                    });
+                    return found;
+
+                },
+
+
+
+
+
+//                searchDateVehicleCost: function (data) {
+//                    var fromDate = $("#dateSearchVehicleCost").find(".start").val();
+//                    var toDate = $("#dateSearchVehicleCost").find(".end").val();
+//                    if (fromDate == '' || toDate == '')
+//                        return data;
+//                    fromDate = moment(fromDate, "DD-MM-YYYY");
+//                    toDate = moment(toDate, "DD-MM-YYYY");
+//                    if (!fromDate.isValid() && !toDate.isValid())
+//                        return data;
+//
+//                    var found = _.filter(data, function (o) {
+//                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+//                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+//                    });
+//                    return found;
+//                },
+//
+
+                searchStatusMoneyVehicleCost: function (data) {
+                    money = $("#costDown").find("input:checked").val();
+                    found = _.filter(data, function (o) {
+                        if (money == 'All') {
+                            return true;
+                        } else if (money == 'StillDebt') {
+                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+                        } else {
+                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+                        }
+                    });
+                    return found;
+
+                    money = $("#invoiceDown").find("input:checked").val();
+                    found = _.filter(data, function (o) {
+                        if (money == 'All') {
+                            return true;
+                        } else if (money == 'StillDebt') {
+                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+                        } else {
+                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+                        }
+                    });
+                    return found;
+                },
+
 
                 searchDate: function (data) {
                     var fromDate = $("#dateSearchTransport").find(".start").val();
                     var toDate = $("#dateSearchTransport").find(".end").val();
                     if (fromDate == '' || toDate == '')
                         return data;
-
                     fromDate = moment(fromDate, "DD-MM-YYYY");
                     toDate = moment(toDate, "DD-MM-YYYY");
                     if (!fromDate.isValid() && !toDate.isValid())
@@ -1649,13 +1858,12 @@
                     });
                     return found;
                 },
-                searchGarage: function (data) {
-                    var garaName = $("#garaName_transport").val();
-                    if (garaName == '')
+                searchVehicle: function (data) {
+                    var vehicle = $("#fullNumber_transport").val();
+                    if (vehicle == '')
                         return data;
-
                     var found = _.filter(data, function (o) {
-                        return removeDiacritics(o.garages_name.toLowerCase()).includes(removeDiacritics(garaName.toLowerCase()));
+                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
                     });
                     return found;
                 },
@@ -1691,6 +1899,15 @@
                     return found;
                 },
 
+
+
+
+
+
+
+
+
+
                 searchDateInvoice: function (data) {
                     fromDate = $("#dateSearchInvoice").find(".start").val();
                     toDate = $("#dateSearchInvoice").find(".end").val();
@@ -1709,12 +1926,12 @@
                     return found;
                 },
                 searchGarageInvoice: function (data) {
-                    garaName = $("#garaName_invoice").val();
+                    garaName = $("#fullNumber_invoice").val();
                     if (garaName == '')
                         return data;
 
                     found = _.filter(data, function (o) {
-                        return removeDiacritics(o.garages_name.toLowerCase()).includes(removeDiacritics(garaName.toLowerCase()));
+                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(fullNumber.toLowerCase()));
                     });
                     return found;
                 },
@@ -1746,9 +1963,7 @@
                     formatCurrency(".currency");
                 },
                 computeVAT: function (hasVat) {
-                    console.log(hasVat);
                     hasVat = convertStringToNumber(hasVat);
-                    console.log(hasVat);
                     var notVat = asNumberFromCurrency("#notVAT");
                     var vat = ((hasVat - notVat) / notVat) * 100;
                     $("input[id=VAT]").val(vat);
@@ -1762,7 +1977,7 @@
                 computeHasVAT: function (vat, e) {
 //                    if((e.keyCode == 8 || e.keyCode == 46) && (vat == 0 || vat == '')) return;
 
-                    console.log(vat);
+
                     if (vat == '') vat = 0;
                     var notVat = asNumberFromCurrency('#notVAT');
                     var hasVat = notVat + ((vat / 100) * notVat);

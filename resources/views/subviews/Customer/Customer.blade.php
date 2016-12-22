@@ -387,7 +387,7 @@
                             <div class="col-md-12" align="center">
                                 <span class="text text-primary" style="font-size: 23px">Nhân viên khách hàng</span>
                                 <div class="table-responsive">
-                                    <table style="width: 100%" class="table table-bordered table-hover"
+                                    <table style="width: 100%" class="table table-striped table-bordered table-hover"
                                            id="table-tableStaffCustomers">
                                         <thead>
                                         <tr class="active">

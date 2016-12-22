@@ -37,7 +37,6 @@
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 @foreach($filtered as $key => $value)
-
                     @if(count($value) == 0)
                         @if($key != 'Admin')
                             <li>

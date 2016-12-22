@@ -89,13 +89,13 @@ class DebtManagementController extends Controller
         $transportInvoices = DB::table('transportInvoices')->get();
 
         $response = [
-            'msg'                    => 'Get list all Transport',
-            'transports'             => $transports,
-            'invoiceCustomers'       => $invoiceCustomers,
+            'msg' => 'Get list all Transport',
+            'transports' => $transports,
+            'invoiceCustomers' => $invoiceCustomers,
             'invoiceCustomerDetails' => $invoiceCustomerDetails,
-            'printHistories'         => $printHistories,
-            'invoiceCode'            => $invoiceCode,
-            'transportInvoices'      => $transportInvoices
+            'printHistories' => $printHistories,
+            'invoiceCode' => $invoiceCode,
+            'transportInvoices' => $transportInvoices
         ];
         return $response;
     }
@@ -140,6 +140,8 @@ class DebtManagementController extends Controller
         $invoiceGarages = DB::table('invoiceGarages')
             ->select('invoiceGarages.*',
                 'garages.name as garages_name',
+                'vehicles.areaCode as vehicles_areaCode',
+                'vehicles.vehicleNumber as vehicles_vehicleNumber',
                 'users_createdBy.fullName as users_createdBy',
                 'users_updatedBy.fullName as users_updatedBy'
             )
@@ -171,14 +173,25 @@ class DebtManagementController extends Controller
 
         $transportInvoices = DB::table('transportInvoices')->get();
 
+        $vehicleCost = DB::table('costs')
+            ->join('prices', 'costs.price_id', '=', 'prices.id')
+            ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+            ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
+            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+            ->select('vehicles.id',
+                DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
+                , 'costs.cost', 'garages.name'
+                , 'costPrices.name', 'costPrices.id')
+            ->get();
         $response = [
-            'msg'                  => 'Get list all Transport',
-            'transports'           => $transports,
-            'invoiceGarages'       => $invoiceGarages,
+            'msg' => 'Get list all Transport',
+            'transports' => $transports,
+            'invoiceGarages' => $invoiceGarages,
             'invoiceGarageDetails' => $invoiceGarageDetails,
-            'printHistories'       => $printHistories,
-            'invoiceCode'          => $invoiceCode,
-            'transportInvoices'      => $transportInvoices
+            'printHistories' => $printHistories,
+            'invoiceCode' => $invoiceCode,
+            'transportInvoices' => $transportInvoices,
+            'vehicleCost' => $vehicleCost
         ];
         return $response;
     }
@@ -276,22 +289,22 @@ class DebtManagementController extends Controller
         # statusPrePaid
 
         $response = [
-            'status'               => 3,
-            'invoiceCode'          => $invoiceCode,
-            'totalPay'             => $totalPay,
-            'totalPayReal'         => $totalPayReal,
-            'vat'                  => $vat,
-            'hasVat'               => $hasVat,
-            'debtInvoice'          => $debtInvoice,
-            'totalTransport'       => $totalTransport,
-            'prePaid'              => $prePaid,
-            'payNeed'              => $payNeed,
-            'debt'                 => $debt,
+            'status' => 3,
+            'invoiceCode' => $invoiceCode,
+            'totalPay' => $totalPay,
+            'totalPayReal' => $totalPayReal,
+            'vat' => $vat,
+            'hasVat' => $hasVat,
+            'debtInvoice' => $debtInvoice,
+            'totalTransport' => $totalTransport,
+            'prePaid' => $prePaid,
+            'payNeed' => $payNeed,
+            'debt' => $debt,
             'debtNotExportInvoice' => $debtNotExportInvoice,
-            'debtExportInvoice'    => $debtExportInvoice,
-            'debtReal'             => $debtReal,
-            'statusPrePaid'        => $statusPrePaid,
-            'msg'                  => 'Các đơn hàng khớp nhau'
+            'debtExportInvoice' => $debtExportInvoice,
+            'debtReal' => $debtReal,
+            'statusPrePaid' => $statusPrePaid,
+            'msg' => 'Các đơn hàng khớp nhau'
         ];
         return $response;
     }
@@ -350,7 +363,7 @@ class DebtManagementController extends Controller
         if (count($unique->values()->all()) != 1) {
             $response = [
                 'status' => 0,
-                'msg'    => 'Các đơn hàng có khách hàng không giống nhau.'
+                'msg' => 'Các đơn hàng có khách hàng không giống nhau.'
             ];
             return response()->json($response, 203);
         }
@@ -443,21 +456,21 @@ class DebtManagementController extends Controller
             }
 
             $response = [
-                'status'               => 1,
-                'invoiceCode'          => $invoiceCode,
-                'totalTransport'       => $totalTransport,
-                'prePaid'              => $prePaid,
-                'payNeed'              => $payNeed,
-                'debt'                 => $debt,
+                'status' => 1,
+                'invoiceCode' => $invoiceCode,
+                'totalTransport' => $totalTransport,
+                'prePaid' => $prePaid,
+                'payNeed' => $payNeed,
+                'debt' => $debt,
                 'debtNotExportInvoice' => $debtNotExportInvoice,
-                'debtExportInvoice'    => $debtExportInvoice,
-                'debtReal'             => $debtReal,
-                'totalPayReal'         => $totalPayReal,
-                'hasVat'              => $hasVat,
-                'vat'                  => $vat,
-                'debtInvoice'          => $debtInvoice,
-                'statusPrePaid'        => $statusPrePaid,
-                'msg'                  => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'
+                'debtExportInvoice' => $debtExportInvoice,
+                'debtReal' => $debtReal,
+                'totalPayReal' => $totalPayReal,
+                'hasVat' => $hasVat,
+                'vat' => $vat,
+                'debtInvoice' => $debtInvoice,
+                'statusPrePaid' => $statusPrePaid,
+                'msg' => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'
             ];
             return response()->json($response, 200);
         } else {
@@ -473,9 +486,9 @@ class DebtManagementController extends Controller
                 ->pluck('invoiceCustomer_id');
             if ($arrayInvoice == null) {
                 $response = [
-                    'status'   => 0,
+                    'status' => 0,
                     'totalPay' => 0,
-                    'msg'      => 'Không tìm thấy arrayInvoice'
+                    'msg' => 'Không tìm thấy arrayInvoice'
                 ];
                 return response()->json($response, 203);
             };
@@ -483,9 +496,9 @@ class DebtManagementController extends Controller
 
             if (count($arrayInvoice) == 0) {
                 $response = [
-                    'status'   => 0,
+                    'status' => 0,
                     'totalPay' => 0,
-                    'msg'      => 'Các đơn hàng không khớp nhau.'
+                    'msg' => 'Các đơn hàng không khớp nhau.'
                 ];
                 return response()->json($response, 203);
             }
@@ -497,9 +510,9 @@ class DebtManagementController extends Controller
                     ->pluck('transport_id');
                 if ($arrayTransport == null) {
                     $response = [
-                        'status'   => 0,
+                        'status' => 0,
                         'totalPay' => 0,
-                        'msg'      => 'Không tìm thấy arrayTransport'
+                        'msg' => 'Không tìm thấy arrayTransport'
                     ];
                     return response()->json($response, 203);
                 }
@@ -515,9 +528,9 @@ class DebtManagementController extends Controller
             //-----------------------------------------------------
             if (!$array_match) {
                 $response = [
-                    'status'   => 0,
+                    'status' => 0,
                     'totalPay' => 0,
-                    'msg'      => 'Các đơn hàng không khớp nhau.'
+                    'msg' => 'Các đơn hàng không khớp nhau.'
                 ];
                 return response()->json($response, 203);
             } else {
@@ -619,21 +632,21 @@ class DebtManagementController extends Controller
                 $debtInvoice = 0;
 
                 $response = [
-                    'status'               => 2,
-                    'invoiceCode'          => $invoiceCode,
-                    'totalTransport'       => $totalTransport,
-                    'prePaid'              => $prePaid,
-                    'payNeed'              => $payNeed,
-                    'debt'                 => $debt,
+                    'status' => 2,
+                    'invoiceCode' => $invoiceCode,
+                    'totalTransport' => $totalTransport,
+                    'prePaid' => $prePaid,
+                    'payNeed' => $payNeed,
+                    'debt' => $debt,
                     'debtNotExportInvoice' => $debtNotExportInvoice,
-                    'debtExportInvoice'    => $debtExportInvoice,
-                    'debtReal'             => $debtReal,
-                    'totalPayReal'         => $totalPayReal,
-                    'hasVat'              => $hasVat,
-                    'vat'                  => $vat,
-                    'debtInvoice'          => $debtInvoice,
-                    'statusPrePaid'        => $statusPrePaid,
-                    'msg'                  => 'Các đơn hàng khớp nhau'
+                    'debtExportInvoice' => $debtExportInvoice,
+                    'debtReal' => $debtReal,
+                    'totalPayReal' => $totalPayReal,
+                    'hasVat' => $hasVat,
+                    'vat' => $vat,
+                    'debtInvoice' => $debtInvoice,
+                    'statusPrePaid' => $statusPrePaid,
+                    'msg' => 'Các đơn hàng khớp nhau'
                 ];
                 return response()->json($response, 200);
             }
@@ -814,14 +827,14 @@ class DebtManagementController extends Controller
                 $arrayInput = $this->ValidateInvoiceCustomer($invoiceId);
 
                 $response = [
-                    'msg'                    => $arrayResponse['msg'],
-                    'transports'             => $arrayResponse['transports'],
-                    'invoiceCustomers'       => $arrayResponse['invoiceCustomers'],
+                    'msg' => $arrayResponse['msg'],
+                    'transports' => $arrayResponse['transports'],
+                    'invoiceCustomers' => $arrayResponse['invoiceCustomers'],
                     'invoiceCustomerDetails' => $arrayResponse['invoiceCustomerDetails'],
-                    'printHistories'         => $arrayResponse['printHistories'],
-                    'invoiceCode'            => $arrayResponse['invoiceCode'],
-                    'transportInvoices'      => $arrayResponse['transportInvoices'],
-                    'arrayInput'             => $arrayInput
+                    'printHistories' => $arrayResponse['printHistories'],
+                    'invoiceCode' => $arrayResponse['invoiceCode'],
+                    'transportInvoices' => $arrayResponse['transportInvoices'],
+                    'arrayInput' => $arrayInput
                 ];
                 return response()->json($response, 201);
             } catch (Exception $ex) {
@@ -950,14 +963,14 @@ class DebtManagementController extends Controller
                 $arrayResponse = $this->DataDebtCustomer();
 
                 $response = [
-                    'msg'                    => $arrayResponse['msg'],
-                    'transports'             => $arrayResponse['transports'],
-                    'invoiceCustomers'       => $arrayResponse['invoiceCustomers'],
+                    'msg' => $arrayResponse['msg'],
+                    'transports' => $arrayResponse['transports'],
+                    'invoiceCustomers' => $arrayResponse['invoiceCustomers'],
                     'invoiceCustomerDetails' => $arrayResponse['invoiceCustomerDetails'],
-                    'printHistories'         => $arrayResponse['printHistories'],
-                    'invoiceCode'            => $arrayResponse['invoiceCode'],
-                    'transportInvoices'      => $arrayResponse['transportInvoices'],
-                    'arrayInput'             => $arrayInput
+                    'printHistories' => $arrayResponse['printHistories'],
+                    'invoiceCode' => $arrayResponse['invoiceCode'],
+                    'transportInvoices' => $arrayResponse['transportInvoices'],
+                    'arrayInput' => $arrayInput
                 ];
             } else {
 

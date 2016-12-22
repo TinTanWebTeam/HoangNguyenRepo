@@ -785,7 +785,7 @@ class CostManagementController extends Controller
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
             ->where([
                 ['costs.active', 1],
-                ['costs.price_id', 0],
+                ['costs.price_id', 1],
                 ['costs.transport_id', null]
             ])
             ->select(
@@ -846,7 +846,7 @@ class CostManagementController extends Controller
                 $otherCostNew = new Cost();
                 $otherCostNew->cost = $cost;
                 $otherCostNew->note = $note;
-                // $otherCostNew->price_id = 1;
+                $otherCostNew->price_id = 1;
                 $otherCostNew->vehicle_id = $vehicle_id;
                 $otherCostNew->createdBy = Auth::user()->id;
                 $otherCostNew->updatedBy = Auth::user()->id;
@@ -857,7 +857,7 @@ class CostManagementController extends Controller
                         ->where([
                             ['costs.id', $otherCostNew->id],
                             ['costs.active', 1],
-                            ['costs.price_id', 0],
+                            ['costs.price_id', 1],
                             ['costs.transport_id', null]
                         ])
                         ->select(
@@ -886,7 +886,7 @@ class CostManagementController extends Controller
                         ->where([
                             ['costs.id', $request->get('_object')['id']],
                             ['costs.active', 1],
-                            ['costs.price_id', 0],
+                            ['costs.price_id', 1],
                             ['costs.transport_id', null]
                         ])
                         ->select(

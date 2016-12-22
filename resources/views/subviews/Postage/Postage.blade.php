@@ -274,7 +274,7 @@
                                 <div class="row">
                                     <span class="text text-primary">Danh sách chi tiết công thức:</span>
                                     <div class="table-responsive">
-                                        <table class="table table-bordered table-hover" id="table-postageDetail">
+                                        <table class="table table-bordered table-hover table-striped" id="table-postageDetail">
                                             <thead>
                                             <tr class="active">
                                                 <th>STT</th>
@@ -928,7 +928,7 @@
                             return;
                         }
                     }
-                    console.log(sendToServer);
+
                     $.ajax({
                         url: url + 'postage/modify',
                         type: "POST",

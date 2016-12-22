@@ -117,7 +117,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="table-data">
+                                <table class="table table-bordered table-striped table-hover" id="table-data">
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
@@ -184,7 +184,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="table-customerInvoice">
+                                <table class="table table-bordered table-striped table-hover" id="table-customerInvoice">
                                     <thead>
                                     <tr class="active">
                                         <th>Mã</th>
@@ -432,7 +432,7 @@
                             <div class="col-md-12">
                                 <span class="text text-primary">Lịch sử trả nợ</span>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="table-invoiceCustomerDetail">
+                                    <table class="table table-bordered table-striped table-hover" id="table-invoiceCustomerDetail">
                                         <thead>
                                         <tr class="active">
                                             <th>Mã</th>
@@ -453,7 +453,7 @@
                             <div class="col-md-12">
                                 <span class="text text-primary">Lịch sử in</span>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="table-printHistory">
+                                    <table class="table table-bordered table-striped table-hover" id="table-printHistory">
                                         <thead>
                                         <tr class="active">
                                             <th>Mã in</th>
