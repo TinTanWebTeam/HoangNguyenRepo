@@ -69,7 +69,7 @@
                     <table class="table table-bordered table-striped table-hover" id="table-data">
                         <thead>
                         <tr class="active">
-                            <th style="display: none;">Ngày tạo</th>
+                            <th>Ngày tạo</th>
                             <th>Số xe</th>
                             <th>Chi phí</th>
                             <th>Ghi chú</th>
@@ -100,7 +100,7 @@
                 <form role="form" id="formOtherCost">
                     <div class="form-body">
                         <div class="col-md-12 ">
-                            <div class="row ">
+                            <div class="row" id='datetimepicker'>
                                 <div class="col-md-12">
                                     <div class="form-group form-md-line-input ">
                                         <label for="vehicle_id"><b>Chọn xe</b></label>
@@ -120,6 +120,30 @@
                                         </div>
                                     </div>
                                 </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-12 ">
+                            <div class="row" id='datetimepicker'>
+                                <div class="form-group form-md-line-input ">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input">
+                                            <label for="date"><b>Ngày tạo</b></label>
+                                            <input type="text" id="date" name="date"
+                                                   class="date form-control ignore"/>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="time"><b>Giờ tạo</b></label>
+                                            <input id="time" name="timeFuel" type="text" class="time form-control"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -174,41 +198,41 @@
 <!-- end #frmControl -->
 
 
-<!-- Modal list searchVehicle -->
-<div class="row">
-    <div id="modal-searchVehicle" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h5 class="modal-title">Danh sách xe</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table style="width: 100%" class="table table-hover" id="table-vehicles">
-                            <thead>
-                            <tr>
-                                <th>Stt</th>
-                                <th>Mã vùng</th>
-                                <th>Số xe</th>
-                                <th>Trọng tải</th>
-                                <th>Kích thước</th>
-                                <th>Loại xe</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end Modal list garages -->
+{{--<!-- Modal list searchVehicle -->--}}
+{{--<div class="row">--}}
+    {{--<div id="modal-searchVehicle" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">--}}
+        {{--<div class="modal-dialog modal-lg" role="document">--}}
+            {{--<div class="modal-content">--}}
+                {{--<div class="modal-header">--}}
+                    {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
+                        {{--<span aria-hidden="true">×</span>--}}
+                    {{--</button>--}}
+                    {{--<h5 class="modal-title">Danh sách xe</h5>--}}
+                {{--</div>--}}
+                {{--<div class="modal-body">--}}
+                    {{--<div class="table-responsive">--}}
+                        {{--<table style="width: 100%" class="table table-hover" id="table-vehicles">--}}
+                            {{--<thead>--}}
+                            {{--<tr>--}}
+                                {{--<th>Stt</th>--}}
+                                {{--<th>Mã vùng</th>--}}
+                                {{--<th>Số xe</th>--}}
+                                {{--<th>Trọng tải</th>--}}
+                                {{--<th>Kích thước</th>--}}
+                                {{--<th>Loại xe</th>--}}
+                                {{--<th></th>--}}
+                            {{--</tr>--}}
+                            {{--</thead>--}}
+                            {{--<tbody>--}}
+                            {{--</tbody>--}}
+                        {{--</table>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+{{--</div>--}}
+{{--<!-- end Modal list garages -->--}}
 
 
 <!-- Modal add Vehicle -->
@@ -415,21 +439,29 @@
                         otherCostView.current = {
                             vehicle_id: $("#my-id").attr('data-id'),
                             cost: $("input[id='cost']").val(),
+                            date: $("input[id='date']").val(),
+                            time: $("input[id='time']").val(),
                             note: $("textarea[id='note']").val()
                         };
                     } else if (otherCostView.action == 'update') {
 
                         otherCostView.current.cost = $("input[id='cost']").val();
+                        otherCostView.current.date = $("input[id='date']").val();
+                        otherCostView.current.time = $("input[id='time']").val();
                         otherCostView.current.note = $("textarea[id='note']").val();
                         otherCostView.current.vehicle_id = $("#my-id").attr('data-id');
                     }
                 },
                 fillCurrentObjectToForm: function () {
                     var vehicle = otherCostView.current["vehicles_code"] + "-" + otherCostView.current["vehicles_vehicleNumber"];
+                    var dateFuel = moment(otherCostView.current["dateRefuel"], "YYYY-MM-DD");
+                    var timeFuel = moment(otherCostView.current["dateRefuel"], "YYYY-MM-DD HH:mm:ss");
+                    $("input[id='date']").datepicker('update', dateFuel.format("DD-MM-YYYY"));
+                    $("input[id='time']").val(timeFuel.format("HH:mm"));
                     $("input[id='my-id']").val(vehicle);
                     $("#my-id").attr('data-id', otherCostView.current["vehicle_id"]);
                     $("textarea[id='note']").val(otherCostView.current["note"]);
-                    $("input[id='cost']").val(otherCostView.current["cost"])
+                    $("input[id='cost']").val(otherCostView.current["cost"]);
 
                 },
                 editOtherCost: function (id) {
@@ -444,6 +476,7 @@
 
                 },
                 addNewOtherCost: function () {
+                    otherCostView.renderDateTimePicker();
                     $("#divControl").find(".titleControl").html("Thêm mới chi phí khác");
                     otherCostView.current = null;
                     otherCostView.action = 'add';
@@ -461,6 +494,7 @@
                             otherCostView.tableVehicle = data['dataVehicle'];
                             otherCostView.dataAllVehicle = data['dataAllVehicle'];
                             otherCostView.tableAutoCompleteSearch();
+                            otherCostView.renderDateTimePicker();
                         } else {
                             otherCostView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -487,12 +521,28 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
+                    $('#datetimepicker .time').timepicker({
+                        'showDuration': true,
+                        'timeFormat': 'H:i'
+                    });
+                    $('#datetimepicker .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     defaultZero("#cost");
 
                 },
-
+                renderDateTimePicker: function () {
+                    $('#date').datepicker({
+                        "setDate": new Date(),
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
+                    $('#date').datepicker("setDate", new Date());
+                    $('#time').timepicker('setTime', new Date());
+                },
                 fillDataToDatatable: function (data) {
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = data[i]['vehicles_code'] + '-' + data[i]['vehicles_vehicleNumber'];
@@ -501,7 +551,11 @@
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'created_at', visible: false},
+                            {data: 'dateRefuel',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY HH:mm");
+                                }
+                            },
                             {data: 'fullNumber'},
                             {
                                 data: 'cost',
@@ -537,10 +591,12 @@
                 },
                 clearInput: function () {
                     /* form addOtherCost*/
+                    otherCostView.renderDateTimePicker();
                     otherCostView.text2.settext('');
                     $("#my-id").attr('data-id', '');
                     $("textarea[id='note']").val('');
                     $("input[id='cost']").val(0);
+
                 },
                 cancelVehicle: function () {
                     $("input[id='areaCode']").val('');
@@ -572,6 +628,7 @@
                             }
 
                         },
+                        ignore: ".ignore",
                         messages: {
                             cost: {
                                 required: "Vui lòng nhập số tiền",
@@ -611,7 +668,7 @@
                     } else {
                         if ($('#my-id').attr('data-id') == '') {
                             showNotification("error", "Vui lòng chọn xe");
-                        } else if($('input[id=cost]').val() < 1000) {
+                        } else if ($('input[id=cost]').val() < 1000) {
                             showNotification("error", "Đơn giá phải lớn hơn 1000");
                         } else {
                             otherCostView.ValidateOtherCost();

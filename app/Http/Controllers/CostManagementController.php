@@ -822,10 +822,12 @@ class CostManagementController extends Controller
 
     public function postModifyOtherCost(Request $request)
     {
-
         $cost = null;
         $vehicle_id = null;
         $note = null;
+        $dateCreate = null;
+        $timeCreate = null;
+        $datetime = null;
         $action = $request->get('_action');
         if ($action != 'delete') {
             $validator = ValidateController::ValidateOtherCost($request->get('_object'));
@@ -833,19 +835,24 @@ class CostManagementController extends Controller
                 return $validator->errors();
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
-
+            $dateCreate = $request->get('_object')['date'];
+            $timeCreate = $request->get('_object')['time'];
             $vehicle_id = $request->get('_object')['vehicle_id'];
             $note = $request->get('_object')['note'];
             $cost = str_replace(',', '', $request->get('_object')['cost']);
-
+            if (Carbon::createFromFormat('d-m-Y H:i', $dateCreate . " " . $timeCreate) !== false) {
+                $datetime = Carbon::createFromFormat('d-m-Y H:i', $dateCreate . " " . $timeCreate)->toDateTimeString();
+            } else {
+                return response()->json(['msg' => 'date invalid'], 207);
+            }
         }
-
 
         switch ($action) {
             case "add":
                 $otherCostNew = new Cost();
                 $otherCostNew->cost = $cost;
                 $otherCostNew->note = $note;
+                $otherCostNew->dateRefuel = $datetime;
                 $otherCostNew->price_id = 1;
                 $otherCostNew->vehicle_id = $vehicle_id;
                 $otherCostNew->createdBy = Auth::user()->id;
@@ -877,6 +884,7 @@ class CostManagementController extends Controller
             case "update":
                 $otherCostUpdate = Cost::findOrFail($request->get('_object')['id']);
                 $otherCostUpdate->cost = $cost;
+                $otherCostUpdate->dateRefuel = $datetime;
                 $otherCostUpdate->vehicle_id = $vehicle_id;
                 $otherCostUpdate->note = $note;
                 $otherCostUpdate->updatedBy = Auth::user()->id;
