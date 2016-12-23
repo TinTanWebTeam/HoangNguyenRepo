@@ -213,5 +213,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'VehicleAllManagement'], function () {
         Route::get('/vehicle-all-management','VehicleAllManagement@getViewVehicleAll');
         Route::get('/vehicle-all-management/get-data-vehicle','VehicleAllManagement@getDataVehicleAll');
-     });
+        /*--------------------------------------*/
+        Route::POST('/vehicle-all-management/post-data-vehicle','VehicleAllManagement@postDataVehicleAll');
+
+
+    });
 });

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Status;
+use App\Transport;
+use App\Vehicle;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -18,21 +21,19 @@ class VehicleAllManagement extends Controller
     {
         $allVehicles = \DB::table('vehicles')
             ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->leftJoin('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
-            ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
-            ->leftJoin('transports', 'vehicles.id', '=', 'transports.vehicle_id')
-            ->leftJoin('statuses', 'transports.status_transport', '=', 'statuses.id')
-            ->select('vehicles.areaCode'
-                , 'vehicles.vehicleNumber'
-                , 'garages.name as garagesName'
-                , 'driverVehicles.driver_id'
-                , 'drivers.fullName as driverName'
-                , 'statuses.status as status')
+            ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
             ->where('vehicles.active', 1)
+            ->select('vehicles.*'
+                , 'garages.name as garagesName'
+                , 'statuses.status'
+            )
             ->get();
+
+        $statuses = Status::where('tableName', 'vehicles')->get();
         $response = [
             'msg' => 'Get data vehicles success',
             'dataAllVehicle' => $allVehicles,
+            'dataStatus' => $statuses,
         ];
         return response()->json($response, 200);
 
@@ -43,5 +44,50 @@ class VehicleAllManagement extends Controller
 //
 //        }
     }
+
+    public function postDataVehicleAll(Request $request)
+    {
+        $idVehicle = null;
+        $status_id = null;
+        $note = null;
+        $action = $request->input('_action');
+        if ($action) {
+            $idVehicle = $request->input('_object')['idVehicle'];
+            $status_id = $request->input('_object')['status_id'];
+            $note = $request->input('_object')['note'];
+        }
+        switch ($action) {
+            case 'updateStatusVehicle':
+                $updateStatusVehicle = Vehicle::findOrFail($idVehicle);
+                $updateStatusVehicle->status_id = $status_id;
+                $updateStatusVehicle->note = $note;
+                if ($updateStatusVehicle->update()) {
+                    $vehicles = \DB::table('vehicles')
+                        ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+                        ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
+                        ->where('vehicles.active', 1)
+                        ->where('vehicles.id', $updateStatusVehicle->id)
+                        ->select('vehicles.*'
+                            , 'garages.name as garagesName'
+                            , 'statuses.status'
+                        )
+                        ->first();
+                    $response = [
+                        'msg' => 'Updated status vehicles',
+                        'vehicles' => $vehicles,
+                    ];
+                    return response()->json($response, 201);
+                }
+
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
+
+            default:
+                return response()->json(['msg' => 'Connection to server failed'], 404);
+                break;
+        }
+
+    }
+
 
 }

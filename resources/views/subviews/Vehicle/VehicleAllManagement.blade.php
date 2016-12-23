@@ -26,59 +26,7 @@
     }
 
 </style>
-<div class="modal fade" id="modalConfirm" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body"><h5 id="modalContent"></h5></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                        onclick="PositionView.deletePosition()">Ðồng ý
-                </button>
-                <button type="button" class="btn default" name="modalClose"
-                        onclick="PositionView.cancelDelete()">Hủy
-                </button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-{{--End Modal--}}
 
-<div class="modal fade" id="modalPositionRestore" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body"><h5 id="modalPositionRestore"></h5></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary marginRight" name="modalAgree"
-                        onclick="PositionView.restorePosition()">Tạo lại
-                </button>
-                <button type="button" class="btn default" name="modalClose"
-                        onclick="PositionView.cancelPositionRestore()">Nhập lại
-                </button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-{{--End Modal--}}
-
-<div class="modal fade" id="modalPosition" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body"><h5 id="modalPosition"></h5></div>
-            <div class="modal-footer">
-                <button type="button" class="btn default" name="modalClose"
-                        onclick="PositionView.cancelValidatePosition()">Nhập lại
-                </button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-{{--End Modal--}}
 <!-- start View list -->
 <div class="row">
     <div class="col-md-12">
@@ -90,12 +38,6 @@
                         <li><a href="javascript:;">Trang chủ</a></li>
                         <li class="active">Quản lý xe</li>
                     </ol>
-                    {{--<div class="pull-right menu-toggle fixed">--}}
-                    {{--<div class="btn btn-primary btn-circle btn-md" title="Thêm mới"--}}
-                    {{--onclick="PositionView.addNewPosition()">--}}
-                    {{--<i class="glyphicon glyphicon-plus icon-center"></i>--}}
-                    {{--</div>--}}
-                    {{--</div>--}}
                 </div>
             </div>
             <!-- .panel-body -->
@@ -104,10 +46,11 @@
                     <table class="table table-bordered table-striped table-hover" id="table-data">
                         <thead>
                         <tr class="active">
+                            <th>Stt</th>
                             <th>Số xe</th>
                             <th>Nhà xe</th>
-                            <th>Tài xế</th>
-                            <th>Tình trạng</th>
+                            <th>Trạng thái</th>
+                            <th>Ghi chú</th>
                         </tr>
                         </thead>
                         <tbody id="tbodyVehicleAllList">
@@ -120,6 +63,81 @@
 </div>
 <!-- end View list -->
 
+{{--Modal update trang thai xe--}}
+<div class="row">
+    <div id="modal-confirmUpdate" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" onclick="">×</span>
+                    </button>
+                    <h5 class="modal-title">Cập nhật trạng thái xe</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="frmVehicleType">
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="vehicle"><b>Số xe</b></label>
+                                    <input type="text" class="form-control"
+                                           id="vehicle" readonly
+                                           name="vehicle">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="garage"><b>Nhà xe</b></label>
+                                    <input type="text" class="form-control"
+                                           id="garage" readonly
+                                           name="garage">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="vehicle"><b>Trạng thái</b></label>
+                                    <select id="status_transport" name="status_transport"
+                                            class="form-control"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input">
+                                    <label for="note"><b>Ghi chú</b></label>
+                                    <textarea class="form-control"
+                                              id="note"
+                                              name="note"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-offset-7 col-md-5">
+                                <div class="form-actions noborder">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary marginRight"
+                                                onclick="VehicleAllView.save()">
+                                            Hoàn tất
+                                        </button>
+                                        <button type="button" class="btn default"
+                                                onclick="VehicleAllView.cancel()">Nhập lại
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{--Modal update trang thai xe--}}
 
 
 <script>
@@ -129,9 +147,26 @@
                 table: null,
                 data: null,
                 action: null,
-                idDelete: null,
+                idVehicle: null,
                 tableVehicle: null,
+                dataStatus: null,
                 current: null,
+                showNotification: function (type, msg) {
+                    switch (type) {
+                        case "info":
+                            toastr.info(msg);
+                            break;
+                        case "success":
+                            toastr.success(msg);
+                            break;
+                        case "warning":
+                            toastr.warning(msg);
+                            break;
+                        case "error":
+                            toastr.error(msg);
+                            break;
+                    }
+                },
 
                 loadData: function () {
                     $.ajax({
@@ -141,7 +176,9 @@
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
                             VehicleAllView.dataVehicle = data['dataAllVehicle'];
+                            VehicleAllView.dataStatus = data['dataStatus'];
                             VehicleAllView.fillDataToDatatable(data['dataAllVehicle']);
+                            VehicleAllView.loadSelectBox(data['dataStatus']);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -168,6 +205,48 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
+                    $("#table-data").find("tbody").on('dblclick', 'tr', function () {
+                        var vehicleId = $(this).find('td:eq(0)')[0].innerText;
+                        VehicleAllView.loadModal(vehicleId);
+                    });
+                },
+                loadModal: function (data) {
+                    VehicleAllView.current = _.clone(_.find(VehicleAllView.dataVehicle, function (o) {
+                        return o.id == data;
+                    }), true);
+                    VehicleAllView.fillCurrentObjectToForm();
+                    VehicleAllView.idVehicle = data;
+                    VehicleAllView.displayModal("show", "#modal-confirmUpdate");
+                },
+                displayModal: function (type, idModal) {
+                    $(idModal).modal(type);
+                    if (VehicleAllView.action == 'update' && type == 'hide') {
+                        VehicleAllView.action = null;
+                        VehicleAllView.idUpdate = null;
+                    }
+
+                },
+                fillCurrentObjectToForm: function () {
+                    var vehicle = VehicleAllView.current["areaCode"] + "-" + VehicleAllView.current["vehicleNumber"];
+                    $("input[id='vehicle']").val(vehicle);
+                    $("input[id='garage']").val(VehicleAllView.current["garagesName"]);
+                    $("textarea[id='noted']").val(VehicleAllView.current["note"]);
+                    $("select[id='status_transport']").val(VehicleAllView.current["status_id"]);
+                },
+                loadSelectBox: function (lstStr) {
+                    $('#status_transport')
+                        .find('option')
+                        .remove()
+                        .end();
+                    //fill option to selectbox
+                    var select = document.getElementById("status_transport");
+                    for (var i = 0; i < lstStr.length; i++) {
+                        var opt = lstStr[i]['status'];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = lstStr[i]['id'];
+                        select.appendChild(el);
+                    }
                 },
                 fillDataToDatatable: function (data) {
                     if (VehicleAllView.table != null) {
@@ -181,18 +260,48 @@
                         language: languageOptions,
                         data: data,
                         columns: [
+                            {data: 'id'},
                             {data: 'fullNumber'},
                             {data: 'garagesName'},
-                            {data: 'driverName'},
-                            {data: 'status'}
-                        ],
-                        order: [[0, "desc"]]
-
-
-                    })
+                            {data: 'status'},
+                            {data: 'note'}
+                        ]
+                    });
+                },
+                save: function () {
+                    var sendToServer = null;
+                    var _obj = {
+                        status_id: $("select[id='status_transport']").val(),
+                        note: $("textarea[id='note']").val(),
+                        idVehicle: VehicleAllView.idVehicle
+                    };
+                    sendToServer = {
+                        _token: _token,
+                        _action: "updateStatusVehicle",
+                        _object: _obj
+                    };
+                    $.ajax({
+                        url: url + 'vehicle-all-management/post-data-vehicle',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            data['vehicles'].fullNumber = data['vehicles']['areaCode'] + "-" + data['vehicles']["vehicleNumber"];
+                            var VehicleOld = _.find(VehicleAllView.dataVehicle, function (o) {
+                                return o.id == sendToServer._object.idVehicle;
+                            });
+                            var indexOfVehicleOld = _.indexOf(VehicleAllView.dataVehicle, VehicleOld);
+                            VehicleAllView.dataVehicle.splice(indexOfVehicleOld, 1, data['vehicles']);
+                            VehicleAllView.showNotification("success", "Cập nhật thành công!");
+                            VehicleAllView.displayModal("hide", "#modal-confirmUpdate");
+                        }
+                        VehicleAllView.fillDataToDatatable(VehicleAllView.dataVehicle);
+//                        VehicleAllView.table.clear().rows.add(VehicleAllView.dataVehicle).draw();
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        VehicleAllView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
                 }
-
-
             };
             VehicleAllView.loadData();
         }

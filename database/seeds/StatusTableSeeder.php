@@ -26,6 +26,13 @@ class StatusTableSeeder extends Seeder
         foreach ($arr_status1 as $status)
         {
             \App\Status::create([
+                'tableName' => 'vehicles',
+                'status' => $status
+            ]);
+        }
+        foreach ($arr_status1 as $status)
+        {
+            \App\Status::create([
                 'tableName' => 'transports',
                 'status' => $status
             ]);

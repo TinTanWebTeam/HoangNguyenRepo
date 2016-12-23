@@ -14,6 +14,7 @@ class VehicleTableSeeder extends Seeder
         \App\Vehicle::create([
            'vehicleType_id' => '1',
             'garage_id' => '1',
+            'status_id' => '1',
             'areaCode' => '54N',
             'vehicleNumber' => '1111',
             'size' => '8',
@@ -24,6 +25,7 @@ class VehicleTableSeeder extends Seeder
         \App\Vehicle::create([
             'vehicleType_id' => '1',
             'garage_id' => '1',
+            'status_id' => '2',
             'areaCode' => '54N',
             'vehicleNumber' => '2222',
             'size' => '8',
@@ -34,6 +36,7 @@ class VehicleTableSeeder extends Seeder
         \App\Vehicle::create([
             'vehicleType_id' => '1',
             'garage_id' => '1',
+            'status_id' => '3',
             'areaCode' => '52N',
             'vehicleNumber' => '3333',
             'size' => '5',
@@ -44,6 +47,7 @@ class VehicleTableSeeder extends Seeder
         \App\Vehicle::create([
             'vehicleType_id' => '2',
             'garage_id' => '2',
+            'status_id' => '3',
             'areaCode' => '58N',
             'vehicleNumber' => '4444',
             'size' => '2',
