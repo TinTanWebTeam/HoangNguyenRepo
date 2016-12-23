@@ -178,11 +178,13 @@ class DebtManagementController extends Controller
             ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
             ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->select('vehicles.id',
+            ->select('costs.*', 'vehicles.id',
                 DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
                 , 'costs.cost', 'garages.name'
                 , 'costPrices.name', 'costPrices.id')
             ->get();
+
+            dd($vehicleCost);
         $response = [
             'msg' => 'Get list all Transport',
             'transports' => $transports,

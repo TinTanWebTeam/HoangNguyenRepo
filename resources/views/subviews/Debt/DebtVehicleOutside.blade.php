@@ -514,6 +514,7 @@
                 tableInvoiceGarage: null,
                 tableInvoiceGarageDetail: null,
                 tablePrintHistory: null,
+
                 dataTransport: null,
                 dataVehicleCost: null,
                 dataInvoiceGarage: null,
@@ -523,12 +524,14 @@
                 dataSearch: null,
                 dataSearchInvoiceGarage: null,
                 dataSearchVehicleCost: null,
+
                 action: null, //new, edit, autoEdit
                 current: null, //for autoEdit
                 currentInvoiceGarage: null, //for new & edit
                 invoiceGarageId: null, //for edit
                 array_transportId: [], //array_transportId of InvoiceGarage current
                 invoiceCode: null, //Get invoiceCode newest form Server
+
                 tagsFullNumberTransport: [], //for search
                 tagsFullNumberInvoice: [], //for search
                 tagsFullNumberCost: [], //for search
@@ -672,7 +675,6 @@
                 },
 
                 fillDataToDatatable: function (data) {
-//                    removeDataTable();
                     if (debtGarageView.table != null)
                         debtGarageView.table.destroy();
 
@@ -781,9 +783,9 @@
                                 }
                             }
                         ],
-//                        fixedHeader: {
-//                            header: true
-//                        },
+                    //    fixedHeader: {
+                    //        header: true
+                    //    },
                         responsive: true,
                         columnDefs: [
                             {responsivePriority: 1, targets: 1},
@@ -849,8 +851,6 @@
                         ]
                     });
                     $("#table-data").css("width", "auto");
-
-//                    pushDataTable(debtGarageView.table);
                 },
                 fillDataToDatatableInvoiceGarage: function (data) {
                     if (debtGarageView.tableInvoiceGarage != null)
@@ -1015,9 +1015,9 @@
                         language: languageOptions,
                         data: data,
                         columns: [],
-//                        fixedHeader: {
-//                            header: true
-//                        },
+                    //    fixedHeader: {
+                    //        header: true
+                    //    },
                         responsive: true,
                         columnDefs: [
                             {responsivePriority: 1, targets: 1},
@@ -1083,8 +1083,6 @@
                         ]
                     });
                     $("#table-transportCost").css("width", "auto");
-
-//                    pushDataTable(debtGarageView.table);
                 },
 
 
@@ -1707,7 +1705,7 @@
                     debtGarageView.displayModal('show', '#modal-printReview');
                 },
                 attachFile: function (invoiceGarageDetail_id) {
-//                    console.log(invoiceGarageDetail_id);
+                //    console.log(invoiceGarageDetail_id);
                 },
 
                 clearSearch: function (tableName) {
@@ -1747,20 +1745,31 @@
                     debtGarageView.renderAutoCompleteSearch();
 
                     // fill data to input
-//                    var fromDate = $("#dateSearchTransport").find(".start").val();
-//                    var toDate = $("#dateSearchTransport").find(".end").val();
-//                    $('input[id=fullNumber_cost]').val($('input[id=fullNumber_transport]').val());
-//                    $("#dateSearchVehicleCost").find(".start").val(fromDate);
-//                    $("#dateSearchVehicleCost").find(".end").val(toDate);
-//                    if($('input[id=fullNumber_cost]').val() != '') {
-//                        $('#searchVehicleCost').trigger();
-//                    }
-//
+                    var fromDate = $("#dateSearchTransport").find(".start").val();
+                    var toDate = $("#dateSearchTransport").find(".end").val();
+                    $("input[id='dateSearchVehicleCost']").find(".start").datepicker('update', fromDate);
+                    $("input[id='dateSearchVehicleCost']").find(".end").datepicker('update', toDate);
+                    $('input[id=fullNumber_cost]').val($('input[id=fullNumber_transport]').val());
+                   
+                //    var invoice = $("#invoiceUp").find("input:checked").val();
+                //    switch(){
+                //        case 'All': 
+                //         $("#costDown[value=All]").prop('checked', true);
+                //         break;
+                //        case 'StillDebt': 
+                //         $("#costDown[value=StillDebt").prop('checked', true);
+                //         break;
+                //        case 'FullPay': 
+                //         $("#costDown[value=FullPay]").prop('checked', true);
+                //         break;
+                //    }
+
                     // call search invoice
+                    debtGarageView.searchCost();
 
                 },
                 searchInvoice: function () {
-                    found = debtGarageView.searchStatusMoneyInvoice(debtGarageView.dataInvoiceGarage);
+                    var found = debtGarageView.searchStatusMoneyInvoice(debtGarageView.dataInvoiceGarage);
                     found = debtGarageView.searchGarageInvoice(found);
                     found = debtGarageView.searchDateInvoice(found);
                     debtGarageView.dataSearchInvoiceGarage = found;
@@ -1771,8 +1780,21 @@
                     debtGarageView.tagsFullNumberInvoice = _.union(debtGarageView.tagsFullNumberInvoice);
                     debtGarageView.renderAutoCompleteSearch();
                 },
-                searchTransportVehicleCost: function () {
+                searchCost: function(){
+                    var found = debtGarageView.searchDateVehicleCost(debtGarageView.dataVehicleCost);
+                    found = debtGarageView.searchVehicleCost(found);
+                    found = debtGarageView.searchStatusMoneyVehicleCost(found);
 
+                    debtGarageView.dataSearchVehicleCost = found;
+                    debtGarageView.tableVehicleCost.clear().rows.add(debtGarageView.dataSearchVehicleCost);
+
+                    //fill data to listSearch
+                    debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearchVehicleCost, 'fullNumber');
+                    debtGarageView.tagsFullNumberCost= _.union(debtGarageView.tagsFullNumberCost);
+                    debtGarageView.renderAutoCompleteSearch();
+                },
+
+                searchTransportVehicleCost: function () {
                     var found = debtGarageView.searchStatusMoneyVehicleCost(debtGarageView.dataVehicleCost);
                     found = debtGarageView.searchVehicleCost(found);
 
@@ -1780,67 +1802,7 @@
                     debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
                     debtGarageView.renderAutoCompleteSearch();
                 },
-                searchVehicleCost: function (data) {
-
-                    var vehicle = $("#fullNumber_cost").val();
-                    if (vehicle == '')
-                        return data;
-
-                    var found = _.filter(data, function (o) {
-                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
-                    });
-                    return found;
-
-                },
-
-
-
-
-
-//                searchDateVehicleCost: function (data) {
-//                    var fromDate = $("#dateSearchVehicleCost").find(".start").val();
-//                    var toDate = $("#dateSearchVehicleCost").find(".end").val();
-//                    if (fromDate == '' || toDate == '')
-//                        return data;
-//                    fromDate = moment(fromDate, "DD-MM-YYYY");
-//                    toDate = moment(toDate, "DD-MM-YYYY");
-//                    if (!fromDate.isValid() && !toDate.isValid())
-//                        return data;
-//
-//                    var found = _.filter(data, function (o) {
-//                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-//                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
-//                    });
-//                    return found;
-//                },
-//
-
-                searchStatusMoneyVehicleCost: function (data) {
-                    money = $("#costDown").find("input:checked").val();
-                    found = _.filter(data, function (o) {
-                        if (money == 'All') {
-                            return true;
-                        } else if (money == 'StillDebt') {
-                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
-                        } else {
-                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
-                        }
-                    });
-                    return found;
-
-                    money = $("#invoiceDown").find("input:checked").val();
-                    found = _.filter(data, function (o) {
-                        if (money == 'All') {
-                            return true;
-                        } else if (money == 'StillDebt') {
-                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
-                        } else {
-                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
-                        }
-                    });
-                    return found;
-                },
-
+                
 
                 searchDate: function (data) {
                     var fromDate = $("#dateSearchTransport").find(".start").val();
@@ -1899,15 +1861,6 @@
                     return found;
                 },
 
-
-
-
-
-
-
-
-
-
                 searchDateInvoice: function (data) {
                     fromDate = $("#dateSearchInvoice").find(".start").val();
                     toDate = $("#dateSearchInvoice").find(".end").val();
@@ -1949,6 +1902,46 @@
                     return found;
                 },
 
+                searchDateVehicleCost: function(data){
+                    var fromDate = $("#dateSearchVehicleCost").find(".start").val();
+                    var toDate = $("#dateSearchVehicleCost").find(".end").val();
+                    if (fromDate == '' || toDate == '')
+                        return data;
+
+                    fromDate = moment(fromDate, "DD-MM-YYYY");
+                    toDate = moment(toDate, "DD-MM-YYYY");
+                    if (!fromDate.isValid() && !toDate.isValid())
+                        return data;
+
+                    found = _.filter(data, function (o) {
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+                    });
+                    return found;
+                },
+                searchVehicleCost: function(data){
+                    var vehicle = $("#fullNumber_cost").val();
+                    if (vehicle == '')
+                        return data;
+                    var found = _.filter(data, function (o) {
+                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
+                    });
+                    return found;
+                },
+                searchStatusMoneyVehicleCost: function(data){
+                    var money = $("#costDown").find("input:checked").val();
+                    var found = _.filter(data, function (o) {
+                        if (money == 'All') {
+                            return true;
+                        } else if (money == 'StillDebt') {
+                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+                        } else {
+                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+                        }
+                    });
+                    return found;
+                },
+
                 computeDebt: function (paidAmt) {
                     paidAmt = convertStringToNumber(paidAmt);
                     var debtReal = asNumberFromCurrency("#debt-real");
@@ -1975,7 +1968,7 @@
                     formatCurrency(".currency");
                 },
                 computeHasVAT: function (vat, e) {
-//                    if((e.keyCode == 8 || e.keyCode == 46) && (vat == 0 || vat == '')) return;
+                //    if((e.keyCode == 8 || e.keyCode == 46) && (vat == 0 || vat == '')) return;
 
 
                     if (vat == '') vat = 0;

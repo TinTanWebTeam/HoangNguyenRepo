@@ -622,11 +622,16 @@ class CustomerManagementController extends Controller
                 'statuses_cust.status as status_customer_',
                 'statuses_gar.status as status_garage_',
                 'users_createdBy.fullName as users_createdBy',
-                'users_updatedBy.fullName as users_updatedBy'
+                'users_updatedBy.fullName as users_updatedBy',
+                'productTypes.name as productType_name',
+                'vehicleTypes.name as vehicleType_name',
+                'formulas.unitPrice as formula_unitPrice'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
+            ->leftJoin('productTypes', 'productTypes.id', '=', 'products.productType_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
             ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+            ->leftJoin('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
             //  ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
             //  ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
             ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
@@ -634,6 +639,7 @@ class CustomerManagementController extends Controller
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
             ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
+            ->leftJoin('formulas', 'formulas.id', '=', 'transports.formula_id')
             ->where('transports.active', 1)
             ->orderBy('transports.receiveDate', 'desc')
             //  ->where(\DB::raw('DATE(transports.receiveDate)'), '<=', \DB::raw('DATE(driverVehicles.updated_at)'))
