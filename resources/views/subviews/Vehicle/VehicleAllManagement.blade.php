@@ -125,7 +125,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="VehicleAllView.cancel()">Nhập lại
+                                                onclick="VehicleAllView.cancel()">Hủy
                                         </button>
                                     </div>
                                 </div>
@@ -167,7 +167,9 @@
                             break;
                     }
                 },
-
+                cancel:function () {
+                    VehicleAllView.displayModal("hide", "#modal-confirmUpdate");
+                },
                 loadData: function () {
                     $.ajax({
                         url: url + 'vehicle-all-management/get-data-vehicle',
@@ -263,7 +265,28 @@
                             {data: 'id'},
                             {data: 'fullNumber'},
                             {data: 'garagesName'},
-                            {data: 'status'},
+                            {
+                                render: function (data, type, full, meta) {
+                                    var color_vehicle = '';
+                                    switch (full.status_id) {
+                                        case 2:
+                                            color_vehicle = 'text-primary';
+                                            break;
+                                        case 3:
+                                            color_vehicle = 'text-success';
+                                            break;
+                                        case 4:
+                                            color_vehicle = 'text-danger';
+                                            break;
+                                    }
+                                    var tr = "";
+                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-truck ' + color_vehicle + '" aria-hidden="true"></i>';
+                                    tr += '<p>' + full.status + '</p>';
+                                    return tr;
+                                }
+
+
+                            },
                             {data: 'note'}
                         ]
                     });
@@ -287,12 +310,12 @@
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 201) {
-                            data['vehicles'].fullNumber = data['vehicles']['areaCode'] + "-" + data['vehicles']["vehicleNumber"];
+                            data['vehicle'].fullNumber = data['vehicle']['areaCode'] + "-" + data['vehicle']["vehicleNumber"];
                             var VehicleOld = _.find(VehicleAllView.dataVehicle, function (o) {
                                 return o.id == sendToServer._object.idVehicle;
                             });
                             var indexOfVehicleOld = _.indexOf(VehicleAllView.dataVehicle, VehicleOld);
-                            VehicleAllView.dataVehicle.splice(indexOfVehicleOld, 1, data['vehicles']);
+                            VehicleAllView.dataVehicle.splice(indexOfVehicleOld, 1, data['vehicle']);
                             VehicleAllView.showNotification("success", "Cập nhật thành công!");
                             VehicleAllView.displayModal("hide", "#modal-confirmUpdate");
                         }

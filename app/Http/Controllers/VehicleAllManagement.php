@@ -62,7 +62,7 @@ class VehicleAllManagement extends Controller
                 $updateStatusVehicle->status_id = $status_id;
                 $updateStatusVehicle->note = $note;
                 if ($updateStatusVehicle->update()) {
-                    $vehicles = \DB::table('vehicles')
+                    $vehicle = \DB::table('vehicles')
                         ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
                         ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
                         ->where('vehicles.active', 1)
@@ -70,11 +70,12 @@ class VehicleAllManagement extends Controller
                         ->select('vehicles.*'
                             , 'garages.name as garagesName'
                             , 'statuses.status'
+                            , 'statuses.tableName as status_vehicle'
                         )
                         ->first();
                     $response = [
                         'msg' => 'Updated status vehicles',
-                        'vehicles' => $vehicles,
+                        'vehicle' => $vehicle,
                     ];
                     return response()->json($response, 201);
                 }

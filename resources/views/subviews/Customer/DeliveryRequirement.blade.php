@@ -1264,9 +1264,8 @@
                                     tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-user ' + color_customer + '" aria-hidden="true"></i>';
                                     tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-truck ' + color_garage + '" aria-hidden="true"></i>';
                                     tr += '<p>' + full.status_transport_ + '</p>';
-
                                     return tr;
-                                }
+                                }, visible:false
                             },
                             {
                                 render: function (data, type, full, meta) {
