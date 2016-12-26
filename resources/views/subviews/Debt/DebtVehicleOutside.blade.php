@@ -510,7 +510,8 @@
         if (typeof debtGarageView === 'undefined') {
             debtGarageView = {
                 table: null,
-                tableVehicleCost: null,
+
+                tableTransportCost:null,
                 tableInvoiceGarage: null,
                 tableInvoiceGarageDetail: null,
                 tablePrintHistory: null,
@@ -1786,12 +1787,12 @@
                     found = debtGarageView.searchStatusMoneyVehicleCost(found);
 
                     debtGarageView.dataSearchVehicleCost = found;
-                    debtGarageView.tableVehicleCost.clear().rows.add(debtGarageView.dataSearchVehicleCost);
-
+                    debtGarageView.tableTransportCost.clear().rows.add(debtGarageView.dataSearchVehicleCost).draw();
                     //fill data to listSearch
                     debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearchVehicleCost, 'fullNumber');
                     debtGarageView.tagsFullNumberCost= _.union(debtGarageView.tagsFullNumberCost);
                     debtGarageView.renderAutoCompleteSearch();
+
                 },
 
                 searchTransportVehicleCost: function () {

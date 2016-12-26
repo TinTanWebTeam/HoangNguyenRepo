@@ -184,7 +184,6 @@ class DebtManagementController extends Controller
                 , 'costPrices.name', 'costPrices.id')
             ->get();
 
-            dd($vehicleCost);
         $response = [
             'msg' => 'Get list all Transport',
             'transports' => $transports,
