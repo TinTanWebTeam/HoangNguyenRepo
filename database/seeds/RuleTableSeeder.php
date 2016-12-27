@@ -14,13 +14,19 @@ class RuleTableSeeder extends Seeder
         \App\Rule::create([
 			'name'        => 'Range',
 			'shortName'   => 'R',
-			'description' => 'Khoảng',
+			'description' => 'Một khoảng',
         ]);
 
         \App\Rule::create([
 			'name'        => 'Single',
 			'shortName'   => 'S',
 			'description' => 'Giá trị',
+        ]);
+
+        \App\Rule::create([
+			'name'        => 'Pair',
+			'shortName'   => 'P',
+			'description' => 'Một cặp',
         ]);
     }
 }

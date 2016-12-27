@@ -133,7 +133,8 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="unit" class="red"><b>Đơn vị tính</b></label>
-                                                        <input type="text" class="form-control" id="unit" name="unit">
+                                                        <select class="form-control" id="unit" name="unit"></select>
+                                                        <!--<input type="text" class="form-control" id="unit" name="unit">-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -219,10 +220,25 @@
                                                 <div class="col-md-12">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="rule" class="marginRight"><b>Công thức: </b></label>
-                                                        <input type="radio" name="rule" value="R" checked> <span
-                                                                class="marginRight">Khoảng</span>
-                                                        <input type="radio" name="rule" value="S"> <span class="marginRight">Giá trị</span>
-                                                        <input type="radio" name="rule" value="O"> <span>Giá dầu</span>
+                                                        <input type="radio" name="rule" value="S" checked> <span class="marginRight">Giá trị</span>
+                                                        <input type="radio" name="rule" value="R"> <span class="marginRight">Một khoảng</span>
+                                                        <input type="radio" name="rule" value="P"> <span>Một cặp</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding: 0 10px">
+                                                <div class="col-md-12">
+                                                    <div class="form-group form-md-line-input">
+                                                        <label for="condition" class="marginRight"><b>Điều kiện: </b></label>
+                                                        <select class="form-control" id="condition" name="condition"></select>
+                                                        <!--<input type="radio" name="condition" value="Khac" my-rule="S" checked> <span class="marginRight">Khác</span>
+                                                        <input type="radio" name="condition" value="TuyenDuong" my-rule="P"> <span class="marginRight">Tuyến đường</span>
+                                                        <input type="radio" name="condition" value="KhoangCach" my-rule="R"> <span class="marginRight">Khoảng cách</span>
+                                                        <input type="radio" name="condition" value="LoaiXe" my-rule="S"> <span class="marginRight">Loại xe</span>
+                                                        <input type="radio" name="condition" value="LuongHang" my-rule="R"> <span class="marginRight">Lượng hàng</span>
+                                                        <input type="radio" name="condition" value="Chieu" my-rule="S"> <span class="marginRight">1 Chiều/2 Chiều</span>
+                                                        <input type="radio" name="condition" value="MaHang" my-rule="S"> <span class="marginRight">Mã hàng</span>
+                                                        <input type="radio" name="condition" value="GiaDau" my-rule="R"> <span>Giá dầu</span>-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -243,14 +259,16 @@
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="from" class="red"><b>Từ</b></label>
-                                                        <input type="text" class="form-control" id="from" name="from">
+                                                        <label for="from" class="red hide"><b>Từ</b></label>
+                                                        <input type="text" class="form-control hide" id="from" name="from">
+                                                        <input type="text" class="form-control hide" id="fromPlace" name="fromPlace">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="to" class="red"><b>Đến</b></label>
-                                                        <input type="text" class="form-control" name="to" id="to">
+                                                        <label for="to" class="red hide"><b>Đến</b></label>
+                                                        <input type="text" class="form-control hide" name="to" id="to">
+                                                        <input type="text" class="form-control hide" name="toPlace" id="toPlace">
                                                     </div>
                                                 </div>
                                             </div>
@@ -380,6 +398,7 @@
                 dataCustomer: null,
                 dataFuel: null,
                 dataFuelLastest: null,
+                dataUnit: null,
 
                 current: null,
                 currentDetail: null,
@@ -493,39 +512,95 @@
                 renderEventChangeRadio: function () {
                     $('input[type=radio][name=rule]').change(function () {
                         postageView.retypeDetail();
-                        if (this.value == 'S') {
-                            $("#name").prop('readonly', false);
-                            $("#value").prop('disabled', false);
-                            $("#from").prop('disabled', true);
-                            $("#to").prop('disabled', true);
-
-                            $("label[for=value]").addClass("red");
-                            $("label[for=from]").removeClass("red");
-                            $("label[for=to]").removeClass("red");
+                        switch (this.value) {
+                            case 'S':
+                                $("label[for=value]").removeClass('hide');
+                                $("label[for=from]").addClass('hide');
+                                $("label[for=to]").addClass('hide');
+                                $("#name").prop('readonly', false);
+                                $("#value").removeClass('hide')
+                                $("#from").addClass('hide');
+                                $("#to").addClass('hide');
+                                $("#fromPlace").addClass('hide');
+                                $("#toPlace").addClass('hide');
+                                break;
+                            case 'R':
+                                $("label[for=value]").addClass('hide');
+                                $("label[for=from]").removeClass('hide');
+                                $("label[for=to]").removeClass('hide');
+                                $("#name").prop('readonly', false);
+                                $("#value").addClass('hide');
+                                $("#from").removeClass('hide');
+                                $("#to").removeClass('hide');
+                                $("#fromPlace").addClass('hide');
+                                $("#toPlace").addClass('hide');
+                                break;
+                            case 'P':
+                                $("label[for=value]").addClass('hide');
+                                $("label[for=from]").removeClass('hide');
+                                $("label[for=to]").removeClass('hide');
+                                $("#name").prop('readonly', false);
+                                $("#value").addClass('hide');
+                                $("#from").addClass('hide');
+                                $("#to").addClass('hide');
+                                $("#fromPlace").removeClass('hide');
+                                $("#toPlace").removeClass('hide');
+                                break;
+                            default: break;
                         }
-                        else if (this.value == 'R') {
-                            $("#name").prop('readonly', false);
-                            $("#value").prop('disabled', true);
-                            $("#from").prop('disabled', false);
-                            $("#to").prop('disabled', false);
+                    });
 
-                            $("label[for=value]").removeClass("red");
-                            $("label[for=from]").addClass("red");
-                            $("label[for=to]").addClass("red");
-                        } else if (this.value == 'O'){
-                            $("#name").val("Giá dầu");
-                            $("#name").prop('readonly', true);
-                            $("#value").prop('disabled', true);
-                            $("#from").prop('disabled', false);
-                            $("#to").prop('disabled', false);
+                    $('input[type=radio][name=condition]').change(function () {
+                        var name = $(this).next().text();
+                        $("#name").val(name);
+                        var flag = true;
+                        if(name == 'Khác') {
+                            flag = false;
+                            $("#name").val('');
+                            var parent = $('input[type=radio][name=rule]:checked').val();
+                            $(this).attr('my-rule', parent);
+                        }
+                        var rule = $(this).attr('my-rule');
+                        $("input[type=radio][name=rule][value="+rule+"]").prop('checked', true);
+                        switch (rule) {
+                            case 'S': 
+                                $("#name").prop('readonly', flag);
+                                $("#value").prop('disabled', false);
+                                $("#from").prop('disabled', true);
+                                $("#to").prop('disabled', true);
 
-                            $("label[for=value]").removeClass("red");
-                            $("label[for=from]").addClass("red");
-                            $("label[for=to]").addClass("red");
+                                $("label[for=value]").addClass("red");
+                                $("label[for=from]").removeClass("red");
+                                $("label[for=to]").removeClass("red");
+                                break;
+                            case 'R': 
+                                $("#name").prop('readonly', flag);
+                                $("#value").prop('disabled', true);
+                                $("#from").prop('disabled', false);
+                                $("#to").prop('disabled', false);
+
+                                $("label[for=value]").removeClass("red");
+                                $("label[for=from]").addClass("red");
+                                $("label[for=to]").addClass("red");
+                                break;
+                            case 'P': 
+                                $("#name").prop('readonly', flag);
+                                $("#value").prop('disabled', true);
+                                $("#from").prop('disabled', false);
+                                $("#to").prop('disabled', false);
+
+                                $("label[for=value]").removeClass("red");
+                                $("label[for=from]").addClass("red");
+                                $("label[for=to]").addClass("red");
+                                break;
+                            default: break;
                         }
                     });
                 },
 
+                createDataCondition: function() {
+                    
+                },
                 loadData: function () {
                     $.ajax({
                         url: url + 'postage/postages',
@@ -536,6 +611,9 @@
                             postageView.dataFuel = data['fuels'];
                             postageView.dataPostage = data['postages'];
                             postageView.dataPostageDetail = data['postageDetails'];
+                            postageView.dataUnit = data['units'];
+
+                            postageView.loadSelectBox(postageView.dataUnit, 'unit', 'name');
                             postageView.fillDataToDatatable(postageView.dataPostage);
 
                             postageView.getLatestFuel();
@@ -546,6 +624,7 @@
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                     postageView.loadListCustomer();
+                    
                     postageView.renderEventClickTableModal();
                     postageView.renderEventFocusOut();
                     postageView.renderDateTimePicker();
@@ -575,6 +654,22 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                },
+                loadSelectBox: function (lstData, strId, propertyName) {
+                    //reset selectbox
+                    $('#' + strId)
+                        .find('option')
+                        .remove()
+                        .end();
+                    //fill option to selectbox
+                    var select = document.getElementById(strId);
+                    for (var i = 0; i < lstData.length; i++) {
+                        var opt = lstData[i][propertyName];
+                        var el = document.createElement("option");
+                        el.textContent = opt;
+                        el.value = lstData[i]['id'];
+                        select.appendChild(el);
+                    }
                 },
 
                 fillDataToDatatable: function (data) {
@@ -1006,7 +1101,9 @@
                                 'name': postageView.currentDetail['name'],
                                 'value': postageView.currentDetail['value'],
                                 'from': postageView.currentDetail['from'],
-                                'to': postageView.currentDetail['to']
+                                'to': postageView.currentDetail['to'],
+                                'fromPlace': postageView.currentDetail['fromPlace'],
+                                'toPlace': postageView.currentDetail['toPlace']
                             });
 
                             for (var i = 0; i < postageView.arrayDetail.length; i++) {

@@ -42,6 +42,8 @@ class TransportTableSeeder extends Seeder
             'parking'               => 100000,
             'fine'                  => 200000,
             'phiTangBo'             => 50000,
+            'addScore'              => 50000,
+            'direction'             => 0,
             'transportType'         => 0,
             'formula_id'            => 1
         ]);
@@ -76,6 +78,8 @@ class TransportTableSeeder extends Seeder
             'parking'               => 0,
             'fine'                  => 0,
             'phiTangBo'             => 0,
+            'addScore'              => 50000,
+            'direction'             => 0,
             'transportType'         => 0,
             'formula_id'            => 2
         ]);
@@ -111,6 +115,8 @@ class TransportTableSeeder extends Seeder
             'parking'               => 100000,
             'fine'                  => 100000,
             'phiTangBo'             => 100000,
+            'addScore'              => 50000,
+            'direction'             => 0,
             'transportType'         => 0,
             'formula_id'            => 4
         ]);
@@ -145,6 +151,8 @@ class TransportTableSeeder extends Seeder
             'parking'               => 0,
             'fine'                  => 0,
             'phiTangBo'             => 0,
+            'addScore'              => 50000,
+            'direction'             => 0,
             'transportType'         => 0,
             'formula_id'            => 5
         ]);
@@ -180,6 +188,8 @@ class TransportTableSeeder extends Seeder
             'parking'               => 100000,
             'fine'                  => 100000,
             'phiTangBo'             => 200000,
+            'addScore'              => 50000,
+            'direction'             => 0,
             'transportType'         => 0,
             'formula_id'            => 6
         ]);

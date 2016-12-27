@@ -356,11 +356,14 @@ class PostageManagementController extends Controller
 
         $fuels = \DB::table('fuels')->where('type', 'oil')->get();
 
+        $units = \DB::table('units')->where('active', 1)->select('units.id', 'units.name')->get();
+
         $response = [
             'msg'            => 'Get success',
             'postages'       => $formulas,
             'postageDetails' => $formulaDetails,
-            'fuels'          => $fuels
+            'fuels'          => $fuels,
+            'units'          => $units
         ];
         return $response;
     }
