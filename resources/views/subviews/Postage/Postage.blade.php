@@ -140,7 +140,7 @@
                                                         <div class="col-xs-3">
                                                             <div class="btn btn-primary btn-sm btn-circle"
                                                                  title="Thêm mới đơn vị tính"
-                                                                 onclick="">
+                                                                 onclick="postageView.showAddUnit()">
                                                                 <i class="glyphicon glyphicon-plus"></i>
                                                             </div>
                                                         </div>
@@ -382,6 +382,48 @@
                         Đóng
                     </button>
                     <button type="button" class="btn btn-primary" onclick="postageView.updateApplyDate()">
+                        Cập nhật
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="add-unit" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Them moi don vi tinh
+                    </h4>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="apply-date">Ten</label>
+                            <input type="text" class="form-control" id="unit_name" name="unit_name"/>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="">
                         Cập nhật
                     </button>
                 </div>
@@ -1210,6 +1252,10 @@
                     }
 
                     postageView.displayModal('show', '#myModalNorm');
+                },
+
+                showAddUnit: function(){
+                    postageView.displayModal('show', '#add-unit');
                 }
             };
             postageView.loadData();
