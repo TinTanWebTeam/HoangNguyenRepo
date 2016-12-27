@@ -132,9 +132,20 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="unit" class="red"><b>Đơn vị tính</b></label>
-                                                        <select class="form-control" id="unit" name="unit"></select>
-                                                        <!--<input type="text" class="form-control" id="unit" name="unit">-->
+                                                        <label for="unit_id" class="red"><b>Đơn vị tính</b></label>
+                                                        <div class="row">
+                                                        <div class="col-xs-9">
+                                                            <select class="form-control" id="unit_id" name="unit_id"></select>
+                                                        </div>
+                                                        <div class="col-xs-3">
+                                                            <div class="btn btn-primary btn-sm btn-circle"
+                                                                 title="Thêm mới đơn vị tính"
+                                                                 onclick="">
+                                                                <i class="glyphicon glyphicon-plus"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -231,14 +242,6 @@
                                                     <div class="form-group form-md-line-input">
                                                         <label for="condition" class="marginRight"><b>Điều kiện: </b></label>
                                                         <select class="form-control" id="condition" name="condition"></select>
-                                                        <!--<input type="radio" name="condition" value="Khac" my-rule="S" checked> <span class="marginRight">Khác</span>
-                                                        <input type="radio" name="condition" value="TuyenDuong" my-rule="P"> <span class="marginRight">Tuyến đường</span>
-                                                        <input type="radio" name="condition" value="KhoangCach" my-rule="R"> <span class="marginRight">Khoảng cách</span>
-                                                        <input type="radio" name="condition" value="LoaiXe" my-rule="S"> <span class="marginRight">Loại xe</span>
-                                                        <input type="radio" name="condition" value="LuongHang" my-rule="R"> <span class="marginRight">Lượng hàng</span>
-                                                        <input type="radio" name="condition" value="Chieu" my-rule="S"> <span class="marginRight">1 Chiều/2 Chiều</span>
-                                                        <input type="radio" name="condition" value="MaHang" my-rule="S"> <span class="marginRight">Mã hàng</span>
-                                                        <input type="radio" name="condition" value="GiaDau" my-rule="R"> <span>Giá dầu</span>-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -252,7 +255,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="value"><b>Giá trị</b></label>
-                                                        <input type="text" class="form-control" id="value" name="value" disabled>
+                                                        <input type="text" class="form-control" id="value" name="value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -298,6 +301,8 @@
                                                 <th>STT</th>
                                                 <th>Tên trường</th>
                                                 <th>Giá trị</th>
+                                                <th>Từ</th>
+                                                <th>Đến</th>
                                                 <th>Từ</th>
                                                 <th>Đến</th>
                                                 <th>Xóa</th>
@@ -399,6 +404,7 @@
                 dataFuel: null,
                 dataFuelLastest: null,
                 dataUnit: null,
+                dataCondition: null,
 
                 current: null,
                 currentDetail: null,
@@ -511,35 +517,90 @@
                 },
                 renderEventChangeRadio: function () {
                     $('input[type=radio][name=rule]').change(function () {
-                        postageView.retypeDetail();
-                        switch (this.value) {
-                            case 'S':
+                        if($("select[id=condition] option:selected").text() == 'Khác'){
+                            postageView.retypeDetail();
+                            switch (this.value) {
+                                case 'S':
+                                    $("label[for=value]").removeClass('hide');
+                                    $("label[for=from]").addClass('hide');
+                                    $("label[for=to]").addClass('hide');
+                                    $("#name").prop('readonly', false);
+                                    $("#value").removeClass('hide')
+                                    $("#from").addClass('hide');
+                                    $("#to").addClass('hide');
+                                    $("#fromPlace").addClass('hide');
+                                    $("#toPlace").addClass('hide');
+                                    break;
+                                case 'R':
+                                    $("label[for=value]").addClass('hide');
+                                    $("label[for=from]").removeClass('hide');
+                                    $("label[for=to]").removeClass('hide');
+                                    $("#name").prop('readonly', false);
+                                    $("#value").addClass('hide');
+                                    $("#from").removeClass('hide');
+                                    $("#to").removeClass('hide');
+                                    $("#fromPlace").addClass('hide');
+                                    $("#toPlace").addClass('hide');
+                                    break;
+                                case 'P':
+                                    $("label[for=value]").addClass('hide');
+                                    $("label[for=from]").removeClass('hide');
+                                    $("label[for=to]").removeClass('hide');
+                                    $("#name").prop('readonly', false);
+                                    $("#value").addClass('hide');
+                                    $("#from").addClass('hide');
+                                    $("#to").addClass('hide');
+                                    $("#fromPlace").removeClass('hide');
+                                    $("#toPlace").removeClass('hide');
+                                    break;
+                                default: break;
+                            }
+                        }
+                    });
+
+                    $('select[id=condition]').change(function () {
+                        var option = $(this).find('option:selected');
+                        var name = option.text();
+                        var flag = true;
+
+                        $("#name").val(name);
+                        if(name == 'Khác') {
+                            flag = false;
+                            $("#name").val('');
+                            var rule_parent = $('input[type=radio][name=rule]:checked').val();
+                            option.attr('my-rule', rule_parent);
+                        }
+                        var rule = option.attr('my-rule');
+                        
+                        // $("input[type=radio][name=rule][value="+rule+"]").prop('checked', true);
+                        switch (rule) {
+                            case 'S': 
                                 $("label[for=value]").removeClass('hide');
                                 $("label[for=from]").addClass('hide');
                                 $("label[for=to]").addClass('hide');
-                                $("#name").prop('readonly', false);
+                                $("#name").prop('readonly', flag);
                                 $("#value").removeClass('hide')
                                 $("#from").addClass('hide');
                                 $("#to").addClass('hide');
                                 $("#fromPlace").addClass('hide');
                                 $("#toPlace").addClass('hide');
                                 break;
-                            case 'R':
+                            case 'R': 
                                 $("label[for=value]").addClass('hide');
                                 $("label[for=from]").removeClass('hide');
                                 $("label[for=to]").removeClass('hide');
-                                $("#name").prop('readonly', false);
+                                $("#name").prop('readonly', flag);
                                 $("#value").addClass('hide');
                                 $("#from").removeClass('hide');
                                 $("#to").removeClass('hide');
                                 $("#fromPlace").addClass('hide');
                                 $("#toPlace").addClass('hide');
                                 break;
-                            case 'P':
+                            case 'P': 
                                 $("label[for=value]").addClass('hide');
                                 $("label[for=from]").removeClass('hide');
                                 $("label[for=to]").removeClass('hide');
-                                $("#name").prop('readonly', false);
+                                $("#name").prop('readonly', flag);
                                 $("#value").addClass('hide');
                                 $("#from").addClass('hide');
                                 $("#to").addClass('hide');
@@ -549,57 +610,19 @@
                             default: break;
                         }
                     });
-
-                    $('input[type=radio][name=condition]').change(function () {
-                        var name = $(this).next().text();
-                        $("#name").val(name);
-                        var flag = true;
-                        if(name == 'Khác') {
-                            flag = false;
-                            $("#name").val('');
-                            var parent = $('input[type=radio][name=rule]:checked').val();
-                            $(this).attr('my-rule', parent);
-                        }
-                        var rule = $(this).attr('my-rule');
-                        $("input[type=radio][name=rule][value="+rule+"]").prop('checked', true);
-                        switch (rule) {
-                            case 'S': 
-                                $("#name").prop('readonly', flag);
-                                $("#value").prop('disabled', false);
-                                $("#from").prop('disabled', true);
-                                $("#to").prop('disabled', true);
-
-                                $("label[for=value]").addClass("red");
-                                $("label[for=from]").removeClass("red");
-                                $("label[for=to]").removeClass("red");
-                                break;
-                            case 'R': 
-                                $("#name").prop('readonly', flag);
-                                $("#value").prop('disabled', true);
-                                $("#from").prop('disabled', false);
-                                $("#to").prop('disabled', false);
-
-                                $("label[for=value]").removeClass("red");
-                                $("label[for=from]").addClass("red");
-                                $("label[for=to]").addClass("red");
-                                break;
-                            case 'P': 
-                                $("#name").prop('readonly', flag);
-                                $("#value").prop('disabled', true);
-                                $("#from").prop('disabled', false);
-                                $("#to").prop('disabled', false);
-
-                                $("label[for=value]").removeClass("red");
-                                $("label[for=from]").addClass("red");
-                                $("label[for=to]").addClass("red");
-                                break;
-                            default: break;
-                        }
-                    });
                 },
 
                 createDataCondition: function() {
-                    
+                    postageView.dataCondition = [
+                        { "id": 1, "name": "Khác", "rule": "S" },
+                        { "id": 2, "name": "Tuyến đường", "rule": "P" },
+                        { "id": 3, "name": "Khoảng cách", "rule": "R" },
+                        { "id": 4, "name": "Loại xe", "rule": "S" },
+                        { "id": 5, "name": "Lượng hàng", "rule": "R" },
+                        { "id": 6, "name": "1 Chiều/2 Chiều", "rule": "S" },
+                        { "id": 7, "name": "Mã hàng", "rule": "S" },
+                        { "id": 8, "name": "Giá dầu", "rule": "R" }
+                    ];
                 },
                 loadData: function () {
                     $.ajax({
@@ -612,8 +635,10 @@
                             postageView.dataPostage = data['postages'];
                             postageView.dataPostageDetail = data['postageDetails'];
                             postageView.dataUnit = data['units'];
+                            postageView.createDataCondition();
 
-                            postageView.loadSelectBox(postageView.dataUnit, 'unit', 'name');
+                            postageView.loadSelectBox(postageView.dataUnit, 'unit_id', 'name');
+                            postageView.loadSelectBox(postageView.dataCondition, 'condition', 'name');
                             postageView.fillDataToDatatable(postageView.dataPostage);
 
                             postageView.getLatestFuel();
@@ -668,6 +693,9 @@
                         var el = document.createElement("option");
                         el.textContent = opt;
                         el.value = lstData[i]['id'];
+                        if(lstData[i].hasOwnProperty("rule")){
+                            el.setAttribute("my-rule", lstData[i]["rule"])
+                        }
                         select.appendChild(el);
                     }
                 },
@@ -793,6 +821,12 @@
                                 data: 'to'
                             },
                             {
+                                data: 'fromPlace'
+                            },
+                            {
+                                data: 'toPlace'
+                            },
+                            {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="btn btn-danger btn-circle" onclick="postageView.idDeleteDetail = ' + full.stt + ';postageView.actionDetail = \'delete\';postageView.saveDetail()">';
@@ -811,7 +845,7 @@
                     $("#customer_id").attr('data-customerId', postageView.current["customer_id"]);
                     $("input[id=formulaCode]").val(postageView.current["formulaCode"]);
                     $("input[id=unitPrice]").val(postageView.current["unitPrice"]);
-                    $("input[id=unit]").val(postageView.current["unit"]);
+                    $("select[id=unit_id]").val(postageView.current["unit_id"]);
                     $("textarea[id=note]").val(postageView.current["note"]);
                     $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
                     var applyDate = moment(postageView.current["applyDate"], "YYYY-MM-DD");
@@ -827,7 +861,7 @@
                             formulaCode: $("input[id=formulaCode]").val(),
                             cashDelivery: asNumberFromCurrency("#cashDelivery"),
                             unitPrice: asNumberFromCurrency('#unitPrice'),
-                            unit: $("input[id=unit]").val(),
+                            unit_id: $("select[id=unit_id]").val(),
                             createdDate: $("input[id=createdDate]").val(),
                             applyDate: $("input[id=applyDate]").val(),
                             note: $("textarea[id=note]").val(),
@@ -838,7 +872,7 @@
                         postageView.current.formulaCode = $("input[id=formulaCode]").val();
                         postageView.current.cashDelivery = asNumberFromCurrency("#cashDelivery");
                         postageView.current.unitPrice = asNumberFromCurrency('#unitPrice');
-                        postageView.current.unit = $("input[id=unit]").val();
+                        postageView.current.unit_id = $("select[id=unit_id]").val();
                         postageView.current.createdDate = $("input[id=createdDate]").val();
                         postageView.current.applyDate = $("input[id=applyDate]").val();
                         postageView.current.note = $("textarea[id=note]").val();
@@ -852,7 +886,9 @@
                         name: $("#name").val(),
                         value: $("#value").val(),
                         from: $("#from").val(),
-                        to: $("#to").val()
+                        to: $("#to").val(),
+                        fromPlace: $("#fromPlace").val(),
+                        toPlace: $("#toPlace").val()
                     };
                 },
 
@@ -1023,6 +1059,9 @@
                             return;
                         }
                     }
+
+                    console.log(sendToServer);
+                    return;
 
                     $.ajax({
                         url: url + 'postage/modify',

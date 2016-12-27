@@ -16,7 +16,7 @@ class CreateFormulasTable extends Migration
             $table->increments('id');
             $table->string('formulaCode')->comment('Mã công thức')->nullable();
             $table->decimal('unitPrice', 18, 0)->default(0)->comment('Đơn giá');
-            $table->string('unit')->comment('Đơn vị tính');
+            $table->integer('unit_id')->comment('Mã Đơn vị tính');
             $table->integer('customer_id')->unsigned()->comment('Mã khách hàng');
             $table->text('extendData')->nullable()->comment('Dữ liệu mở rộng');
 

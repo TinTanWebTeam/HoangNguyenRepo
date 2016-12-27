@@ -34,7 +34,7 @@ class PostageManagementController extends Controller
         $formulaCode  = null;
         $cashDelivery = null;
         $unitPrice    = null;
-        $unit         = null;
+        $unit_id      = null;
         $createdDate  = null;
         $applyDate    = null;
         $note         = null;
@@ -54,7 +54,7 @@ class PostageManagementController extends Controller
             $formulaCode  = $request->input('_postage')['formulaCode'];
             $cashDelivery = $request->input('_postage')['cashDelivery'];
             $unitPrice    = $request->input('_postage')['unitPrice'];
-            $unit         = $request->input('_postage')['unit'];
+            $unit_id      = $request->input('_postage')['unit_id'];
             $createdDate  = $request->input('_postage')['createdDate'];
             $createdDate  = Carbon::createFromFormat('d-m-Y', $createdDate);
             $applyDate    = $request->input('_postage')['applyDate'];
@@ -78,7 +78,7 @@ class PostageManagementController extends Controller
                     $postageNew->formulaCode  = $formulaCode;
                     $postageNew->cashDelivery = $cashDelivery;
                     $postageNew->unitPrice    = $unitPrice;
-                    $postageNew->unit         = $unit;
+                    $postageNew->unit_id      = $unit_id;
                     $postageNew->createdDate  = $createdDate->toDateString();
                     $postageNew->applyDate    = $applyDate->toDateString();
                     $postageNew->note         = $note;
@@ -108,14 +108,10 @@ class PostageManagementController extends Controller
                                 $postageDetailNew->from       = $detail['from'];
                                 $postageDetailNew->to         = $detail['to'];
                                 break;
-                            case 'O':
-                                $postageDetailNew->from       = $detail['from'];
-                                $postageDetailNew->to         = $detail['to'];
-                                $postageNew->status = 2;
-                                if (!$postageNew->update()) {
-                                    DB::rollBack();
-                                    return response()->json(['msg' => 'Update status for Postage failed'], 404);
-                                };
+                            case 'P':
+                                $postageDetailNew->fromPlace       = $detail['fromPlace'];
+                                $postageDetailNew->toPlace         = $detail['toPlace'];
+                                // $postageNew->update(['status' => 2]);
                                 break;
                             
                             default:
@@ -149,7 +145,7 @@ class PostageManagementController extends Controller
                         $postageNew->formulaCode  = $formulaCode;
                         $postageNew->cashDelivery = $cashDelivery;
                         $postageNew->unitPrice    = $unitPrice;
-                        $postageNew->unit         = $unit;
+                        $postageNew->unit_id      = $unit_id;
                         $postageNew->createdDate  = $createdDate->toDateString();
                         $postageNew->applyDate    = $applyDate->toDateString();
                         $postageNew->note         = $note;
@@ -188,10 +184,10 @@ class PostageManagementController extends Controller
                                     $postageDetailNew->from       = $detail['from'];
                                     $postageDetailNew->to         = $detail['to'];
                                     break;
-                                case 'O':
-                                    $postageDetailNew->from       = $detail['from'];
-                                    $postageDetailNew->to         = $detail['to'];
-                                    $postageNew->update(['status' => 2]);
+                                case 'P':
+                                    $postageDetailNew->fromPlace       = $detail['from'];
+                                    $postageDetailNew->toPlace         = $detail['to'];
+                                    // $postageNew->update(['status' => 2]);
                                     break;
                                 
                                 default:
