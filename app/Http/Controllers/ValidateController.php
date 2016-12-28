@@ -267,13 +267,13 @@ class ValidateController extends Controller
         $rules = [
             'customer_id'  => 'required',
             'unitPrice'    => 'required',
-            'unit'         => 'required',
+            'unit_id'      => 'required',
             'cashDelivery' => 'required'
         ];
         $messages = [
             'customer_id.required'  => 'Trường khách hàng bắt buộc nhập',
             'unitPrice.required'    => 'Trường đơn giá bắt buộc nhập',
-            'unit.required'         => 'Trường đơn vị tính bắt buộc nhập',
+            'unit_id.required'      => 'Trường đơn vị tính bắt buộc nhập',
             'cashDelivery.required' => 'Trường tiền giao xe bắt buộc nhập'
         ];
         return Validator::make($data, $rules, $messages);

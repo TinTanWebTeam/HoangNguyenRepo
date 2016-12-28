@@ -26,6 +26,7 @@ class CreateTransportsTable extends Migration
             $table->string('voucherQuantumProduct')->nullable()->comment('Số lượng hàng trên chứng từ');
             $table->string('receiver')->nullable()->comment('Người nhận');
             $table->dateTime('receiveDate')->nullable()->comment('Ngày nhận');
+            $table->dateTime('transportDate')->nullable()->comment('Ngày vận chuyển');
             $table->string('receivePlace')->nullable()->comment('Nơi nhận');
             $table->string('deliveryPlace')->nullable()->comment('Nơi giao');
             $table->integer('createdBy')->unsigned();

@@ -54,7 +54,6 @@
                             <tr class="active">
                                 <th>Mã</th>
                                 <th>Khách hàng</th>
-                                <th>Mã công thức</th>
                                 <th>Đơn giá</th>
                                 <th>Đơn vị tính</th>
                                 <th>Giao xe</th>
@@ -96,7 +95,7 @@
                                         <fieldset>
                                             <legend>Công thức:</legend>
                                             <div class="row" style="padding: 0 10px">
-                                                <div class="col-md-12">
+                                                <div class="col-md-8">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="customer_id" class="red"><b>Khách hàng</b></label>
                                                         <input type="text" class="form-control" id="customer_id"
@@ -105,17 +104,7 @@
                                                                data-customerId="">
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row" style="padding: 0 10px">
-                                                <div class="col-md-6">
-                                                    <div class="form-group form-md-line-input">
-                                                        <label for="formulaCode"><b>Mã công thức</b></label>
-                                                        <input type="text" class="form-control" id="formulaCode"
-                                                               name="formulaCode">
-                                                        <input type="hidden" id="formula_id">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="cashDelivery" class="red"><b>Phí giao xe</b></label>
                                                         <input type="text" class="form-control currency"
@@ -263,14 +252,14 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="from" class="red hide"><b>Từ</b></label>
-                                                        <input type="text" class="form-control hide" id="from" name="from">
+                                                        <input type="number" class="form-control hide" id="from" name="from">
                                                         <input type="text" class="form-control hide" id="fromPlace" name="fromPlace">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="to" class="red hide"><b>Đến</b></label>
-                                                        <input type="text" class="form-control hide" name="to" id="to">
+                                                        <input type="number" class="form-control hide" name="to" id="to">
                                                         <input type="text" class="form-control hide" name="toPlace" id="toPlace">
                                                     </div>
                                                 </div>
@@ -403,7 +392,7 @@
                         <span class="sr-only">Close</span>
                     </button>
                     <h4 class="modal-title" id="myModalLabel">
-                        Them moi don vi tinh
+                        Thêm mới đơn vị tính
                     </h4>
                 </div>
 
@@ -411,7 +400,7 @@
                 <div class="modal-body">
                     <form role="form">
                         <div class="form-group">
-                            <label for="apply-date">Ten</label>
+                            <label for="unit_name">Tên</label>
                             <input type="text" class="form-control" id="unit_name" name="unit_name"/>
                         </div>
                     </form>
@@ -485,18 +474,17 @@
                 retype: function () {
                     $("input[id=customer_id]").val('');
                     $("#customer_id").prop('data-customerId', '');
-                    $("input[id=formulaCode]").val('');
                     $("input[id=cashDelivery]").val(0);
                     $("input[id=unitPrice]").val(0);
                     $("input[id=unit]").val('');
                     $("input[id=note]").val('');
                 },
                 retypeDetail: function () {
-                    if($("input[name=rule]:checked").val() != 'O')
-                        $("input[id=name]").val('');
                     $("input[id=value]").val('');
                     $("input[id=from]").val('');
                     $("input[id=to]").val('');
+                    $("input[id=fromPlace]").val('');
+                    $("input[id=toPlace]").val('');
                 },
 
                 renderEventClickTableModal: function () {
@@ -557,8 +545,9 @@
                         theme: "dark"
                     });
                 },
-                renderEventChangeRadio: function () {
+                renderEventChange: function () {
                     $('input[type=radio][name=rule]').change(function () {
+                        postageView.retypeDetail();
                         if($("select[id=condition] option:selected").text() == 'Khác'){
                             postageView.retypeDetail();
                             switch (this.value) {
@@ -601,6 +590,7 @@
                     });
 
                     $('select[id=condition]').change(function () {
+                        postageView.retypeDetail();
                         var option = $(this).find('option:selected');
                         var name = option.text();
                         var flag = true;
@@ -696,7 +686,7 @@
                     postageView.renderEventFocusOut();
                     postageView.renderDateTimePicker();
                     postageView.renderScrollbar();
-                    postageView.renderEventChangeRadio();
+                    postageView.renderEventChange();
 
                     formatCurrency(".currency");
                     setEventFormatCurrency(".currency");
@@ -757,13 +747,15 @@
                                 visible: false
                             },
                             {data: 'customers_fullName'},
-                            {data: 'formulaCode'},
                             {
                                 data: 'unitPrice',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
-                            {data: 'unit'},
-                            {data: 'cashDelivery'},
+                            {data: 'unit_name'},
+                            {
+                                data: 'cashDelivery',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
                             {
                                 data: 'createdDate',
                                 render: function (data, type, full, meta) {
@@ -885,7 +877,6 @@
                 fillCurrentObjectToForm: function () {
                     $("input[id=customer_id]").val(postageView.current["customers_fullName"]);
                     $("#customer_id").attr('data-customerId', postageView.current["customer_id"]);
-                    $("input[id=formulaCode]").val(postageView.current["formulaCode"]);
                     $("input[id=unitPrice]").val(postageView.current["unitPrice"]);
                     $("select[id=unit_id]").val(postageView.current["unit_id"]);
                     $("textarea[id=note]").val(postageView.current["note"]);
@@ -900,7 +891,6 @@
                     if (postageView.action == 'add') {
                         postageView.current = {
                             customer_id: $("#customer_id").attr("data-customerId"),
-                            formulaCode: $("input[id=formulaCode]").val(),
                             cashDelivery: asNumberFromCurrency("#cashDelivery"),
                             unitPrice: asNumberFromCurrency('#unitPrice'),
                             unit_id: $("select[id=unit_id]").val(),
@@ -911,7 +901,6 @@
                         };
                     } else if (postageView.action == 'update') {
                         postageView.current.customer_id = $("#customer_id").attr("data-customerId");
-                        postageView.current.formulaCode = $("input[id=formulaCode]").val();
                         postageView.current.cashDelivery = asNumberFromCurrency("#cashDelivery");
                         postageView.current.unitPrice = asNumberFromCurrency('#unitPrice');
                         postageView.current.unit_id = $("select[id=unit_id]").val();
@@ -922,9 +911,11 @@
                     }
                 },
                 fillFormDataToCurrentObjectDetail: function () {
+                    var option = $("select[id=condition]").find('option:selected');
+                    var rule = option.attr('my-rule');
                     postageView.currentDetail = {
                         formula_id: $("#formula_id").val(),
-                        rule: $("input[name=rule]:checked").val(),
+                        rule: rule,
                         name: $("#name").val(),
                         value: $("#value").val(),
                         from: $("#from").val(),
@@ -961,6 +952,8 @@
 
                     $("input[id=receivePlace]").prop('readonly', true);
                     $("input[id=deliveryPlace]").prop('readonly', true);
+
+                    formatCurrency(".currency");
                 },
                 addPostage: function () {
                     postageView.renderDateTimePicker();
@@ -984,6 +977,8 @@
 
                     $("input[id=receivePlace]").prop('readonly', false);
                     $("input[id=deliveryPlace]").prop('readonly', false);
+
+                    formatCurrency(".currency");
                 },
                 deletePostage: function (id) {
                     postageView.action = 'delete';
@@ -1102,9 +1097,6 @@
                         }
                     }
 
-                    console.log(sendToServer);
-                    return;
-
                     $.ajax({
                         url: url + 'postage/modify',
                         type: "POST",
@@ -1190,7 +1182,6 @@
                             for (var i = 0; i < postageView.arrayDetail.length; i++) {
                                 postageView.arrayDetail[i].stt = i + 1;
                             }
-                            console.log(postageView.arrayDetail);
                             postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
                         } else {
                             $("form#frmControlDetail").find("label[class=error]").css("color", "red");

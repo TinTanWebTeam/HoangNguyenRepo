@@ -31,7 +31,6 @@ class PostageManagementController extends Controller
         }
 
         $customer_id  = null;
-        $formulaCode  = null;
         $cashDelivery = null;
         $unitPrice    = null;
         $unit_id      = null;
@@ -51,7 +50,6 @@ class PostageManagementController extends Controller
             }
 
             $customer_id  = $request->input('_postage')['customer_id'];
-            $formulaCode  = $request->input('_postage')['formulaCode'];
             $cashDelivery = $request->input('_postage')['cashDelivery'];
             $unitPrice    = $request->input('_postage')['unitPrice'];
             $unit_id      = $request->input('_postage')['unit_id'];
@@ -75,7 +73,6 @@ class PostageManagementController extends Controller
                     //Add Formula
                     $postageNew = new Formula;
                     $postageNew->customer_id  = $customer_id;
-                    $postageNew->formulaCode  = $formulaCode;
                     $postageNew->cashDelivery = $cashDelivery;
                     $postageNew->unitPrice    = $unitPrice;
                     $postageNew->unit_id      = $unit_id;
@@ -142,7 +139,6 @@ class PostageManagementController extends Controller
                         //Add Postage
                         $postageNew = new Formula;
                         $postageNew->customer_id  = $customer_id;
-                        $postageNew->formulaCode  = $formulaCode;
                         $postageNew->cashDelivery = $cashDelivery;
                         $postageNew->unitPrice    = $unitPrice;
                         $postageNew->unit_id      = $unit_id;
@@ -344,7 +340,8 @@ class PostageManagementController extends Controller
     {
         $formulas = \DB::table('formulas')
             ->leftJoin('customers', 'customers.id', '=', 'formulas.customer_id')
-            ->select('formulas.*', 'customers.fullName as customers_fullName')
+            ->leftJoin('units', 'units.id', '=', 'formulas.unit_id')
+            ->select('formulas.*', 'customers.fullName as customers_fullName', 'units.name as unit_name')
             ->get();
 
         $formulaDetails = \DB::table('formulaDetails')

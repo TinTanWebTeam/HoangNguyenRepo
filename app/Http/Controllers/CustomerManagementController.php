@@ -1197,16 +1197,19 @@ class CustomerManagementController extends Controller
         if (array_key_exists('_formulaCode', $request->all())) {
             $formulaCode = $request->input('_formulaCode');
             $customerId = $request->input('_customerId');
-            $formula_id = $this->findFormulaByFormulaCode($formulaCode, $customerId) ?? 0;
+            $formula_id = ($this->findFormulaByFormulaCode($formulaCode, $customerId) == null) ? 0 : $this->findFormulaByFormulaCode($formulaCode, $customerId);
         } else {
             $formulaDetail = $request->input('_formulaDetail');
-            $formula_id = $this->findFormula($formulaDetail) ?? 0;
+            $formula_id = ($this->findFormula($formulaDetail) == null) ? 0 : $this->findFormula($formulaDetail);
         }
 
         if($formula_id == 0){
             return response()->json(['msg' => 'Công thức không tồn tại!'], 203);
         }
-        $formula = Formula::findOrFail($formula_id);
+        $formula = DB::table('formulas')
+            ->where('formulas.id', $formula_id)
+            ->leftJoin('units', 'units.id', '=', 'formulas.unit_id')
+            ->select('formulas.*', 'units.name as unit_name')->first();
         $response = [
             'formula' => $formula,
             'msg' => 'success'
