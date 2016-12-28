@@ -30,7 +30,7 @@ class FormulaTableSeeder extends Seeder
         \App\Formula::create([
             'formulaCode'  => 'TRSCN304',
             'unitPrice'    => 234300,
-            'unit_id'      => 1,
+            'unit_id'      => 2,
             'customer_id'  => 1,
             'extendData'   => null,
             'createdDate'  => date('Y-m-d'),
@@ -45,7 +45,7 @@ class FormulaTableSeeder extends Seeder
         \App\Formula::create([
             'formulaCode'  => 'TRSCN305',
             'unitPrice'    => 814700,
-            'unit_id'      => 1,
+            'unit_id'      => 3,
             'customer_id'  => 1,
             'extendData'   => null,
             'createdDate'  => date('Y-m-d'),
@@ -62,7 +62,7 @@ class FormulaTableSeeder extends Seeder
         \App\Formula::create([
             'formulaCode'  => null,
             'unitPrice'    => 1513,
-            'unit_id'      => 1,
+            'unit_id'      => 4,
             'customer_id'  => 2,
             'extendData'   => null,
             'createdDate'  => date('Y-m-d'),

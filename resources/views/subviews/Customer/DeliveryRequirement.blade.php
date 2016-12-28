@@ -336,23 +336,20 @@
                                     <tr class="active">
                                         <th>Mã</th>
                                         <th>STT</th>
-                                        <th>Ngày nhận</th>
+                                        <th>Khách hàng</th>
+                                        <th>Ngày vận chuyển</th>
                                         <th>Số xe</th>
                                         <th>Nơi nhận</th>
                                         <th>Nơi giao</th>
-                                        <th>Khách hàng</th>
-                                        <th id="showRevenue">Doanh thu</th>
-                                        <th>Giao xe</th>
-                                        <th>Nhận</th>
+                                        <th>Lượng hàng</th>
+                                        <th>Đơn giá</th>
                                         <th>Bốc xếp</th>
                                         <th>Neo đêm</th>
                                         <th>Công an</th>
+                                        <th>Phí tăng bo</th>
+                                        <th>Thêm điểm</th>
+                                        <th id="showRevenue">Doanh thu</th>
                                         <th id="showProfit">Lợi nhuận</th>
-                                        <th>Người nhận</th>
-                                        <th>Người tạo</th>
-                                        <th>Người sửa</th>
-                                        <th>Tên hàng</th>
-                                        <th>Trạng thái</th>
                                         <th>Sửa/ Xóa</th>
                                     </tr>
                                     </thead>
@@ -1173,8 +1170,9 @@
                                 visible: false
                             },
                             {data: 'stt'},
+                            {data: 'customers_fullName'},
                             {
-                                data: 'receiveDate',
+                                data: 'transportDate',
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("DD/MM/YYYY");
                                 }
@@ -1182,23 +1180,9 @@
                             {data: 'fullNumber'},
                             {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
-                            {data: 'customers_fullName'},
+                            {data: 'quantumProduct'},
                             {
-                                data: 'cashRevenue',
-                                render: function (data, type, row, meta) {
-                                    if (transportView.isAdmin == 1)
-                                        return $.fn.dataTable.render.number(",", ".", 0).display(data);
-                                    else
-                                        return "";
-                                },
-                                visible: (transportView.isAdmin == 1) ? true : false
-                            },
-                            {
-                                data: 'cashDelivery',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
-                            },
-                            {
-                                data: 'cashReceive',
+                                data: 'formula_unitPrice',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
@@ -1214,7 +1198,15 @@
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cashProfit',
+                                data: 'phiTangBo',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'addScore',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'cashRevenue',
                                 render: function (data, type, row, meta) {
                                     if (transportView.isAdmin == 1)
                                         return $.fn.dataTable.render.number(",", ".", 0).display(data);
@@ -1223,42 +1215,15 @@
                                 },
                                 visible: (transportView.isAdmin == 1) ? true : false
                             },
-                            {data: 'receiver'},
-                            {data: 'users_createdBy'},
-                            {data: 'users_updatedBy'},
-                            {data: 'products_name'},
                             {
-                                render: function (data, type, full, meta) {
-                                    var color_customer = '';
-                                    var color_garage = '';
-                                    switch (full.status_customer) {
-                                        case 5:
-                                            color_customer = 'text-danger';
-                                            break;
-                                        case 6:
-                                            color_customer = 'text-primary';
-                                            break;
-                                        case 7:
-                                            color_customer = 'text-success';
-                                            break;
-                                    }
-                                    switch (full.status_garage) {
-                                        case 8:
-                                            color_garage = 'text-danger';
-                                            break;
-                                        case 9:
-                                            color_garage = 'text-primary';
-                                            break;
-                                        case 10:
-                                            color_garage = 'text-success';
-                                            break;
-                                    }
-                                    var tr = "";
-                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-user ' + color_customer + '" aria-hidden="true"></i>';
-                                    tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-truck ' + color_garage + '" aria-hidden="true"></i>';
-                                    tr += '<p>' + full.status_transport_ + '</p>';
-                                    return tr;
-                                }, visible:false
+                                data: 'cashProfit',
+                                render: function (data, type, row, meta) {
+                                    if (transportView.isAdmin == 1)
+                                        return $.fn.dataTable.render.number(",", ".", 0).display(data);
+                                    else
+                                        return "";
+                                },
+                                visible: (transportView.isAdmin == 1) ? true : false
                             },
                             {
                                 render: function (data, type, full, meta) {
@@ -1274,25 +1239,22 @@
                             }
                         ],
                         columnDefs: [
-                            {responsivePriority: 1, targets: 1}, // STT
-                            {responsivePriority: 1, targets: 2}, // Ngay nhan
-                            {responsivePriority: 1, targets: 3}, // So xe
+                            {responsivePriority: 1, targets: 0}, // STT
+                            {responsivePriority: 1, targets: 1}, // KH
+                            {responsivePriority: 1, targets: 2}, // Ngay van chuyen
+                            {responsivePriority: 1, targets: 3}, // Xe
                             {responsivePriority: 1, targets: 4}, // Noi nhan
                             {responsivePriority: 1, targets: 5}, // Noi giao
-                            {responsivePriority: 1, targets: 6}, // Khach hang
-                            {responsivePriority: 1, targets: 7}, // Doanh thu
-                            {responsivePriority: 1, targets: 8}, // Giao xe
-                            {responsivePriority: 1, targets: 9}, // Nhan
-                            {responsivePriority: 10, targets: 10}, // Boc xep
-                            {responsivePriority: 10, targets: 11}, // Neo dem
-                            {responsivePriority: 10, targets: 12}, // Cong an
-                            {responsivePriority: 1, targets: 13}, // Loi nhuan
-                            {responsivePriority: 10, targets: 14}, // Nguoi nhan
-                            {responsivePriority: 10, targets: 15}, // Nguoi tao
-                            {responsivePriority: 10, targets: 16}, // Nguoi sua
-                            {responsivePriority: 10, targets: 17}, // Ten hang
-                            {responsivePriority: 1, targets: 18}, // Trang thai
-                            {responsivePriority: 1, targets: 19} // Sua/ xoa
+                            {responsivePriority: 1, targets: 6}, // Luong hang
+                            {responsivePriority: 1, targets: 7}, // Don gia
+                            {responsivePriority: 10, targets: 8}, // Boc xep
+                            {responsivePriority: 10, targets: 9}, // Neo dem
+                            {responsivePriority: 10, targets: 10}, // Cong an
+                            {responsivePriority: 10, targets: 11}, // Phi tang bo
+                            {responsivePriority: 10, targets: 12}, // Them diem
+                            {responsivePriority: 1, targets: 13}, // Doanh thu
+                            {responsivePriority: 1, targets: 14}, // Loi nhuan
+                            {responsivePriority: 1, targets: 15}, // sua xoa
                         ],
                         responsive: true,
                         //  fixedHeader: {
