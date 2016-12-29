@@ -71,7 +71,7 @@ class PostageManagementController extends Controller
                     $postageOld = Formula::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
 
                     //Add Formula
-                    $postageNew = new Formula;
+                    $postageNew               = new Formula;
                     $postageNew->customer_id  = $customer_id;
                     $postageNew->cashDelivery = $cashDelivery;
                     $postageNew->unitPrice    = $unitPrice;
@@ -92,13 +92,14 @@ class PostageManagementController extends Controller
 
                     //Add FormulaDetail
                     foreach($arrayDetail as $detail){
-                        $postageDetailNew = new FormulaDetail;
+                        $postageDetailNew             = new FormulaDetail;
                         $postageDetailNew->formula_id = $postageNew->id;
                         $postageDetailNew->rule       = $detail['rule'];
                         $postageDetailNew->name       = $detail['name'];
 
                         switch ($detail['rule']) {
                             case 'S':
+                            case 'PC':
                                 $postageDetailNew->value      = $detail['value'];
                                 break;
                             case 'R':
@@ -108,7 +109,11 @@ class PostageManagementController extends Controller
                             case 'P':
                                 $postageDetailNew->fromPlace       = $detail['fromPlace'];
                                 $postageDetailNew->toPlace         = $detail['toPlace'];
-                                // $postageNew->update(['status' => 2]);
+                                break;
+                            case 'O':
+                                $postageDetailNew->from       = $detail['from'];
+                                $postageDetailNew->to         = $detail['to'];
+                                $postageNew->update(['status' => 2]);
                                 break;
                             
                             default:
@@ -137,7 +142,7 @@ class PostageManagementController extends Controller
                         $postageOld = Formula::where('customer_id', $customer_id)->orderBy('applyDate', 'desc')->first();
 
                         //Add Postage
-                        $postageNew = new Formula;
+                        $postageNew               = new Formula;
                         $postageNew->customer_id  = $customer_id;
                         $postageNew->cashDelivery = $cashDelivery;
                         $postageNew->unitPrice    = $unitPrice;
@@ -167,13 +172,14 @@ class PostageManagementController extends Controller
 
                         //Add FormulaDetail
                         foreach($arrayDetail as $detail){
-                            $postageDetailNew = new FormulaDetail;
+                            $postageDetailNew             = new FormulaDetail;
                             $postageDetailNew->formula_id = $postageNew->id;
                             $postageDetailNew->rule       = $detail['rule'];
                             $postageDetailNew->name       = $detail['name'];
 
                             switch ($detail['rule']) {
                                 case 'S':
+                                case 'PC':
                                     $postageDetailNew->value      = $detail['value'];
                                     break;
                                 case 'R':
@@ -183,7 +189,11 @@ class PostageManagementController extends Controller
                                 case 'P':
                                     $postageDetailNew->fromPlace       = $detail['from'];
                                     $postageDetailNew->toPlace         = $detail['to'];
-                                    // $postageNew->update(['status' => 2]);
+                                    break;
+                                case 'O':
+                                    $postageDetailNew->from       = $detail['from'];
+                                    $postageDetailNew->to         = $detail['to'];
+                                    $postageNew->update(['status' => 2]);
                                     break;
                                 
                                 default:

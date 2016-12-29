@@ -123,17 +123,19 @@
                                         <th>Mã</th>
                                         <th>STT</th>
                                         <th>Khách hàng</th>
-                                        <th>Mã hóa đơn</th>
+                                        <th>Ngày vận chuyển</th>
                                         <th>Số xe</th>
                                         <th>Nơi nhận</th>
                                         <th>Nơi giao</th>
-                                        <th>Số chứng từ</th>
+                                        <th>Lượng hàng</th>
+                                        <th>Đơn giá</th>
+                                        <th>Bốc xếp</th>
+                                        <th>Neo đêm</th>
+                                        <th>Công an</th>
+                                        <th>Phí tăng bo</th>
+                                        <th>Thêm điểm</th>
                                         <th>Doanh thu</th>
-                                        <th>Nhận</th>
-                                        <th>Người nhận</th>
-                                        <th>Người tạo</th>
-                                        <th>Người sửa</th>
-                                        <th>Ngày nhận</th>
+                                        <th>Lợi nhuận</th>
                                         <th>Thanh toán</th>
                                     </tr>
                                     </thead>
@@ -144,7 +146,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <hr>
                     <p class="lead text-primary text-left"><strong>Hóa đơn khách hàng</strong></p>
@@ -544,6 +545,8 @@
                 tagsCustomerNameInvoice: [], //for search
                 statusPrePaid: 0,
                 statusInvoice: 0,
+                firstDay: null,
+                lastDay: null,
 
                 showControl: function (flag) {
                     if (flag == 0) {
@@ -734,7 +737,6 @@
                 },
 
                 fillDataToDatatable: function (data) {
-//                    removeDataTable();
                     if(debtCustomerView.table != null)
                         debtCustomerView.table.destroy();
 
@@ -783,40 +785,46 @@
                             {data: 'stt'},
                             {data: 'customers_fullName'},
                             {
-                                data: 'invoiceCode',
+                                data: 'transportDate',
                                 render: function (data, type, full, meta) {
-                                    var arr = data.split(",");
-                                    var tr = "";
-                                    for(var i in arr){
-                                        tr += arr[i] + "<br>";
-                                    }
-                                    return tr;
+                                    return moment(data).format("DD/MM/YYYY");
                                 }
                             },
                             {data: 'fullNumber'},
                             {data: 'receivePlace'},
                             {data: 'deliveryPlace'},
-                            {data: 'voucherNumber'},
+                            {data: 'quantumProduct'},
+                            {
+                                data: 'formula_unitPrice',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'carrying',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'parking',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'fine',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'phiTangBo',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'addScore',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
                             {
                                 data: 'cashRevenue',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cashReceive',
+                                data: 'cashProfit',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
-                            },
-//                            {
-//                                data: 'debt',
-//                                render: $.fn.dataTable.render.number(",", ".", 0)
-//                            },
-                            {data: 'receiver'},
-                            {data: 'users_createdBy'},
-                            {data: 'users_updatedBy'},
-                            {
-                                data: 'receiveDate',
-                                render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY");
-                                }
                             },
                             {
                                 render: function (data, type, full, meta) {
@@ -848,25 +856,24 @@
                                 }
                             }
                         ],
-//                        fixedHeader: {
-//                            header: true
-//                        },
                         responsive: true,
                         columnDefs: [
-                            {responsivePriority: 1, targets: 1},
-                            {responsivePriority: 2, targets: 2},
-                            {responsivePriority: 3, targets: 3},
-                            {responsivePriority: 4, targets: 4},
-                            {responsivePriority: 5, targets: 5},
-                            {responsivePriority: 6, targets: 6},
-                            {responsivePriority: 7, targets: 7},
-                            {responsivePriority: 8, targets: 8},
-                            {responsivePriority: 9, targets: 9},
-                            {responsivePriority: 10, targets: 10},
-                            {responsivePriority: 14, targets: 11}, //Nguoi sua
-                            {responsivePriority: 13, targets: 12}, //Nguoi tao
-                            {responsivePriority: 11, targets: 13},
-                            {responsivePriority: 12, targets: 14}
+                            {responsivePriority: 1, targets: 0}, // STT
+                            {responsivePriority: 1, targets: 1}, // KH
+                            {responsivePriority: 1, targets: 2}, // Ngay van chuyen
+                            {responsivePriority: 1, targets: 3}, // Xe
+                            {responsivePriority: 1, targets: 4}, // Noi nhan
+                            {responsivePriority: 1, targets: 5}, // Noi giao
+                            {responsivePriority: 1, targets: 6}, // Luong hang
+                            {responsivePriority: 1, targets: 7}, // Don gia
+                            {responsivePriority: 10, targets: 8}, // Boc xep
+                            {responsivePriority: 10, targets: 9}, // Neo dem
+                            {responsivePriority: 10, targets: 10}, // Cong an
+                            {responsivePriority: 10, targets: 11}, // Phi tang bo
+                            {responsivePriority: 10, targets: 12}, // Them diem
+                            {responsivePriority: 1, targets: 13}, // Doanh thu
+                            {responsivePriority: 1, targets: 14}, // Loi nhuan
+                            {responsivePriority: 1, targets: 15}, // sua xoa
                         ],
                         order: [[1, "asc"]],
                         dom: 'T<"clear">Bfrtip',
@@ -917,8 +924,6 @@
                         ]
                     });
                     $("#table-data").css("width", "auto");
-
-//                    pushDataTable(debtCustomerView.table);
                 },
                 fillDataToDatatableInvoiceCustomer: function (data) {
                     if(debtCustomerView.tableInvoiceCustomer != null)
@@ -1097,10 +1102,13 @@
                             debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
                             debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
                             debtCustomerView.invoiceCode = data['invoiceCode'];
+                            debtCustomerView.firstDay = data['firstDay'];
+                            debtCustomerView.lastDay = data['lastDay'];
 
                             debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
 
+                            debtCustomerView.searchCurrentMonth();
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
                         } else {
@@ -1187,8 +1195,8 @@
                         debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
                         debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
                         if(debtCustomerView.statusPrePaid === 0) {
-//                            $("input[id=statusPrePaid]").attr('disabled', false);
-//                            $("input[id=statusPrePaid]").prop('checked', false);
+                        //    $("input[id=statusPrePaid]").attr('disabled', false);
+                        //    $("input[id=statusPrePaid]").prop('checked', false);
 
                             $("input[id=statusPrePaid]").attr('disabled', true);
                             $("input[id=statusPrePaid]").prop('checked', true);
@@ -1797,7 +1805,7 @@
                     }
                 },
                 searchTransport: function (money) {
-                    found = debtCustomerView.searchExportInvoice(debtCustomerView.dataTransport);
+                    var found = debtCustomerView.searchExportInvoice(debtCustomerView.dataTransport);
 
                     if (typeof money === 'undefined')
                         found = debtCustomerView.searchStatusMoney(found);
@@ -1816,7 +1824,7 @@
                     debtCustomerView.renderAutoCompleteSearch();
                 },
                 searchInvoice: function () {
-                    found = debtCustomerView.searchStatusMoneyInvoice(debtCustomerView.dataInvoiceCustomer);
+                    var found = debtCustomerView.searchStatusMoneyInvoice(debtCustomerView.dataInvoiceCustomer);
 
                     found = debtCustomerView.searchCustomerInvoice(found);
                     found = debtCustomerView.searchDateInvoice(found);
@@ -1842,7 +1850,7 @@
                         return data;
 
                     var found = _.filter(data, function (o) {
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+                        var dateFind = moment(o.transportDate, "YYYY-MM-DD H:m:s");
                         return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
                     });
                     return found;
@@ -2101,7 +2109,12 @@
                     $("input[id=paidAmt]").val(paidAmt);
                     $("input[id=debtInvoice]").val(debtInvoice);
                     formatCurrency(".currency");
-                }
+                },
+
+                searchCurrentMonth: function() {
+                    $("#dateSearchTransport").find(".start").datepicker('update', debtCustomerView.firstDay);
+                    $("#dateSearchTransport").find(".end").datepicker('update', debtCustomerView.lastDay);
+                },
             };
             debtCustomerView.loadData();
         } else {

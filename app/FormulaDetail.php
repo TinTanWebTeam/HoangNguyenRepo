@@ -28,6 +28,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\FormulaDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\FormulaDetail whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $fromPlace Từ
+ * @property string $toPlace Đến
+ * @method static \Illuminate\Database\Query\Builder|\App\FormulaDetail whereFromPlace($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\FormulaDetail whereToPlace($value)
  */
 class FormulaDetail extends Model
 {

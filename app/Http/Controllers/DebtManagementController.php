@@ -32,6 +32,12 @@ class DebtManagementController extends Controller
 
     public function DataDebtCustomer()
     {
+        $firstDayUTS = mktime (0, 0, 0, date("m"), 1, date("Y"));
+        $lastDayUTS = mktime (0, 0, 0, date("m"), date('t'), date("Y"));
+
+        $firstDay = date("Y-m-d", $firstDayUTS);
+        $lastDay = date("Y-m-d", $lastDayUTS);
+
         $transports = \DB::table('transports')
             ->select('transports.*',
                 'products.name as products_name',
@@ -44,7 +50,8 @@ class DebtManagementController extends Controller
                 'statuses_cust.status as status_customer_',
                 'statuses_gar.status as status_garage_',
                 'users_createdBy.fullName as users_createdBy',
-                'users_updatedBy.fullName as users_updatedBy'
+                'users_updatedBy.fullName as users_updatedBy',
+                'formulas.unitPrice as formula_unitPrice'
             )
             ->leftJoin('products', 'products.id', '=', 'transports.product_id')
             ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
@@ -57,7 +64,9 @@ class DebtManagementController extends Controller
             ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
             ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
+            ->leftJoin('formulas', 'formulas.id', '=', 'transports.formula_id')
             ->where('transports.active', 1)
+            // ->whereBetween('transportDate', array($firstDay, $lastDay))
             ->orderBy('transports.receiveDate', 'desc')
             ->get();
 
@@ -89,13 +98,15 @@ class DebtManagementController extends Controller
         $transportInvoices = DB::table('transportInvoices')->get();
 
         $response = [
-            'msg' => 'Get list all Transport',
-            'transports' => $transports,
-            'invoiceCustomers' => $invoiceCustomers,
+            'msg'                    => 'Get list all Transport',
+            'transports'             => $transports,
+            'invoiceCustomers'       => $invoiceCustomers,
             'invoiceCustomerDetails' => $invoiceCustomerDetails,
-            'printHistories' => $printHistories,
-            'invoiceCode' => $invoiceCode,
-            'transportInvoices' => $transportInvoices
+            'printHistories'         => $printHistories,
+            'invoiceCode'            => $invoiceCode,
+            'transportInvoices'      => $transportInvoices,
+            'firstDay'               => date("d-m-Y", $firstDayUTS),
+            'lastDay'                => date("d-m-Y", $lastDayUTS)
         ];
         return $response;
     }

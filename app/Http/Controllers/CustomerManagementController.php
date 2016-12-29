@@ -732,6 +732,7 @@ class CustomerManagementController extends Controller
         $vehicle_name = null;
         $customer_name = null;
         $product_name = null;
+        $productCode = null;
 
         $array_voucherTransport = [];
 
@@ -774,6 +775,7 @@ class CustomerManagementController extends Controller
             $formula_id = $request->input('_transport')['formula_id'];
             $costNote = $request->input('_transport')['costNote'];
             $transportType = $request->input('_transport')['transportType'];
+            $productCode = $request->input('_transport')['productCode'];
             if ($transportType == 1) {
                 $vehicle_name = $request->input('_transport')['vehicle_name'];
                 $customer_name = $request->input('_transport')['customer_name'];
@@ -824,6 +826,8 @@ class CustomerManagementController extends Controller
                     $transportNew->costNote = $costNote;
                     $transportNew->vehicle_id = $vehicle_id;
                     $transportNew->formula_id = $formula_id;
+                    $transportNew->productCode = $productCode;
+
                     if ($transportType == 1) {
                         $transportNew->vehicle_name = $vehicle_name;
                         $transportNew->customer_name = $customer_name;
@@ -853,9 +857,23 @@ class CustomerManagementController extends Controller
                     foreach($formulaDetail as $item){
                         $transportFormulaDetail = new TransportFormulaDetail;
                         $transportFormulaDetail->name = $item['name'];
-                        $transportFormulaDetail->value = $item['value'];
                         $transportFormulaDetail->rule = $item['rule'];
                         $transportFormulaDetail->transport_id = $transportNew->id;
+
+                        switch ($item['rule']) {
+                            case 'S':
+                            case 'R':
+                            case 'O':
+                            case 'PC':
+                                $transportFormulaDetail->value = $item['value'];
+                                break;
+                            case 'P':
+                                $transportFormulaDetail->fromPlace = $item['fromPlace'];
+                                $transportFormulaDetail->toPlace = $item['toPlace'];
+                                break;
+                            default: break;
+                        }
+
                         if (!$transportFormulaDetail->save()) {
                             DB::rollBack();
                             return response()->json(['msg' => 'Create TransportFormulaDetail failed'], 404);
@@ -905,6 +923,7 @@ class CustomerManagementController extends Controller
                     $transportUpdate->costNote = $costNote;
                     $transportUpdate->vehicle_id = $vehicle_id;
                     $transportUpdate->formula_id = $formula_id;
+                    $transportUpdate->productCode = $productCode;
 
                     if ($transportType == 1) {
                         $transportUpdate->vehicle_name = $vehicle_name;
@@ -942,6 +961,42 @@ class CustomerManagementController extends Controller
                             DB::rollBack();
 
                             return response()->json(['msg' => 'Create VoucherTransport failed'], 404);
+                        }
+                    }
+
+                    //Delete TransportFormulaDetail
+                    $ids_to_delete = TransportFormulaDetail::where('transport_id', $request->input('_transport')['id'])->pluck('id')->toArray();
+                    if (count($ids_to_delete) > 0) {
+                        if (DB::table('transportFormulaDetails')->whereIn('id', $ids_to_delete)->delete() <= 0) {
+                            DB::rollBack();
+                            return response()->json(['msg' => 'Delete TranposrtFormulaDetail failed'], 404);
+                        }
+                    }
+
+                    //Add TransportFormulaDetail
+                    foreach($formulaDetail as $item){
+                        $transportFormulaDetail = new TransportFormulaDetail;
+                        $transportFormulaDetail->name = $item['name'];
+                        $transportFormulaDetail->rule = $item['rule'];
+                        $transportFormulaDetail->transport_id = $transportUpdate->id;
+
+                        switch ($item['rule']) {
+                            case 'S':
+                            case 'R':
+                            case 'O':
+                            case 'PC':
+                                $transportFormulaDetail->value = $item['value'];
+                                break;
+                            case 'P':
+                                $transportFormulaDetail->fromPlace = $item['fromPlace'];
+                                $transportFormulaDetail->toPlace = $item['toPlace'];
+                                break;
+                            default: break;
+                        }
+                        
+                        if (!$transportFormulaDetail->save()) {
+                            DB::rollBack();
+                            return response()->json(['msg' => 'Create TransportFormulaDetail failed'], 404);
                         }
                     }
 
@@ -1190,7 +1245,8 @@ class CustomerManagementController extends Controller
         if (count($formulas) == 0) {
             return response()->json(['msg' => 'Khách hàng này chưa có công thức.'], 203);
         }
-        $formulaDetails = FormulaDetail::where('formula_id', $formulas->first()->id)->get();
+        $array_id = $formulas->pluck('id')->toArray();
+        $formulaDetails = FormulaDetail::whereIn('formula_id', $array_id)->get();
 
         $response = [
             'msg'            => 'success',
@@ -1231,20 +1287,35 @@ class CustomerManagementController extends Controller
         $arrayFound = [];
         foreach ($formulaDetail as $fdFind) {
             $found = null;
-            if($fdFind['rule'] == 'S'){
-                $found = FormulaDetail::where([
-                    ['name', $fdFind['name']],
-                    ['value', $fdFind['value']],
-                    ['rule', $fdFind['rule']]
-                ])->pluck('formula_id')->toArray();
-            } else {
-                // From ... to ...
-                $found = FormulaDetail::where([
-                    ['name', $fdFind['name']],
-                    ['rule', $fdFind['rule']]
-                ])->where('from', '<=',$fdFind['value'])
-                    ->where('to', '>',$fdFind['value'])
-                    ->pluck('formula_id')->toArray();
+            switch ($fdFind['rule']) {
+                case 'S':
+                case 'PC':
+                    $found = FormulaDetail::where([
+                        ['name', $fdFind['name']],
+                        ['value', $fdFind['value']],
+                        ['rule', $fdFind['rule']]
+                    ])->pluck('formula_id')->toArray();
+                    break;
+                case 'R':
+                case 'O':
+                    // From ... to ...
+                    $found = FormulaDetail::where([
+                        ['name', $fdFind['name']],
+                        ['rule', $fdFind['rule']]
+                    ])->where('from', '<=',$fdFind['value'])
+                        ->where('to', '>',$fdFind['value'])
+                        ->pluck('formula_id')->toArray();
+                    break;
+                case 'P':
+                    $found = FormulaDetail::where([
+                        ['name', $fdFind['name']],
+                        ['fromPlace', $fdFind['fromPlace']],
+                        ['toPlace', $fdFind['toPlace']],
+                        ['rule', $fdFind['rule']]
+                    ])->pluck('formula_id')->toArray();
+                    break;
+                
+                default: break;
             }
             array_push($arrayFound, $found);
         }

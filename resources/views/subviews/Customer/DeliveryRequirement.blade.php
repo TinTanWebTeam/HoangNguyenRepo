@@ -205,12 +205,18 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="weight"><b>Trọng tải</b></label>
-                                                    <input type="number" class="form-control" id="weight" name="weight">
+                                                    <label for="productCode"><b>Mã hàng</b></label>
+                                                    <input type="text" class="form-control" id="productCode" name="productCode">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row" style="padding: 0 10px">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
+                                                    <label for="weight"><b>Trọng tải</b></label>
+                                                    <input type="number" class="form-control" id="weight" name="weight">
+                                                </div>
+                                            </div>
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="receiveDate" class="red"><b>Ngày nhận</b></label>
@@ -231,6 +237,9 @@
                                                            name="voucherNumber">
                                                 </div>
                                             </div>
+                                            
+                                        </div>
+                                        <div class="row" style="padding: 0 10px">
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
@@ -238,9 +247,7 @@
                                                            name="voucherQuantumProduct">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row" style="padding: 0 10px">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="voucher_transport"><b>Số chứng từ nhận</b></label>
                                                     <div class="row">
@@ -261,14 +268,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="costNote"><b>Ghi chú chi phí</b></label>
                                                     <textarea type="text" class="form-control" id="costNote" name="costNote"
                                                               rows="3"></textarea>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="note"><b>Ghi chú đơn hàng</b></label>
                                                     <textarea type="text" class="form-control" id="note" name="note"
@@ -770,6 +777,8 @@
 
                 arrayVoucher: {},
                 current: null,
+                currentFormula: [],
+                currentFormulaDetail: [],
                 formulaDetail: [],
                 action: null,
                 idDelete: null,
@@ -806,7 +815,7 @@
                     $("#customer_id").attr("data-customerId", "");
                     $("input[id='product_name']").val('');
                     $("#product_name").attr("data-productId", "");
-                    $("input[id='quantumProduct']").val('');
+                    $("input[id='quantumProduct']").val(0);
                     $("input[id='weight']").val('');
                     $("input[id='cashRevenue']").val(0);
                     $("input[id='cashDelivery']").val(0);
@@ -831,6 +840,7 @@
                     $("input[id=unitPrice]").val(0);
                     $("input[id=unit]").val('');
                     $("input[id=formulaCode]").val('');
+                    $("input[id=productCode]").val('');
                     $("#formula-detail").html("");
 
                     transportView.arrayVoucher = {};
@@ -948,7 +958,6 @@
                             transportView.oilPrice = data['oilPrice'];
                             transportView.isAdmin = data['isAdmin'];
                             transportView.fillDataToDatatable(transportView.dataTransport);
-                            transportView.loadSelectBox(transportView.dataStatus, 'status_transport', 'status');
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1364,6 +1373,7 @@
                     $("select[id=status_transport]").val(transportView.current["status_transport"]);
                     $("textarea[id=costNote]").val(transportView.current["costNote"]);
                     $("input[id=formula_id]").val(transportView.current["formula_id"]);
+                    $("input[id=productCode]").val(transportView.current["productCode"]);
 
                     var strVoucherName = "";
                     for (var item in transportView.arrayVoucher) {
@@ -1424,7 +1434,8 @@
                             costNote: $("textarea[id=costNote]").val(),
                             voucher_transport: transportView.arrayVoucher,
                             transportType: transportView.transportType,
-                            formula_id: $("input[id=formula_id]").val()
+                            formula_id: $("input[id=formula_id]").val(),
+                            productCode: $("input[id=productCode]").val()
                         };
                     } else if (transportView.action == 'update') {
                         transportView.current.vehicle_id = $("#vehicle_id").attr("data-vehicleId");
@@ -1453,6 +1464,7 @@
                         transportView.current.voucher_transport = transportView.arrayVoucher;
                         transportView.current.transportType = transportView.transportType;
                         transportView.current.formula_id = $("input[id=formula_id]").val();
+                        transportView.current.productCode = $("input[id=productCode]").val();
                     }
                     if (transportView.transportType === 1) {
                         transportView.current.vehicle_name = $("input[id=vehicle_id]").val();
@@ -1488,7 +1500,7 @@
                         return b[o.id] = o.quantity;
                     });
                     transportView.arrayVoucher = b;
-
+                    
                     transportView.fillCurrentObjectToForm();
                     transportView.action = 'update';
                     $("#divControl").find(".titleControl").html("Cập nhật đơn hàng");
@@ -1655,7 +1667,6 @@
                                     break;
                                 case 'update':
                                     showNotification("success", "Cập nhật thành công!");
-                                    transportView.hideControl();
                                     break;
                                 case 'delete':
                                     showNotification("success", "Xóa thành công!");
@@ -1776,9 +1787,25 @@
 
                     var kt = true;
                     _.each(transportView.formulaDetail, function (value, key) {
-                        if (transportView.formulaDetail[key]['value'] == null || transportView.formulaDetail[key]['value'] == "") {
-                            kt = false;
+                        switch (transportView.formulaDetail[key]['rule']) {
+                            case 'S': 
+                            case 'R': 
+                            case 'O': 
+                            case 'PC': 
+                                if (transportView.formulaDetail[key]['value'] == null || transportView.formulaDetail[key]['value'] == "") {
+                                    kt = false;
+                                }
+                                break;
+                            case 'P': 
+                                if (transportView.formulaDetail[key]['fromPlace'] == null || transportView.formulaDetail[key]['fromPlace'] == ""
+                                    || transportView.formulaDetail[key]['toPlace'] == null || transportView.formulaDetail[key]['toPlace'] == ""
+                                ) {
+                                    kt = false;
+                                }
+                                break;
+                            default: break;
                         }
+                        
                     });
                     if (kt == false) {
                         $("#unitPrice").val(0);
@@ -1803,6 +1830,9 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 200) {
+                            transportView.setValueForPlace(transportView.formulaDetail);
+                            transportView.setValueForProductCode(transportView.formulaDetail);
+
                             $("#unitPrice").val(data['formula']['unitPrice']);
                             $("#unit").val(data['formula']['unit']);
                             $("#formulaCode").val(data['formula']['formulaCode']);
@@ -1878,16 +1908,12 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 200) {
-                            transportView.dataFormula = data['formulas'];
-                            transportView.dataFormulaDetail = data['formulaDetails'];
-                            transportView.appendViewFormulaDetail(data['formulaDetails']);
-
-                            var dataSingle = _.filter(transportView.dataFormulaDetail, function (o) {
-                                return o.rule == 'S';
+                            transportView.currentFormula = data['formulas'];
+                            transportView.currentFormulaDetail = data['formulaDetails'];
+                            var dataRender = _.filter(transportView.currentFormulaDetail, function(o){
+                                return o['formula_id'] == transportView.currentFormula[0]['id'];
                             });
-                            transportView.tagsValueFormulaDetail = _.map(dataSingle, 'value');
-                            transportView.tagsValueFormulaDetail = _.union(transportView.tagsValueFormulaDetail);
-                            renderAutoCompleteSearch('.name', transportView.tagsValueFormulaDetail);
+                            transportView.appendViewFormulaDetail(dataRender);
                         } else {
                             showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1899,14 +1925,88 @@
                     transportView.formulaDetail = [];
                     $("#formula-detail").html("");
                     _.each(data, function (value, key) {
-                        var str = '';
-                        str += '<div class="col-md-3">';
-                        str += '<div class="form-group form-md-line-input">';
-                        str += '<label for="id_' + data[key]["id"] + '" class="red"><b>' + data[key]["name"] + '</b></label>';
-                        str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
-                        str += '</div>';
-                        str += '</div>';
+                        switch (data[key]["rule"]) {
+                            case 'S':
+                            case 'R':
+                            case 'O':
+                                var str = '';
+                                str += '<div class="col-md-3">';
+                                str += '<div class="form-group form-md-line-input">';
+                                str += '<label for="id_' + data[key]["id"] + '" class="red"><b>' + data[key]["name"] + '</b></label>';
+                                str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
+                                str += '</div>';
+                                str += '</div>';
+
+                                $("#receivePlace").attr('disabled', false);
+                                $("#deliveryPlace").attr('disabled', false);
+                                $("#productCode").attr('disabled', false);
+                                break;
+                            case 'PC': 
+                                var str = '';
+                                str += '<div class="col-md-3">';
+                                str += '<div class="form-group form-md-line-input">';
+                                str += '<label for="id_' + data[key]["id"] + '" class="red"><b>' + data[key]["name"] + '</b></label>';
+                                str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
+                                str += '</div>';
+                                str += '</div>';
+
+                                $("#receivePlace").attr('disabled', false);
+                                $("#deliveryPlace").attr('disabled', false);
+                                $("#productCode").attr('disabled', true);
+                                break;
+                            case 'P':
+                                var str = '';
+                                str += '<div class="col-md-3">';
+                                str += '<div class="form-group form-md-line-input">';
+                                str += '<label for="id_' + data[key]["id"] + '_fromPlace" class="red"><b>Nơi nhận</b></label>';
+                                str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '_fromPlace" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
+                                str += '</div>';
+                                str += '</div>';
+                                str += '<div class="col-md-3">';
+                                str += '<div class="form-group form-md-line-input">';
+                                str += '<label for="id_' + data[key]["id"] + '_toPlace" class="red"><b>Nơi giao</b></label>';
+                                str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '_toPlace" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
+                                str += '</div>';
+                                str += '</div>';
+
+                                $("#receivePlace").attr('disabled', true);
+                                $("#deliveryPlace").attr('disabled', true);
+                                $("#productCode").attr('disabled', false);
+                                break;
+                            
+                            default: break;
+                        }
+                        
                         $("#formula-detail").append(str);
+
+                        //AutoComplete
+                        var dataAutoComplete = _.filter(transportView.currentFormulaDetail, function (o) {
+                            return o['rule'] == data[key]["rule"];
+                        });
+                        
+                        switch (data[key]["rule"]) {
+                            case 'S':
+                            case 'R':
+                            case 'O':
+                            case 'PC':
+                                 var tagsValueFormulaDetail = _.map(dataAutoComplete, 'value');
+                                 tagsValueFormulaDetail = _.union(tagsValueFormulaDetail);
+                                renderAutoCompleteSearch('#id_' + data[key]["id"], tagsValueFormulaDetail);
+                                 break;
+                            case 'P':
+                                var tagsValueFormulaDetail_From = _.map(dataAutoComplete, 'fromPlace');
+                                var tagsValueFormulaDetail_To = _.map(dataAutoComplete, 'toPlace');
+                                tagsValueFormulaDetail_From = _.union(tagsValueFormulaDetail_From);
+                                tagsValueFormulaDetail_To = _.union(tagsValueFormulaDetail_To);
+                                renderAutoCompleteSearch('#id_' + data[key]["id"] + '_fromPlace', tagsValueFormulaDetail_From);
+                                renderAutoCompleteSearch('#id_' + data[key]["id"] + '_toPlace', tagsValueFormulaDetail_To);
+                                break;
+                            default: break;
+                        }
+                        
+                        
+
+
 
                         if (data[key]["rule"] == 'O') {
                             $("#id_" + data[key]["id"]).prop('readonly', true);
@@ -1919,21 +2019,49 @@
                             id: data[key]["id"],
                             rule: data[key]["rule"],
                             name: data[key]["name"],
-                            value: null
+                            value: null,
+                            fromPlace: null,
+                            toPlace: null
                         };
                         transportView.formulaDetail.push(formulaDetail);
                     });
                 },
                 getValueFormFormulaDetail: function () {
-                    var searchEles = $("#formula-detail input");
+                    var searchEles = $("#formula-detail input").not($("#formula-detail input[id$=_toPlace]"));
                     for (var i = 0; i < searchEles.length; i++) {
-                        transportView.formulaDetail[i]['value'] = $(searchEles[i]).val();
+                        switch (transportView.formulaDetail[i]['rule']) {
+                            case 'S':
+                            case 'R':
+                            case 'O':
+                            case 'PC':
+                                transportView.formulaDetail[i]['value'] = $(searchEles[i]).val();
+                                break;
+                            case 'P': 
+                                transportView.formulaDetail[i]['fromPlace'] = $(searchEles[i]).val();
+                                var id_to = $(searchEles[i]).prop('id').split("_fromPlace")[0];
+                                transportView.formulaDetail[i]['toPlace'] = $("#"+id_to+"_toPlace").val();
+                                break;
+                            default: break;
+                        }
                     }
                 },
                 setValueFormFormulaDetail: function (formulaDetail) {
-                    var searchEles = $("#formula-detail input");
+                    var searchEles = $("#formula-detail input").not($("#formula-detail input[id$=_toPlace]"));
                     for (var i = 0; i < searchEles.length; i++) {
-                        $(searchEles[i]).val(formulaDetail[i]['value']);
+                        switch (transportView.formulaDetail[i]['rule']) {
+                            case 'S':
+                            case 'R':
+                            case 'O':
+                            case 'PC':
+                                $(searchEles[i]).val(formulaDetail[i]['value']);
+                                break;
+                            case 'P': 
+                                $(searchEles[i]).val(formulaDetail[i]['fromPlace']);
+                                var id_to = $(searchEles[i]).prop('id').split("_fromPlace")[0];
+                                $("#"+id_to+"_toPlace").val(formulaDetail[i]['toPlace']);
+                                break;
+                            default: break;
+                        }
                     }
                 },
 
@@ -2160,6 +2288,23 @@
                         $("input[id='voucher_transport']").val(strVoucherName);
                     }
 
+                },
+                setValueForPlace: function(data){
+                    var pair = _.filter(data, function(o){
+                        return o.rule == 'P';
+                    });
+                    if(pair.length > 0){
+                        $("#receivePlace").val(pair[0]['fromPlace']);
+                        $("#deliveryPlace").val(pair[0]['toPlace']);
+                    }
+                },
+                setValueForProductCode: function(data){
+                    var pair = _.filter(data, function(o){
+                        return o.rule == 'PC';
+                    });
+                    if(pair.length > 0){
+                        $("#productCode").val(pair[0]['value']);
+                    }
                 }
             };
             transportView.loadData();

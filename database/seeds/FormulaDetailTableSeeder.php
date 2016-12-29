@@ -309,5 +309,53 @@ class FormulaDetailTableSeeder extends Seeder
             'index'      => null
         ]);
 
+        \App\FormulaDetail::create([
+            'formula_id' => 13,
+            'rule'       => 'PC',
+            'name'       => 'Mã hàng',
+            'from'       => null,
+            'to'         => null,
+            'fromPlace'  => null,
+            'toPlace'    => null,
+            'value'      => 'M',
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 14,
+            'rule'       => 'P',
+            'name'       => 'Tuyến đường',
+            'from'       => null,
+            'to'         => null,
+            'fromPlace'  => 'A',
+            'toPlace'    => 'B',
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 15,
+            'rule'       => 'P',
+            'name'       => 'Tuyến đường',
+            'from'       => null,
+            'to'         => null,
+            'fromPlace'  => 'C',
+            'toPlace'    => 'D',
+            'value'      => null,
+            'index'      => null
+        ]);
+
+        \App\FormulaDetail::create([
+            'formula_id' => 16,
+            'rule'       => 'P',
+            'name'       => 'Tuyến đường',
+            'from'       => null,
+            'to'         => null,
+            'fromPlace'  => 'E',
+            'toPlace'    => 'F',
+            'value'      => null,
+            'index'      => null
+        ]);
+
     }
 }

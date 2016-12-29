@@ -50,8 +50,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Formula whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Formula whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property integer $unit_id Mã Đơn vị tính
+ * @method static \Illuminate\Database\Query\Builder|\App\Formula whereUnitId($value)
  */
 class Formula extends Model
 {
-    //
+    protected $table = 'formulas';
+
+    protected $fillable = ['status'];
 }

@@ -210,5 +210,69 @@ class FormulaTableSeeder extends Seeder
             'note'         => 'lorem ipsum',
             'status'       => 2
         ]);
+
+        \App\Formula::create([
+            'formulaCode'  => null,
+            'unitPrice'    => 100000,
+            'unit_id'      => 1,
+            'customer_id'  => 5,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 2000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
+        ]);
+
+        \App\Formula::create([
+            'formulaCode'  => null,
+            'unitPrice'    => 100000,
+            'unit_id'      => 1,
+            'customer_id'  => 7,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 2000000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
+        ]);
+
+        \App\Formula::create([
+            'formulaCode'  => null,
+            'unitPrice'    => 110000,
+            'unit_id'      => 1,
+            'customer_id'  => 7,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 2100000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
+        ]);
+
+        \App\Formula::create([
+            'formulaCode'  => null,
+            'unitPrice'    => 120000,
+            'unit_id'      => 1,
+            'customer_id'  => 7,
+            'extendData'   => null,
+            'createdDate'  => date('Y-m-d'),
+            'applyDate'    => '2016-10-10',
+            'fuel_id'      => 1,
+            'cashDelivery' => 2200000,
+            'createdBy'    => 1,
+            'updatedBy'    => 1,
+            'changeByFuel' => 0,
+            'note'         => 'lorem ipsum'
+        ]);
     }
 }

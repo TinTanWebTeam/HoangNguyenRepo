@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Vehicle whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Vehicle whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property integer $status_id
+ * @method static \Illuminate\Database\Query\Builder|\App\Vehicle whereStatusId($value)
  */
 class Vehicle extends Model
 {

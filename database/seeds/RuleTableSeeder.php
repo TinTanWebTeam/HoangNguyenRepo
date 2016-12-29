@@ -28,5 +28,17 @@ class RuleTableSeeder extends Seeder
 			'shortName'   => 'P',
 			'description' => 'Một cặp',
         ]);
+
+        \App\Rule::create([
+			'name'        => 'OilPrice',
+			'shortName'   => 'O',
+			'description' => 'Giá dầu',
+        ]);
+
+        \App\Rule::create([
+			'name'        => 'ProductCode',
+			'shortName'   => 'PC',
+			'description' => 'Mã hàng',
+        ]);
     }
 }

@@ -15,6 +15,8 @@ class UnitTableSeeder extends Seeder
         $array_name = [
             'VNĐ/Kg',
             'VNĐ/Tấn',
+            'VNĐ/Xe',
+            'VNĐ/Pallet',
             'VNĐ/Khối',
             'VNĐ/Thùng',
             'VNĐ/Cây'

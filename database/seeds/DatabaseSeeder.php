@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(GarageTypeTableSeeder::class);
         $this->call(FuelPriceTableSeeder::class);
         $this->call(UnitTableSeeder::class);
+        $this->call(ProductCodeTableSeeder::class);
 
 //        Optional
         $this->call(PositionTableSeeder::class);

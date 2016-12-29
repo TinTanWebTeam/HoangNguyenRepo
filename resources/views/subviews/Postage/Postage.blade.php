@@ -549,9 +549,11 @@
                     $('input[type=radio][name=rule]').change(function () {
                         postageView.retypeDetail();
                         if($("select[id=condition] option:selected").text() == 'Khác'){
+                            $("select[id=condition] option:selected").attr('my-rule', this.value);
                             postageView.retypeDetail();
                             switch (this.value) {
                                 case 'S':
+                                case 'PC':
                                     $("label[for=value]").removeClass('hide');
                                     $("label[for=from]").addClass('hide');
                                     $("label[for=to]").addClass('hide');
@@ -563,6 +565,7 @@
                                     $("#toPlace").addClass('hide');
                                     break;
                                 case 'R':
+                                case 'O':
                                     $("label[for=value]").addClass('hide');
                                     $("label[for=from]").removeClass('hide');
                                     $("label[for=to]").removeClass('hide');
@@ -607,6 +610,7 @@
                         // $("input[type=radio][name=rule][value="+rule+"]").prop('checked', true);
                         switch (rule) {
                             case 'S': 
+                            case 'PC': 
                                 $("label[for=value]").removeClass('hide');
                                 $("label[for=from]").addClass('hide');
                                 $("label[for=to]").addClass('hide');
@@ -618,6 +622,7 @@
                                 $("#toPlace").addClass('hide');
                                 break;
                             case 'R': 
+                            case 'O':
                                 $("label[for=value]").addClass('hide');
                                 $("label[for=from]").removeClass('hide');
                                 $("label[for=to]").removeClass('hide');
@@ -649,11 +654,11 @@
                         { "id": 1, "name": "Khác", "rule": "S" },
                         { "id": 2, "name": "Tuyến đường", "rule": "P" },
                         { "id": 3, "name": "Khoảng cách", "rule": "R" },
-                        { "id": 4, "name": "Loại xe", "rule": "S" },
-                        { "id": 5, "name": "Lượng hàng", "rule": "R" },
+                        { "id": 4, "name": "Loại xe (Tấn)", "rule": "S" },
+                        { "id": 5, "name": "Lượng hàng (Tấn)", "rule": "R" },
                         { "id": 6, "name": "1 Chiều/2 Chiều", "rule": "S" },
-                        { "id": 7, "name": "Mã hàng", "rule": "S" },
-                        { "id": 8, "name": "Giá dầu", "rule": "R" }
+                        { "id": 7, "name": "Mã hàng", "rule": "PC" },
+                        { "id": 8, "name": "Giá dầu", "rule": "O" }
                     ];
                 },
                 loadData: function () {
@@ -733,8 +738,6 @@
                 },
 
                 fillDataToDatatable: function (data) {
-                    // removeDataTable();
-
                     if (postageView.table != null)
                         postageView.table.destroy();
 
@@ -781,9 +784,6 @@
                             }
                         ],
                         order: [[0, "desc"]],
-                    //    fixedHeader: {
-                    //        header: true
-                    //    },
                         dom: 'Bfrtip',
                         buttons: [
                             {
@@ -828,7 +828,6 @@
                         ]
                     });
                     $("#table-data").css("width", "auto");
-                    // pushDataTable(postageView.table);
                 },
                 fillDataToDatatablePostageDetail: function (data) {
                     if (postageView.tablePostageDetail != null)

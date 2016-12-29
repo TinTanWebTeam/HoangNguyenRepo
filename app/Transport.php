@@ -82,6 +82,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Transport whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Transport whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $transportDate Ngày vận chuyển
+ * @property float $addScore Thêm điểm
+ * @property boolean $direction 1 Chiều/2 Chiều
+ * @method static \Illuminate\Database\Query\Builder|\App\Transport whereTransportDate($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Transport whereAddScore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Transport whereDirection($value)
  */
 class Transport extends Model
 {
