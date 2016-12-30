@@ -179,6 +179,10 @@ function convertStringToNumber(str){
     return num;
 }
 
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 function formatCurrency(classOrId){
     $(classOrId).formatCurrency({
         roundToDecimalPlace: 0,

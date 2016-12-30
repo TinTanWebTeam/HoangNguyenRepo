@@ -303,6 +303,7 @@
                                         <fieldset>
                                             <legend>
                                                 Giá trị thanh toán:
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <span style="font-size: 13px;">Phiếu thanh toán: </span>
                                                 <input type="checkbox" id="PTT" onchange="debtCustomerView.PTTchecked(this)">
                                             </legend>
@@ -340,7 +341,7 @@
                                         </fieldset>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" id="debt-info">
                                     <div class="col-md-12">
                                         <fieldset>
                                             <legend>Thông tin nợ:</legend>
@@ -379,7 +380,7 @@
                                                 <input type="checkbox" id="statusPrePaid" name="statusPrePaid"
                                                        onchange="debtCustomerView.renderEventCheckbox(this)">
                                             </legend>
-                                            <div class="row" style="padding: 0 10px">
+                                            <div class="row" style="padding: 0 10px" id="hide-when-ptt-checked">
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="totalPay"><b>Trả</b></label>
@@ -2233,7 +2234,10 @@
                 },
 
                 computeWhenChangeTotalPay: function (totalPay) {
-                    var totalPay = convertStringToNumber(totalPay);
+                    if(!isNumeric(totalPay)){
+                        totalPay = convertStringToNumber(totalPay);
+                    }
+                    
                     var statusCheck = $("#statusPrePaid").prop('checked');
                     var debtNotExportInvoice = asNumberFromCurrency("#debtNotExportInvoice");
                     var totalTransport = asNumberFromCurrency("#totalTransport");
@@ -2404,16 +2408,21 @@
                     $("#dateSearchPTT").find(".start").datepicker('update', debtCustomerView.firstDay);
                     $("#dateSearchPTT").find(".end").datepicker('update', debtCustomerView.lastDay);
                 },
-                PTTchecked: function(cb){
+                PTTchecked: function(cb) {
                     console.log((cb.checked) ? 1 : 0);
 
-                    if(cb.checked){
-                        $("#debtNotExportInvoice").addClass('hide');
-                        $("#debtExportInvoice").addClass('hide');
-                        $("#VAT").val(0);
-                    }
+                    if(cb.checked) {
+                        $("#debt-info").addClass('hide');
+                        $("#hide-when-ptt-checked").addClass('hide');
 
-                    
+                        $("#VAT").val(0);
+                        debtCustomerView.computeWhenChangeTotalPay(Number.MAX_SAFE_INTEGER);
+                        
+                        $("#hasVAT").val(0).addClass('hide');
+                    } else {
+                        $("#debt-info").removeClass('hide');
+                        $("#hide-when-ptt-checked").removeClass('hide');
+                    }
                 }
             };
             debtCustomerView.loadData();
