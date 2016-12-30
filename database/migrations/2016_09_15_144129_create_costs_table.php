@@ -30,6 +30,7 @@ class CreateCostsTable extends Migration
             $table->integer('transport_id')->nullable();
             $table->integer('price_id')->unsigned();
             $table->integer('vehicle_id')->unsigned();
+            $table->integer('status_invoice_garage')->default(0)->comment('Trạng thái phương thức thanh toán đơn hàng cho nhà xe');
             $table->timestamps();
         });
     }
