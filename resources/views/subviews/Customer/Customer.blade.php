@@ -696,6 +696,7 @@
                     $("input[id='emailStaff']").val('');
                     $("input[id='addressStaff']").val('');
                     $("textarea[id='noteStaff']").val('');
+                    customerView.renderDateTimePicker();
                 },
                 renderScrollbar: function () {
                     $("#divControl_add").find('.panel-body').mCustomScrollbar({
@@ -1155,6 +1156,7 @@
                                             break;
                                     }
                                     customerView.clearInputStaff();
+
                                 } else {
                                     showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
                                 }
