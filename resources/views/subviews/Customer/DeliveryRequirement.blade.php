@@ -633,12 +633,20 @@
                 <div class="modal-body">
                     <form id="frmProduct">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-8">
                                 <div class="form-group form-md-line-input">
                                     <label for="productName"><b>Tên hàng</b></label>
                                     <input type="text" class="form-control"
                                            id="productName"
                                            name="productName">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group form-md-line-input">
+                                    <label for="productCode"><b>Mã hàng</b></label>
+                                    <input type="text" class="form-control"
+                                           id="productCode"
+                                           name="productCode">
                                 </div>
                             </div>
                         </div>

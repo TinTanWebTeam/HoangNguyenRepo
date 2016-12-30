@@ -688,6 +688,10 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    $('#dateSearchPTT .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
 
                     $('#divInvoice').find('.date').datepicker({
                         "setDate": new Date(),
