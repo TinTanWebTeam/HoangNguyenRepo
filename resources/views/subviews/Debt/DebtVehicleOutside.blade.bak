@@ -39,9 +39,9 @@
                         <li class="active">Nhà xe</li>
                     </ol>
                     <div class="menu-toggle pull-right fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Tạo phiếu thanh toán"
+                        <div class="btn btn-warning btn-circle btn-md" title="Xuất hóa đơn"
                              onclick="debtGarageView.createInvoiceGarage(0)">
-                            <i class="glyphicon glyphicon-plus icon-center"></i>
+                            <i class="glyphicon glyphicon-list-alt icon-center"></i>
                         </div>
                     </div>
                 </div>
@@ -61,21 +61,43 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-5" id="dateSearchTransport">
-                            <div class="ui-widget" style="padding-top:8px">
-                                <input type="text" class="date start"/> đến
-                                <input type="text" class="date end"/>
-                            </div>
+                        <div class="col-md-6" id="dateSearchTransport">
+                            <input type="text" class="date start"/> đến
+                            <input type="text" class="date end"/>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <div class="ui-widget">
                                 <input type="text" class="form-control" id="fullNumber_transport"
                                        name="fullNumber_transport" placeholder="Nhập số xe">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="radio" id="invoiceUp">
+                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport" value="All"
+                                                                         checked>Tất cả</label>
+                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport"
+                                                                         value="NotInvoice">Chưa xuất hóa đơn</label>
+                                <label><input type="radio" name="rdoTransport"
+                                              value="Invoice">Đã xuất hóa đơn</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <label for="statusMoney" class="form-control">Trạng thái:</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <select class="form-control" id="statusMoney"
+                                            onchange="debtGarageView.searchTransport(this); debtGarageView.selectAll()">
+                                        <option value="All">Tất cả</option>
+                                        <option value="NotPay">Chưa trả</option>
+                                        {{--<option value="PrePay">Trả trước</option>--}}
+                                        <option value="FullPay">Trả đủ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="radio">
                                         <button id="btnSearchTransport" class="btn btn-sm btn-info marginRight"
                                                 onclick="debtGarageView.searchTransport();debtGarageView.selectAll()">
@@ -90,7 +112,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
@@ -99,9 +120,9 @@
                                     <tr class="active">
                                         <th>Mã</th>
                                         <th>STT</th>
-                                        <th>Số xe</th>
                                         <th>Nhà xe</th>
-                                        <th>Mã phiếu thanh toán</th>
+                                        <th>Mã hóa đơn</th>
+                                        <th>Số xe</th>
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
                                         <th>Giao xe</th>
@@ -236,65 +257,6 @@
                             </div>
                         </div>
                     </div>
-
-
-                    {{--Phiếu Thanh Toán--}}
-                    <hr>
-                    <p class="lead text-primary text-left"><strong>Trả trực tiếp</strong></p>
-                    <div class="row">
-                        <div class="col-md-6" id="dateSearchInvoice">
-                            <input type="text" class="date start"/> đến
-                            <input type="text" class="date end"/>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" id="fullNumber_invoice" name="fullNumber_invoice"
-                                   placeholder="Nhập tên nhà xe">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-10">
-                            <div class="radio" id="invoiceDown">
-                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoice" checked
-                                                                         value="All">Tất cả</label>
-                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoice"
-                                                                         value="StillDebt">Còn nợ</label>
-                                <label><input type="radio" name="rdoInvoice" value="FullPay">Trả đủ</label>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="radio">
-                                <button onclick="debtGarageView.searchInvoice()" id="btnSearchInvoice"
-                                        class="btn btn-sm btn-info marginRight"><i
-                                            class="fa fa-search" aria-hidden="true"></i> Tìm
-                                </button>
-                                <button class="btn btn-sm btn-default" onclick="debtGarageView.clearSearch('invoice')">
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered  table-striped table-hover" id="table-garageInvoice">
-                                    <thead>
-                                    <tr class="active">
-                                        <th>Mã</th>
-                                        <th>Số xe</th>
-                                        <th>Nhà xe</th>
-                                        <th>Tiền giao hàng</th>
-                                        <th>Chi phí</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chi tiết</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div> <!-- end table-reposive -->
@@ -323,7 +285,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="invoiceCode"><b>Mã phiếu thanh toán</b></label>
+                                            <label for="invoiceCode"><b>Mã hóa đơn</b></label>
                                             <input type="text" class="form-control"
                                                    id="invoiceCode"
                                                    name="invoiceCode">
@@ -345,32 +307,32 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{--<div class="row ">--}}
-                                    {{--<div class="col-md-4">--}}
-                                        {{--<div class="form-group form-md-line-input ">--}}
-                                            {{--<label for="notVAT"><b>Chưa VAT</b></label>--}}
-                                            {{--<input type="text" class="form-control currency"--}}
-                                                   {{--id="notVAT"--}}
-                                                   {{--name="notVAT" readonly>--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="col-md-4">--}}
-                                        {{--<div class="form-group form-md-line-input ">--}}
-                                            {{--<label for="VAT" class="red"><b>VAT (%)</b></label>--}}
-                                            {{--<input type="number" class="form-control defaultZero"--}}
-                                                   {{--id="VAT" name="VAT"--}}
-                                                   {{--onkeyup="debtGarageView.computeHasVAT(this.value, event)">--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="col-md-4">--}}
-                                        {{--<div class="form-group form-md-line-input ">--}}
-                                            {{--<label for="hasVAT" class="red"><b>Có VAT</b></label>--}}
-                                            {{--<input type="text" class="form-control currency defaultZero"--}}
-                                                   {{--id="hasVAT" name="hasVAT"--}}
-                                                   {{--onkeyup="debtGarageView.computeVAT(this.value)">--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
+                                <div class="row ">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="notVAT"><b>Chưa VAT</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="notVAT"
+                                                   name="notVAT" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="VAT" class="red"><b>VAT (%)</b></label>
+                                            <input type="number" class="form-control defaultZero"
+                                                   id="VAT" name="VAT"
+                                                   onkeyup="debtGarageView.computeHasVAT(this.value, event)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="hasVAT" class="red"><b>Có VAT</b></label>
+                                            <input type="text" class="form-control currency defaultZero"
+                                                   id="hasVAT" name="hasVAT"
+                                                   onkeyup="debtGarageView.computeVAT(this.value)">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
@@ -460,8 +422,7 @@
                             <div class="col-md-12">
                                 <span class="text text-primary">Lịch sử trả nợ</span>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover"
-                                           id="table-invoiceGarageDetail">
+                                    <table class="table table-bordered table-striped table-hover" id="table-invoiceGarageDetail">
                                         <thead>
                                         <tr class="active">
                                             <th>Mã</th>
@@ -481,8 +442,7 @@
                             <div class="col-md-12">
                                 <span class="text text-primary">Lịch sử in</span>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover"
-                                           id="table-printHistory">
+                                    <table class="table table-bordered table-striped table-hover" id="table-printHistory">
                                         <thead>
                                         <tr class="active">
                                             <th>Mã in</th>
@@ -551,7 +511,7 @@
             debtGarageView = {
                 table: null,
 
-                tableTransportCost: null,
+                tableTransportCost:null,
                 tableInvoiceGarage: null,
                 tableInvoiceGarageDetail: null,
                 tablePrintHistory: null,
@@ -756,7 +716,6 @@
                             {
                                 data: 'stt'
                             },
-                            {data: 'fullNumber'},
                             {data: 'garages_name'},
                             {
                                 data: 'invoiceCode',
@@ -769,7 +728,7 @@
                                     return tr;
                                 }
                             },
-
+                            {data: 'fullNumber'},
                             {data: 'deliveryPlace'},
                             {data: 'voucherNumber'},
                             {
@@ -825,9 +784,9 @@
                                 }
                             }
                         ],
-                        //    fixedHeader: {
-                        //        header: true
-                        //    },
+                    //    fixedHeader: {
+                    //        header: true
+                    //    },
                         responsive: true,
                         columnDefs: [
                             {responsivePriority: 1, targets: 1},
@@ -1057,9 +1016,9 @@
                         language: languageOptions,
                         data: data,
                         columns: [],
-                        //    fixedHeader: {
-                        //        header: true
-                        //    },
+                    //    fixedHeader: {
+                    //        header: true
+                    //    },
                         responsive: true,
                         columnDefs: [
                             {responsivePriority: 1, targets: 1},
@@ -1148,7 +1107,9 @@
                             debtGarageView.dataVehicleCost = data['vehicleCost'];
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                             debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
+                            debtGarageView.searchTransport();
+                            debtGarageView.searchInvoice();
+                            debtGarageView.searchTransportVehicleCost();
 
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -1699,6 +1660,7 @@
                                 debtGarageView.searchInvoice();
 
 
+
                                 if (debtGarageView.action == 'new') {
                                     //clear Input
                                     debtGarageView.clearInput();
@@ -1744,7 +1706,7 @@
                     debtGarageView.displayModal('show', '#modal-printReview');
                 },
                 attachFile: function (invoiceGarageDetail_id) {
-                    //    console.log(invoiceGarageDetail_id);
+                //    console.log(invoiceGarageDetail_id);
                 },
 
                 clearSearch: function (tableName) {
@@ -1789,19 +1751,19 @@
                     $("input[id='dateSearchVehicleCost']").find(".start").datepicker('update', fromDate);
                     $("input[id='dateSearchVehicleCost']").find(".end").datepicker('update', toDate);
                     $('input[id=fullNumber_cost]').val($('input[id=fullNumber_transport]').val());
-
-                    //    var invoice = $("#invoiceUp").find("input:checked").val();
-                    //    switch(){
-                    //        case 'All':
-                    //         $("#costDown[value=All]").prop('checked', true);
-                    //         break;
-                    //        case 'StillDebt':
-                    //         $("#costDown[value=StillDebt").prop('checked', true);
-                    //         break;
-                    //        case 'FullPay':
-                    //         $("#costDown[value=FullPay]").prop('checked', true);
-                    //         break;
-                    //    }
+                   
+                //    var invoice = $("#invoiceUp").find("input:checked").val();
+                //    switch(){
+                //        case 'All': 
+                //         $("#costDown[value=All]").prop('checked', true);
+                //         break;
+                //        case 'StillDebt': 
+                //         $("#costDown[value=StillDebt").prop('checked', true);
+                //         break;
+                //        case 'FullPay': 
+                //         $("#costDown[value=FullPay]").prop('checked', true);
+                //         break;
+                //    }
 
                     // call search invoice
                     debtGarageView.searchCost();
@@ -1819,7 +1781,7 @@
                     debtGarageView.tagsFullNumberInvoice = _.union(debtGarageView.tagsFullNumberInvoice);
                     debtGarageView.renderAutoCompleteSearch();
                 },
-                searchCost: function () {
+                searchCost: function(){
                     var found = debtGarageView.searchDateVehicleCost(debtGarageView.dataVehicleCost);
                     found = debtGarageView.searchVehicleCost(found);
                     found = debtGarageView.searchStatusMoneyVehicleCost(found);
@@ -1828,7 +1790,7 @@
                     debtGarageView.tableTransportCost.clear().rows.add(debtGarageView.dataSearchVehicleCost).draw();
                     //fill data to listSearch
                     debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearchVehicleCost, 'fullNumber');
-                    debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
+                    debtGarageView.tagsFullNumberCost= _.union(debtGarageView.tagsFullNumberCost);
                     debtGarageView.renderAutoCompleteSearch();
 
                 },
@@ -1841,7 +1803,7 @@
                     debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
                     debtGarageView.renderAutoCompleteSearch();
                 },
-
+                
 
                 searchDate: function (data) {
                     var fromDate = $("#dateSearchTransport").find(".start").val();
@@ -1941,7 +1903,7 @@
                     return found;
                 },
 
-                searchDateVehicleCost: function (data) {
+                searchDateVehicleCost: function(data){
                     var fromDate = $("#dateSearchVehicleCost").find(".start").val();
                     var toDate = $("#dateSearchVehicleCost").find(".end").val();
                     if (fromDate == '' || toDate == '')
@@ -1958,7 +1920,7 @@
                     });
                     return found;
                 },
-                searchVehicleCost: function (data) {
+                searchVehicleCost: function(data){
                     var vehicle = $("#fullNumber_cost").val();
                     if (vehicle == '')
                         return data;
@@ -1967,7 +1929,7 @@
                     });
                     return found;
                 },
-                searchStatusMoneyVehicleCost: function (data) {
+                searchStatusMoneyVehicleCost: function(data){
                     var money = $("#costDown").find("input:checked").val();
                     var found = _.filter(data, function (o) {
                         if (money == 'All') {
@@ -2007,7 +1969,7 @@
                     formatCurrency(".currency");
                 },
                 computeHasVAT: function (vat, e) {
-                    //    if((e.keyCode == 8 || e.keyCode == 46) && (vat == 0 || vat == '')) return;
+                //    if((e.keyCode == 8 || e.keyCode == 46) && (vat == 0 || vat == '')) return;
 
 
                     if (vat == '') vat = 0;
