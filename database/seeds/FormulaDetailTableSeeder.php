@@ -321,6 +321,7 @@ class FormulaDetailTableSeeder extends Seeder
             'index'      => null
         ]);
 
+        // AUNTEX
         \App\FormulaDetail::create([
             'formula_id' => 14,
             'rule'       => 'P',

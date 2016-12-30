@@ -227,6 +227,7 @@ class FormulaTableSeeder extends Seeder
             'note'         => 'lorem ipsum'
         ]);
 
+        // AUNTEXT
         \App\Formula::create([
             'formulaCode'  => null,
             'unitPrice'    => 100000,

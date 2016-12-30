@@ -23,6 +23,12 @@ class StatusTableSeeder extends Seeder
             "Đã thanh toán và xuất hóa đơn"
         ];
 
+        $arr_status3 = [
+            "Phiếu thanh toán",
+            "Hóa đơn",
+            "Trả đủ"
+        ];
+
         foreach ($arr_status1 as $status)
         {
             \App\Status::create([
@@ -52,6 +58,24 @@ class StatusTableSeeder extends Seeder
                 'tableName' => 'transports-garage',
                 'status' => $status
             ]);
+        }
+
+        foreach ($arr_status3 as $status)
+        {
+            \App\Status::create([
+                'tableName' => 'transports-invoice',
+                'status' => $status
+            ]);
+        }
+
+        foreach ($arr_status3 as $status)
+        {
+            if($status != "Trả đủ") { 
+                \App\Status::create([
+                    'tableName' => 'invoices',
+                    'status' => $status
+                ]);
+            }
         }
 
 

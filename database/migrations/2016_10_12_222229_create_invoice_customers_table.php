@@ -15,7 +15,6 @@ class CreateInvoiceCustomersTable extends Migration
         Schema::create('invoiceCustomers', function (Blueprint $table) {
             $table->increments('id')->comment('Mã');
             $table->string('invoiceCode')->nullable()->comment('Mã hóa đơn');
-
             $table->decimal('totalTransport', 18, 0)->default(0)->comment('Tổng tiền thật sự của các đơn hàng');
             $table->decimal('prePaid', 18, 0)->default(0)->comment('Đã trả trước');
             $table->decimal('totalPay', 18, 0)->default(0)->comment('Tổng tiền sẽ trả trên hóa đơn');
@@ -34,6 +33,7 @@ class CreateInvoiceCustomersTable extends Migration
             $table->boolean('invoiceType')->default(0)->comment('Loại hóa đơn Khống hay Thường');
             $table->decimal('money', 18, 0)->default(0)->comment('');
             $table->string('sendToPerson')->comment('Người nhận hóa đơn');
+            $table->integer('status_invoice')->default(0)->comment('Trạng thái phương thức thanh toán hóa đơn');
             $table->timestamps();
         });
     }

@@ -1991,7 +1991,7 @@
                             case 'PC':
                                  var tagsValueFormulaDetail = _.map(dataAutoComplete, 'value');
                                  tagsValueFormulaDetail = _.union(tagsValueFormulaDetail);
-                                renderAutoCompleteSearch('#id_' + data[key]["id"], tagsValueFormulaDetail);
+                                 renderAutoCompleteSearch('#id_' + data[key]["id"], tagsValueFormulaDetail);
                                  break;
                             case 'P':
                                 var tagsValueFormulaDetail_From = _.map(dataAutoComplete, 'fromPlace');
