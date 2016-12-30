@@ -47,7 +47,8 @@ class TransportTableSeeder extends Seeder
             'addScore'              => 50000,
             'direction'             => 0,
             'transportType'         => 0,
-            'formula_id'            => 1
+            'formula_id'            => 1,
+            'status_invoice'        => 2
         ]);
 
         \App\Transport::create([
@@ -201,7 +202,8 @@ class TransportTableSeeder extends Seeder
             'addScore'              => 50000,
             'direction'             => 0,
             'transportType'         => 0,
-            'formula_id'            => 6
+            'formula_id'            => 6,
+            'status_invoice'        => 2
         ]);
     }
 }

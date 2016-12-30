@@ -26,7 +26,7 @@
     }
 </style>
 
-<!-- Begin Table -->
+<!-- Table -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -67,22 +67,28 @@
                             <input type="text" class="date start"/> đến
                             <input type="text" class="date end"/>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="ui-widget">
-                                <input type="text" class="form-control" id="custName_transport"
-                                       name="custName_transport" placeholder="Nhập tên khách hàng">
+                                <input type="text" class="form-control" id="custName_transport" name="custName_transport" placeholder="Nhập tên khách hàng">
                             </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="not-payment">Chưa thanh toán</label>
+                            <input type="checkbox" id="not-payment" onchange="debtCustomerView.searchTransport()">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="radio" id="invoiceUp">
-                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport" value="All"
-                                                                         checked>Tất cả</label>
-                                <label style="margin-right: 10px"><input type="radio" name="rdoTransport"
-                                                                         value="NotInvoice">Chưa xuất hóa đơn</label>
-                                <label><input type="radio" name="rdoTransport"
-                                              value="Invoice">Đã xuất hóa đơn</label>
+                                <label style="margin-right: 10px">
+                                    <input type="radio" name="rdoTransport" value="All" checked>Tất cả
+                                </label>
+                                <label style="margin-right: 10px">
+                                    <input type="radio" name="rdoTransport" value="NotInvoice">Chưa xuất hóa đơn
+                                </label>
+                                <label>
+                                    <input type="radio" name="rdoTransport" value="Invoice">Đã xuất hóa đơn
+                                </label>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -209,14 +215,72 @@
                             </div>
                         </div>
                     </div>
+
+                    <hr>
+                    <p class="lead text-primary text-left"><strong>Phiếu thanh toán</strong></p>
+                    <div class="row">
+                        <div class="col-md-6" id="dateSearchPTT">
+                            <input type="text" class="date start"/> đến
+                            <input type="text" class="date end"/>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="custName_PTT" name="custName_PTT" placeholder="Nhập tên khách hàng">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="radio" id="invoiceDownPTT">
+                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoicePTT" checked value="All">Tất cả</label>
+                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoicePTT" value="StillDebt">Còn nợ</label>
+                                <label><input type="radio" name="rdoInvoicePTT" value="FullPay">Trả đủ</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="radio">
+                                <button onclick="debtCustomerView.searchPTT()" id="btnSearchPTT" class="btn btn-sm btn-info marginRight">
+                                    <i class="fa fa-search" aria-hidden="true"></i> Tìm
+                                </button>
+                                <button class="btn btn-sm btn-default" onclick="debtCustomerView.clearSearch('PTT')">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover" id="table-PTT">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Mã</th>
+                                        <th>Mã PTT</th>
+                                        <th>Khách hàng</th>
+                                        <th>Ngày xuất</th>
+                                        <th>Ngày HĐ</th>
+                                        <th>Tổng tiền (+VAT)</th>
+                                        <th>Trả trước</th>
+                                        <th>Trả trên HĐ</th>
+                                        <th>Nợ</th>
+                                        <th>Người tạo</th>
+                                        <th>Người sửa</th>
+                                        <th>Chi tiết</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div> <!-- end table-reposive -->
     </div> <!-- end .col-md-12-->
 </div>
-<!-- End Table -->
+<!-- // Table -->
 
-<!-- Begin divInvoice -->
+<!-- divInvoice -->
 <div class="row">
     <div id="divInvoice" class="col-md-offset-2 col-md-10">
         <div class="panel panel-primary box-shadow">
@@ -237,7 +301,11 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <fieldset>
-                                            <legend>Giá trị thanh toán:</legend>
+                                            <legend>
+                                                Giá trị thanh toán:
+                                                <span style="font-size: 13px;">Phiếu thanh toán: </span>
+                                                <input type="checkbox" id="PTT" onchange="debtCustomerView.PTTchecked(this)">
+                                            </legend>
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-md-3">
                                                     <div class="form-group form-md-line-input">
@@ -475,7 +543,7 @@
         </div>
     </div>
 </div>
-<!-- End divInvoice -->
+<!-- // divInvoice -->
 
 <!-- Modal notification -->
 <div class="row">
@@ -495,7 +563,7 @@
         </div>
     </div>
 </div>
-<!-- end Modal notification -->
+<!-- // Modal notification -->
 
 <!-- Modal print review -->
 <div class="row">
@@ -515,7 +583,7 @@
         </div>
     </div>
 </div>
-<!-- end Modal print review -->
+<!-- // Modal print review -->
 
 <script>
     $(function () {
@@ -523,6 +591,7 @@
             debtCustomerView = {
                 table: null,
                 tableInvoiceCustomer: null,
+                tablePTT: null,
                 tableInvoiceCustomerDetail: null,
                 tablePrintHistory: null,
 
@@ -531,6 +600,8 @@
                 dataInvoiceCustomerDetail: null,
                 dataPrintHistory: null,
                 dataTransportInvoice: null,
+                dataPTT: null,
+                dataSearchPTT: null,
 
                 dataSearch: null,
                 dataSearchInvoiceCustomer: null,
@@ -543,6 +614,7 @@
                 invoiceCode: null, //Get invoiceCode newest form Server
                 tagsCustomerNameTransport: [], //for search
                 tagsCustomerNameInvoice: [], //for search
+                tagsCustomerNamePTT: [], //for search
                 statusPrePaid: 0,
                 statusInvoice: 0,
                 firstDay: null,
@@ -640,6 +712,10 @@
 
                     $("#custName_invoice").autocomplete({
                         source: debtCustomerView.tagsCustomerNameInvoice
+                    });
+
+                    $("#custName_PTT").autocomplete({
+                        source: debtCustomerView.tagsCustomerNamePTT
                     });
                 },
                 renderEventKeyCode: function () {
@@ -1023,6 +1099,104 @@
                         ]
                     })
                 },
+                fillDataToDatatablePTT: function (data) {
+                    if(debtCustomerView.tablePTT != null)
+                        debtCustomerView.tablePTT.destroy();
+
+                    for (var i = 0; i < data.length; i++) {
+                        if(data[i]['statusPrePaid'] === 1){
+                            data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'] - data[i]['prePaid'];
+                        } else {
+                            data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'];
+                        }
+                    }
+                    debtCustomerView.tablePTT = $('#table-PTT').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {
+                                data: 'id',
+                                visible: false
+                            },
+                            {data: 'invoiceCode'},
+                            {data: 'customers_fullName'},
+                            {
+                                data: 'exportDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {
+                                data: 'invoiceDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {data: 'hasVAT', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'prePaid', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'totalPaid', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'debt', render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'users_createdBy'},
+                            {data: 'users_updatedBy'},
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div class="btn btn-primary btn-circle" title="Xem lịch sử" onclick="debtCustomerView.createInvoiceCustomer(1, ' + full.id + ')">';
+                                    tr += '<i class="fa fa-eye" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn btn-danger btn-circle" title="Xóa hóa đơn" onclick="debtCustomerView.deleteInvoiceCustomerConfirm(' + full.id + ')">';
+                                    tr += '<i class="fa fa-trash-o" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ],
+                        dom: 'Bfrtip',
+                        buttons: [
+                            {
+                                extend: 'copyHtml5',
+                                text: 'Sao chép',
+                                exportOptions: {
+                                    columns: [0, ':visible']
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Xuất Excel',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                customize: function (xlsx) {
+                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                }
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'Xuất PDF',
+                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
+                                customize: function (doc) {
+                                    doc.content.splice(0, 1);
+                                    doc.styles.tableBodyEven.alignment = 'center';
+                                    doc.styles.tableBodyOdd.alignment = 'center';
+                                    doc.content.columnGap = 10;
+                                    doc.pageOrientation = 'landscape';
+                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                            doc.content[1].table.body[i].splice(6, 1);
+                                        }
+                                    }
+                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
+                                }
+                            },
+                            {
+                                extend: 'colvis',
+                                text: 'Ẩn cột'
+                            }
+                        ]
+                    })
+                },
                 fillDataToDatatableInvoiceCustomerDetail: function (data) {
                     if (debtCustomerView.tableInvoiceCustomerDetail != null) {
                         debtCustomerView.tableInvoiceCustomerDetail.destroy();
@@ -1087,6 +1261,30 @@
                     })
                 },
 
+                reloadData: function(data){
+                    debtCustomerView.dataTransport             = data['transports'];
+                    debtCustomerView.dataSearch                = data['transports'];
+                    debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
+                    debtCustomerView.dataPrintHistory          = data['printHistories'];
+                    debtCustomerView.dataTransportInvoice      = data['transportInvoices'];
+
+                    var dataInvoiceCustomer = _.filter(data['invoiceCustomers'], function(o){
+                        return o['status_invoice'] == 2;
+                    });
+                    debtCustomerView.dataInvoiceCustomer       = dataInvoiceCustomer;
+                    debtCustomerView.dataSearchInvoiceCustomer = dataInvoiceCustomer;
+
+                    var dataPTT = _.filter(data['invoiceCustomers'], function(o){
+                        return o['status_invoice'] == 1;
+                    });
+                    debtCustomerView.dataPTT                   = dataPTT;
+                    debtCustomerView.dataSearchPTT             = dataPTT;
+
+                    debtCustomerView.invoiceCode               = data['invoiceCode'];
+                    debtCustomerView.firstDay                  = data['firstDay'];
+                    debtCustomerView.lastDay                   = data['lastDay'];
+                },
+
                 loadData: function () {
                     $.ajax({
                         url: url + 'debt-customer/transports',
@@ -1094,23 +1292,16 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            debtCustomerView.dataTransport = data['transports'];
-                            debtCustomerView.dataSearch = data['transports'];
-                            debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
-                            debtCustomerView.dataPrintHistory = data['printHistories'];
-                            debtCustomerView.dataTransportInvoice = data['transportInvoices'];
-                            debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
-                            debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
-                            debtCustomerView.invoiceCode = data['invoiceCode'];
-                            debtCustomerView.firstDay = data['firstDay'];
-                            debtCustomerView.lastDay = data['lastDay'];
+                            debtCustomerView.reloadData(data);
 
                             debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
+                            debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
 
                             debtCustomerView.searchCurrentMonth();
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
+                            debtCustomerView.searchPTT();
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1674,14 +1865,14 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            debtCustomerView.dataTransport = data['transports'];
-                            debtCustomerView.dataSearch = data['transports'];
+                            debtCustomerView.dataTransport             = data['transports'];
+                            debtCustomerView.dataSearch                = data['transports'];
                             debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
-                            debtCustomerView.dataPrintHistory = data['printHistories'];
-                            debtCustomerView.dataTransportInvoice = data['transportInvoices'];
-                            debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
+                            debtCustomerView.dataPrintHistory          = data['printHistories'];
+                            debtCustomerView.dataTransportInvoice      = data['transportInvoices'];
+                            debtCustomerView.dataInvoiceCustomer       = data['invoiceCustomers'];
                             debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
-                            debtCustomerView.invoiceCode = data['invoiceCode'];
+                            debtCustomerView.invoiceCode               = data['invoiceCode'];
 
                             debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
@@ -1814,6 +2005,7 @@
 
                     found = debtCustomerView.searchCustomer(found);
                     found = debtCustomerView.searchDate(found);
+                    found = debtCustomerView.searchPayment(found);
 
                     debtCustomerView.dataSearch = found;
                     debtCustomerView.table.clear().rows.add(debtCustomerView.dataSearch).draw();
@@ -1836,6 +2028,20 @@
                     debtCustomerView.tagsCustomerNameInvoice = _.map(debtCustomerView.dataSearchInvoiceCustomer, 'customers_fullName');
                     debtCustomerView.tagsCustomerNameInvoice = _.union(debtCustomerView.tagsCustomerNameInvoice);
                     debtCustomerView.renderAutoCompleteSearch();
+                },
+                searchPTT: function () {
+                    var found = debtCustomerView.searchStatusMoneyPTT(debtCustomerView.dataPTT);
+
+                    found = debtCustomerView.searchCustomerPTT(found);
+                    found = debtCustomerView.searchDatePTT(found);
+
+                    debtCustomerView.dataSearchPTT = found;
+                    debtCustomerView.tablePTT.clear().rows.add(debtCustomerView.dataSearchPTT).draw();
+
+                    //fill data to listSearch
+                    // debtCustomerView.tagsCustomerNamePTT = _.map(debtCustomerView.dataSearchPTT, 'customers_fullName');
+                    // debtCustomerView.tagsCustomerNamePTT = _.union(debtCustomerView.tagsCustomerNamePTT);
+                    // debtCustomerView.renderAutoCompleteSearch();
                 },
 
                 searchDate: function (data) {
@@ -1899,6 +2105,34 @@
                     });
                     return found;
                 },
+                searchPayment: function (data) {
+                    var value = $("#not-payment").prop('checked');
+                    
+                    var found = null;
+                    if (value){
+                        var allNotPayment = _.filter(debtCustomerView.dataTransport, function (o) {
+                            return o['status_invoice'] == 0;
+                        });
+                        var notPaymentThis = _.filter(data, function (o) {
+                            return o['status_invoice'] == 0;
+                        });
+                        var add = _.difference(allNotPayment, notPaymentThis);
+
+                        found = _.filter(data, function (o) {
+                            return o['status_invoice'] == 0;
+                        });
+
+                        if(add.length > 0) {
+                            found = data.concat(all);
+                        }
+                    } else {
+                        found = _.filter(data, function (o) {
+                            return o['status_invoice'] == 0;
+                        });
+                    }
+
+                    return found;
+                },
 
                 searchDateInvoice: function (data) {
                     var fromDate = $("#dateSearchInvoice").find(".start").val();
@@ -1929,6 +2163,55 @@
                 },
                 searchStatusMoneyInvoice: function (data) {
                     var money = $("#invoiceDown").find("input:checked").val();
+                    var found = _.filter(data, function (o) {
+                        if (money == 'All') {
+                            return true;
+                        } else if (money == 'StillDebt') {
+                            if(o.statusPrePaid == 1){
+                                return parseInt(o.hasVAT) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+                            } else {
+                                return parseInt(o.hasVAT) > parseInt(o.totalPaid);
+                            }
+                        } else {
+                            if(o.statusPrePaid == 1){
+                                return parseInt(o.hasVAT) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+                            } else {
+                                return parseInt(o.hasVAT) == parseInt(o.totalPaid);
+                            }
+                        }
+                    });
+                    return found;
+                },
+
+                searchDatePTT: function (data) {
+                    var fromDate = $("#dateSearchPTT").find(".start").val();
+                    var toDate = $("#dateSearchPTT").find(".end").val();
+                    if (fromDate == '' || toDate == '')
+                        return data;
+
+                    fromDate = moment(fromDate, "DD-MM-YYYY");
+                    toDate = moment(toDate, "DD-MM-YYYY");
+                    if (!fromDate.isValid() && !toDate.isValid())
+                        return data;
+
+                    var found = _.filter(data, function (o) {
+                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+                    });
+                    return found;
+                },
+                searchCustomerPTT: function (data) {
+                    var custName = $("#custName_PTT").val();
+                    if (custName == '')
+                        return data;
+
+                    var found = _.filter(data, function (o) {
+                        return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                    });
+                    return found;
+                },
+                searchStatusMoneyPTT: function (data) {
+                    var money = $("#invoiceDownPTT").find("input:checked").val();
                     var found = _.filter(data, function (o) {
                         if (money == 'All') {
                             return true;
@@ -2114,7 +2397,24 @@
                 searchCurrentMonth: function() {
                     $("#dateSearchTransport").find(".start").datepicker('update', debtCustomerView.firstDay);
                     $("#dateSearchTransport").find(".end").datepicker('update', debtCustomerView.lastDay);
+
+                    $("#dateSearchInvoice").find(".start").datepicker('update', debtCustomerView.firstDay);
+                    $("#dateSearchInvoice").find(".end").datepicker('update', debtCustomerView.lastDay);
+
+                    $("#dateSearchPTT").find(".start").datepicker('update', debtCustomerView.firstDay);
+                    $("#dateSearchPTT").find(".end").datepicker('update', debtCustomerView.lastDay);
                 },
+                PTTchecked: function(cb){
+                    console.log((cb.checked) ? 1 : 0);
+
+                    if(cb.checked){
+                        $("#debtNotExportInvoice").addClass('hide');
+                        $("#debtExportInvoice").addClass('hide');
+                        $("#VAT").val(0);
+                    }
+
+                    
+                }
             };
             debtCustomerView.loadData();
         } else {

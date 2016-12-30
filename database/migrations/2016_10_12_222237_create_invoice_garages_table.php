@@ -32,7 +32,7 @@ class CreateInvoiceGaragesTable extends Migration
             $table->boolean('invoiceType')->default(0)->comment('Loại hóa đơn Khống hay Thường');
             $table->decimal('money', 18, 0)->default(0)->comment('');
             $table->string('sendToPerson')->comment('Người nhận hóa đơn');
-            $table->integer('status_invoice')->default(0)->comment('Trạng thái phương thức thanh toán hóa đơn');
+            $table->integer('status_invoice')->default(1)->comment('Trạng thái phương thức thanh toán hóa đơn');
             $table->timestamps();
         });
     }

@@ -43,6 +43,8 @@ class DatabaseSeeder extends Seeder
         $this->call(TransportTableSeeder::class);
         $this->call(VoucherTransportTableSeeder::class);
         $this->call(TransportFormulaDetailTableSeeder::class);
+        $this->call(TransportInvoiceTableSeeder::class);
+        $this->call(InvoiceCustomerTableSeeder::class);
 
 //        Rule
         $this->call(RuleTableSeeder::class);
