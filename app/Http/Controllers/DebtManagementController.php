@@ -20,10 +20,19 @@ class DebtManagementController extends Controller
     //Function
     public function generateInvoiceCode($type)
     {
-        if ($type == 'customer')
-            $invoiceCode = "IC" . date('ymd');
-        else
-            $invoiceCode = "IG" . date('ymd');
+        switch ($type) {
+            case 'customer':
+                $invoiceCode = "IC" . date('ymd');
+                break;
+            case 'garage':
+                $invoiceCode = "IG" . date('ymd');
+                break;
+            case 'bill':
+                $invoiceCode = "IB" . date('ymd');
+                break;
+            default:
+                break;
+        }
 
         $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode . '%')->get()->count() + 1;
         $invoiceCode .= substr("00" . $stt, -3);
@@ -94,6 +103,7 @@ class DebtManagementController extends Controller
             ->get();
 
         $invoiceCode = $this->generateInvoiceCode('customer');
+        $invoiceCodeBill = $this->generateInvoiceCode('bill');
 
         $transportInvoices = DB::table('transportInvoices')->get();
 
@@ -104,6 +114,7 @@ class DebtManagementController extends Controller
             'invoiceCustomerDetails' => $invoiceCustomerDetails,
             'printHistories'         => $printHistories,
             'invoiceCode'            => $invoiceCode,
+            'invoiceCodeBill'        => $invoiceCodeBill,
             'transportInvoices'      => $transportInvoices,
             'firstDay'               => date("d-m-Y", $firstDayUTS),
             'lastDay'                => date("d-m-Y", $lastDayUTS)
@@ -181,6 +192,7 @@ class DebtManagementController extends Controller
             ->get();
 
         $invoiceCode = $this->generateInvoiceCode('garage');
+        $invoiceCodeBill = $this->generateInvoiceCode('bill');
 
         $transportInvoices = DB::table('transportInvoices')->get();
 
@@ -202,6 +214,7 @@ class DebtManagementController extends Controller
             'invoiceGarageDetails' => $invoiceGarageDetails,
             'printHistories' => $printHistories,
             'invoiceCode' => $invoiceCode,
+            'invoiceCodeBill' => $invoiceCodeBill,
             'transportInvoices' => $transportInvoices,
             'vehicleCost' => $vehicleCost
         ];
@@ -692,6 +705,7 @@ class DebtManagementController extends Controller
         $payDate = $request->input('_invoiceCustomer')['payDate'];
         $payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
         $statusPrePaid = $request->input('_invoiceCustomer')['statusPrePaid'];
+        $status_invoice = $request->input('_invoiceCustomer')['status_invoice'];
         $sendToPerson = $request->input('_invoiceCustomer')['sendToPerson'];
 
         $createdBy = \Auth::user()->id;
@@ -713,8 +727,12 @@ class DebtManagementController extends Controller
 
             $invoiceCustomer = new InvoiceCustomer();
 
-            if ($invoiceCode == '')
-                $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('customer');
+            if ($invoiceCode == ''){
+                if ($status_invoice == 1)
+                    $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('bill');
+                else if($status_invoice == 2)
+                    $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('customer');
+            }
             else {
                 if (InvoiceCustomer::where('invoiceCode', $invoiceCode)->get()->count() == 0)
                     $invoiceCustomer->invoiceCode = $invoiceCode;
@@ -736,6 +754,7 @@ class DebtManagementController extends Controller
             $invoiceCustomer->createdBy = $createdBy;
             $invoiceCustomer->updatedBy = $updatedBy;
             $invoiceCustomer->statusPrePaid = $statusPrePaid;
+            $invoiceCustomer->status_invoice = $status_invoice;
             $invoiceCustomer->sendToPerson = $sendToPerson;
             $invoiceCustomer->invoiceType = 0;
             try {
@@ -761,11 +780,12 @@ class DebtManagementController extends Controller
                     return response()->json(['msg' => 'Create InvoiceCustomerDetail fail!'], 404);
                 }
 
-                //Update InvoiceCustomer_id for Transport
+                //Update Status_Invoice, Status_Customer for Transport
                 foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
                     $transportUpdate->status_customer = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
+                    $transportUpdate->status_invoice = $status_invoice;
 
                     if (!$transportUpdate->update()) {
                         DB::rollBack();
@@ -805,6 +825,7 @@ class DebtManagementController extends Controller
             $invoiceCustomer->totalPaid += $totalPaid;
             $invoiceCustomer->updatedBy = $updatedBy;
             $invoiceCustomer->sendToPerson = $sendToPerson;
+            $invoiceCustomer->status_invoice = $status_invoice;
 
             try {
                 DB::beginTransaction();
@@ -832,6 +853,21 @@ class DebtManagementController extends Controller
 
                 //Nothing happen with TransportInvoice
 
+                //Update Status_Invoice, Status_Customer for Transport
+                $array_transportId = TransportInvoice::where('transport_id', $invoiceCustomer->id)->pluck('id');
+                dd($array_transportId);
+                foreach ($array_transportId as $transport_id) {
+                    $transportUpdate = Transport::find($transport_id);
+                    $transportUpdate->status_customer = 7;
+                    $transportUpdate->updatedBy = \Auth::user()->id;
+                    $transportUpdate->status_invoice = $status_invoice;
+
+                    if (!$transportUpdate->update()) {
+                        DB::rollBack();
+                        return response()->json(['msg' => 'Update transport fail!'], 404);
+                    }
+                }
+
                 DB::commit();
 
                 $arrayResponse = $this->DataDebtCustomer();
@@ -839,14 +875,17 @@ class DebtManagementController extends Controller
                 $arrayInput = $this->ValidateInvoiceCustomer($invoiceId);
 
                 $response = [
-                    'msg' => $arrayResponse['msg'],
-                    'transports' => $arrayResponse['transports'],
-                    'invoiceCustomers' => $arrayResponse['invoiceCustomers'],
+                    'msg'                    => $arrayResponse['msg'],
+                    'transports'             => $arrayResponse['transports'],
+                    'invoiceCustomers'       => $arrayResponse['invoiceCustomers'],
                     'invoiceCustomerDetails' => $arrayResponse['invoiceCustomerDetails'],
-                    'printHistories' => $arrayResponse['printHistories'],
-                    'invoiceCode' => $arrayResponse['invoiceCode'],
-                    'transportInvoices' => $arrayResponse['transportInvoices'],
-                    'arrayInput' => $arrayInput
+                    'printHistories'         => $arrayResponse['printHistories'],
+                    'invoiceCode'            => $arrayResponse['invoiceCode'],
+                    'invoiceCodeBill'        => $arrayResponse['invoiceCodeBill'],
+                    'transportInvoices'      => $arrayResponse['transportInvoices'],
+                    'firstDay'               => date("d-m-Y", $firstDayUTS),
+                    'lastDay'                => date("d-m-Y", $lastDayUTS),
+                    'arrayInput'             => $arrayInput
                 ];
                 return response()->json($response, 201);
             } catch (Exception $ex) {
@@ -975,14 +1014,17 @@ class DebtManagementController extends Controller
                 $arrayResponse = $this->DataDebtCustomer();
 
                 $response = [
-                    'msg' => $arrayResponse['msg'],
-                    'transports' => $arrayResponse['transports'],
-                    'invoiceCustomers' => $arrayResponse['invoiceCustomers'],
+                    'msg'                    => $arrayResponse['msg'],
+                    'transports'             => $arrayResponse['transports'],
+                    'invoiceCustomers'       => $arrayResponse['invoiceCustomers'],
                     'invoiceCustomerDetails' => $arrayResponse['invoiceCustomerDetails'],
-                    'printHistories' => $arrayResponse['printHistories'],
-                    'invoiceCode' => $arrayResponse['invoiceCode'],
-                    'transportInvoices' => $arrayResponse['transportInvoices'],
-                    'arrayInput' => $arrayInput
+                    'printHistories'         => $arrayResponse['printHistories'],
+                    'invoiceCode'            => $arrayResponse['invoiceCode'],
+                    'invoiceCodeBill'        => $arrayResponse['invoiceCodeBill'],
+                    'transportInvoices'      => $arrayResponse['transportInvoices'],
+                    'firstDay'               => date("d-m-Y", $firstDayUTS),
+                    'lastDay'                => date("d-m-Y", $lastDayUTS),
+                    'arrayInput'             => $arrayInput
                 ];
             } else {
 

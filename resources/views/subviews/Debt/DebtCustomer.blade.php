@@ -613,6 +613,7 @@
                 invoiceCustomerId: null, //for edit
                 array_transportId: [], //of InvoiceCustomer current
                 invoiceCode: null, //Get invoiceCode newest form Server
+                invoiceCodeBill: null, //Get invoiceCode newest form Server
                 tagsCustomerNameTransport: [], //for search
                 tagsCustomerNameInvoice: [], //for search
                 tagsCustomerNamePTT: [], //for search
@@ -1282,6 +1283,7 @@
                     debtCustomerView.dataSearchPTT             = dataPTT;
 
                     debtCustomerView.invoiceCode               = data['invoiceCode'];
+                    debtCustomerView.invoiceCodeBill           = data['invoiceCodeBill'];
                     debtCustomerView.firstDay                  = data['firstDay'];
                     debtCustomerView.lastDay                   = data['lastDay'];
                 },
@@ -1362,7 +1364,8 @@
                         sendToPerson: $("input[id=sendToPerson]").val(),
                         payDate: $("input[id=payDate]").val(),
                         note: $("textarea[id=note]").val(),
-                        statusPrePaid: ($("#statusPrePaid").prop("checked")) ? 1 : 0
+                        statusPrePaid: ($("#statusPrePaid").prop("checked")) ? 1 : 0,
+                        status_invoice: ($("#PTT").prop("checked")) ? 1 : 2
                     }
                 },
 
@@ -1563,21 +1566,15 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            debtCustomerView.dataTransport = data['transports'];
-                            debtCustomerView.dataSearch = data['transports'];
-                            debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
-                            debtCustomerView.dataPrintHistory = data['printHistories'];
-                            debtCustomerView.dataTransportInvoice = data['transportInvoices'];
-                            debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
-                            debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
-                            debtCustomerView.invoiceCode = data['invoiceCode'];
+                            debtCustomerView.reloadData(data);
 
                             debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
+                            debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
 
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
-
+                            debtCustomerView.searchPTT();
 
                             //Show notification
                             showNotification("success", "Xóa hóa đơn thành công!");
@@ -1630,17 +1627,11 @@
                                     return o.id == invoiceCustomerDetail_id;
                                 });
 
-                                debtCustomerView.dataTransport = data['transports'];
-                                debtCustomerView.dataSearch = data['transports'];
-                                debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
-                                debtCustomerView.dataPrintHistory = data['printHistories'];
-                                debtCustomerView.dataTransportInvoice = data['transportInvoices'];
-                                debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
-                                debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
-                                debtCustomerView.invoiceCode = data['invoiceCode'];
+                                debtCustomerView.reloadData(data);
 
                                 debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                                 debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
+                                debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
 
                                 var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function(o){
                                     return o.invoiceCustomer_id == invoiceDetail.invoiceCustomer_id;
@@ -1649,6 +1640,7 @@
 
                                 debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
+                                debtCustomerView.searchPTT();
 
                                 var debtInvoice = data['arrayInput']['debtInvoice'];
                                 var debtNotExportInvoice = data['arrayInput']['debtNotExportInvoice'];
@@ -1665,20 +1657,15 @@
                                 showNotification("success", "Xóa chi tiết đơn hàng thành công!");
                                 debtCustomerView.displayModal("hide", "#modal-notification");
                             } else {
-                                debtCustomerView.dataTransport = data['transports'];
-                                debtCustomerView.dataSearch = data['transports'];
-                                debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
-                                debtCustomerView.dataPrintHistory = data['printHistories'];
-                                debtCustomerView.dataTransportInvoice = data['transportInvoices'];
-                                debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
-                                debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
-                                debtCustomerView.invoiceCode = data['invoiceCode'];
+                                debtCustomerView.reloadData(data);
 
                                 debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                                 debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
+                                debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
 
                                 debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
+                                debtCustomerView.searchPTT();
 
                                 //Show notification
                                 showNotification("success", "Xóa chi tiết đơn hàng thành công!");
@@ -1866,20 +1853,15 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            debtCustomerView.dataTransport             = data['transports'];
-                            debtCustomerView.dataSearch                = data['transports'];
-                            debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
-                            debtCustomerView.dataPrintHistory          = data['printHistories'];
-                            debtCustomerView.dataTransportInvoice      = data['transportInvoices'];
-                            debtCustomerView.dataInvoiceCustomer       = data['invoiceCustomers'];
-                            debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
-                            debtCustomerView.invoiceCode               = data['invoiceCode'];
+                            debtCustomerView.reloadData(data);
 
                             debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
+                            debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
 
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
+                            debtCustomerView.searchPTT();
 
                             //clear Input
                             debtCustomerView.clearInput();
@@ -1919,20 +1901,15 @@
                             console.log("SERVER");
                             console.log(data);
                             if (jqXHR.status == 201) {
-                                debtCustomerView.dataTransport = data['transports'];
-                                debtCustomerView.dataSearch = data['transports'];
-                                debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
-                                debtCustomerView.dataPrintHistory = data['printHistories'];
-                                debtCustomerView.dataTransportInvoice = data['transportInvoices'];
-                                debtCustomerView.dataInvoiceCustomer = data['invoiceCustomers'];
-                                debtCustomerView.dataSearchInvoiceCustomer = data['invoiceCustomers'];
-                                debtCustomerView.invoiceCode = data['invoiceCode'];
+                                debtCustomerView.reloadData(data);
 
                                 debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                                 debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
+                                debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
 
                                 debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
+                                debtCustomerView.searchPTT();
 
                                 if (debtCustomerView.action == 'new') {
                                     //clear Input
@@ -2233,10 +2210,9 @@
                     return found;
                 },
 
-                computeWhenChangeTotalPay: function (totalPay) {
-                    if(!isNumeric(totalPay)){
+                computeWhenChangeTotalPay: function (totalPay, showNoti = true) {
+                    if(!isNumeric(totalPay))
                         totalPay = convertStringToNumber(totalPay);
-                    }
                     
                     var statusCheck = $("#statusPrePaid").prop('checked');
                     var debtNotExportInvoice = asNumberFromCurrency("#debtNotExportInvoice");
@@ -2250,21 +2226,24 @@
                     if(invoice_id == ''){
                         // Tạo mới hóa đơn
                         if(totalPay > payNeed){
-                            showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
+                            if(!showNoti)
+                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
                             totalPay = payNeed;
                         }
 
                         if(statusCheck) {
                             // Dùng trả trước
                             if (totalPay > debtNotExportInvoice - cashReceive) {
-                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
+                                if(!showNoti)
+                                    showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
                                 totalPay = debtNotExportInvoice - cashReceive;
                             }
                             var totalPayReal = totalPay + cashReceive;
                         } else {
                             // Không dùng trả trước
                             if (totalPay > debtNotExportInvoice) {
-                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tổng tiền đơn hàng.');
+                                if(!showNoti)
+                                    showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tổng tiền đơn hàng.');
                                 totalPay = debtNotExportInvoice;
                             }
                             var totalPayReal = totalPay;
@@ -2279,14 +2258,16 @@
                         if(statusCheck) {
                             // Dùng trả trước
                             if (totalPay > ConNo - cashReceive) {
-                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
+                                if(!showNoti)
+                                    showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tiền cần thanh toán.');
                                 totalPay = ConNo - cashReceive;
                             }
                             var totalPayReal = totalPay + cashReceive;
                         } else {
                             // Không dùng trả trước
                             if (totalPay > ConNo) {
-                                showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tổng tiền đơn hàng.');
+                                if(!showNoti)
+                                    showNotification('warning', 'Số tiền xuất hóa đơn không được lớn hơn tổng tiền đơn hàng.');
                                 totalPay = ConNo;
                             }
                             var totalPayReal = totalPay;
@@ -2352,7 +2333,8 @@
                     formatCurrency(".currency");
                 },
                 computeWhenChangePaidAmt: function (paidAmt) {
-                    paidAmt = convertStringToNumber(paidAmt);
+                    if(!isNumeric(paidAmt))
+                        paidAmt = convertStringToNumber(paidAmt);
                     var invoice_id = $("#invoice_id").val();
                     var statusCheck = $("#statusPrePaid").prop('checked');
                     var cashReceive = asNumberFromCurrency("#cashReceive");
@@ -2409,17 +2391,18 @@
                     $("#dateSearchPTT").find(".end").datepicker('update', debtCustomerView.lastDay);
                 },
                 PTTchecked: function(cb) {
-                    console.log((cb.checked) ? 1 : 0);
-
                     if(cb.checked) {
+                        $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCodeBill);
+
                         $("#debt-info").addClass('hide');
                         $("#hide-when-ptt-checked").addClass('hide');
 
                         $("#VAT").val(0);
                         debtCustomerView.computeWhenChangeTotalPay(Number.MAX_SAFE_INTEGER);
-                        
-                        $("#hasVAT").val(0).addClass('hide');
+                        debtCustomerView.computeWhenChangePaidAmt(Number.MAX_SAFE_INTEGER);
                     } else {
+                        $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
+
                         $("#debt-info").removeClass('hide');
                         $("#hide-when-ptt-checked").removeClass('hide');
                     }
