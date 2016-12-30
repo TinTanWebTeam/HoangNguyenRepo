@@ -104,20 +104,20 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
     Route::group(['middleware' => 'DebtManagement'], function () {
-        /*GET VIEW*/
+        //Debt Customer
         Route::get('/debt-customer', 'DebtManagementController@getViewDebtCustomer');
-        Route::get('/debt-vehicle-outside', 'DebtManagementController@getViewDebtGarage');
-        /*GET DATA*/
         Route::get('/debt-customer/transports', 'DebtManagementController@getDataDebtCustomer');
-        Route::get('/debt-garage/transports', 'DebtManagementController@getDataDebtGarage');
-        /*POST MODIFY*/
         Route::post('/debt-customer/validate', 'DebtManagementController@postValidateTransportCustomer');
         Route::post('/debt-customer/validate-invoice', 'DebtManagementController@postValidateInvoiceCustomer');
-        Route::post('/debt-garage/validate', 'DebtManagementController@postValidateTransportGarage');
         Route::post('/debt-customer/modify', 'DebtManagementController@postModifyDebtCustomer');
         Route::post('/invoice-customer/modify', 'DebtManagementController@postModifyInvoiceCustomer');
-        Route::post('/debt-garage/modify', 'DebtManagementController@postModifyDebtGarage');
-        Route::post('/invoice-garage/modify', 'DebtManagementController@postModifyInvoiceGarage');
+
+        //Debt Garage
+        Route::get('/debt-vehicle-outside', 'DebtGarageManagementController@getViewDebtGarage');
+        Route::get('/debt-garage/transports', 'DebtGarageManagementController@getDataDebtGarage');
+        Route::post('/debt-garage/validate', 'DebtGarageManagementController@postValidateTransportGarage');
+        Route::post('/debt-garage/modify', 'DebtGarageManagementController@postModifyDebtGarage');
+        Route::post('/invoice-garage/modify', 'DebtGarageManagementController@postModifyInvoiceGarage');
     });
     //Chi phí
     Route::group(['middleware' => 'CostManagement'], function () {
