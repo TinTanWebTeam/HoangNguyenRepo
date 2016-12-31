@@ -1414,6 +1414,11 @@
                                 $("input[id=statusPrePaid]").prop('checked', false);
                             }
 
+                            $("#PTT").prop('disabled', false);
+                            $("#PTT").prop('checked', false);
+                            $("#debt-info").removeClass('hide');
+                            $("#hide-when-ptt-checked").removeClass('hide');
+
                             var _totalPay = 0;
                             var _totalPayReal = dataAfterValidate['totalPayReal'];
                             var _vat = dataAfterValidate['vat'];
@@ -1911,7 +1916,6 @@
                     if ($("#frmInvoice").valid()) {
                         if(!debtCustomerView.validateForm())
                             return;
-
                         debtCustomerView.fillFormDataToCurrentObject();
 
                         var sendToServer = {
@@ -2065,6 +2069,9 @@
 
                     var found = _.filter(data, function (o) {
                         var dateFind = moment(o.transportDate, "YYYY-MM-DD H:m:s");
+                        dateFind.hour(0);
+                        dateFind.minute(0);
+                        dateFind.second(0);
                         return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
                     });
                     return found;
@@ -2155,6 +2162,9 @@
 
                     var found = _.filter(data, function (o) {
                         var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+                        dateFind.hour(0);
+                        dateFind.minute(0);
+                        dateFind.second(0);
                         return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
                     });
                     return found;
@@ -2204,6 +2214,9 @@
 
                     var found = _.filter(data, function (o) {
                         var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+                        dateFind.hour(0);
+                        dateFind.minute(0);
+                        dateFind.second(0);
                         return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
                     });
                     return found;
@@ -2241,8 +2254,7 @@
                 },
 
                 computeWhenChangeTotalPay: function (totalPay, showNoti = true) {
-                    if(!isNumeric(totalPay))
-                        totalPay = convertStringToNumber(totalPay);
+                    totalPay = convertStringToNumber(totalPay);
                     
                     var statusCheck = $("#statusPrePaid").prop('checked');
                     var debtNotExportInvoice = asNumberFromCurrency("#debtNotExportInvoice");
@@ -2363,8 +2375,7 @@
                     formatCurrency(".currency");
                 },
                 computeWhenChangePaidAmt: function (paidAmt) {
-                    if(!isNumeric(paidAmt))
-                        paidAmt = convertStringToNumber(paidAmt);
+                    paidAmt = convertStringToNumber(paidAmt);
                     var invoice_id = $("#invoice_id").val();
                     var statusCheck = $("#statusPrePaid").prop('checked');
                     var cashReceive = asNumberFromCurrency("#cashReceive");
@@ -2428,8 +2439,8 @@
                         $("#hide-when-ptt-checked").addClass('hide');
 
                         $("#VAT").val(0);
-                        debtCustomerView.computeWhenChangeTotalPay(Number.MAX_SAFE_INTEGER);
-                        debtCustomerView.computeWhenChangePaidAmt(Number.MAX_SAFE_INTEGER);
+                        debtCustomerView.computeWhenChangeTotalPay(Number.MAX_SAFE_INTEGER.toString());
+                        debtCustomerView.computeWhenChangePaidAmt(Number.MAX_SAFE_INTEGER.toString());
                     } else {
                         $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
 

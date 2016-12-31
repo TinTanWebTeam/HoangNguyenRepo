@@ -17,6 +17,14 @@ use League\Flysystem\Exception;
 
 class DebtManagementController extends Controller
 {
+    private $firstDayUTS;
+    private $lastDayUTS;
+
+    public function __construct() {
+        $this->firstDayUTS = mktime (0, 0, 0, date("m"), 1, date("Y"));
+        $this->lastDayUTS = mktime (0, 0, 0, date("m"), date('t'), date("Y"));
+    }    
+
     //Function
     public function generateInvoiceCode($type)
     {
@@ -41,12 +49,6 @@ class DebtManagementController extends Controller
 
     public function DataDebtCustomer()
     {
-        $firstDayUTS = mktime (0, 0, 0, date("m"), 1, date("Y"));
-        $lastDayUTS = mktime (0, 0, 0, date("m"), date('t'), date("Y"));
-
-        $firstDay = date("Y-m-d", $firstDayUTS);
-        $lastDay = date("Y-m-d", $lastDayUTS);
-
         $transports = \DB::table('transports')
             ->select('transports.*',
                 'products.name as products_name',
@@ -75,7 +77,7 @@ class DebtManagementController extends Controller
             ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
             ->leftJoin('formulas', 'formulas.id', '=', 'transports.formula_id')
             ->where('transports.active', 1)
-            // ->whereBetween('transportDate', array($firstDay, $lastDay))
+            // ->whereBetween('transportDate', array(date("Y-m-d", $this->firstDay), date("Y-m-d", $this->lastDay)))
             ->orderBy('transports.receiveDate', 'desc')
             ->get();
 
@@ -116,13 +118,11 @@ class DebtManagementController extends Controller
             'invoiceCode'            => $invoiceCode,
             'invoiceCodeBill'        => $invoiceCodeBill,
             'transportInvoices'      => $transportInvoices,
-            'firstDay'               => date("d-m-Y", $firstDayUTS),
-            'lastDay'                => date("d-m-Y", $lastDayUTS)
+            'firstDay'               => date("d-m-Y", $this->firstDayUTS),
+            'lastDay'                => date("d-m-Y", $this->lastDayUTS)
         ];
         return $response;
     }
-
-
 
     public function ValidateInvoiceCustomer($invoiceId)
     {
@@ -259,6 +259,7 @@ class DebtManagementController extends Controller
             $transportUpdate = Transport::findOrFail($transport_id);
             $transportUpdate->cashReceive = $transportUpdate->cashRevenue;
             $transportUpdate->status_customer = 6;
+            $transportUpdate->status_invoice = 3;
 
             $transportUpdate->updatedBy = \Auth::user()->id;
 
@@ -757,8 +758,7 @@ class DebtManagementController extends Controller
                 //Nothing happen with TransportInvoice
 
                 //Update Status_Invoice, Status_Customer for Transport
-                $array_transportId = TransportInvoice::where('transport_id', $invoiceCustomer->id)->pluck('id');
-                dd($array_transportId);
+                $array_transportId = TransportInvoice::where('invoiceCustomer_id', $invoiceCustomer->id)->pluck('transport_id')->toArray();
                 foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
                     $transportUpdate->status_customer = 7;
@@ -786,8 +786,8 @@ class DebtManagementController extends Controller
                     'invoiceCode'            => $arrayResponse['invoiceCode'],
                     'invoiceCodeBill'        => $arrayResponse['invoiceCodeBill'],
                     'transportInvoices'      => $arrayResponse['transportInvoices'],
-                    'firstDay'               => date("d-m-Y", $firstDayUTS),
-                    'lastDay'                => date("d-m-Y", $lastDayUTS),
+                    'firstDay'               => date("d-m-Y", $this->firstDayUTS),
+                    'lastDay'                => date("d-m-Y", $this->lastDayUTS),
                     'arrayInput'             => $arrayInput
                 ];
                 return response()->json($response, 201);
@@ -925,8 +925,8 @@ class DebtManagementController extends Controller
                     'invoiceCode'            => $arrayResponse['invoiceCode'],
                     'invoiceCodeBill'        => $arrayResponse['invoiceCodeBill'],
                     'transportInvoices'      => $arrayResponse['transportInvoices'],
-                    'firstDay'               => date("d-m-Y", $firstDayUTS),
-                    'lastDay'                => date("d-m-Y", $lastDayUTS),
+                    'firstDay'               => date("d-m-Y", $this->firstDayUTS),
+                    'lastDay'                => date("d-m-Y", $this->lastDayUTS),
                     'arrayInput'             => $arrayInput
                 ];
             } else {
