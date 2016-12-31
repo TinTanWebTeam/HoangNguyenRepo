@@ -793,6 +793,7 @@
                 transportType: 0,
                 isAdmin: null,
                 oilPrice: null,
+                vndPerXe: false,
 
                 displayControl: function (mode) {
                     if (mode === 'show') {
@@ -1824,6 +1825,12 @@
                         return;
                     }
 
+                    if(transportView.vndPerXe) {
+                        if($("#quantumProduct").val() === "")
+                            return;
+                        transportView.formulaDetail.quantumProduct = $("#quantumProduct").val();
+                    }
+
                     var sendToServer = {
                         _token: _token,
                         _formulaDetail: transportView.formulaDetail
@@ -1917,6 +1924,13 @@
                         console.log(data);
                         if (jqXHR.status == 200) {
                             transportView.currentFormula = data['formulas'];
+                            var exists = _.filter(transportView.currentFormula, function(o){
+                                return o['unit_name'] == 'VNĐ/Xe';
+                            });
+                            if(exists.length > 0) {
+                                // Có tồn tại VNĐ/Xe
+                                transportView.vndPerXe = true;
+                            }
                             transportView.currentFormulaDetail = data['formulaDetails'];
                             var dataRender = _.filter(transportView.currentFormulaDetail, function(o){
                                 return o['formula_id'] == transportView.currentFormula[0]['id'];

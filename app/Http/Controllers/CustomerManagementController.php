@@ -1238,14 +1238,17 @@ class CustomerManagementController extends Controller
         $customer_id = $request->input('_customerId');
 
         // Find formulaDetail
-        $formulas = Formula::where('customer_id', $customer_id)
-            ->where(\DB::raw('DATE(applyDate)'), '<=', Carbon::createFromFormat('Y-m-d', date('Y-m-d'))->toDateString())
-            ->orderBy('applyDate', 'desc')
+        $formulas = DB::table('formulas')
+            ->where('formulas.customer_id', $customer_id)
+            ->where(\DB::raw('DATE(formulas.applyDate)'), '<=', Carbon::createFromFormat('Y-m-d', date('Y-m-d'))->toDateString())
+            ->leftJoin('units', 'units.id', '=', 'formulas.unit_id')
+            ->orderBy('formulas.applyDate', 'desc')
+            ->select('formulas.*', 'units.name as unit_name')
             ->get();
         if (count($formulas) == 0) {
             return response()->json(['msg' => 'Khách hàng này chưa có công thức.'], 203);
         }
-        $array_id = $formulas->pluck('id')->toArray();
+        $array_id = collect($formulas)->pluck('id')->toArray();
         $formulaDetails = FormulaDetail::whereIn('formula_id', $array_id)->get();
 
         $response = [
@@ -1285,6 +1288,9 @@ class CustomerManagementController extends Controller
     public function findFormula($formulaDetail)
     {
         $arrayFound = [];
+        if (array_key_exists('quantumProduct', $formulaDetail)) {
+            
+        }
         foreach ($formulaDetail as $fdFind) {
             $found = null;
             switch ($fdFind['rule']) {
