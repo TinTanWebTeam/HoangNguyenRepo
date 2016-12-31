@@ -57,5 +57,5 @@ class Formula extends Model
 {
     protected $table = 'formulas';
 
-    protected $fillable = ['status'];
+    protected $fillable = ['status', 'active'];
 }

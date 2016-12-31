@@ -256,10 +256,10 @@
                                         <th>Mã PTT</th>
                                         <th>Khách hàng</th>
                                         <th>Ngày xuất</th>
-                                        <th>Ngày HĐ</th>
-                                        <th>Tổng tiền (+VAT)</th>
+                                        <th>Ngày PTT</th>
+                                        <th>Tổng tiền</th>
                                         <th>Trả trước</th>
-                                        <th>Trả trên HĐ</th>
+                                        <th>Trả trên PTT</th>
                                         <th>Nợ</th>
                                         <th>Người tạo</th>
                                         <th>Người sửa</th>
@@ -509,6 +509,7 @@
                                             <th>Ngày trả</th>
                                             <th>Tiền trả (-VAT)</th>
                                             <th>Tiền trả (+VAT)</th>
+                                            <th>Tiền trả</th>
                                             <th>In</th>
                                         </tr>
                                         </thead>
@@ -1148,10 +1149,10 @@
                                 render: function (data, type, full, meta) {
                                     var tr = '';
                                     tr += '<div class="text-center">';
-                                    tr += '<div class="btn btn-primary btn-circle" title="Xem lịch sử" onclick="debtCustomerView.createInvoiceCustomer(1, ' + full.id + ')">';
+                                    tr += '<div class="btn btn-primary btn-circle" title="Xem lịch sử" onclick="debtCustomerView.createInvoiceCustomer(2, ' + full.id + ')">';
                                     tr += '<i class="fa fa-eye" aria-hidden="true"></i>';
                                     tr += '</div>';
-                                    tr += '<div class="btn btn-danger btn-circle" title="Xóa hóa đơn" onclick="debtCustomerView.deleteInvoiceCustomerConfirm(' + full.id + ')">';
+                                    tr += '<div class="btn btn-danger btn-circle" title="Xóa PTT" onclick="debtCustomerView.deleteInvoiceCustomerConfirm(' + full.id + ')">';
                                     tr += '<i class="fa fa-trash-o" aria-hidden="true"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -1220,11 +1221,18 @@
                             },
                             {
                                 data: 'paidAmtNotVat',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0),
+                                visible: !$("#PTT").prop('checked')
                             },
                             {
                                 data: 'paidAmt',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0),
+                                visible: !$("#PTT").prop('checked')
+                            },
+                            {
+                                data: 'paidAmt',
+                                render: $.fn.dataTable.render.number(",", ".", 0),
+                                visible: $("#PTT").prop('checked')
                             },
                             {
                                 render: function (data, type, full, meta) {
@@ -1374,115 +1382,133 @@
                 },
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
-                    if (flag == 0) {
-                        var dataAfterValidate = debtCustomerView.validateListTransport();
+                    switch(flag) {
+                        case 0:
+                            var dataAfterValidate = debtCustomerView.validateListTransport();
 
-                        //
-                        debtCustomerView.status = dataAfterValidate['status'];
-                        if(debtCustomerView.status === 0){
-                            //Unvalid
-                            $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                            $("#modal-notification").find(".modal-body").html(dataAfterValidate['msg']);
-                            debtCustomerView.displayModal('show', '#modal-notification');
-                            return;
-                        }
+                            //
+                            debtCustomerView.status = dataAfterValidate['status'];
+                            if(debtCustomerView.status === 0){
+                                //Unvalid
+                                $("#modal-notification").find(".modal-title").html("Cảnh báo");
+                                $("#modal-notification").find(".modal-body").html(dataAfterValidate['msg']);
+                                debtCustomerView.displayModal('show', '#modal-notification');
+                                return;
+                            }
 
-                        $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
-                        debtCustomerView.showControl(flag);
-                        debtCustomerView.action = "new";
+                            $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
+                            debtCustomerView.showControl(flag);
+                            debtCustomerView.action = "new";
 
-                        debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
-                        debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
-                        if(debtCustomerView.statusPrePaid === 0) {
-                        //    $("input[id=statusPrePaid]").attr('disabled', false);
-                        //    $("input[id=statusPrePaid]").prop('checked', false);
+                            debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
+                            debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
+                            if(debtCustomerView.statusPrePaid === 0) {
+                            //    $("input[id=statusPrePaid]").attr('disabled', false);
+                            //    $("input[id=statusPrePaid]").prop('checked', false);
+
+                                $("input[id=statusPrePaid]").attr('disabled', true);
+                                $("input[id=statusPrePaid]").prop('checked', true);
+                                debtCustomerView.statusPrePaid == 1;
+                            } else {
+                                $("input[id=statusPrePaid]").attr('disabled', true);
+                                $("input[id=statusPrePaid]").prop('checked', false);
+                            }
+
+                            var _totalPay = 0;
+                            var _totalPayReal = dataAfterValidate['totalPayReal'];
+                            var _vat = dataAfterValidate['vat'];
+                            var _hasVat = dataAfterValidate['hasVat'];
+                            var _paidAmt = 0;
+                            var _debtInvoice = dataAfterValidate['debtInvoice'];
+                            //
+
+                            $("input[id=invoice_id]").val('');
+                            $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
+
+                            // remove readonly input
+                            $("input[id=totalPay]").prop('readonly', false);
+                            $("input[id=invoiceCode]").prop('readonly', false);
+                            $("input[id=VAT]").prop('readonly', false);
+                            $("input[id=hasVAT]").prop('readonly', false);
+
+                            // focus
+                            $("input[id=invoiceCode]").focus();
+                            break;
+                        case 1:
+                        case 2:
+                            if (typeof invoiceCustomer_id === 'undefined') return;
+                            $("#divInvoice").find(".titleControl").html("Chi tiết hóa đơn");
+                            debtCustomerView.showControl(flag);
+                            debtCustomerView.action = "edit";
+                            debtCustomerView.invoiceCustomerId = invoiceCustomer_id;
+
+                            var dataAfterValidate = debtCustomerView.validateInvoice();
+                            debtCustomerView.status = dataAfterValidate['status'];
+
+                            //
+                            debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
+                            debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
 
                             $("input[id=statusPrePaid]").attr('disabled', true);
-                            $("input[id=statusPrePaid]").prop('checked', true);
-                            debtCustomerView.statusPrePaid == 1;
-                        } else {
-                            $("input[id=statusPrePaid]").attr('disabled', true);
-                            $("input[id=statusPrePaid]").prop('checked', false);
-                        }
+                            if(debtCustomerView.statusPrePaid === 0) {
+                                $("input[id=statusPrePaid]").prop('checked', false);
+                            } else {
+                                $("input[id=statusPrePaid]").prop('checked', true);
+                            }
 
-                        var _totalPay = 0;
-                        var _totalPayReal = dataAfterValidate['totalPayReal'];
-                        var _vat = dataAfterValidate['vat'];
-                        var _hasVat = dataAfterValidate['hasVat'];
-                        var _paidAmt = 0;
-                        var _debtInvoice = dataAfterValidate['debtInvoice'];
-                        //
+                            $("#PTT").prop('disabled', true);
 
-                        $("input[id=invoice_id]").val('');
-                        $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCode);
+                            if(flag == 2) {
+                                $("#PTT").prop('checked', true);
+                                $("#debt-info").addClass('hide');
+                                $("#hide-when-ptt-checked").addClass('hide');
+                            } else {
+                                $("#PTT").prop('checked', false);
+                                $("#debt-info").removeClass('hide');
+                                $("#hide-when-ptt-checked").removeClass('hide');
+                            }
 
-                        // remove readonly input
-                        $("input[id=totalPay]").prop('readonly', false);
-                        $("input[id=invoiceCode]").prop('readonly', false);
-                        $("input[id=VAT]").prop('readonly', false);
-                        $("input[id=hasVAT]").prop('readonly', false);
+                            var _totalPay = dataAfterValidate['totalPay'];
+                            var _totalPayReal = dataAfterValidate['totalPayReal'];
+                            var _vat = dataAfterValidate['vat'];
+                            var _hasVat = dataAfterValidate['hasVat'];
+                            var _paidAmt = 0;
+                            var _debtInvoice = dataAfterValidate['debtInvoice'];
+                            //
 
-                        // focus
-                        $("input[id=invoiceCode]").focus();
-                    } else {
-                        if (typeof invoiceCustomer_id === 'undefined') return;
-                        $("#divInvoice").find(".titleControl").html("Chi tiết hóa đơn");
-                        debtCustomerView.showControl(flag);
-                        debtCustomerView.action = "edit";
-                        debtCustomerView.invoiceCustomerId = invoiceCustomer_id;
-
-                        var dataAfterValidate = debtCustomerView.validateInvoice();
-                        debtCustomerView.status = dataAfterValidate['status'];
-
-                        //
-                        debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
-                        debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
-
-                        $("input[id=statusPrePaid]").attr('disabled', true);
-                        if(debtCustomerView.statusPrePaid === 0) {
-                            $("input[id=statusPrePaid]").prop('checked', false);
-                        } else {
-                            $("input[id=statusPrePaid]").prop('checked', true);
-                        }
-
-                        var _totalPay = dataAfterValidate['totalPay'];
-                        var _totalPayReal = dataAfterValidate['totalPayReal'];
-                        var _vat = dataAfterValidate['vat'];
-                        var _hasVat = dataAfterValidate['hasVat'];
-                        var _paidAmt = 0;
-                        var _debtInvoice = dataAfterValidate['debtInvoice'];
-                        //
-
-                        //fill data to table InvoiceCustomerDetail
-                        var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
-                            return o.invoiceCustomer_id == invoiceCustomer_id;
-                        });
-                        if (typeof dataDetail === 'undefined') return;
-                        debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
-
-                        //fill data to table PrintHistory
-                        var dataHistory = [];
-                        for (var i = 0; i < dataDetail.length; i++) {
-                            var found = _.find(debtCustomerView.dataPrintHistory, function (o) {
-                                return o.invoiceCustomerDetail_id == dataDetail[i]['id'];
+                            //fill data to table InvoiceCustomerDetail
+                            var dataDetail = _.filter(debtCustomerView.dataInvoiceCustomerDetail, function (o) {
+                                return o.invoiceCustomer_id == invoiceCustomer_id;
                             });
-                            if (typeof found !== 'undefined')
-                                dataHistory.push(found);
-                        }
-                        debtCustomerView.fillDataToDatatablePrintHistory(dataHistory);
+                            if (typeof dataDetail === 'undefined') return;
+                            debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
 
-                        // set value
-                        $("input[id=invoice_id]").val(debtCustomerView.invoiceCustomerId);
-                        $("input[id=invoiceCode]").val(debtCustomerView.invoiceCode);
+                            //fill data to table PrintHistory
+                            var dataHistory = [];
+                            for (var i = 0; i < dataDetail.length; i++) {
+                                var found = _.find(debtCustomerView.dataPrintHistory, function (o) {
+                                    return o.invoiceCustomerDetail_id == dataDetail[i]['id'];
+                                });
+                                if (typeof found !== 'undefined')
+                                    dataHistory.push(found);
+                            }
+                            debtCustomerView.fillDataToDatatablePrintHistory(dataHistory);
 
-                        // add readonly input
-                        $("input[id=totalPay]").prop('readonly', true);
-                        $("input[id=invoiceCode]").prop('readonly', true);
-                        $("input[id=VAT]").prop('readonly', true);
-                        $("input[id=hasVAT]").prop('readonly', true);
+                            // set value
+                            $("input[id=invoice_id]").val(debtCustomerView.invoiceCustomerId);
+                            $("input[id=invoiceCode]").val(debtCustomerView.invoiceCode);
 
-                        // focus
-                        $("input[id=paidAmt]").focus();
+                            // add readonly input
+                            $("input[id=totalPay]").prop('readonly', true);
+                            $("input[id=invoiceCode]").prop('readonly', true);
+                            $("input[id=VAT]").prop('readonly', true);
+                            $("input[id=hasVAT]").prop('readonly', true);
+
+                            // focus
+                            $("input[id=paidAmt]").focus();
+                            break;
+                        default:
+                            break;
                     }
 
                     var _totalTransport = dataAfterValidate['totalTransport'];

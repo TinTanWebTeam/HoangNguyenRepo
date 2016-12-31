@@ -106,9 +106,9 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group form-md-line-input">
-                                                        <label for="cashDelivery" class="red"><b>Phí giao xe</b></label>
-                                                        <input type="text" class="form-control currency"
-                                                               id="cashDelivery" name="cashDelivery">
+                                                        <label for="cashDelivery" class="red"><b>Phí giao xe (%)</b></label>
+                                                        <!-- <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery"> -->
+                                                        <input type="number" class="form-control" id="cashDelivery" name="cashDelivery" max="100" min="1">
                                                     </div>
                                                 </div>
                                             </div>
@@ -874,12 +874,14 @@
                     })
                 },
                 fillCurrentObjectToForm: function () {
+                    var cashDelivery = postageView.current["cashDelivery"] / postageView.current["unitPrice"] * 100;
+
                     $("input[id=customer_id]").val(postageView.current["customers_fullName"]);
                     $("#customer_id").attr('data-customerId', postageView.current["customer_id"]);
                     $("input[id=unitPrice]").val(postageView.current["unitPrice"]);
                     $("select[id=unit_id]").val(postageView.current["unit_id"]);
                     $("textarea[id=note]").val(postageView.current["note"]);
-                    $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
+                    $("input[id=cashDelivery]").val(cashDelivery);
                     var applyDate = moment(postageView.current["applyDate"], "YYYY-MM-DD");
                     $("input[id='applyDate']").datepicker('update', applyDate.format("DD-MM-YYYY"));
                     var createdDate = moment(postageView.current["createdDate"], "YYYY-MM-DD");
@@ -890,7 +892,7 @@
                     if (postageView.action == 'add') {
                         postageView.current = {
                             customer_id: $("#customer_id").attr("data-customerId"),
-                            cashDelivery: asNumberFromCurrency("#cashDelivery"),
+                            cashDelivery: $("#cashDelivery").val(),
                             unitPrice: asNumberFromCurrency('#unitPrice'),
                             unit_id: $("select[id=unit_id]").val(),
                             createdDate: $("input[id=createdDate]").val(),
@@ -900,7 +902,7 @@
                         };
                     } else if (postageView.action == 'update') {
                         postageView.current.customer_id = $("#customer_id").attr("data-customerId");
-                        postageView.current.cashDelivery = asNumberFromCurrency("#cashDelivery");
+                        postageView.current.cashDelivery = $("#cashDelivery").val();
                         postageView.current.unitPrice = asNumberFromCurrency('#unitPrice');
                         postageView.current.unit_id = $("select[id=unit_id]").val();
                         postageView.current.createdDate = $("input[id=createdDate]").val();
@@ -1113,7 +1115,6 @@
 
                                     showNotification("success", "Thêm thành công!");
                                     postageView.clearInput();
-                                    postageView.hideControl();
                                     break;
                                 case 'update':
                                     postageView.dataPostage = data['postages'];
@@ -1138,11 +1139,11 @@
                                     postageView.arrayDetail = [];
                                     showNotification("success", "Xóa thành công!");
                                     postageView.displayModal("hide", "#modal-notification");
-                                    postageView.hideControl();
                                     break;
                                 default:
                                     break;
                             }
+                            postageView.hideControl();
                         } else if (jqXHR.status == 203) {
                             showNotification("warning", data['msg']);
                         } else {
