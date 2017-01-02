@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 hide">
                             <div class="radio" id="invoiceUp">
                                 <label style="margin-right: 10px">
                                     <input type="radio" name="rdoTransport" value="All" checked>Tất cả
@@ -93,10 +93,10 @@
                         </div>
                         <div class="col-md-6">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 hide">
                                     <label for="statusMoney" class="form-control">Trạng thái:</label>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-5 hide">
                                     <select class="form-control" id="statusMoney"
                                             onchange="debtCustomerView.searchTransport(this); debtCustomerView.selectAll()">
                                         <option value="All">Tất cả</option>
@@ -154,7 +154,7 @@
                     </div>
 
                     <hr>
-                    <p class="lead text-primary text-left"><strong>Hóa đơn khách hàng</strong></p>
+                    <p class="lead text-primary text-left"><strong>Hóa đơn</strong></p>
                     <div class="row">
                         <div class="col-md-6" id="dateSearchInvoice">
                             <input type="text" class="date start"/> đến
@@ -166,7 +166,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md-10 hide">
                             <div class="radio" id="invoiceDown">
                                 <label style="margin-right: 10px"><input type="radio" name="rdoInvoice" checked
                                                                          value="All">Tất cả</label>
@@ -228,7 +228,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md-10 hide">
                             <div class="radio" id="invoiceDownPTT">
                                 <label style="margin-right: 10px"><input type="radio" name="rdoInvoicePTT" checked value="All">Tất cả</label>
                                 <label style="margin-right: 10px"><input type="radio" name="rdoInvoicePTT" value="StillDebt">Còn nợ</label>
@@ -374,7 +374,8 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <fieldset>
-                                            <legend>Hóa đơn:
+                                            <legend>
+                                                <span>Hóa đơn:</span>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <span style="font-size: 13px;">Xuất HĐ tiền đã nhận: </span>
                                                 <input type="checkbox" id="statusPrePaid" name="statusPrePaid"
@@ -1442,7 +1443,7 @@
                         case 1:
                         case 2:
                             if (typeof invoiceCustomer_id === 'undefined') return;
-                            $("#divInvoice").find(".titleControl").html("Chi tiết hóa đơn");
+                            
                             debtCustomerView.showControl(flag);
                             debtCustomerView.action = "edit";
                             debtCustomerView.invoiceCustomerId = invoiceCustomer_id;
@@ -1464,10 +1465,20 @@
                             $("#PTT").prop('disabled', true);
 
                             if(flag == 2) {
+                                $("#divInvoice").find(".titleControl").html("Chi tiết phiếu thanh toán");
+                                $("label[for=invoiceCode] b").text("Mã PTT");
+                                $("label[for=invoiceDate] b").text("Ngày PTT");
+                                // $("#hide-when-ptt-checked").prev().find("span").text("Phiếu thanh toán:");
+
                                 $("#PTT").prop('checked', true);
                                 $("#debt-info").addClass('hide');
                                 $("#hide-when-ptt-checked").addClass('hide');
                             } else {
+                                $("#divInvoice").find(".titleControl").html("Chi tiết hóa đơn");
+                                $("label[for=invoiceCode] b").text("Mã HĐ");
+                                $("label[for=invoiceDate] b").text("Ngày HĐ");
+                                // $("#hide-when-ptt-checked").prev().find("span").text("Hóa đơn:");
+
                                 $("#PTT").prop('checked', false);
                                 $("#debt-info").removeClass('hide');
                                 $("#hide-when-ptt-checked").removeClass('hide');
@@ -2438,6 +2449,9 @@
                         $("#debt-info").addClass('hide');
                         $("#hide-when-ptt-checked").addClass('hide');
 
+                        $("label[for=invoiceCode] b").text("Mã PTT");
+                        $("label[for=invoiceDate] b").text("Ngày PTT");
+
                         $("#VAT").val(0);
                         debtCustomerView.computeWhenChangeTotalPay(Number.MAX_SAFE_INTEGER.toString());
                         debtCustomerView.computeWhenChangePaidAmt(Number.MAX_SAFE_INTEGER.toString());
@@ -2446,6 +2460,9 @@
 
                         $("#debt-info").removeClass('hide');
                         $("#hide-when-ptt-checked").removeClass('hide');
+
+                        $("label[for=invoiceCode] b").text("Mã HĐ");
+                        $("label[for=invoiceDate] b").text("Ngày HĐ");
                     }
                 }
             };
