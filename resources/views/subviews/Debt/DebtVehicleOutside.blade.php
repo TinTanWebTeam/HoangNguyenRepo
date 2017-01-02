@@ -1128,8 +1128,6 @@
                     })
                 },
 
-
-
                 loadData: function () {
                     if (debtGarageView.table != null)
                         debtGarageView.table.destroy();

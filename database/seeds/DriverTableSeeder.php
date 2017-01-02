@@ -27,7 +27,7 @@ class DriverTableSeeder extends Seeder
                 'birthday' => '1994-01-05',
                 'identityCardNumber' => random_int(100000000, 900000000),
                 'issueDate_identityCard' => '2012-01-05',
-                'driverLicenseNumber' => '1029384756',
+                'driverLicenseNumber' => random_int(100000000, 900000000),
                 'issueDate_driverLicense' => '2013-01-05',
                 'expireDate_driverLicense' => '2038-01-05',
                 'driverLicenseType' => 'B2',

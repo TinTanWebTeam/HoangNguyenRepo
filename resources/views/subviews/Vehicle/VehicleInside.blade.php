@@ -46,7 +46,10 @@
         height: 330px;
     }
 
-    #listVehicle .table-list-vehicle {
+    #listVehicle .panel-body {
+        height: 500px;
+    }
+    #listVehicle .scroll-bar {
         height: 500px;
     }
 
@@ -280,7 +283,7 @@
                 </div>
             </div>
             <div class="panel-body">
-                <div class="col-md-5">
+                <div class="col-md-5 scroll-bar">
                     <form role="form" id="frmVehicle" onsubmit="return false;">
                         <input id="vehicle_id" style="display: none">
                         <div class="form-body">
@@ -751,7 +754,7 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
-                    $("#listVehicle").find('.table-list-vehicle').mCustomScrollbar({
+                    $("#listVehicle").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
                 },

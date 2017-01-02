@@ -22,7 +22,7 @@
     }
 
     #divControl .panel-body {
-        height: 500px;
+        height: 550px;
     }
 </style>
 
