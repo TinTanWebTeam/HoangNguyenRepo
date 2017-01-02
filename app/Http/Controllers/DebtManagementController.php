@@ -806,6 +806,7 @@ class DebtManagementController extends Controller
         }
         try {
             DB::beginTransaction();
+
             //Delete TransportInvoice
             $array_transportInvoice = TransportInvoice::where('invoiceCustomer_id', $invoiceCustomerId)->get();
             if (count($array_transportInvoice) > 0) {
@@ -815,6 +816,12 @@ class DebtManagementController extends Controller
                         return response()->json(['msg' => 'Delete TransportInvoice fail.'], 404);
                     }
                 }
+            }
+
+            //Change status_invoice in Transport
+            $array_transportId = $array_transportInvoice->pluck('transport_id');
+            foreach($array_transportId as $id) {
+                Transport::findOrFail($id)->update(['status_invoice' => 0]);
             }
 
             //Delete InvoiceCustomerDetail
