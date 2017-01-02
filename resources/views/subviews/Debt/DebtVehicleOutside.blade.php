@@ -787,7 +787,28 @@
                             },
                             {
                                 data: 'debt',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
+                                render: $.fn.dataTable.render.number(",", ".", 0),
+                                //"footerCallback": function (row, data, start, end, display) {
+                                "footerCallback": function (data, type, full, meta) {
+                                    var api = this.api(),
+                                        intVal = function (i) {
+                                            return typeof i === 'string' ?
+                                                i.replace(/[, Rs]|(\.\d{2})/g,"")* 1 :
+                                                typeof i === 'number' ?
+                                                    i : 0;
+                                        },
+                                        total2 = api
+                                            .column(8)
+                                            .data()
+                                            .reduce(function (a, b) {
+                                                return intVal(a) + intVal(b);
+                                            }, 0);
+
+                                    $(api.column(8).footer()).html(
+                                        ' ( $' + total2 + ' total)'
+                                    );
+                                }
+
                             },
                             {data: 'receiver'},
                             {data: 'users_createdBy'},
@@ -899,40 +920,6 @@
                         ],
 
 
-
-
-                        "footerCallback": function ( row, data, start, end, display ) {
-                            var api = this.api(), data;
-
-                            // Remove the formatting to get integer data for summation
-                            var intVal = function ( i ) {
-                                return typeof i === 'string' ?
-                                    i.replace(/[\$,]/g, '')*1 :
-                                    typeof i === 'number' ?
-                                        i : 0;
-                            };
-
-                            // Total over all pages
-                            total = api
-                                .column( 8 )
-                                .data()
-                                .reduce( function (a, b) {
-                                    return intVal(a) + intVal(b);
-                                }, 0 );
-
-                            // Total over this page
-                            pageTotal = api
-                                .column( 8, { page: 'current'} )
-                                .data()
-                                .reduce( function (a, b) {
-                                    return intVal(a) + intVal(b);
-                                }, 0 );
-
-                            // Update footer
-                            $( api.column( 8 ).footer() ).html(
-                                '$'+pageTotal +' ( $'+ total +' total)'
-                            );
-                        }
 
 
                     });

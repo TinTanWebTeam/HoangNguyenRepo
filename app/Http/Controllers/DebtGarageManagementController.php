@@ -39,6 +39,17 @@ class DebtGarageManagementController extends Controller
         return $invoiceCode;
     }
 
+
+    //Garage
+
+    ///////////              Tâm                     /////////////////////////////////////
+
+    public function getDataDebtGarage()
+    {
+        $response = $this->DataDebtGarage();
+        return response()->json($response, 200);
+    }
+
     public function DataDebtGarage()
     {
         $transports = \DB::table('transports')
@@ -71,45 +82,49 @@ class DebtGarageManagementController extends Controller
                 ['transports.active', '=', 1],
                 ['transports.product_id', '<>', 0],
                 ['transports.vehicle_id', '<>', 0],
-                ['transports.customer_id', '<>', 0]
+                ['transports.customer_id', '<>', 0],
+                ['transports.status_invoice_garage', '=', 0]
+
             ])
             ->orderBy('transports.receiveDate', 'desc')
             ->get();
 
-        $invoiceGarages = DB::table('invoiceGarages')
-            ->select('invoiceGarages.*',
-                'garages.name as garages_name',
-                'vehicles.areaCode as vehicles_areaCode',
-                'vehicles.vehicleNumber as vehicles_vehicleNumber',
-                'users_createdBy.fullName as users_createdBy',
-                'users_updatedBy.fullName as users_updatedBy'
-            )
-            ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
-            ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
-            ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
-            ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
-            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
-            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
-            ->where([
-                ['invoiceGarages.active', 1],
-                ['transports.active', '=', 1],
-                ['transports.product_id', '<>', 0],
-                ['transports.vehicle_id', '<>', 0],
-                ['transports.customer_id', '<>', 0]
-            ])
-            ->groupBy('invoiceGarages.id')
-            ->get();
 
-        $invoiceGarageDetails = DB::table('invoiceGarageDetails')
-            ->get();
 
-        $printHistories = DB::table('printHistories')
-            ->leftJoin('users', 'users.id', '=', 'printHistories.updatedBy')
-            ->select('printHistories.*', 'users.fullName as users_fullName')
-            ->get();
+        //Phiếu thanh toán + trả trực tiếp
+//        $invoiceGarages = DB::table('invoiceGarages')
+//            ->select('invoiceGarages.*',
+//                'garages.name as garages_name',
+//                'vehicles.areaCode as vehicles_areaCode',
+//                'vehicles.vehicleNumber as vehicles_vehicleNumber',
+//                'users_createdBy.fullName as users_createdBy',
+//                'users_updatedBy.fullName as users_updatedBy'
+//            )
+//            ->leftJoin('transportInvoices', 'transportInvoices.invoiceGarage_id', '=', 'invoiceGarages.id')
+//            ->leftJoin('transports', 'transports.id', '=', 'transportInvoices.transport_id')
+//            ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+//            ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
+//            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+//            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
+//            ->where([
+//                ['invoiceGarages.active', 1],
+//                ['transports.active', '=', 1],
+//                ['transports.product_id', '<>', 0],
+//                ['transports.vehicle_id', '<>', 0],
+//                ['transports.customer_id', '<>', 0]
+//            ])
+//            ->groupBy('invoiceGarages.id')
+//            ->get();
+
+//        $invoiceGarageDetails = DB::table('invoiceGarageDetails')
+//            ->get();
+//
+//        $printHistories = DB::table('printHistories')
+//            ->leftJoin('users', 'users.id', '=', 'printHistories.updatedBy')
+//            ->select('printHistories.*', 'users.fullName as users_fullName')
+//            ->get();
 
         $invoiceCode = $this->generateInvoiceCode('garage');
-        $invoiceCodeBill = $this->generateInvoiceCode('bill');
 
         $transportInvoices = DB::table('transportInvoices')->get();
 
@@ -121,35 +136,35 @@ class DebtGarageManagementController extends Controller
             ->select('costs.*', 'vehicles.id',
                 DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
                 , 'costs.cost', 'garages.name'
-                , 'costPrices.name', 'costPrices.id')
+                , 'costPrices.name', 'costPrices.id'
+                ,'garages.name as garageName'
+            )
+            ->where([
+                ['costs.active', '=', 1],
+                ['costs.status_invoice_garage', '=', 0]
+            ])
             ->get();
 
         $response = [
             'msg' => 'Get list all Transport',
             'transports' => $transports,
-            'invoiceGarages' => $invoiceGarages,
-            'invoiceGarageDetails' => $invoiceGarageDetails,
-            'printHistories' => $printHistories,
+//            'invoiceGarages' => $invoiceGarages,
+//            'invoiceGarageDetails' => $invoiceGarageDetails,
+//            'printHistories' => $printHistories,
             'invoiceCode' => $invoiceCode,
-            'invoiceCodeBill' => $invoiceCodeBill,
             'transportInvoices' => $transportInvoices,
             'vehicleCost' => $vehicleCost
         ];
         return $response;
     }
 
-    //Garage
+
+
     public function getViewDebtGarage()
     {
         return view('subviews.Debt.DebtVehicleOutside');
     }
 
-    public function getDataDebtGarage()
-    {
-        $response = $this->DataDebtGarage();
-
-        return response()->json($response, 200);
-    }
 
     public function postModifyDebtGarage(Request $request)
     {
