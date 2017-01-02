@@ -1143,7 +1143,7 @@
                             debtGarageView.dataVehicleCost = data['vehicleCost'];
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                             debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
-console.log(debtGarageView.dataVehicleCost);
+
 
                            // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
 
@@ -1221,7 +1221,6 @@ console.log(debtGarageView.dataVehicleCost);
                 createInvoiceGarage: function (flag, invoiceGarage_id) {
                     if (flag == 0) {
                         var dataAfterValidate = debtGarageView.validateListTransport();
-
                         if (dataAfterValidate['status'] === 0) {
                             $("#modal-notification").find(".modal-title").html("Cảnh báo");
                             $("#modal-notification").find(".modal-body").html(dataAfterValidate['msg']);

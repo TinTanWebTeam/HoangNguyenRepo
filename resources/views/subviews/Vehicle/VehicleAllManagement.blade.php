@@ -40,6 +40,16 @@
                     </ol>
                 </div>
             </div>
+
+            <div class="row" style="margin: 15px 0 0 0">
+                <div class="col-lg-12">
+                    <span class="label " style="font-size: 1em;background-color:rgba(78,79,76,0.9)">Chưa phân tài</span>
+                    <span class="label label-primary" style="font-size: 1em;">Đang giao hàng</span>
+                    <span class="label label-success" style="font-size: 1em;">Đã giao hàng</span>
+                    <span class="label label-danger" style="font-size: 1em;">Không giao được</span>
+                </div>
+            </div>
+
             <!-- .panel-body -->
             <div class="panel-body">
                 <div class="dataTable_wrapper">
@@ -49,7 +59,7 @@
                             <th>Stt</th>
                             <th>Số xe</th>
                             <th>Nhà xe</th>
-                            <th>Trạng thái</th>
+                            <th style="width:100px">Trạng thái</th>
                             <th>Ghi chú</th>
                         </tr>
                         </thead>
@@ -167,7 +177,7 @@
                             break;
                     }
                 },
-                cancel:function () {
+                cancel: function () {
                     VehicleAllView.displayModal("hide", "#modal-confirmUpdate");
                 },
                 loadData: function () {
@@ -281,11 +291,9 @@
                                     }
                                     var tr = "";
                                     tr += '<i style="width: 50%; display: inline-block; font-size: 20px;" class="fa fa-truck ' + color_vehicle + '" aria-hidden="true"></i>';
-                                    tr += '<p>' + full.status + '</p>';
+//                                    tr += '<p>' + full.status + '</p>';
                                     return tr;
                                 }
-
-
                             },
                             {data: 'note'}
                         ]
@@ -333,5 +341,4 @@
         }
     });
 </script>
-
 
