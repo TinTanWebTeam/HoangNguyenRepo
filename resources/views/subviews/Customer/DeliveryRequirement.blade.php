@@ -794,6 +794,8 @@
                 isAdmin: null,
                 oilPrice: null,
                 vndPerXe: false,
+                firstDay: null,
+                lastDay: null,
 
                 displayControl: function (mode) {
                     if (mode === 'show') {
@@ -949,6 +951,20 @@
                     transportView.transportType = (cb.checked) ? 1 : 0;
                 },
 
+                reloadData: function(data){
+                    transportView.dataTransport = data['transports'];
+                    transportView.dataVoucherTransport = data['voucherTransports'];
+                    transportView.dataVoucher = data['vouchers'];
+                    transportView.dataStatus = data['statuses'];
+                    transportView.dataCostPrice = data['costPrices'];
+                    transportView.dataFormula = data['formulas'];
+                    transportView.dataFormulaDetail = data['formulaDetails'];
+                    transportView.dataTransportFormulaDetail = data['transportFormulaDetails'];
+                    transportView.oilPrice = data['oilPrice'];
+                    transportView.isAdmin = data['isAdmin'];
+                    transportView.firstDay = data['firstDay'];
+                    transportView.lastDay = data['lastDay'];
+                },
                 loadData: function () {
                     $.ajax({
                         url: url + 'transport/transports',
@@ -956,17 +972,10 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            transportView.dataTransport = data['transports'];
-                            transportView.dataVoucherTransport = data['voucherTransports'];
-                            transportView.dataVoucher = data['vouchers'];
-                            transportView.dataStatus = data['statuses'];
-                            transportView.dataCostPrice = data['costPrices'];
-                            transportView.dataFormula = data['formulas'];
-                            transportView.dataFormulaDetail = data['formulaDetails'];
-                            transportView.dataTransportFormulaDetail = data['transportFormulaDetails'];
-                            transportView.oilPrice = data['oilPrice'];
-                            transportView.isAdmin = data['isAdmin'];
+                            transportView.reloadData(data);
                             transportView.fillDataToDatatable(transportView.dataTransport);
+                            transportView.setCurrentMonth();
+                            transportView.searchFromDateToDate();
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1658,16 +1667,7 @@
                         console.log("SERVER");
                         console.log(data);
                         if (jqXHR.status == 201) {
-                            transportView.dataTransport = data['transports'];
-                            transportView.dataVoucherTransport = data['voucherTransports'];
-                            transportView.dataVoucher = data['vouchers'];
-                            transportView.dataStatus = data['statuses'];
-                            transportView.dataCostPrice = data['costPrices'];
-                            transportView.dataFormula = data['formulas'];
-                            transportView.dataFormulaDetail = data['formulaDetails'];
-                            transportView.dataTransportFormulaDetail = data['transportFormulaDetails'];
-                            transportView.oilPrice = data['oilPrice'];
-                            transportView.isAdmin = data['isAdmin'];
+                            transportView.reloadData(data);
                             transportView.fillDataToDatatable(transportView.dataTransport);
 
                             switch (transportView.action) {
@@ -1824,6 +1824,7 @@
                         $("label[for=quantumProduct] b").html('Lượng hàng');
                         return;
                     }
+                    debugger;
 
                     if(transportView.vndPerXe) {
                         if($("#quantumProduct").val() === "")
@@ -2096,6 +2097,9 @@
                     if (fromDate.isValid() && toDate.isValid()) {
                         var found = _.filter(transportView.dataTransport, function (o) {
                             var find = moment(o.receiveDate, "YYYY-MM-DD");
+                            find.hour(0);
+                            find.minute(0);
+                            find.second(0);
                             return moment(find).isBetween(fromDate, toDate, null, '[]');
                         });
                         transportView.table.clear().rows.add(found).draw();
@@ -2327,7 +2331,11 @@
                     if(pair.length > 0){
                         $("#productCode").val(pair[0]['value']);
                     }
-                }
+                },
+                setCurrentMonth: function() {
+                    $("#dateOnlySearch").find(".start").datepicker('update', transportView.firstDay);
+                    $("#dateOnlySearch").find(".end").datepicker('update', transportView.lastDay);
+                },
             };
             transportView.loadData();
         } else {

@@ -1313,7 +1313,7 @@
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
                             debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
 
-                            debtCustomerView.searchCurrentMonth();
+                            debtCustomerView.setCurrentMonth();
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
                             debtCustomerView.searchPTT();
@@ -2138,7 +2138,7 @@
                         });
 
                         if(add.length > 0) {
-                            found = data.concat(all);
+                            found = data.concat(add);
                         }
                     } else {
                         found = _.filter(data, function (o) {
@@ -2421,7 +2421,7 @@
                     formatCurrency(".currency");
                 },
 
-                searchCurrentMonth: function() {
+                setCurrentMonth: function() {
                     $("#dateSearchTransport").find(".start").datepicker('update', debtCustomerView.firstDay);
                     $("#dateSearchTransport").find(".end").datepicker('update', debtCustomerView.lastDay);
 

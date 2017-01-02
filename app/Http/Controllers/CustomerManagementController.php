@@ -31,6 +31,14 @@ use League\Flysystem\Exception;
 
 class CustomerManagementController extends Controller
 {
+    private $firstDayUTS;
+    private $lastDayUTS;
+
+    public function __construct() {
+        $this->firstDayUTS = mktime (0, 0, 0, date("m"), 1, date("Y"));
+        $this->lastDayUTS = mktime (0, 0, 0, date("m"), date('t'), date("Y"));
+    }    
+
     /* Normal Function */
     public function generateTransportCode()
     {
@@ -681,7 +689,9 @@ class CustomerManagementController extends Controller
             'formulaDetails'          => $formulaDetails,
             'transportFormulaDetails' => $transportFormulaDetails,
             'oilPrice'                => $oilPrice,
-            'isAdmin'                 => (!$isAdmin) ? 1: 0
+            'isAdmin'                 => (!$isAdmin) ? 1: 0,
+            'firstDay'               => date("d-m-Y", $this->firstDayUTS),
+            'lastDay'                => date("d-m-Y", $this->lastDayUTS)
         ];
 
         return $response;
@@ -1262,6 +1272,7 @@ class CustomerManagementController extends Controller
 
     public function postFindFormula(Request $request)
     {
+        dd($request->all());
         if (array_key_exists('_formulaCode', $request->all())) {
             $formulaCode = $request->input('_formulaCode');
             $customerId = $request->input('_customerId');
