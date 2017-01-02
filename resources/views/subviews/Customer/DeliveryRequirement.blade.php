@@ -2233,7 +2233,7 @@
                 },
                 showThumbnail: function (filePath) {
                     var tr = "";
-                    tr += "<embed src='" + filePath + "'>";
+                    tr += "<embed src='" + filePath + "' height='100px' width='100px'>";
                     $("#thumbnail").html(tr);
                 },
                 deleteFile: function (fileId) {

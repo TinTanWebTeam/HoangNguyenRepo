@@ -35,8 +35,10 @@ class DebtManagementController extends Controller
             case 'garage':
                 $invoiceCode = "IG" . date('ymd');
                 break;
-            case 'bill':
-                $invoiceCode = "IB" . date('ymd');
+            case 'bill_customer':
+                $invoiceCode = "BC" . date('ymd');
+            case 'bill_garage':
+                $invoiceCode = "BG" . date('ymd');
                 break;
             default:
                 break;
@@ -105,7 +107,7 @@ class DebtManagementController extends Controller
             ->get();
 
         $invoiceCode = $this->generateInvoiceCode('customer');
-        $invoiceCodeBill = $this->generateInvoiceCode('bill');
+        $invoiceCodeBill = $this->generateInvoiceCode('bill_customer');
 
         $transportInvoices = DB::table('transportInvoices')->get();
 
@@ -633,7 +635,7 @@ class DebtManagementController extends Controller
 
             if ($invoiceCode == ''){
                 if ($status_invoice == 1)
-                    $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('bill');
+                    $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('bill_customer');
                 else if($status_invoice == 2)
                     $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('customer');
             }

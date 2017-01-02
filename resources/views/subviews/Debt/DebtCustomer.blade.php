@@ -1005,7 +1005,18 @@
                                 extend: 'colvis',
                                 text: 'Ẩn cột'
                             }
-                        ]
+                        ],
+                        fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                            switch(aData['status_invoice']) {
+                                case 0:
+                                    break;
+                                case 2:
+                                    $('td', nRow).css('background-color', '#7FFFD4');
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
                     });
                     $("#table-data").css("width", "auto");
                 },
@@ -2145,7 +2156,7 @@
                         var add = _.difference(allNotPayment, notPaymentThis);
 
                         found = _.filter(data, function (o) {
-                            return o['status_invoice'] == 0;
+                            return o['status_invoice'] == 0 || o['status_invoice'] == 2;
                         });
 
                         if(add.length > 0) {
@@ -2153,7 +2164,7 @@
                         }
                     } else {
                         found = _.filter(data, function (o) {
-                            return o['status_invoice'] == 0;
+                            return o['status_invoice'] == 0 || o['status_invoice'] == 2;
                         });
                     }
 
