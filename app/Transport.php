@@ -93,6 +93,6 @@ class Transport extends Model
 {
     protected $table = 'transports';
     protected $fillable = [
-
+        'status_invoice'
     ];
 }

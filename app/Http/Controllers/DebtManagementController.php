@@ -960,6 +960,12 @@ class DebtManagementController extends Controller
                     }
                 }
 
+                //Change status_invoice in Transport
+                $array_transportId = $array_transportInvoice->pluck('transport_id');
+                foreach($array_transportId as $id) {
+                    Transport::findOrFail($id)->update(['status_invoice' => 0]);
+                }
+
                 //Response
                 $response = $this->DataDebtCustomer();
             }
