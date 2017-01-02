@@ -1824,7 +1824,6 @@
                         $("label[for=quantumProduct] b").html('Lượng hàng');
                         return;
                     }
-                    debugger;
 
                     if(transportView.vndPerXe) {
                         if($("#quantumProduct").val() === "")

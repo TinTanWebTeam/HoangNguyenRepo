@@ -1272,7 +1272,6 @@ class CustomerManagementController extends Controller
 
     public function postFindFormula(Request $request)
     {
-        dd($request->all());
         if (array_key_exists('_formulaCode', $request->all())) {
             $formulaCode = $request->input('_formulaCode');
             $customerId = $request->input('_customerId');
