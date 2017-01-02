@@ -247,7 +247,7 @@
                                             <button type="button" class="btn btn-primary marginRight"
                                                     onclick="driverView.save()">Hoàn tất
                                             </button>
-                                            <button type="button" class="btn default" onclick="driverView.cancel()">
+                                            <button type="button" class="btn default marginRight" onclick="driverView.cancel()">
                                                 Nhập lại
                                             </button>
                                             <button type="button" class="btn btn-info" id="attach-file"
