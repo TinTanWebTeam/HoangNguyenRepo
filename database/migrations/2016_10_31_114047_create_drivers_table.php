@@ -15,8 +15,8 @@ class CreateDriversTable extends Migration
         Schema::create('drivers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('fullName');
-            $table->string('address')->nullable();
-            $table->string('permanetAddress')->nullable();
+            $table->string('permanentAddress')->nullable()->comment('Địa chỉ thường trú');
+            $table->string('temporaryAddress')->nullable()->comment('Địa chỉ tạm trú');
             $table->string('phone')->nullable();
             $table->date('birthday')->nullable();
             // governmentId -> identityCardNumber

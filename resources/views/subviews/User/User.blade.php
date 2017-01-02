@@ -303,6 +303,12 @@
                 show: function () {
                     $('.menu-toggle').fadeOut();
                     $('#divControl').fadeIn(300);
+                    if(userView.action == 'add') {
+                        $("input[id=password]").prop("readOnly", false);
+                        $("input[id=password_confirmation]").prop("readOnly", false);
+                        $("input[id=username]").prop("readOnly", false);
+                    }
+
                 },
                 hide: function () {
                     $('#divControl').fadeOut(300, function () {
@@ -548,10 +554,10 @@
                 addNewUser: function () {
                     userView.renderDateTimePicker();
                     userView.current = null;
-                    $("input[id=username]").prop("readOnly", false);
                     $("#divControl").find(".titleControl").html("Thêm mới tài khoản");
                     userView.action = 'add';
                     userView.show();
+
                 },
                 clearInput: function () {
                     $("input[id='fullName']").val('');

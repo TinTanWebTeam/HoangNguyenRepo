@@ -20,45 +20,14 @@ class DriverManagementController extends Controller
 
     public function getDataDriver()
     {
-//        $dataDrivers = \DB::table('drivers')
-//            ->select(
-//                'drivers.*',
-//                'drivers.driverLicenseType as driverType',
-//                'drivers.issueDate_DriverLicense as issueDate_driver',
-//                'vehicles.areaCode',
-//                'vehicles.vehicleNumber',
-//                'vehicleTypes.name as vehicle_types',
-//                'garages.name as garage',
-//                'garageTypes.name as garageTypes'
-//            )
-//            ->leftJoin('driverVehicles', 'drivers.id', '=', 'driverVehicles.driver_id')
-//            ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
-//            ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-//            ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
-//            ->leftJoin('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
-//            ->where('drivers.active', 1)
-//            ->where('driverVehicles.active', 1)
-//            ->get();
-
 
         $dataDrivers = \DB::table('drivers')
             ->select(
                 'drivers.*',
                 'drivers.driverLicenseType as driverType',
                 'drivers.issueDate_DriverLicense as issueDate_driver'
-//                'vehicles.areaCode',
-//                'vehicles.vehicleNumber',
-//                'vehicleTypes.name as vehicle_types',
-//                'garages.name as garage',
-//                'garageTypes.name as garageTypes'
             )
-//            ->leftJoin('driverVehicles', 'drivers.id', '=', 'driverVehicles.driver_id')
-//            ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
-//            ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-//            ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
-//            ->leftJoin('garageTypes', 'garages.garageType_id', '=', 'garageTypes.id')
             ->where('drivers.active', 1)
-//            ->where('driverVehicles.active', 1)
             ->get();
 
         $response = [
@@ -74,7 +43,6 @@ class DriverManagementController extends Controller
         if (!\Auth::check()) {
             return response()->json(['msg' => 'Not authorize'], 404);
         }
-
         $fullName = null;
         $birthday = null;
         $phone = null;
@@ -86,7 +54,8 @@ class DriverManagementController extends Controller
         $start = null;
         $finish = null;
         $driverLicenseNumber = null;
-        $permanetAddress = null;
+        $permanentAddress = null;
+        $temporaryAddress = null;
         $expireDateDriver = null;
         $createdBy = null;
         $updatedBy = null;
@@ -99,7 +68,7 @@ class DriverManagementController extends Controller
             }
 
             $fullName = $request->input('_object')['fullName'];
-            $address = $request->input('_object')['address'];
+            $temporaryAddress = $request->input('_object')['temporaryAddress'];
             $phone = $request->input('_object')['phone'];
             $note = $request->input('_object')['note'];
             $driverType = $request->input('_object')['driverType'];
@@ -111,7 +80,7 @@ class DriverManagementController extends Controller
             $start = $request->input('_object')['startDate'];
             $finish = $request->input('_object')['finishDate'];
             $driverLicenseNumber = $request->input('_object')['driverLicenseNumber'];
-            $permanetAddress = $request->input('_object')['permanetAddress'];
+            $permanentAddress = $request->input('_object')['permanentAddress'];
             $birthdayDate = Carbon::createFromFormat('d-m-Y', $birthday)->toDateTimeString();
             $issueDateIdDate = Carbon::createFromFormat('d-m-Y', $issueDateId)->toDateTimeString();
             $issueDateDriverDate = Carbon::createFromFormat('d-m-Y', $issueDateDriver)->toDateTimeString();
@@ -133,15 +102,18 @@ class DriverManagementController extends Controller
             case 'add':
                 $driverNew = new Driver();
                 $driverNew->fullName = $fullName;
-                $driverNew->address = $address;
+                $driverNew->permanentAddress = $permanentAddress;
+                $driverNew->temporaryAddress = $temporaryAddress;
                 $driverNew->phone = $phone;
                 $driverNew->note = $note;
+                $driverNew->driverLicenseNumber = $driverLicenseNumber;
                 $driverNew->driverLicenseType = $driverType;
                 $driverNew->identityCardNumber = $governmentId;
                 $driverNew->birthday = $birthdayDate;
                 $driverNew->issueDate_identityCard = $issueDateIdDate;
                 $driverNew->issueDate_DriverLicense = $issueDateDriverDate;
                 $driverNew->expireDate_DriverLicense = $expireDateDriverDate;
+                $driverNew->startDate = $startDate;
                 $driverNew->createdBy = $createdBy;
                 $driverNew->updatedBy = $updatedBy;
                 if (!$driverNew->save()) {
@@ -152,6 +124,7 @@ class DriverManagementController extends Controller
                         'drivers.*',
                         'drivers.driverLicenseType as driverType',
                         'drivers.issueDate_DriverLicense as issueDate_driver',
+                        'drivers.expireDate_DriverLicense as expireDate',
                         'vehicles.areaCode',
                         'vehicles.vehicleNumber',
                         'vehicleTypes.name as vehicle_types',
@@ -166,6 +139,7 @@ class DriverManagementController extends Controller
                     ->where('drivers.active', 1)
                     ->where('drivers.id', $driverNew->id)
                     ->first();
+
                 $response = [
                     'msg' => 'Get list all Driver',
                     'dataAddDriver' => $dataAddDriver
@@ -176,10 +150,10 @@ class DriverManagementController extends Controller
             case 'update':
                 $driverUpdate = Driver::findOrFail($request->input('_object')['id']);
                 $driverUpdate->fullName = $fullName;
-                $driverUpdate->address = $address;
+                $driverUpdate->permanentAddress = $permanentAddress;
+                $driverUpdate->temporaryAddress = $temporaryAddress;
                 $driverUpdate->phone = $phone;
                 $driverUpdate->driverLicenseNumber = $driverLicenseNumber;
-                $driverUpdate->permanetAddress = $permanetAddress;
                 $driverUpdate->startDate = $startDate;
                 $driverUpdate->finishDate = $finishDate;
                 $driverUpdate->note = $note;
@@ -198,6 +172,7 @@ class DriverManagementController extends Controller
                         'drivers.*',
                         'drivers.driverLicenseType as driverType',
                         'drivers.issueDate_DriverLicense as issueDate_driver',
+                        'drivers.expireDate_DriverLicense as expireDate',
                         'vehicles.areaCode',
                         'vehicles.vehicleNumber',
                         'vehicleTypes.name as vehicle_types',

@@ -21,8 +21,8 @@ class DriverTableSeeder extends Seeder
         foreach($array_name as $key=>$item){
             \App\Driver::create([
                 'fullName' => $item,
-                'address' => '652/2A Lê Quang Định',
-                'permanetAddress' => 'Điện Biên Phủ',
+                'temporaryAddress' => '652/2A Lê Quang Định',
+                'permanentAddress' => 'Điện Biên Phủ',
                 'phone' => '0987654321',
                 'birthday' => '1994-01-05',
                 'identityCardNumber' => random_int(100000000, 900000000),
