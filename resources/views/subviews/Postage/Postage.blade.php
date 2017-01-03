@@ -979,6 +979,8 @@
                     $("input[id=receivePlace]").prop('readonly', false);
                     $("input[id=deliveryPlace]").prop('readonly', false);
 
+                    postageView.arrayDetail = [];
+
                     formatCurrency(".currency");
                 },
                 deletePostage: function (id) {
@@ -1108,7 +1110,6 @@
                             console.log(data);
                             switch (postageView.action) {
                                 case 'add':
-                                    postageView.arrayDetail = [];
                                     postageView.dataPostage = data['postages'];
                                     postageView.dataPostageDetail = data['postageDetails'];
                                     postageView.fillDataToDatatable(postageView.dataPostage);
@@ -1136,13 +1137,13 @@
                                     postageView.retypeDetail();
                                     break;
                                 case 'delete':
-                                    postageView.arrayDetail = [];
                                     showNotification("success", "Xóa thành công!");
                                     postageView.displayModal("hide", "#modal-notification");
                                     break;
                                 default:
                                     break;
                             }
+                            postageView.arrayDetail = [];
                             postageView.hideControl();
                         } else if (jqXHR.status == 203) {
                             showNotification("warning", data['msg']);
