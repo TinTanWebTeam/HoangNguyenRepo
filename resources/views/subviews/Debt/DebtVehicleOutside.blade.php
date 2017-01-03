@@ -418,7 +418,7 @@
                                     <div class="col-md-12">
                                         <div class="form-actions noborder">
                                             <div class="form-group">
-                                                <button type="button" class="btn btn-primary marginRight"
+                                                <button id="button" type="button" class="btn btn-primary marginRight"
                                                         onclick="debtGarageView.saveInvoiceGarage()">
                                                     Hoàn tất
                                                 </button>
@@ -933,28 +933,42 @@
                     });
                     $("#table-transportCost").css("width", "auto");
                 },
+                computeDebt: function (paidAmt) {
+                    paidAmt = convertStringToNumber(paidAmt);
+                    var totalTransport = asNumberFromCurrency("#totalTransport");
+                    if(paidAmt > totalTransport ) {
+                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
+                        $("input[id='debt']").val(0);
+                        $("#button").prop( "disabled", true );
+                    }else {
+                        var debt = totalTransport - paidAmt;
+                        $("input[id=debt]").val(debt);
+                        $("#button").prop( "disabled", false );
+                    }
 
-
-
-                fillCurrentObjectToForm: function () {
-                    console.log(debtGarageView.currentInvoiceGarage['cashDelivery']);
-
-//                    $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
-//                    $("input[id='totalTransport']").val(debtGarageView.currentInvoiceGarage["totalPay"]);
-//                    $("input[id='debt']").val(debtGarageView.currentInvoiceGarage["debsst"]);
-//                    $("input[id='paidAmt']").val(debtGarageView.currentInvoiceGarage["paidAmt"]);
-//                    $("input[id='sendToPerson']").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
-//                    $("textarea[id='note']").val(debtGarageView.currentInvoiceGarage["note"]);
-//                    var exportDate = moment(debtGarageView.currentInvoiceGarage["exportDate"], "YYYY-MM-DD");
-//                    $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
-//                    var invoiceDate = moment(debtGarageView.currentInvoiceGarage["invoiceDate"], "YYYY-MM-DD");
-//                    $("input[id='invoiceDate']").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
-//                    var payDate = moment(debtGarageView.currentInvoiceGarage["payDate"], "YYYY-MM-DD");
-//                    $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
-//
-//
-//                    formatCurrency(".currency");
+                    formatCurrency(".currency");
                 },
+
+
+//                fillCurrentObjectToForm: function () {
+//                    console.log(debtGarageView.currentInvoiceGarage['cashDelivery']);
+//
+////                    $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
+////                    $("input[id='totalTransport']").val(debtGarageView.currentInvoiceGarage["totalPay"]);
+////                    $("input[id='debt']").val(debtGarageView.currentInvoiceGarage["debsst"]);
+////                    $("input[id='paidAmt']").val(debtGarageView.currentInvoiceGarage["paidAmt"]);
+////                    $("input[id='sendToPerson']").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
+////                    $("textarea[id='note']").val(debtGarageView.currentInvoiceGarage["note"]);
+////                    var exportDate = moment(debtGarageView.currentInvoiceGarage["exportDate"], "YYYY-MM-DD");
+////                    $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
+////                    var invoiceDate = moment(debtGarageView.currentInvoiceGarage["invoiceDate"], "YYYY-MM-DD");
+////                    $("input[id='invoiceDate']").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
+////                    var payDate = moment(debtGarageView.currentInvoiceGarage["payDate"], "YYYY-MM-DD");
+////                    $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
+////
+////
+////                    formatCurrency(".currency");
+//                },
                 fillFormDataToCurrentObject: function () {
                     debtGarageView.currentInvoiceGarage = {
                         id: debtGarageView.invoiceGarageId,
@@ -1020,7 +1034,6 @@
                     }
                 },
                 createInvoiceGarage: function (flag, invoiceGarage_id) {
-                    console.log(flag);
                     if (flag == 0) {
                         var dataAfterValidate = debtGarageView.validateListTransport();
                         if (dataAfterValidate['status'] === 0) {
@@ -1070,228 +1083,227 @@
                     }
                     formatCurrency(".currency");
                 },
-                autoEditTransport: function (transportId) {
-                    debtGarageView.current = null;
-                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
-                        return o.id == transportId;
-                    }), true);
-                    debtGarageView.action = 'autoEdit';
-                    debtGarageView.save();
-                },
-                autoEditTransportConfirm: function (transportId) {
-                    debtGarageView.current = null;
-                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
-                        return o.id == transportId;
-                    }), true);
-
-                    if (debtGarageView.current['invoiceGarage_id'] != null) {
-                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
-                        debtGarageView.displayModal('show', '#modal-notification');
-                        return;
-                    }
-
-                    if (parseInt(debtGarageView.current['cashDelivery']) == parseInt(debtGarageView.current['cashPreDelivery'])) {
-                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
-                        debtGarageView.displayModal('show', '#modal-notification');
-                        return;
-                    }
-
-                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
-                    tr = '<div class="row">';
-                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
-                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.autoEditTransport(' + transportId + ')">';
-                    tr += 'Đồng ý';
-                    tr += '</button>';
-                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
-                    tr += 'Huỷ';
-                    tr += '</button>';
-                    tr += '</div>';
-                    tr += '</div>';
-                    $("#modal-notification").find(".modal-body").html(tr);
-                    debtGarageView.displayModal('show', '#modal-notification');
-                },
-                deleteInvoiceGarage: function (invoiceGarage_id) {
-                    var sendToServer = {
-                        _token: _token,
-                        _invoiceGarage_id: invoiceGarage_id
-                    };
-                    $.ajax({
-                        url: url + 'invoice-garage/delete',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 201) {
-                            debtGarageView.dataTransport = data['transports'];
-                            debtGarageView.dataSearch = data['transports'];
-                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-                            debtGarageView.dataPrintHistory = data['printHistories'];
-                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
-                            debtGarageView.invoiceCode = data['invoiceCode'];
-
-                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
-                            debtGarageView.searchTransport();
-                            debtGarageView.searchInvoice();
-
-                            //Show notification
-                            showNotification("success", "Xóa hóa đơn thành công!");
-                            debtGarageView.displayModal("hide", "#modal-notification");
-                        } else {
-                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                },
-                deleteInvoiceGarageConfirm: function (invoiceGarage_id) {
-                    $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa hóa đơn này?");
-                    tr = '<div class="row">';
-                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
-                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceGarage(' + invoiceGarage_id + ')">';
-                    tr += 'Đồng ý';
-                    tr += '</button>';
-                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
-                    tr += 'Huỷ';
-                    tr += '</button>';
-                    tr += '</div>';
-                    tr += '</div>';
-                    $("#modal-notification").find(".modal-body").html(tr);
-                    debtGarageView.displayModal('show', '#modal-notification');
-                },
-                deleteInvoiceGarageDetail: function (invoiceGarageDetail_id, flag) {
-                    var action = 'delete1';
-                    if (typeof flag !== 'undefined') {
-                        action = 'delete2';
-                    }
-                    var sendToServer = {
-                        _token: _token,
-                        _action: action,
-                        _invoiceGarageDetail_id: invoiceGarageDetail_id
-                    };
-
-                    $.ajax({
-                        url: url + 'invoice-garage-detail/delete',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-
-                        if (jqXHR.status == 201) {
-                            if (action == 'delete1') {
-                                var invoiceDetail = _.find(debtGarageView.dataInvoiceGarageDetail, function (o) {
-                                    return o.id == invoiceGarageDetail_id;
-                                });
-
-                                debtGarageView.dataTransport = data['transports'];
-                                debtGarageView.dataSearch = data['transports'];
-                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-                                debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-                                debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-                                debtGarageView.dataPrintHistory = data['printHistories'];
-                                debtGarageView.dataTransportInvoice = data['transportInvoices'];
-                                debtGarageView.invoiceCode = data['invoiceCode'];
-
-                                debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                                debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
-                                var dataDetail = _.filter(debtGarageView.dataInvoiceGarageDetail, function (o) {
-                                    return o.invoiceGarage_id == invoiceDetail.invoiceGarage_id;
-                                });
-                                debtGarageView.fillDataToDatatableInvoiceGarageDetail(dataDetail);
-
-                                debtGarageView.searchTransport();
-                                debtGarageView.searchInvoice();
-
-                                var invoice = _.find(debtGarageView.dataInvoiceGarage, function (o) {
-                                    return o.id == invoiceDetail.invoiceGarage_id;
-                                });
-
-                                var debtReal = invoice.hasVat - invoice.totalPaid;
-                                $("input[id=debt]").val(debtReal);
-                                $("input[id=debt-real]").val(debtReal);
-
-                                //Show notification
-                                showNotification("success", "Xóa chi tiết đơn hàng thành công!");
-                                debtGarageView.displayModal("hide", "#modal-notification");
-                            } else {
-                                debtGarageView.dataTransport = data['transports'];
-                                debtGarageView.dataSearch = data['transports'];
-                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-                                debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-                                debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-                                debtGarageView.dataPrintHistory = data['printHistories'];
-                                debtGarageView.dataTransportInvoice = data['transportInvoices'];
-                                debtGarageView.invoiceCode = data['invoiceCode'];
-
-                                debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                                debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
-                                debtGarageView.searchTransport();
-                                debtGarageView.searchInvoice();
-
-                                //Show notification
-                                showNotification("success", "Xóa chi tiết đơn hàng thành công!");
-                                debtGarageView.displayModal("hide", "#modal-notification");
-
-                                //Close form
-                                debtGarageView.clearInput();
-                                debtGarageView.clearValidation("#frmInvoice");
-                                debtGarageView.hideControl();
-                            }
-                            formatCurrency(".currency");
-                        } else {
-                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                },
-                deleteInvoiceGarageDetailConfirm: function (invoiceGarageDetail_id) {
-                    array_invoiceGarageDetail_of_invoiceGarage = _.filter(debtGarageView.dataInvoiceGarageDetail, function (o) {
-                        return o.invoiceGarage_id == debtGarageView.invoiceGarageId;
-                    });
-                    if (typeof array_invoiceGarageDetail_of_invoiceGarage === 'undefined') {
-                        showNotification("error", "Có lỗi xảy ra. Vui lòng làm mới lại trình duyệt.");
-                        return;
-                    }
-                    if (array_invoiceGarageDetail_of_invoiceGarage.length == 1) {
-                        //Warning, delete InvoiceGarageDetail & InvoiceGarage
-                        $("#modal-notification").find(".modal-title").html("Xóa chi tiết đơn hàng này cũng sẽ xóa hóa đơn.<br>Có chắc muốn xóa chi tiết hóa đơn này?");
-                        tr = '<div class="row">';
-                        tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
-                        tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceGarageDetail(' + invoiceGarageDetail_id + ', 1)">';
-                        tr += 'Đồng ý';
-                        tr += '</button>';
-                        tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
-                        tr += 'Huỷ';
-                        tr += '</button>';
-                        tr += '</div>';
-                        tr += '</div>';
-                        $("#modal-notification").find(".modal-body").html(tr);
-                        debtGarageView.displayModal('show', '#modal-notification');
-                    } else {
-                        $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa chi tiết hóa đơn này?");
-                        tr = '<div class="row">';
-                        tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
-                        tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceGarageDetail(' + invoiceGarageDetail_id + ')">';
-                        tr += 'Đồng ý';
-                        tr += '</button>';
-                        tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
-                        tr += 'Huỷ';
-                        tr += '</button>';
-                        tr += '</div>';
-                        tr += '</div>';
-                        $("#modal-notification").find(".modal-body").html(tr);
-                        debtGarageView.displayModal('show', '#modal-notification');
-                    }
-                },
-
+//                autoEditTransport: function (transportId) {
+//                    debtGarageView.current = null;
+//                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
+//                        return o.id == transportId;
+//                    }), true);
+//                    debtGarageView.action = 'autoEdit';
+//                    debtGarageView.save();
+//                },
+//                autoEditTransportConfirm: function (transportId) {
+//                    debtGarageView.current = null;
+//                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
+//                        return o.id == transportId;
+//                    }), true);
+//
+//                    if (debtGarageView.current['invoiceGarage_id'] != null) {
+//                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+//                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
+//                        debtGarageView.displayModal('show', '#modal-notification');
+//                        return;
+//                    }
+//
+//                    if (parseInt(debtGarageView.current['cashDelivery']) == parseInt(debtGarageView.current['cashPreDelivery'])) {
+//                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
+//                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
+//                        debtGarageView.displayModal('show', '#modal-notification');
+//                        return;
+//                    }
+//
+//                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
+//                    tr = '<div class="row">';
+//                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+//                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.autoEditTransport(' + transportId + ')">';
+//                    tr += 'Đồng ý';
+//                    tr += '</button>';
+//                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+//                    tr += 'Huỷ';
+//                    tr += '</button>';
+//                    tr += '</div>';
+//                    tr += '</div>';
+//                    $("#modal-notification").find(".modal-body").html(tr);
+//                    debtGarageView.displayModal('show', '#modal-notification');
+//                },
+//                deleteInvoiceGarage: function (invoiceGarage_id) {
+//                    var sendToServer = {
+//                        _token: _token,
+//                        _invoiceGarage_id: invoiceGarage_id
+//                    };
+//                    $.ajax({
+//                        url: url + 'invoice-garage/delete',
+//                        type: "POST",
+//                        dataType: "json",
+//                        data: sendToServer
+//                    }).done(function (data, textStatus, jqXHR) {
+//                        if (jqXHR.status == 201) {
+//                            debtGarageView.dataTransport = data['transports'];
+//                            debtGarageView.dataSearch = data['transports'];
+//                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+//                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
+//                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
+//                            debtGarageView.dataPrintHistory = data['printHistories'];
+//                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
+//                            debtGarageView.invoiceCode = data['invoiceCode'];
+//
+//                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+//                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+//
+//                            debtGarageView.searchTransport();
+//                            debtGarageView.searchInvoice();
+//
+//                            //Show notification
+//                            showNotification("success", "Xóa hóa đơn thành công!");
+//                            debtGarageView.displayModal("hide", "#modal-notification");
+//                        } else {
+//                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+//                        }
+//                    }).fail(function (jqXHR, textStatus, errorThrown) {
+//                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+//                    });
+//                },
+//                deleteInvoiceGarageConfirm: function (invoiceGarage_id) {
+//                    $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa hóa đơn này?");
+//                    tr = '<div class="row">';
+//                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+//                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceGarage(' + invoiceGarage_id + ')">';
+//                    tr += 'Đồng ý';
+//                    tr += '</button>';
+//                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+//                    tr += 'Huỷ';
+//                    tr += '</button>';
+//                    tr += '</div>';
+//                    tr += '</div>';
+//                    $("#modal-notification").find(".modal-body").html(tr);
+//                    debtGarageView.displayModal('show', '#modal-notification');
+//                },
+//                deleteInvoiceGarageDetail: function (invoiceGarageDetail_id, flag) {
+//                    var action = 'delete1';
+//                    if (typeof flag !== 'undefined') {
+//                        action = 'delete2';
+//                    }
+//                    var sendToServer = {
+//                        _token: _token,
+//                        _action: action,
+//                        _invoiceGarageDetail_id: invoiceGarageDetail_id
+//                    };
+//
+//                    $.ajax({
+//                        url: url + 'invoice-garage-detail/delete',
+//                        type: "POST",
+//                        dataType: "json",
+//                        data: sendToServer
+//                    }).done(function (data, textStatus, jqXHR) {
+//
+//                        if (jqXHR.status == 201) {
+//                            if (action == 'delete1') {
+//                                var invoiceDetail = _.find(debtGarageView.dataInvoiceGarageDetail, function (o) {
+//                                    return o.id == invoiceGarageDetail_id;
+//                                });
+//
+//                                debtGarageView.dataTransport = data['transports'];
+//                                debtGarageView.dataSearch = data['transports'];
+//                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+//                                debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
+//                                debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
+//                                debtGarageView.dataPrintHistory = data['printHistories'];
+//                                debtGarageView.dataTransportInvoice = data['transportInvoices'];
+//                                debtGarageView.invoiceCode = data['invoiceCode'];
+//
+//                                debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+//                                debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+//
+//                                var dataDetail = _.filter(debtGarageView.dataInvoiceGarageDetail, function (o) {
+//                                    return o.invoiceGarage_id == invoiceDetail.invoiceGarage_id;
+//                                });
+//                                debtGarageView.fillDataToDatatableInvoiceGarageDetail(dataDetail);
+//
+//                                debtGarageView.searchTransport();
+//                                debtGarageView.searchInvoice();
+//
+//                                var invoice = _.find(debtGarageView.dataInvoiceGarage, function (o) {
+//                                    return o.id == invoiceDetail.invoiceGarage_id;
+//                                });
+//
+//                                var debtReal = invoice.hasVat - invoice.totalPaid;
+//                                $("input[id=debt]").val(debtReal);
+//                                $("input[id=debt-real]").val(debtReal);
+//
+//                                //Show notification
+//                                showNotification("success", "Xóa chi tiết đơn hàng thành công!");
+//                                debtGarageView.displayModal("hide", "#modal-notification");
+//                            } else {
+//                                debtGarageView.dataTransport = data['transports'];
+//                                debtGarageView.dataSearch = data['transports'];
+//                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+//                                debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
+//                                debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
+//                                debtGarageView.dataPrintHistory = data['printHistories'];
+//                                debtGarageView.dataTransportInvoice = data['transportInvoices'];
+//                                debtGarageView.invoiceCode = data['invoiceCode'];
+//
+//                                debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+//                                debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+//
+//                                debtGarageView.searchTransport();
+//                                debtGarageView.searchInvoice();
+//
+//                                //Show notification
+//                                showNotification("success", "Xóa chi tiết đơn hàng thành công!");
+//                                debtGarageView.displayModal("hide", "#modal-notification");
+//
+//                                //Close form
+//                                debtGarageView.clearInput();
+//                                debtGarageView.clearValidation("#frmInvoice");
+//                                debtGarageView.hideControl();
+//                            }
+//                            formatCurrency(".currency");
+//                        } else {
+//                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+//                        }
+//                    }).fail(function (jqXHR, textStatus, errorThrown) {
+//                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+//                    });
+//                },
+//                deleteInvoiceGarageDetailConfirm: function (invoiceGarageDetail_id) {
+//                    array_invoiceGarageDetail_of_invoiceGarage = _.filter(debtGarageView.dataInvoiceGarageDetail, function (o) {
+//                        return o.invoiceGarage_id == debtGarageView.invoiceGarageId;
+//                    });
+//                    if (typeof array_invoiceGarageDetail_of_invoiceGarage === 'undefined') {
+//                        showNotification("error", "Có lỗi xảy ra. Vui lòng làm mới lại trình duyệt.");
+//                        return;
+//                    }
+//                    if (array_invoiceGarageDetail_of_invoiceGarage.length == 1) {
+//                        //Warning, delete InvoiceGarageDetail & InvoiceGarage
+//                        $("#modal-notification").find(".modal-title").html("Xóa chi tiết đơn hàng này cũng sẽ xóa hóa đơn.<br>Có chắc muốn xóa chi tiết hóa đơn này?");
+//                        tr = '<div class="row">';
+//                        tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+//                        tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceGarageDetail(' + invoiceGarageDetail_id + ', 1)">';
+//                        tr += 'Đồng ý';
+//                        tr += '</button>';
+//                        tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+//                        tr += 'Huỷ';
+//                        tr += '</button>';
+//                        tr += '</div>';
+//                        tr += '</div>';
+//                        $("#modal-notification").find(".modal-body").html(tr);
+//                        debtGarageView.displayModal('show', '#modal-notification');
+//                    } else {
+//                        $("#modal-notification").find(".modal-title").html("Có chắc muốn xóa chi tiết hóa đơn này?");
+//                        tr = '<div class="row">';
+//                        tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+//                        tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.deleteInvoiceGarageDetail(' + invoiceGarageDetail_id + ')">';
+//                        tr += 'Đồng ý';
+//                        tr += '</button>';
+//                        tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+//                        tr += 'Huỷ';
+//                        tr += '</button>';
+//                        tr += '</div>';
+//                        tr += '</div>';
+//                        $("#modal-notification").find(".modal-body").html(tr);
+//                        debtGarageView.displayModal('show', '#modal-notification');
+//                    }
+//                },
 
                 validateForm: function () {
                     $("#frmInvoice").validate({
@@ -1312,60 +1324,17 @@
                     $(idForm).find("label[class=error]").remove();
                 },
 
-                save: function () {
-                    var sendToServer = {
-                        _token: _token,
-                        _transport: debtGarageView.current.id
-                    };
 
-                    $.ajax({
-                        url: url + 'debt-garage/modify',
-                        type: "POST",
-                        dataType: "json",
-                        data: sendToServer
-                    }).done(function (data, textStatus, jqXHR) {
-
-                        if (jqXHR.status == 201) {
-                            debtGarageView.dataTransport = data['transports'];
-                            debtGarageView.dataSearch = data['transports'];
-                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-                            debtGarageView.dataPrintHistory = data['printHistories'];
-                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
-                            debtGarageView.invoiceCode = data['invoiceCode'];
-
-                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
-                            debtGarageView.searchTransport();
-                            debtGarageView.searchInvoice();
-
-                            //clear Input
-                            debtGarageView.clearInput();
-
-                            //Show notification
-                            showNotification("success", "Thanh toán thành công!");
-                            debtGarageView.displayModal("hide", "#modal-notification");
-                        } else {
-                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-                },
                 saveInvoiceGarage: function () {
                     debtGarageView.validateForm();
                     if ($("#frmInvoice").valid()) {
                         debtGarageView.fillFormDataToCurrentObject();
-
                         var sendToServer = {
                             _token: _token,
                             _action: debtGarageView.action,
                             _invoiceGarage: debtGarageView.currentInvoiceGarage,
                             _array_transportId: debtGarageView.array_transportId
                         };
-
                         $.ajax({
                             url: url + 'invoice-garage/modify',
                             type: "POST",
@@ -1385,14 +1354,11 @@
                                 debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
                                 debtGarageView.searchTransport();
                                 debtGarageView.searchInvoice();
-
-
                                 if (debtGarageView.action == 'new') {
                                     //clear Input
                                     debtGarageView.clearInput();
                                     debtGarageView.clearValidation("#frmInvoice");
                                     debtGarageView.hideControl();
-
                                     //Show notification
                                     showNotification("success", "Thanh toán thành công!");
                                 } else {
@@ -1428,287 +1394,291 @@
                         $("#frmInvoice").find("label[class=error]").css("color", "red");
                     }
                 },
-                printReview: function (invoiceGarageDetail_id) {
-                    debtGarageView.displayModal('show', '#modal-printReview');
-                },
-                attachFile: function (invoiceGarageDetail_id) {
-                    //    console.log(invoiceGarageDetail_id);
-                },
 
-                clearSearch: function (tableName) {
-                    if (tableName == "transport") {
-                        $("#dateSearchTransport").find(".start").datepicker('update', '');
-                        $("#dateSearchTransport").find(".end").datepicker('update', '');
-                        $("input[id=fullNumber_transport]").val('');
-                        debtGarageView.searchTransport();
-                    } else if (tableName == "vehicleCost") {
-                        $("#dateSearchVehicleCost").find(".start").datepicker('update', '');
-                        $("#dateSearchVehicleCost").find(".end").datepicker('update', '');
-                        $("input[id=fullNumber_cost]").val('');
-                        debtGarageView.searchVehicleCost();
-                    } else {
-                        $("#dateSearchInvoice").find(".start").datepicker('update', '');
-                        $("#dateSearchInvoice").find(".end").datepicker('update', '');
-                        $("input[id=fullNumber_invoice]").val('');
-                        debtGarageView.searchInvoice();
-                    }
-
-                },
-                searchTransport: function (money) {
-                    var found = debtGarageView.searchExportInvoice(debtGarageView.dataTransport);
-                    if (typeof money === 'undefined')
-                        found = debtGarageView.searchStatusMoney(found);
-                    else
-                        found = debtGarageView.searchStatusMoney(found, money.value);
-                    found = debtGarageView.searchVehicle(found);
-                    found = debtGarageView.searchDate(found);
-                    debtGarageView.dataSearch = found;
-
-                    debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
-                    //fill data to listSearch
-                    debtGarageView.tagsFullNumberTransport = _.map(debtGarageView.dataSearch, 'fullNumber');
-                    debtGarageView.tagsFullNumberTransport = _.union(debtGarageView.tagsFullNumberTransport);
-
-                    debtGarageView.renderAutoCompleteSearch();
-
-                    // fill data to input
-                    var fromDate = $("#dateSearchTransport").find(".start").val();
-                    var toDate = $("#dateSearchTransport").find(".end").val();
-                    $("input[id='dateSearchVehicleCost']").find(".start").datepicker('update', fromDate);
-                    $("input[id='dateSearchVehicleCost']").find(".end").datepicker('update', toDate);
-                    $('input[id=fullNumber_cost]').val($('input[id=fullNumber_transport]').val());
-
-                    //    var invoice = $("#invoiceUp").find("input:checked").val();
-                    //    switch(){
-                    //        case 'All':
-                    //         $("#costDown[value=All]").prop('checked', true);
-                    //         break;
-                    //        case 'StillDebt':
-                    //         $("#costDown[value=StillDebt").prop('checked', true);
-                    //         break;
-                    //        case 'FullPay':
-                    //         $("#costDown[value=FullPay]").prop('checked', true);
-                    //         break;
-                    //    }
-
-                    // call search invoice
-                    debtGarageView.searchCost();
-
-                },
-                searchInvoice: function () {
-                    var found = debtGarageView.searchStatusMoneyInvoice(debtGarageView.dataInvoiceGarage);
-                    found = debtGarageView.searchGarageInvoice(found);
-                    found = debtGarageView.searchDateInvoice(found);
-                    debtGarageView.dataSearchInvoiceGarage = found;
-                    debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataSearchInvoiceGarage).draw();
-
-                    //fill data to listSearch
-                    debtGarageView.tagsFullNumberInvoice = _.map(debtGarageView.dataSearchInvoiceGarage, 'fullNumber');
-                    debtGarageView.tagsFullNumberInvoice = _.union(debtGarageView.tagsFullNumberInvoice);
-                    debtGarageView.renderAutoCompleteSearch();
-                },
-                searchCost: function () {
-                    var found = debtGarageView.searchDateVehicleCost(debtGarageView.dataVehicleCost);
-                    found = debtGarageView.searchVehicleCost(found);
-                    found = debtGarageView.searchStatusMoneyVehicleCost(found);
-
-                    debtGarageView.dataSearchVehicleCost = found;
-                    debtGarageView.tableTransportCost.clear().rows.add(debtGarageView.dataSearchVehicleCost).draw();
-                    //fill data to listSearch
-                    debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearchVehicleCost, 'fullNumber');
-                    debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
-                    debtGarageView.renderAutoCompleteSearch();
-
-                },
-
-                searchTransportVehicleCost: function () {
-                    var found = debtGarageView.searchStatusMoneyVehicleCost(debtGarageView.dataVehicleCost);
-                    found = debtGarageView.searchVehicleCost(found);
-
-                    debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearch, 'fullNumber');
-                    debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
-                    debtGarageView.renderAutoCompleteSearch();
-                },
-
-
-                searchDate: function (data) {
-                    var fromDate = $("#dateSearchTransport").find(".start").val();
-                    var toDate = $("#dateSearchTransport").find(".end").val();
-                    if (fromDate == '' || toDate == '')
-                        return data;
-                    fromDate = moment(fromDate, "DD-MM-YYYY");
-                    toDate = moment(toDate, "DD-MM-YYYY");
-                    if (!fromDate.isValid() && !toDate.isValid())
-                        return data;
-
-                    var found = _.filter(data, function (o) {
-                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
-                    });
-                    return found;
-                },
-                searchVehicle: function (data) {
-                    var vehicle = $("#fullNumber_transport").val();
-                    if (vehicle == '')
-                        return data;
-                    var found = _.filter(data, function (o) {
-                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
-                    });
-                    return found;
-                },
-                searchExportInvoice: function (data) {
-                    var invoice = $("#invoiceUp").find("input:checked").val();
-                    var found = _.filter(data, function (o) {
-                        if (invoice == 'All') {
-                            return true;
-                        } else if (invoice == 'Invoice') {
-                            return o.invoiceGarage_id != null;
-                        } else {
-                            return o.invoiceGarage_id == null;
-                        }
-                    });
-                    return found;
-                },
-                searchStatusMoney: function (data, value) {
-                    if (typeof value === 'undefined')
-                        var money = $("select[id=statusMoney]").val();
-                    else
-                        var money = value;
-                    var found = _.filter(data, function (o) {
-                        if (money == 'FullPay') {
-                            return o.cashDelivery == o.cashPreDelivery;
-                        } else if (money == 'PrePay') {
-                            return o.cashPreDelivery != 0 && o.cashDelivery > o.cashPreDelivery;
-                        } else if (money == 'NotPay') {
-                            return o.cashPreDelivery == 0;
-                        } else if (money == 'All') {
-                            return true;
-                        }
-                    });
-                    return found;
-                },
-
-                searchDateInvoice: function (data) {
-                    fromDate = $("#dateSearchInvoice").find(".start").val();
-                    toDate = $("#dateSearchInvoice").find(".end").val();
-                    if (fromDate == '' || toDate == '')
-                        return data;
-
-                    fromDate = moment(fromDate, "DD-MM-YYYY");
-                    toDate = moment(toDate, "DD-MM-YYYY");
-                    if (!fromDate.isValid() && !toDate.isValid())
-                        return data;
-
-                    found = _.filter(data, function (o) {
-                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
-                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
-                    });
-                    return found;
-                },
-                searchGarageInvoice: function (data) {
-                    garaName = $("#fullNumber_invoice").val();
-                    if (garaName == '')
-                        return data;
-
-                    found = _.filter(data, function (o) {
-                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(fullNumber.toLowerCase()));
-                    });
-                    return found;
-                },
-                searchStatusMoneyInvoice: function (data) {
-                    money = $("#invoiceDown").find("input:checked").val();
-                    found = _.filter(data, function (o) {
-                        if (money == 'All') {
-                            return true;
-                        } else if (money == 'StillDebt') {
-                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
-                        } else {
-                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
-                        }
-                    });
-                    return found;
-                },
-
-                searchDateVehicleCost: function (data) {
-                    var fromDate = $("#dateSearchVehicleCost").find(".start").val();
-                    var toDate = $("#dateSearchVehicleCost").find(".end").val();
-                    if (fromDate == '' || toDate == '')
-                        return data;
-
-                    fromDate = moment(fromDate, "DD-MM-YYYY");
-                    toDate = moment(toDate, "DD-MM-YYYY");
-                    if (!fromDate.isValid() && !toDate.isValid())
-                        return data;
-
-                    found = _.filter(data, function (o) {
-                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
-                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
-                    });
-                    return found;
-                },
-                searchVehicleCost: function (data) {
-                    var vehicle = $("#fullNumber_cost").val();
-                    if (vehicle == '')
-                        return data;
-                    var found = _.filter(data, function (o) {
-                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
-                    });
-                    return found;
-                },
-                searchStatusMoneyVehicleCost: function (data) {
-                    var money = $("#costDown").find("input:checked").val();
-                    var found = _.filter(data, function (o) {
-                        if (money == 'All') {
-                            return true;
-                        } else if (money == 'StillDebt') {
-                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
-                        } else {
-                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
-                        }
-                    });
-                    return found;
-                },
-
-                computeDebt: function (paidAmt) {
-                    paidAmt = convertStringToNumber(paidAmt);
-                    var totalTransport = asNumberFromCurrency("#totalTransport");
-                    if(paidAmt > debtReal){
-//                        $("input[id=debt]").val(totalTransport);
-                    }
-                    var debt = totalTransport - paidAmt;
-                    //console.log(debt);
-                    $("input[id=debt]").val(debt);
-//                    $("input[id=invoiceCode]").val(debt);
-//                    console.log(paidAmt);
-//                    console.log(debt);
-//                    if (paidAmt > debtReal) {
-//                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
-//                        paidAmt = debtReal;
-//                        $("input[id=paidAmt]").val(paidAmt);
+//                printReview: function (invoiceGarageDetail_id) {
+//                    debtGarageView.displayModal('show', '#modal-printReview');
+//                },
+//                attachFile: function (invoiceGarageDetail_id) {
+//                    //    console.log(invoiceGarageDetail_id);
+//                },
+//
+//                clearSearch: function (tableName) {
+//                    if (tableName == "transport") {
+//                        $("#dateSearchTransport").find(".start").datepicker('update', '');
+//                        $("#dateSearchTransport").find(".end").datepicker('update', '');
+//                        $("input[id=fullNumber_transport]").val('');
+//                        debtGarageView.searchTransport();
+//                    } else if (tableName == "vehicleCost") {
+//                        $("#dateSearchVehicleCost").find(".start").datepicker('update', '');
+//                        $("#dateSearchVehicleCost").find(".end").datepicker('update', '');
+//                        $("input[id=fullNumber_cost]").val('');
+//                        debtGarageView.searchVehicleCost();
+//                    } else {
+//                        $("#dateSearchInvoice").find(".start").datepicker('update', '');
+//                        $("#dateSearchInvoice").find(".end").datepicker('update', '');
+//                        $("input[id=fullNumber_invoice]").val('');
+//                        debtGarageView.searchInvoice();
 //                    }
-//                    var debt = debtReal - paidAmt;
-//                   // debt = (debt < 0) ? 0 : debt;
-//                    $("input[id=debt]").val(debt);
-                    formatCurrency(".currency");
-                },
-                computeWhenTotalpayChange: function (totalPay) {
-                    totalPay = convertStringToNumber(totalPay);
-                    totalTransport = parseInt($('input[id=totalPay]').attr('data-totalTransport'));
+//
+//                },
+//                searchTransport: function (money) {
+//                    var found = debtGarageView.searchExportInvoice(debtGarageView.dataTransport);
+//                    if (typeof money === 'undefined')
+//                        found = debtGarageView.searchStatusMoney(found);
+//                    else
+//                        found = debtGarageView.searchStatusMoney(found, money.value);
+//                    found = debtGarageView.searchVehicle(found);
+//                    found = debtGarageView.searchDate(found);
+//                    debtGarageView.dataSearch = found;
+//
+//                    debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
+//                    //fill data to listSearch
+//                    debtGarageView.tagsFullNumberTransport = _.map(debtGarageView.dataSearch, 'fullNumber');
+//                    debtGarageView.tagsFullNumberTransport = _.union(debtGarageView.tagsFullNumberTransport);
+//
+//                    debtGarageView.renderAutoCompleteSearch();
+//
+//                    // fill data to input
+//                    var fromDate = $("#dateSearchTransport").find(".start").val();
+//                    var toDate = $("#dateSearchTransport").find(".end").val();
+//                    $("input[id='dateSearchVehicleCost']").find(".start").datepicker('update', fromDate);
+//                    $("input[id='dateSearchVehicleCost']").find(".end").datepicker('update', toDate);
+//                    $('input[id=fullNumber_cost]').val($('input[id=fullNumber_transport]').val());
+//
+//                    //    var invoice = $("#invoiceUp").find("input:checked").val();
+//                    //    switch(){
+//                    //        case 'All':
+//                    //         $("#costDown[value=All]").prop('checked', true);
+//                    //         break;
+//                    //        case 'StillDebt':
+//                    //         $("#costDown[value=StillDebt").prop('checked', true);
+//                    //         break;
+//                    //        case 'FullPay':
+//                    //         $("#costDown[value=FullPay]").prop('checked', true);
+//                    //         break;
+//                    //    }
+//
+//                    // call search invoice
+//                    debtGarageView.searchCost();
+//
+//                },
+//                searchInvoice: function () {
+//                    var found = debtGarageView.searchStatusMoneyInvoice(debtGarageView.dataInvoiceGarage);
+//                    found = debtGarageView.searchGarageInvoice(found);
+//                    found = debtGarageView.searchDateInvoice(found);
+//                    debtGarageView.dataSearchInvoiceGarage = found;
+//                    debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataSearchInvoiceGarage).draw();
+//
+//                    //fill data to listSearch
+//                    debtGarageView.tagsFullNumberInvoice = _.map(debtGarageView.dataSearchInvoiceGarage, 'fullNumber');
+//                    debtGarageView.tagsFullNumberInvoice = _.union(debtGarageView.tagsFullNumberInvoice);
+//                    debtGarageView.renderAutoCompleteSearch();
+//                },
+//                searchCost: function () {
+//                    var found = debtGarageView.searchDateVehicleCost(debtGarageView.dataVehicleCost);
+//                    found = debtGarageView.searchVehicleCost(found);
+//                    found = debtGarageView.searchStatusMoneyVehicleCost(found);
+//
+//                    debtGarageView.dataSearchVehicleCost = found;
+//                    debtGarageView.tableTransportCost.clear().rows.add(debtGarageView.dataSearchVehicleCost).draw();
+//                    //fill data to listSearch
+//                    debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearchVehicleCost, 'fullNumber');
+//                    debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
+//                    debtGarageView.renderAutoCompleteSearch();
+//
+//                },
+//
+//                searchTransportVehicleCost: function () {
+//                    var found = debtGarageView.searchStatusMoneyVehicleCost(debtGarageView.dataVehicleCost);
+//                    found = debtGarageView.searchVehicleCost(found);
+//
+//                    debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearch, 'fullNumber');
+//                    debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
+//                    debtGarageView.renderAutoCompleteSearch();
+//                },
+//
+//
+//                searchDate: function (data) {
+//                    var fromDate = $("#dateSearchTransport").find(".start").val();
+//                    var toDate = $("#dateSearchTransport").find(".end").val();
+//                    if (fromDate == '' || toDate == '')
+//                        return data;
+//                    fromDate = moment(fromDate, "DD-MM-YYYY");
+//                    toDate = moment(toDate, "DD-MM-YYYY");
+//                    if (!fromDate.isValid() && !toDate.isValid())
+//                        return data;
+//
+//                    var found = _.filter(data, function (o) {
+//                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
+//                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+//                    });
+//                    return found;
+//                },
+//                searchVehicle: function (data) {
+//                    var vehicle = $("#fullNumber_transport").val();
+//                    if (vehicle == '')
+//                        return data;
+//                    var found = _.filter(data, function (o) {
+//                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
+//                    });
+//                    return found;
+//                },
+//                searchExportInvoice: function (data) {
+//                    var invoice = $("#invoiceUp").find("input:checked").val();
+//                    var found = _.filter(data, function (o) {
+//                        if (invoice == 'All') {
+//                            return true;
+//                        } else if (invoice == 'Invoice') {
+//                            return o.invoiceGarage_id != null;
+//                        } else {
+//                            return o.invoiceGarage_id == null;
+//                        }
+//                    });
+//                    return found;
+//                },
+//                searchStatusMoney: function (data, value) {
+//                    if (typeof value === 'undefined')
+//                        var money = $("select[id=statusMoney]").val();
+//                    else
+//                        var money = value;
+//                    var found = _.filter(data, function (o) {
+//                        if (money == 'FullPay') {
+//                            return o.cashDelivery == o.cashPreDelivery;
+//                        } else if (money == 'PrePay') {
+//                            return o.cashPreDelivery != 0 && o.cashDelivery > o.cashPreDelivery;
+//                        } else if (money == 'NotPay') {
+//                            return o.cashPreDelivery == 0;
+//                        } else if (money == 'All') {
+//                            return true;
+//                        }
+//                    });
+//                    return found;
+//                },
+//
+//                searchDateInvoice: function (data) {
+//                    fromDate = $("#dateSearchInvoice").find(".start").val();
+//                    toDate = $("#dateSearchInvoice").find(".end").val();
+//                    if (fromDate == '' || toDate == '')
+//                        return data;
+//
+//                    fromDate = moment(fromDate, "DD-MM-YYYY");
+//                    toDate = moment(toDate, "DD-MM-YYYY");
+//                    if (!fromDate.isValid() && !toDate.isValid())
+//                        return data;
+//
+//                    found = _.filter(data, function (o) {
+//                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+//                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+//                    });
+//                    return found;
+//                },
+//                searchGarageInvoice: function (data) {
+//                    garaName = $("#fullNumber_invoice").val();
+//                    if (garaName == '')
+//                        return data;
+//
+//                    found = _.filter(data, function (o) {
+//                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(fullNumber.toLowerCase()));
+//                    });
+//                    return found;
+//                },
+//                searchStatusMoneyInvoice: function (data) {
+//                    money = $("#invoiceDown").find("input:checked").val();
+//                    found = _.filter(data, function (o) {
+//                        if (money == 'All') {
+//                            return true;
+//                        } else if (money == 'StillDebt') {
+//                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+//                        } else {
+//                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+//                        }
+//                    });
+//                    return found;
+//                },
+//
+//                searchDateVehicleCost: function (data) {
+//                    var fromDate = $("#dateSearchVehicleCost").find(".start").val();
+//                    var toDate = $("#dateSearchVehicleCost").find(".end").val();
+//                    if (fromDate == '' || toDate == '')
+//                        return data;
+//
+//                    fromDate = moment(fromDate, "DD-MM-YYYY");
+//                    toDate = moment(toDate, "DD-MM-YYYY");
+//                    if (!fromDate.isValid() && !toDate.isValid())
+//                        return data;
+//
+//                    found = _.filter(data, function (o) {
+//                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
+//                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+//                    });
+//                    return found;
+//                },
+//                searchVehicleCost: function (data) {
+//                    var vehicle = $("#fullNumber_cost").val();
+//                    if (vehicle == '')
+//                        return data;
+//                    var found = _.filter(data, function (o) {
+//                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
+//                    });
+//                    return found;
+//                },
+//                searchStatusMoneyVehicleCost: function (data) {
+//                    var money = $("#costDown").find("input:checked").val();
+//                    var found = _.filter(data, function (o) {
+//                        if (money == 'All') {
+//                            return true;
+//                        } else if (money == 'StillDebt') {
+//                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
+//                        } else {
+//                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
+//                        }
+//                    });
+//                    return found;
+//                },
+//                save: function () {
+//                    var sendToServer = {
+//                        _token: _token,
+//                        _transport: debtGarageView.current.id
+//                    };
+//
+//                    $.ajax({
+//                        url: url + 'debt-garage/modify',
+//                        type: "POST",
+//                        dataType: "json",
+//                        data: sendToServer
+//                    }).done(function (data, textStatus, jqXHR) {
+//
+//                        if (jqXHR.status == 201) {
+//                            debtGarageView.dataTransport = data['transports'];
+//                            debtGarageView.dataSearch = data['transports'];
+//                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+//                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
+//                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
+//                            debtGarageView.dataPrintHistory = data['printHistories'];
+//                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
+//                            debtGarageView.invoiceCode = data['invoiceCode'];
+//
+//                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+//                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+//
+//                            debtGarageView.searchTransport();
+//                            debtGarageView.searchInvoice();
+//
+//                            //clear Input
+//                            debtGarageView.clearInput();
+//
+//                            //Show notification
+//                            showNotification("success", "Thanh toán thành công!");
+//                            debtGarageView.displayModal("hide", "#modal-notification");
+//                        } else {
+//                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+//                        }
+//                    }).fail(function (jqXHR, textStatus, errorThrown) {
+//                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+//                    });
+//                },
 
-                    if (totalPay > totalTransport) {
-                        showNotification('warning', 'Số tiền trên hóa đơn không được lớn hơn tổng tiền của các đơn hàng.');
-                        totalPay = totalTransport;
-                        $("input[id=totalPay]").val(totalPay);
-                    }
 
-                    vat = parseInt($("input[id=VAT]").val());
-                    paidAmt = asNumberFromCurrency("#paidAmt");
-                    $("input[id=debt-real]").val(totalPay + (totalPay * vat / 100));
-                    $("input[id=notVAT]").val(totalPay);
-                    $("input[id=hasVAT]").val(totalPay + (totalPay * vat / 100));
-                    $("input[id=debt]").val(totalPay - paidAmt);
-                    formatCurrency(".currency");
-                }
             };
             debtGarageView.loadData();
         } else {

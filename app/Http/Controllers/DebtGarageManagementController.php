@@ -199,69 +199,17 @@ class DebtGarageManagementController extends Controller
     public function postValidateTransportGarage(Request $request)
     {
         $array_transportId = $request->input('_array_transportId');
-
         //Kiểm tra cùng nhà xe
         $arrayVehicleId = Transport::whereIn('id', $array_transportId)->pluck('vehicle_id')->toArray();
-
         $arrayGarageId = Vehicle::whereIn('id', $arrayVehicleId)->pluck('garage_id');
         $uniqueGarageId = $arrayGarageId->unique();
         $GarageId = Garage::whereIn('id', $uniqueGarageId)->pluck('id');
         if (count($GarageId->values()->all()) != 1) {
             return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có nhà xe không giống nhau.'], 203);
+        }else {
+            return response()->json(['status' => 1, 'totalPay' => 0, 'msg' => 'Các đơn hàng chưa có phiếu thanh toán, hợp lệ cho thêm mới'], 200);
         }
 
-        //Kiểm tra xem đã xuất phiếu thanh toán hay chưa
-        $kt = false;
-//        $array_transportInvoice = InvoiceGarage::whereIn('transport_id', $array_transportId)
-//            ->where('invoiceGarage_id', '<>', null)
-//            ->get();
-//        if (count($array_transportInvoice) > 0)
-//            $kt = true;
-
-        //Nếu đã xuất hóa đơn
-        if ($kt) {
-            $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])
-                ->where('invoiceGarage_id', '<>', null)
-                ->pluck('invoiceGarage_id');
-            if ($arrayInvoice == null) {
-                return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayInvoice'], 203);
-            };
-            $array_match = true;
-            foreach ($arrayInvoice as $invoiceId) {
-                $arrayTransport = TransportInvoice::where('invoiceGarage_id', $invoiceId)
-                    ->where('invoiceGarage_id', '<>', null)
-                    ->pluck('transport_id');
-                if ($arrayTransport == null) {
-                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy arrayTransport'], 203);
-                }
-                $collectTransportStock = collect($array_transportId);
-                $diff = $collectTransportStock->diff($arrayTransport);
-                if (count($diff->all()) > 0) {
-                    //khac nhau
-                    $array_match = false;
-                }
-            }
-            if ($array_match) {
-                $invoices = InvoiceGarage::find($arrayInvoice[0])->get();
-                if ($invoices == null)
-                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Không tìm thấy invoices'], 203);
-
-                $totalTransport = $invoices[0]->totalTransport;
-                $totalPay = 0;
-                foreach ($invoices as $invoice) {
-                    $totalPay += $invoice->totalPay;
-                }
-                $totalPay = $totalTransport - $totalPay;
-                if ($totalPay == 0) {
-                    return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng đã xuất hết hóa đơn.'], 203);
-                }
-                return response()->json(['status' => 2, 'totalPay' => $totalPay, 'msg' => 'Các đơn hàng khớp nhau'], 200);
-            } else {
-                return response()->json(['status' => 0, 'totalPay' => 0, 'msg' => 'Các đơn hàng không khớp nhau.'], 203);
-            }
-        } else {
-            return response()->json(['status' => 1, 'totalPay' => 0, 'msg' => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'], 200);
-        }
     }
 
     public function postModifyInvoiceGarage(Request $request)
@@ -270,7 +218,6 @@ class DebtGarageManagementController extends Controller
         $invoiceCode = $request->input('_invoiceGarage')['invoiceCode'];
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
-
             //Kiem tra xem cac transport nay da xuat phieu thanh toan chua
             //Neu da xuat phieu thanh toan thi kiem tra xem ma cac phieu do co giong nhau khong
             //Neu giong nhau tien hanh them hoa don them lan nua
@@ -302,7 +249,7 @@ class DebtGarageManagementController extends Controller
             $invoiceGarage->updatedBy = \Auth::user()->id;
 
             try {
-                dd($request->all());
+
                 DB::beginTransaction();
                 //Insert InvoiceGarage
                 if (!$invoiceGarage->save()) {

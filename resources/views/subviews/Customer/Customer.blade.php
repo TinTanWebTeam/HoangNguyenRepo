@@ -743,7 +743,7 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#birthdayStaff').datepicker("setDate", new Date());
+                    $('#birthdayStaff').datepicker("setDate", new Date('1990'));
 
                 },
                 loadSelectBox: function (lstCustomerType) {
