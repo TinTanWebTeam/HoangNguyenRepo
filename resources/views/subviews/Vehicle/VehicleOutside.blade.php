@@ -83,7 +83,7 @@
                     <ol class="breadcrumb">
                         <li><a href="javascript:;">Trang chủ</a></li>
                         <li><a href="javascript:;">QL xe</a></li>
-                        <li class="active">Xe công ty</li>
+                        <li class="active">Nhà xe ngoài</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">
                         <div class="btn btn-primary btn-circle btn-md" title="Thêm mới"

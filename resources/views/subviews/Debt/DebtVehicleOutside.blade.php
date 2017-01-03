@@ -707,11 +707,12 @@
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
                             debtGarageView.dataTransport = data['transports'];
+                            debtGarageView.invoiceCode = data['invoiceCode'];
                             debtGarageView.dataVehicleCost = data['vehicleCost'];
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                             debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
 
-
+console.log(debtGarageView.invoiceCode);
                             // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
 
                             //debtGarageView.dataSearch = data['transports'];
@@ -991,169 +992,11 @@
 
 
 
-
-
-                fillDataToDatatableInvoiceGarage: function (data) {
-                    if (debtGarageView.tableInvoiceGarage != null)
-                        debtGarageView.tableInvoiceGarage.destroy();
-
-                    for (var i = 0; i < data.length; i++) {
-                        data[i].debt = data[i]['hasVAT'] - data[i]['totalPaid'] - data[i]['prePaid'];
-                    }
-                    debtGarageView.tableInvoiceGarage = $('#table-garageInvoice').DataTable({
-                        language: languageOptions,
-                        data: data,
-                        columns: [
-                            {
-                                data: 'id',
-                                visible: false
-                            },
-                            {data: 'garages_name'},
-                            {
-                                data: 'invoiceCode'
-
-                            },
-                            {
-                                data: 'invoiceCode'
-
-                            },
-                            {
-                                data: 'invoiceCode'
-
-                            },
-                            {
-                                data: 'invoiceCode'
-
-                            },
-
-                            {
-                                render: function (data, type, full, meta) {
-                                    var tr = '';
-                                    tr += '<div class="text-center">';
-                                    tr += '<div class="btn btn-primary btn-circle" title="Xem lịch sử" onclick="debtGarageView.createInvoiceGarage(1, ' + full.id + ')">';
-                                    tr += '<i class="fa fa-eye" aria-hidden="true"></i>';
-                                    tr += '</div>';
-                                    tr += '<div class="btn btn-danger btn-circle" title="Xóa hóa đơn" onclick="debtGarageView.deleteInvoiceGarageConfirm(' + full.id + ')">';
-                                    tr += '<i class="fa fa-trash-o" aria-hidden="true"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
-                                    return tr;
-                                }
-                            }
-                        ],
-                        dom: 'Bfrtip',
-                        buttons: [
-                            {
-                                extend: 'copyHtml5',
-                                text: 'Sao chép',
-                                exportOptions: {
-                                    columns: [0, ':visible']
-                                }
-                            },
-                            {
-                                extend: 'excelHtml5',
-                                text: 'Xuất Excel',
-                                exportOptions: {
-                                    columns: ':visible'
-                                },
-                                customize: function (xlsx) {
-                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                }
-                            },
-                            {
-                                extend: 'pdfHtml5',
-                                text: 'Xuất PDF',
-                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
-                                customize: function (doc) {
-                                    doc.content.splice(0, 1);
-                                    doc.styles.tableBodyEven.alignment = 'center';
-                                    doc.styles.tableBodyOdd.alignment = 'center';
-                                    doc.content.columnGap = 10;
-                                    doc.pageOrientation = 'landscape';
-                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
-                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
-                                            doc.content[1].table.body[i].splice(6, 1);
-                                        }
-                                    }
-                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
-                                }
-                            },
-                            {
-                                extend: 'colvis',
-                                text: 'Ẩn cột'
-                            }
-                        ]
-                    })
-                },
-                fillDataToDatatableInvoiceGarageDetail: function (data) {
-                    if (debtGarageView.tableInvoiceGarageDetail != null) {
-                        debtGarageView.tableInvoiceGarageDetail.destroy();
-                    }
-                    debtGarageView.tableInvoiceGarageDetail = $('#table-invoiceGarageDetail').DataTable({
-                        language: languageOptions,
-                        data: data,
-                        columns: [
-                            {data: 'id'},
-                            {
-                                data: 'payDate',
-                                render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY");
-                                }
-                            },
-                            {
-                                data: 'paidAmt',
-                                render: $.fn.dataTable.render.number(",", ".", 0)
-                            },
-                            {
-                                render: function (data, type, full, meta) {
-                                    var tr = '';
-                                    tr += '<div class="text-center">';
-                                    tr += '<div class="btn btn-primary btn-circle marginRight" title="In" onclick="debtGarageView.printReview(' + full.id + ')">';
-                                    tr += '<span class="glyphicon glyphicon-print" aria-hidden="true"></span>';
-                                    tr += '</div>';
-                                    tr += '<div class="btn btn-default btn-circle marginRight" title="Đính kèm tập tin" onclick="debtGarageView.attachFile(' + full.id + ')">';
-                                    tr += '<i class="fa fa-file" aria-hidden="true"></i>';
-                                    tr += '</div>';
-                                    tr += '<div class="btn btn-danger btn-circle" title="Xoá" onclick="debtGarageView.deleteInvoiceGarageDetailConfirm(' + full.id + ')">';
-                                    tr += '<i class="fa fa-trash-o" aria-hidden="true"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
-                                    return tr;
-                                }
-                            }
-                        ]
-                    })
-                },
-                fillDataToDatatablePrintHistory: function (data) {
-                    if (debtGarageView.tablePrintHistory != null) {
-                        debtGarageView.tablePrintHistory.destroy();
-                    }
-                    debtGarageView.tablePrintHistory = $('#table-printHistory').DataTable({
-                        language: languageOptions,
-                        data: data,
-                        columns: [
-                            {data: 'id'},
-                            {
-                                data: 'printDate',
-                                render: function (data, type, full, meta) {
-                                    return moment(data).format("DD/MM/YYYY");
-                                }
-                            },
-                            {data: 'sendToPerson'},
-                            {data: 'users_fullName'}
-                        ]
-                    })
-                },
-
-
                 fillCurrentObjectToForm: function () {
                     $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
                     $("input[id=sendToPerson]").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
                     $("input[id='totalPay']").val(debtGarageView.currentInvoiceGarage["totalPay"]);
                     $("input[id='totalPay']").attr('data-totalTransport', debtGarageView.currentInvoiceGarage["totalPay"]);
-                    $("input[id='VAT']").val(debtGarageView.currentInvoiceGarage["VAT"]);
-                    $("input[id='notVAT']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
-                    $("input[id='hasVAT']").val(debtGarageView.currentInvoiceGarage["hasVAT"]);
 
                     var exportDate = moment(debtGarageView.currentInvoiceGarage["exportDate"], "YYYY-MM-DD");
                     $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
@@ -1174,9 +1017,6 @@
                     debtGarageView.currentInvoiceGarage = {
                         id: debtGarageView.invoiceGarageId,
                         invoiceCode: $("input[id='invoiceCode']").val(),
-                        VAT: $("input[id='VAT']").val(),
-                        notVAT: asNumberFromCurrency("#notVAT"),
-                        hasVAT: asNumberFromCurrency("#hasVAT"),
                         exportDate: $("input[id='exportDate']").val(),
                         invoiceDate: $("input[id='invoiceDate']").val(),
                         payDate: $("input[id='payDate']").val(),
@@ -1201,7 +1041,7 @@
                             return;
                         }
 
-                        $("#divInvoice").find(".titleControl").html("Tạo mới hóa đơn");
+                        $("#divInvoice").find(".titleControl").html("Tạo phiếu thanh toán");
                         debtGarageView.showControl(flag);
                         debtGarageView.action = "new";
                         prePaid = 0;
@@ -1237,19 +1077,11 @@
                         $("input[id=invoiceCode]").attr("placeholder", debtGarageView.invoiceCode);
 
                         //set default value
-                        $("input[id=notVAT]").val(totalPay);
-                        $("input[id=VAT]").val(0);
-                        $("input[id=hasVAT]").val(totalPay);
                         $("input[id=paidAmt]").val(0);
 
-                        //set default VAT=10%
-                        $("input[id=VAT]").val(10);
-                        debtGarageView.computeHasVAT(10);
 
                         //remove readly input
                         $("input[id=invoiceCode]").prop('readonly', false);
-                        $("input[id=VAT]").prop('readonly', false);
-                        $("input[id=hasVAT]").prop('readonly', false);
 
                         $("input[id=invoiceCode]").focus();
                     } else {

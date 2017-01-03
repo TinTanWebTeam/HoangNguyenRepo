@@ -52,10 +52,9 @@ class VehicleManagementController extends Controller
             }
             $garage_name = $request->input('_garage')['name'];
             $address = $request->input('_garage')['address'];
-            $contactor = $request->input('_garage')['contactor'];
+            $contactor =  strtoupper($request->input('_garage')['contactor']);
             $phone = $request->input('_garage')['phone'];
             $note = $request->input('_garage')['note'];
-
         }
 
 
@@ -364,7 +363,7 @@ class VehicleManagementController extends Controller
             }
             $garage_name = $request->input('_garage')['name'];
             $address = $request->input('_garage')['address'];
-            $contactor = $request->input('_garage')['contactor'];
+            $contactor =  strtoupper($request->input('_garage')['contactor']);
             $phone = $request->input('_garage')['phone'];
             $note = $request->input('_garage')['note'];
 

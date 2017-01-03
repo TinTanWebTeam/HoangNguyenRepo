@@ -28,14 +28,14 @@ class DebtGarageManagementController extends Controller
             case 'garage':
                 $invoiceCode = "IG" . date('ymd');
                 break;
-            case 'bill':
-                $invoiceCode = "IB" . date('ymd');
+            case 'bill_garage':
+                $invoiceCode = "BG" . date('ymd');
                 break;
             default:
                 break;
         }
 
-        $stt = InvoiceCustomer::where('invoiceCode', 'like', $invoiceCode . '%')->get()->count() + 1;
+        $stt = InvoiceGarage::where('invoiceCode', 'like', $invoiceCode . '%')->get()->count() + 1;
         $invoiceCode .= substr("00" . $stt, -3);
         return $invoiceCode;
     }
@@ -125,7 +125,7 @@ class DebtGarageManagementController extends Controller
 //            ->select('printHistories.*', 'users.fullName as users_fullName')
 //            ->get();
 
-        $invoiceCode = $this->generateInvoiceCode('garage');
+        $invoiceCode = $this->generateInvoiceCode('bill_garage');
 
         $transportInvoices = DB::table('transportInvoices')->get();
 
@@ -266,6 +266,7 @@ class DebtGarageManagementController extends Controller
 
     public function postModifyInvoiceGarage(Request $request)
     {
+
         $action = $request->input('_action');
         $invoiceCode = $request->input('_invoiceGarage')['invoiceCode'];
 
