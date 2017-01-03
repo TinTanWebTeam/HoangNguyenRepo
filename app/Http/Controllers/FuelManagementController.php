@@ -97,7 +97,7 @@ class FuelManagementController extends Controller
                                     $formula->note = "Tăng cước vận chuyển và giao xe do giá dầu tăng từ " . number_format($currentOilPrice->price) . " lên " . number_format($oilPrice->price);
                                 }
                                 $formula->formulaCode = $postage->formulaCode;
-                                $formula->unit = $postage->unit;
+                                $formula->unit_id = $postage->unit_id;
                                 $formula->customer_id = $postage->customer_id;
                                 $formula->extendData = $postage->extendData;
                                 $formula->postageBase = $postage->postageBase;
