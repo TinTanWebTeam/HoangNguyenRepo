@@ -46,7 +46,7 @@
         height: 330px;
     }
 
-    #listVehicle .panel-body {
+    #listVehicle .table-list-vehicle {
         height: 500px;
     }
     #listVehicle .scroll-bar {
@@ -754,7 +754,10 @@
                     $("#divControl").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
                     });
-                    $("#listVehicle").find('.panel-body').mCustomScrollbar({
+                    $("#listVehicle").find('.scroll-bar').mCustomScrollbar({
+                        theme: "dark"
+                    });
+                    $("#listVehicle").find('.table-list-vehicle').mCustomScrollbar({
                         theme: "dark"
                     });
                 },

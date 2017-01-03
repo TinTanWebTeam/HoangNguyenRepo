@@ -723,7 +723,50 @@
                         });
                     });
                 },
+                loadData: function () {
+                    if (debtGarageView.table != null)
+                        debtGarageView.table.destroy();
+                    $.ajax({
+                        url: url + 'debt-garage/transports',
+                        type: "GET",
+                        dataType: "json"
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            debtGarageView.dataTransport = data['transports'];
+                            debtGarageView.dataVehicleCost = data['vehicleCost'];
+                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+                            debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
 
+
+                            // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+
+                            //debtGarageView.dataSearch = data['transports'];
+//                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+//                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
+//                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
+//                            debtGarageView.dataPrintHistory = data['printHistories'];
+//                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
+//                            debtGarageView.invoiceCode = data['invoiceCode'];
+
+
+                        } else {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                    debtGarageView.renderDateTimePicker();
+                    debtGarageView.renderScrollbar();
+                    debtGarageView.renderEventRadioInput();
+                    debtGarageView.renderEventKeyCode();
+                    debtGarageView.renderEventRowClick();
+                    setEventFormatCurrency(".currency");
+                    formatCurrency(".currency");
+                    defaultZero("#VAT");
+                    defaultZero("#hasVAT");
+                    defaultZero("#paidAmt");
+                },
                 fillDataToDatatable: function (data) {
                     if (debtGarageView.table != null)
                         debtGarageView.table.destroy();
@@ -1128,50 +1171,7 @@
                     })
                 },
 
-                loadData: function () {
-                    if (debtGarageView.table != null)
-                        debtGarageView.table.destroy();
-                    $.ajax({
-                        url: url + 'debt-garage/transports',
-                        type: "GET",
-                        dataType: "json"
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (jqXHR.status == 200) {
-                            debtGarageView.dataTransport = data['transports'];
-                            debtGarageView.dataVehicleCost = data['vehicleCost'];
-                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                            debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
 
-
-                           // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
-                            //debtGarageView.dataSearch = data['transports'];
-//                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-//                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-//                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-//                            debtGarageView.dataPrintHistory = data['printHistories'];
-//                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
-//                            debtGarageView.invoiceCode = data['invoiceCode'];
-
-
-                        } else {
-                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                    });
-
-                    debtGarageView.renderDateTimePicker();
-                    debtGarageView.renderScrollbar();
-                    debtGarageView.renderEventRadioInput();
-                    debtGarageView.renderEventKeyCode();
-                    debtGarageView.renderEventRowClick();
-                    setEventFormatCurrency(".currency");
-                    formatCurrency(".currency");
-                    defaultZero("#VAT");
-                    defaultZero("#hasVAT");
-                    defaultZero("#paidAmt");
-                },
                 fillCurrentObjectToForm: function () {
                     $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
                     $("input[id=sendToPerson]").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
@@ -1217,6 +1217,7 @@
                 },
 
                 createInvoiceGarage: function (flag, invoiceGarage_id) {
+
                     if (flag == 0) {
                         var dataAfterValidate = debtGarageView.validateListTransport();
                         if (dataAfterValidate['status'] === 0) {

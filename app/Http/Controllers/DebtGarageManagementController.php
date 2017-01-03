@@ -9,6 +9,7 @@ use App\InvoiceGarage;
 use App\InvoiceGarageDetail;
 use App\Transport;
 use App\TransportInvoice;
+use App\Vehicle;
 use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
@@ -200,21 +201,22 @@ class DebtGarageManagementController extends Controller
         $array_transportId = $request->input('_array_transportId');
 
         //Kiểm tra cùng nhà xe
-        $arrayVehicle = Transport::whereIn('id', $array_transportId)->pluck('vehicle_id');
-        $arrayGarage = Garage::whereIn('id', $arrayVehicle)->pluck('id');
-        $collection = collect($arrayGarage);
-        $unique = $collection->unique();
-        if (count($unique->values()->all()) != 1) {
+        $arrayVehicleId = Transport::whereIn('id', $array_transportId)->pluck('vehicle_id')->toArray();
+
+        $arrayGarageId = Vehicle::whereIn('id', $arrayVehicleId)->pluck('garage_id');
+        $uniqueGarageId = $arrayGarageId->unique();
+        $GarageId = Garage::whereIn('id', $uniqueGarageId)->pluck('id');
+        if (count($GarageId->values()->all()) != 1) {
             return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có nhà xe không giống nhau.'], 203);
         }
 
-        //Kiểm tra xem đã xuất hđ hay chưa
+        //Kiểm tra xem đã xuất phiếu thanh toán hay chưa
         $kt = false;
-        $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)
-            ->where('invoiceGarage_id', '<>', null)
-            ->get();
-        if (count($array_transportInvoice) > 0)
-            $kt = true;
+//        $array_transportInvoice = InvoiceGarage::whereIn('transport_id', $array_transportId)
+//            ->where('invoiceGarage_id', '<>', null)
+//            ->get();
+//        if (count($array_transportInvoice) > 0)
+//            $kt = true;
 
         //Nếu đã xuất hóa đơn
         if ($kt) {

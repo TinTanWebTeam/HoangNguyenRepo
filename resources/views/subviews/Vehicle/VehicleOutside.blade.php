@@ -49,6 +49,9 @@
     #listVehicle .table-list-vehicle {
         height: 500px;
     }
+    #listVehicle .scroll-bar {
+        height: 500px;
+    }
 
     table.table-autocomplete {
         width: 100%;
@@ -280,7 +283,7 @@
                 </div>
             </div>
             <div class="panel-body">
-                <div class="col-md-5">
+                <div class="col-md-5 scroll-bar">
                     <form role="form" id="frmVehicle" onsubmit="return false;">
                         <input id="vehicle_id" style="display: none">
                         <div class="form-body">
@@ -748,6 +751,9 @@
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
+                        theme: "dark"
+                    });
+                    $("#listVehicle").find('.scroll-bar').mCustomScrollbar({
                         theme: "dark"
                     });
                     $("#listVehicle").find('.table-list-vehicle').mCustomScrollbar({
