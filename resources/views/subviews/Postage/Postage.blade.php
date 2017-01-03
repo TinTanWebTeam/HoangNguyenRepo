@@ -1005,6 +1005,8 @@
                 },
                 getLatestFuel: function () {
                     var fuel = _.maxBy(postageView.dataFuel, function (o) {
+                        if(moment(o.applyDate, "DD-MM-YYYY").hour(0).minute(0).second(0).isAfter(moment().hour(0).minute(0).second(0)))
+                            return false;
                         return o.applyDate;
                     });
                     if (typeof fuel === 'undefined') {
@@ -1168,6 +1170,15 @@
                         if ($("#frmControlDetail").valid()) {
 
                             postageView.fillFormDataToCurrentObjectDetail();
+
+                            var exist = _.filter(postageView.arrayDetai, function(o) {
+                                return o.name == postageView.currentDetail['name'];
+                            });
+
+                            if(typeof exist === 'undefined'){
+                                showNotification("success", "Tên trường trong công thức đã tồn tại!");
+                                return;
+                            }
 
                             postageView.arrayDetail.push({
                                 'action': postageView.action,
