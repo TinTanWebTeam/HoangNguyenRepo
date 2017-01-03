@@ -798,8 +798,6 @@
                                     return tr;
                                 }, width: "10%"
                             }
-
-
                         ],
                         dom: ''
 
@@ -817,10 +815,7 @@
                             {data: 'address'},
                             {data: 'phone'},
                             {data: 'email'},
-                            {
-                                data: 'note',
-
-                            },
+                            {data: 'note'},
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
@@ -924,7 +919,7 @@
                 },
                 fillDataStaffToForm: function (id) {
                     customerView.currentStaff = null;
-                    customerView.currentStaff = _.clone(_.find(customerView.dataStaff, function (o) {
+                    customerView.currentStaff = _.clone(_.find(customerView.dataStaffTemp, function (o) {
                         return o.id == id;
                     }), true);
                     $("input[id='idStaff']").val(customerView.currentStaff["id"]);
@@ -939,9 +934,11 @@
                     customerView.clearValidation("#frmStaffCustomer");
                 },
                 editCustomer: function (id) {
+                    console.log(customerView.dataStaff);
                     customerView.dataStaffTemp = _.filter(customerView.dataStaff, function (o) {
                         return o.customer_id == id;
                     });
+                    console.log(customerView.dataStaffTemp);
                     customerView.fillDataToDatatableStaff(customerView.dataStaffTemp);
                     $("input[id='idCustomer']").val(id);
                     customerView.current = null;
@@ -1080,12 +1077,12 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                var staffDelete = _.find(customerView.dataStaff, function (o) {
+                                var staffDelete = _.find(customerView.dataStaffTemp, function (o) {
                                     return o.id == sendToServer._object;
                                 });
-                                var indexOfStaffOld = _.indexOf(customerView.dataStaff, staffDelete);
-                                customerView.dataStaff.splice(indexOfStaffOld, 1);
-                                var staffOld = _.filter(customerView.dataStaff, function (o) {
+                                var indexOfStaffOld = _.indexOf(customerView.dataStaffTemp, staffDelete);
+                                customerView.dataStaffTemp.splice(indexOfStaffOld, 1);
+                                var staffOld = _.filter(customerView.dataStaffTemp, function (o) {
                                     return o.customer_id == customerView.current.id;
                                 });
                                 customerView.fillDataToDatatableStaff(staffOld);
@@ -1099,7 +1096,6 @@
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
                     } else {
-
                         if ($("input[id='idStaff']").val().trim() == '') {
                             customerView.actionStaff = "addStaff";
                             customerView.currentStaff = {
@@ -1138,13 +1134,13 @@
                                 if (jqXHR.status == 201) {
                                     switch (customerView.actionStaff) {
                                         case 'addStaff':
-                                            customerView.dataStaff.push(data['staffNew']);
-                                            var StaffOld = _.filter(customerView.dataStaff, function (o) {
+                                            customerView.dataStaffTemp.push(data['staffNew']);
+                                            var StaffOld = _.filter(customerView.dataStaffTemp, function (o) {
                                                 return o.customer_id == customerView.current.id;
                                             });
                                             customerView.fillDataToDatatableStaff(StaffOld);
                                             showNotification("success", "Thêm nhân viên thành công!");
-                                            customerView.dataStaffTemp.push(data['staffNew']);
+
                                             break;
                                         case 'updateStaff':
                                             var StaffOld = _.find(customerView.dataStaffTemp, function (o) {

@@ -90,7 +90,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
@@ -888,7 +887,6 @@
                     $("#table-data").css("width", "auto");
                 },
                 fillDataToDatatableTransportCost: function (data) {
-
                     if (debtGarageView.tableTransportCost != null)
                         debtGarageView.tableTransportCost.destroy();
 //                    for (var i = 0; i < data.length; i++) {
@@ -948,27 +946,6 @@
 
                     formatCurrency(".currency");
                 },
-
-
-//                fillCurrentObjectToForm: function () {
-//                    console.log(debtGarageView.currentInvoiceGarage['cashDelivery']);
-//
-////                    $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
-////                    $("input[id='totalTransport']").val(debtGarageView.currentInvoiceGarage["totalPay"]);
-////                    $("input[id='debt']").val(debtGarageView.currentInvoiceGarage["debsst"]);
-////                    $("input[id='paidAmt']").val(debtGarageView.currentInvoiceGarage["paidAmt"]);
-////                    $("input[id='sendToPerson']").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
-////                    $("textarea[id='note']").val(debtGarageView.currentInvoiceGarage["note"]);
-////                    var exportDate = moment(debtGarageView.currentInvoiceGarage["exportDate"], "YYYY-MM-DD");
-////                    $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
-////                    var invoiceDate = moment(debtGarageView.currentInvoiceGarage["invoiceDate"], "YYYY-MM-DD");
-////                    $("input[id='invoiceDate']").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
-////                    var payDate = moment(debtGarageView.currentInvoiceGarage["payDate"], "YYYY-MM-DD");
-////                    $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
-////
-////
-////                    formatCurrency(".currency");
-//                },
                 fillFormDataToCurrentObject: function () {
                     debtGarageView.currentInvoiceGarage = {
                         id: debtGarageView.invoiceGarageId,
@@ -1033,7 +1010,7 @@
                         return result;
                     }
                 },
-                createInvoiceGarage: function (flag, invoiceGarage_id) {
+                createInvoiceGarage: function (flag) {
                     if (flag == 0) {
                         var dataAfterValidate = debtGarageView.validateListTransport();
                         if (dataAfterValidate['status'] === 0) {
@@ -1083,48 +1060,48 @@
                     }
                     formatCurrency(".currency");
                 },
-//                autoEditTransport: function (transportId) {
-//                    debtGarageView.current = null;
-//                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
-//                        return o.id == transportId;
-//                    }), true);
-//                    debtGarageView.action = 'autoEdit';
-//                    debtGarageView.save();
-//                },
-//                autoEditTransportConfirm: function (transportId) {
-//                    debtGarageView.current = null;
-//                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
-//                        return o.id == transportId;
-//                    }), true);
-//
+                autoEditTransport: function (transportId) {
+                    debtGarageView.current = null;
+                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
+                        return o.id == transportId;
+                    }), true);
+                    debtGarageView.action = 'autoEdit';
+                    debtGarageView.save();
+                },
+                autoEditTransportConfirm: function (transportId) {
+                    debtGarageView.current = null;
+                    debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
+                        return o.id == transportId;
+                    }), true);
+
 //                    if (debtGarageView.current['invoiceGarage_id'] != null) {
 //                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
 //                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
 //                        debtGarageView.displayModal('show', '#modal-notification');
 //                        return;
 //                    }
-//
+
 //                    if (parseInt(debtGarageView.current['cashDelivery']) == parseInt(debtGarageView.current['cashPreDelivery'])) {
 //                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
 //                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
 //                        debtGarageView.displayModal('show', '#modal-notification');
 //                        return;
 //                    }
-//
-//                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này?");
-//                    tr = '<div class="row">';
-//                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
-//                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.autoEditTransport(' + transportId + ')">';
-//                    tr += 'Đồng ý';
-//                    tr += '</button>';
-//                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
-//                    tr += 'Huỷ';
-//                    tr += '</button>';
-//                    tr += '</div>';
-//                    tr += '</div>';
-//                    $("#modal-notification").find(".modal-body").html(tr);
-//                    debtGarageView.displayModal('show', '#modal-notification');
-//                },
+
+                    $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này không?");
+                    tr = '<div class="row">';
+                    tr += '<div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">';
+                    tr += '<button type="button" class="btn btn-primary marginRight" onclick="debtGarageView.autoEditTransport(' + transportId + ')">';
+                    tr += 'Đồng ý';
+                    tr += '</button>';
+                    tr += '<button type="button" class="btn default" onclick="debtGarageView.displayModal(\'hide\', \'#modal-notification\')">';
+                    tr += 'Huỷ';
+                    tr += '</button>';
+                    tr += '</div>';
+                    tr += '</div>';
+                    $("#modal-notification").find(".modal-body").html(tr);
+                    debtGarageView.displayModal('show', '#modal-notification');
+                },
 //                deleteInvoiceGarage: function (invoiceGarage_id) {
 //                    var sendToServer = {
 //                        _token: _token,
@@ -1343,43 +1320,26 @@
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
                                 debtGarageView.dataTransport = data['transports'];
-                                debtGarageView.dataSearch = data['transports'];
-                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-                                debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-                                debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-                                debtGarageView.dataPrintHistory = data['printHistories'];
-                                debtGarageView.dataTransportInvoice = data['transportInvoices'];
-                                debtGarageView.invoiceCode = data['invoiceCode'];
                                 debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                                debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-                                debtGarageView.searchTransport();
-                                debtGarageView.searchInvoice();
+
+
+//                                debtGarageView.dataSearch = data['transports'];
+//                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+//                                debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
+//                                debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
+//                                debtGarageView.dataPrintHistory = data['printHistories'];
+//                                debtGarageView.dataTransportInvoice = data['transportInvoices'];
+//                                debtGarageView.invoiceCode = data['invoiceCode'];
+
+                               // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage)
                                 if (debtGarageView.action == 'new') {
                                     //clear Input
                                     debtGarageView.clearInput();
                                     debtGarageView.clearValidation("#frmInvoice");
                                     debtGarageView.hideControl();
-                                    //Show notification
-                                    showNotification("success", "Thanh toán thành công!");
-                                } else {
-                                    var dataDetail = _.filter(debtGarageView.dataInvoiceGarageDetail, function (o) {
-                                        return o.invoiceGarage_id == sendToServer._invoiceGarage.id;
-                                    });
-                                    debtGarageView.fillDataToDatatableInvoiceGarageDetail(dataDetail);
-
-                                    //clear Input
-                                    $("input[id=paidAmt]").val('');
-                                    $("textarea[id=note]").val('');
-
-                                    var prePaid = parseInt(sendToServer._invoiceGarage['paidAmt']);
-                                    var debtReal = asNumberFromCurrency("#debt-real") - prePaid;
-                                    debtReal = (debtReal < 0) ? 0 : debtReal;
-                                    $("input[id=debt]").val(debtReal);
-                                    $("input[id=debt-real]").val(debtReal);
-                                    $("#paidAmt").focus();
-
-                                    //Show notification
-                                    showNotification("success", "Thanh toán thành công!");
+                                    debtGarageView.deselectAll();
+                                 //Show notification
+                                    showNotification("success", "Tạo phiếu thanh toán thành công!");
                                 }
                                 formatCurrency(".currency");
                             } else if (jqXHR.status == 203) {
@@ -1635,48 +1595,48 @@
 //                    });
 //                    return found;
 //                },
-//                save: function () {
-//                    var sendToServer = {
-//                        _token: _token,
-//                        _transport: debtGarageView.current.id
-//                    };
-//
-//                    $.ajax({
-//                        url: url + 'debt-garage/modify',
-//                        type: "POST",
-//                        dataType: "json",
-//                        data: sendToServer
-//                    }).done(function (data, textStatus, jqXHR) {
-//
-//                        if (jqXHR.status == 201) {
-//                            debtGarageView.dataTransport = data['transports'];
-//                            debtGarageView.dataSearch = data['transports'];
-//                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-//                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-//                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-//                            debtGarageView.dataPrintHistory = data['printHistories'];
-//                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
-//                            debtGarageView.invoiceCode = data['invoiceCode'];
-//
-//                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-//                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-//
-//                            debtGarageView.searchTransport();
-//                            debtGarageView.searchInvoice();
-//
-//                            //clear Input
-//                            debtGarageView.clearInput();
-//
-//                            //Show notification
-//                            showNotification("success", "Thanh toán thành công!");
-//                            debtGarageView.displayModal("hide", "#modal-notification");
-//                        } else {
-//                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-//                        }
-//                    }).fail(function (jqXHR, textStatus, errorThrown) {
-//                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-//                    });
-//                },
+                save: function () {
+                    var sendToServer = {
+                        _token: _token,
+                        _transport: debtGarageView.current.id
+                    };
+
+                    $.ajax({
+                        url: url + 'debt-garage/modify',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+
+                        if (jqXHR.status == 201) {
+                            debtGarageView.dataTransport = data['transports'];
+                            debtGarageView.dataSearch = data['transports'];
+                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
+                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
+                            debtGarageView.dataPrintHistory = data['printHistories'];
+                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
+                            debtGarageView.invoiceCode = data['invoiceCode'];
+
+                            debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+
+                            debtGarageView.searchTransport();
+                            debtGarageView.searchInvoice();
+
+                            //clear Input
+                            debtGarageView.clearInput();
+
+                            //Show notification
+                            showNotification("success", "Thanh toán thành công!");
+                            debtGarageView.displayModal("hide", "#modal-notification");
+                        } else {
+                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                }
 
 
             };
