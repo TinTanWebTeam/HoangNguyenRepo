@@ -50,6 +50,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property float $debt Tiền nợ
+ * @property float $paidAmt tiền đã trả
+ * @property int $status_invoice Trạng thái phương thức thanh toán hóa đơn
+ * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage whereDebt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage wherePaidAmt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage whereStatusInvoice($value)
  */
 class InvoiceGarage extends Model
 {

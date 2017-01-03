@@ -48,6 +48,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Driver whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Driver whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $permanentAddress Địa chỉ thường trú
+ * @property string $temporaryAddress Địa chỉ tạm trú
+ * @method static \Illuminate\Database\Query\Builder|\App\Driver wherePermanentAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Driver whereTemporaryAddress($value)
  */
 class Driver extends Model
 {

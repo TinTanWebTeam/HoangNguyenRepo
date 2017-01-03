@@ -274,10 +274,7 @@ class DebtGarageManagementController extends Controller
             //Kiem tra xem cac transport nay da xuat phieu thanh toan chua
             //Neu da xuat phieu thanh toan thi kiem tra xem ma cac phieu do co giong nhau khong
             //Neu giong nhau tien hanh them hoa don them lan nua
-
-
             $invoiceGarage = new InvoiceGarage();
-
             if ($invoiceCode == ''){
                 $invoiceGarage->invoiceCode = $this->generateInvoiceCode('bill_garage');
             }
@@ -288,23 +285,21 @@ class DebtGarageManagementController extends Controller
                     return response()->json(['msg' => 'invoiceCode exists!'], 203);
             }
 
+            $invoiceGarage->totalTransport = $request->input('_invoiceGarage')['totalTransport'];
             $exportDate = $request->input('_invoiceGarage')['exportDate'];
             $invoiceGarage->exportDate = Carbon::createFromFormat('d-m-Y', $exportDate)->toDateTimeString();
-
             $invoiceDate = $request->input('_invoiceGarage')['invoiceDate'];
             $invoiceGarage->invoiceDate = Carbon::createFromFormat('d-m-Y', $invoiceDate)->toDateTimeString();
-
             $payDate = $request->input('_invoiceGarage')['payDate'];
             $invoiceGarage->payDate = Carbon::createFromFormat('d-m-Y', $payDate)->toDateTimeString();
-
             $invoiceGarage->note = $request->input('_invoiceGarage')['note'];
-            $invoiceGarage->totalPay = $request->input('_invoiceGarage')['totalPay'];
-            $invoiceGarage->totalTransport = $request->input('_invoiceGarage')['totalTransport'];
-            $invoiceGarage->prePaid = $request->input('_invoiceGarage')['prePaid'];
-            $invoiceGarage->totalPaid = $request->input('_invoiceGarage')['paidAmt'];
+
+            $invoiceGarage->debt = $request->input('_invoiceGarage')['debt'];
+            $invoiceGarage->paidAmt = $request->input('_invoiceGarage')['paidAmt'];
+            $invoiceGarage->sendToPerson = $request->input('_invoiceGarage')['sendToPerson'];
+
             $invoiceGarage->createdBy = \Auth::user()->id;
             $invoiceGarage->updatedBy = \Auth::user()->id;
-            $invoiceGarage->sendToPerson = $request->input('_invoiceGarage')['sendToPerson'];
 
             try {
                 dd($request->all());

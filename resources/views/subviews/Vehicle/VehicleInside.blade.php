@@ -82,7 +82,7 @@
                 <div class="col-lg-12">
                     <ol class="breadcrumb">
                         <li><a href="javascript:;">Trang chủ</a></li>
-                        <li><a href="javascript:;">QL xe</a></li>
+                        <li><a href="javascript:;">QL nhà xe</a></li>
                         <li class="active">Nhà xe công ty</li>
                     </ol>
                     <div class="pull-right menu-toggle fixed">

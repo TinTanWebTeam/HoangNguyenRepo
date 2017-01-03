@@ -52,6 +52,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceCustomer whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceCustomer whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $status_invoice Trạng thái phương thức thanh toán hóa đơn
+ * @method static \Illuminate\Database\Query\Builder|\App\InvoiceCustomer whereStatusInvoice($value)
  */
 class InvoiceCustomer extends Model
 {

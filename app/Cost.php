@@ -46,6 +46,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Cost whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Cost whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $status_invoice_garage Trạng thái phương thức thanh toán đơn hàng cho nhà xe
+ * @method static \Illuminate\Database\Query\Builder|\App\Cost whereStatusInvoiceGarage($value)
  */
 class Cost extends Model
 {

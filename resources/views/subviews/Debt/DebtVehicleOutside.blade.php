@@ -113,10 +113,6 @@
                                         <th>Thanh toán</th>
                                     </tr>
                                     </thead>
-                                    <tr>
-                                        <th colspan="8" style="text-align:right">Total:</th>
-                                        <th></th>
-                                    </tr>
                                     <tbody>
 
                                     </tbody>
@@ -339,10 +335,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="totalPay"><b>Tổng tiền</b></label>
+                                            <label for="totalTransport"><b>Tổng tiền</b></label>
                                             <input type="text" class="form-control currency" readonly
-                                                   id="totalPay" name="totalPay" data-totalTransport=""
-                                                   onkeyup="debtGarageView.computeWhenTotalpayChange(this.value)">
+                                                   id="totalTransport" name="totalTransport">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -352,13 +347,13 @@
                                                    id="debt" name="debt" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-4" hidden>
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="debt-real"><b>Còn nợ</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="debt-real" name="debt-real" readonly>
-                                        </div>
-                                    </div>
+                                    {{--<div class="col-md-4" hidden>--}}
+                                        {{--<div class="form-group form-md-line-input ">--}}
+                                            {{--<label for="debt-real"><b>Còn nợ</b></label>--}}
+                                            {{--<input type="text" class="form-control currency"--}}
+                                                   {{--id="debt-real" name="debt-real" readonly>--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
@@ -384,14 +379,14 @@
                                                    name="exportDate">
                                         </div>
                                     </div>
-                                    <div class="col-md-4" hidden>
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="prePaid"><b>Trả trước</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="prePaid"
-                                                   name="prePaid" readonly>
-                                        </div>
-                                    </div>
+                                    {{--<div class="col-md-4" hidden>--}}
+                                        {{--<div class="form-group form-md-line-input ">--}}
+                                            {{--<label for="prePaid"><b>Trả trước</b></label>--}}
+                                            {{--<input type="text" class="form-control currency"--}}
+                                                   {{--id="prePaid"--}}
+                                                   {{--name="prePaid" readonly>--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -437,49 +432,6 @@
                             </div>
                         </form>
                     </div>
-                    {{--<div class="col-md-6" id="tbl-history">--}}
-                        {{--<div class="row">--}}
-                            {{--<div class="col-md-12">--}}
-                                {{--<span class="text text-primary">Lịch sử trả nợ</span>--}}
-                                {{--<div class="table-responsive">--}}
-                                    {{--<table class="table table-bordered table-striped table-hover"--}}
-                                           {{--id="table-invoiceGarageDetail">--}}
-                                        {{--<thead>--}}
-                                        {{--<tr class="active">--}}
-                                            {{--<th>Mã</th>--}}
-                                            {{--<th>Ngày trả</th>--}}
-                                            {{--<th>Tiền trả</th>--}}
-                                            {{--<th>In</th>--}}
-                                        {{--</tr>--}}
-                                        {{--</thead>--}}
-                                        {{--<tbody>--}}
-
-                                        {{--</tbody>--}}
-                                    {{--</table>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                        {{--<div class="row">--}}
-                            {{--<div class="col-md-12">--}}
-                                {{--<span class="text text-primary">Lịch sử in</span>--}}
-                                {{--<div class="table-responsive">--}}
-                                    {{--<table class="table table-bordered table-striped table-hover"--}}
-                                           {{--id="table-printHistory">--}}
-                                        {{--<thead>--}}
-                                        {{--<tr class="active">--}}
-                                            {{--<th>Mã in</th>--}}
-                                            {{--<th>Ngày in</th>--}}
-                                            {{--<th>Người nhận</th>--}}
-                                            {{--<th>Người in</th>--}}
-                                        {{--</tr>--}}
-                                        {{--</thead>--}}
-                                        {{--<tbody>--}}
-                                        {{--</tbody>--}}
-                                    {{--</table>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
                 </div>
             </div>
         </div>
@@ -712,7 +664,7 @@
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                             debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
 
-console.log(debtGarageView.invoiceCode);
+
                             // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
 
                             //debtGarageView.dataSearch = data['transports'];
@@ -787,18 +739,13 @@ console.log(debtGarageView.invoiceCode);
                             {data: 'garages_name'},
                             {
                                 data: 'invoiceCode',
-                                render: function (data, type, full, meta) {
-                                    var arr = data.split(",");
-                                    var tr = "";
-                                    for (var i in arr) {
-                                        tr += arr[i] + "<br>";
-                                    }
-                                    return tr;
-                                }
+                                visible: false
                             },
 
                             {data: 'deliveryPlace'},
-                            {data: 'voucherNumber'},
+                            {
+                                data: 'voucherNumber'
+                            },
                             {
                                 data: 'cashDelivery',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
@@ -937,9 +884,6 @@ console.log(debtGarageView.invoiceCode);
                             }
                         ],
 
-
-
-
                     });
                     $("#table-data").css("width", "auto");
                 },
@@ -993,45 +937,90 @@ console.log(debtGarageView.invoiceCode);
 
 
                 fillCurrentObjectToForm: function () {
-                    $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
-                    $("input[id=sendToPerson]").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
-                    $("input[id='totalPay']").val(debtGarageView.currentInvoiceGarage["totalPay"]);
-                    $("input[id='totalPay']").attr('data-totalTransport', debtGarageView.currentInvoiceGarage["totalPay"]);
+                    console.log(debtGarageView.currentInvoiceGarage['cashDelivery']);
 
-                    var exportDate = moment(debtGarageView.currentInvoiceGarage["exportDate"], "YYYY-MM-DD");
-                    $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
-
-                    var invoiceDate = moment(debtGarageView.currentInvoiceGarage["invoiceDate"], "YYYY-MM-DD");
-                    $("input[id='invoiceDate']").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
-
-                    var payDate = moment(debtGarageView.currentInvoiceGarage["payDate"], "YYYY-MM-DD");
-                    $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
-
-                    $("input[id='debt']").val(debtGarageView.currentInvoiceGarage["debt"]);
-                    $("input[id='debt-real']").val(debtGarageView.currentInvoiceGarage["debt"]);
-                    $("input[id='paidAmt']").val(debtGarageView.currentInvoiceGarage["paidAmt"]);
-                    $("textarea[id='note']").val(debtGarageView.currentInvoiceGarage["note"]);
-                    formatCurrency(".currency");
+//                    $("input[id='invoiceCode']").val(debtGarageView.currentInvoiceGarage["invoiceCode"]);
+//                    $("input[id='totalTransport']").val(debtGarageView.currentInvoiceGarage["totalPay"]);
+//                    $("input[id='debt']").val(debtGarageView.currentInvoiceGarage["debsst"]);
+//                    $("input[id='paidAmt']").val(debtGarageView.currentInvoiceGarage["paidAmt"]);
+//                    $("input[id='sendToPerson']").val(debtCustomerView.currentInvoiceCustomer["sendToPerson"]);
+//                    $("textarea[id='note']").val(debtGarageView.currentInvoiceGarage["note"]);
+//                    var exportDate = moment(debtGarageView.currentInvoiceGarage["exportDate"], "YYYY-MM-DD");
+//                    $("input[id='exportDate']").datepicker('update', exportDate.format("DD-MM-YYYY"));
+//                    var invoiceDate = moment(debtGarageView.currentInvoiceGarage["invoiceDate"], "YYYY-MM-DD");
+//                    $("input[id='invoiceDate']").datepicker('update', invoiceDate.format("DD-MM-YYYY"));
+//                    var payDate = moment(debtGarageView.currentInvoiceGarage["payDate"], "YYYY-MM-DD");
+//                    $("input[id='payDate']").datepicker('update', payDate.format("DD-MM-YYYY"));
+//
+//
+//                    formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {
                     debtGarageView.currentInvoiceGarage = {
                         id: debtGarageView.invoiceGarageId,
                         invoiceCode: $("input[id='invoiceCode']").val(),
+                        totalTransport: asNumberFromCurrency("#totalTransport"),
+                        debt: asNumberFromCurrency("#debt"),
+                        paidAmt: asNumberFromCurrency("#paidAmt"),
+                        sendToPerson: $("input[id=sendToPerson]").val(),
                         exportDate: $("input[id='exportDate']").val(),
                         invoiceDate: $("input[id='invoiceDate']").val(),
                         payDate: $("input[id='payDate']").val(),
-                        note: $("textarea[id='note']").val(),
-                        totalPay: asNumberFromCurrency("#totalPay"),
-                        totalTransport: $("input[id=totalPay]").attr('data-totalTransport'),
-                        prePaid: asNumberFromCurrency("#prePaid"),
-                        debt: asNumberFromCurrency("#debt-real"),
-                        paidAmt: asNumberFromCurrency("#paidAmt"),
-                        sendToPerson: $("input[id=sendToPerson]").val()
+                        note: $("textarea[id='note']").val()
                     }
                 },
+                validateListTransport: function () {
+                    array = $.map(debtGarageView.table.rows('.selected').data(), function (value, index) {
+                        return [value];
+                    });
+                    debtGarageView.array_transportId = [];
+                    debtGarageView.array_transportId = _.map(array, 'id');
 
+                    array_garageId = _.map(array, 'garage_id');
+                    array_garageId = _.uniq(array_garageId);
+
+                    if (array_garageId.length == 1 && debtGarageView.array_transportId.length > 0) {
+                        var sendToServer = {
+                            _token: _token,
+                            _array_transportId: debtGarageView.array_transportId
+                        };
+
+                        var result = null;
+                        $.ajax({
+                            url: url + 'debt-garage/validate',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer,
+                            async: false
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 200) {
+                                result = data;
+                            } else if (jqXHR.status == 203) {
+                                showNotification("error", data['msg']);
+                            } else {
+                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                            var data = {
+                                'status': 0,
+                                'totalPay': 0,
+                                'msg': 'Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.'
+                            };
+                            result = data;
+                        });
+                        return result;
+                    } else {
+                        var result = {
+                            'status': 0,
+                            'totalPay': 0,
+                            'msg': 'Nhà xe hoặc đơn hàng không hợp lệ!'
+                        };
+                        return result;
+                    }
+                },
                 createInvoiceGarage: function (flag, invoiceGarage_id) {
-
+                    console.log(flag);
                     if (flag == 0) {
                         var dataAfterValidate = debtGarageView.validateListTransport();
                         if (dataAfterValidate['status'] === 0) {
@@ -1040,106 +1029,44 @@ console.log(debtGarageView.invoiceCode);
                             debtGarageView.displayModal('show', '#modal-notification');
                             return;
                         }
-
                         $("#divInvoice").find(".titleControl").html("Tạo phiếu thanh toán");
                         debtGarageView.showControl(flag);
                         debtGarageView.action = "new";
-                        prePaid = 0;
-                        totalPay = 0;
+                        var prePaid = 0;
+                        var totalPay = 0;
+
                         for (var i = 0; i < debtGarageView.array_transportId.length; i++) {
                             var currentRow = _.find(debtGarageView.dataTransport, function (o) {
                                 return o.id == debtGarageView.array_transportId[i];
                             });
-
                             if (typeof currentRow !== 'undefined') {
                                 totalPay += parseInt(currentRow['cashDelivery']);
                                 prePaid += parseInt(currentRow['cashPreDelivery']);
                             }
                         }
-
                         if (dataAfterValidate['status'] === 1) { //First
-                            $("input[id=totalPay]").val(totalPay);
-                            $("input[id=totalPay]").attr('data-totalTransport', totalPay);
+                            $("input[id=totalTransport]").val(totalPay);
                             $("input[id=prePaid]").val(prePaid);
-
                             debt = totalPay - prePaid;
                             $("input[id=debt]").val(debt);
                             $("input[id=debt-real]").val(debt);
-                        } else if (dataAfterValidate['status'] === 2) { //Exported
-                            $("input[id=totalPay]").attr('data-totalTransport', totalPay);
-                            totalPay = dataAfterValidate['totalPay'];
-                            $("input[id=totalPay]").val(totalPay);
-                            $("input[id=prePaid]").val(prePaid);
-
-                            $("input[id=debt]").val(totalPay);
-                            $("input[id=debt-real]").val(totalPay);
                         }
                         $("input[id=invoiceCode]").attr("placeholder", debtGarageView.invoiceCode);
-
                         //set default value
                         $("input[id=paidAmt]").val(0);
-
-
                         //remove readly input
                         $("input[id=invoiceCode]").prop('readonly', false);
-
                         $("input[id=invoiceCode]").focus();
-                    } else {
-                        if (typeof invoiceGarage_id === 'undefined') return;
-                        $("#divInvoice").find(".titleControl").html("Chi tiết hóa đơn");
-                        debtGarageView.showControl(flag);
-
-                        debtGarageView.action = "edit";
-                        debtGarageView.invoiceGarageId = invoiceGarage_id;
-                        //fill data to table InvoiceGarageDetail
-                        var data = _.filter(debtGarageView.dataInvoiceGarageDetail, function (o) {
-                            return o.invoiceGarage_id == invoiceGarage_id;
-                        });
-                        if (typeof data === 'undefined') return;
-                        debtGarageView.fillDataToDatatableInvoiceGarageDetail(data);
-
-                        //fill data to table PrintHistory
-                        var data2 = [];
-                        for (var i = 0; i < data.length; i++) {
-                            var found = _.find(debtGarageView.dataPrintHistory, function (o) {
-                                return o.invoiceGarageDetail_id == data[i]['id'];
-                            });
-                            if (typeof found !== 'undefined')
-                                data2.push(found);
-                        }
-                        debtGarageView.fillDataToDatatablePrintHistory(data2);
-
-                        //load data to input
-                        var rowInvoiceGarage = _.find(debtGarageView.dataInvoiceGarage, function (o) {
-                            return o.id == invoiceGarage_id;
-                        });
-                        if (typeof rowInvoiceGarage === 'undefined') return;
-
-                        var totalPay = parseInt(rowInvoiceGarage['totalPay']);
-                        var hasVAT = parseInt(rowInvoiceGarage['hasVAT']);
-                        var totalPaid = parseInt(rowInvoiceGarage['totalPaid']);
-                        var prePaid = parseInt(rowInvoiceGarage['prePaid']);
-                        var debt = hasVAT - (totalPaid + prePaid);
-                        $("input[id=totalPay]").val(totalPay);
-                        $("input[id=totalPay]").attr('data-totalTransport', parseInt(rowInvoiceGarage['totalTransport']));
-                        $("input[id=debt]").val(debt);
-                        $("input[id=debt-real]").val(debt);
-
-                        $("input[id=invoiceCode]").val(rowInvoiceGarage['invoiceCode']);
-                        $("input[id=VAT]").val(rowInvoiceGarage['VAT']);
-                        $("input[id=notVAT]").val(rowInvoiceGarage['notVAT']);
-                        $("input[id=hasVAT]").val(hasVAT);
-                        $("input[id=prePaid]").val(prePaid);
-
-                        //set default value
-                        $("input[id=paidAmt]").val(0);
-
-                        //add readly input
-                        $("input[id=invoiceCode]").prop('readonly', true);
-                        $("input[id=VAT]").prop('readonly', true);
-                        $("input[id=hasVAT]").prop('readonly', true);
-
-                        $("input[id=paidAmt]").focus();
+// else if (dataAfterValidate['status'] === 2) { //Exported
+//                            alert('2');
+//                            $("input[id=totalTransport]").val(totalPay);
+//                            totalPay = dataAfterValidate['totalPay'];
+//                            $("input[id=totalPay]").val(totalPay);
+//                            $("input[id=prePaid]").val(prePaid);
+//
+//                            $("input[id=debt]").val(totalPay);
+//                            $("input[id=debt-real]").val(totalPay);
+//                        }
                     }
                     formatCurrency(".currency");
                 },
@@ -1365,56 +1292,7 @@ console.log(debtGarageView.invoiceCode);
                     }
                 },
 
-                validateListTransport: function () {
-                    array = $.map(debtGarageView.table.rows('.selected').data(), function (value, index) {
-                        return [value];
-                    });
-                    debtGarageView.array_transportId = [];
-                    debtGarageView.array_transportId = _.map(array, 'id');
 
-                    array_garageId = _.map(array, 'garage_id');
-                    array_garageId = _.uniq(array_garageId);
-
-                    if (array_garageId.length == 1 && debtGarageView.array_transportId.length > 0) {
-                        var sendToServer = {
-                            _token: _token,
-                            _array_transportId: debtGarageView.array_transportId
-                        };
-
-                        var result = null;
-                        $.ajax({
-                            url: url + 'debt-garage/validate',
-                            type: "POST",
-                            dataType: "json",
-                            data: sendToServer,
-                            async: false
-                        }).done(function (data, textStatus, jqXHR) {
-                            if (jqXHR.status == 200) {
-                                result = data;
-                            } else if (jqXHR.status == 203) {
-                                showNotification("error", data['msg']);
-                            } else {
-                                showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                            }
-                        }).fail(function (jqXHR, textStatus, errorThrown) {
-                            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                            var data = {
-                                'status': 0,
-                                'totalPay': 0,
-                                'msg': 'Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.'
-                            };
-                            result = data;
-                        });
-                        return result;
-                    } else {
-                        var result = {
-                            'status': 0,
-                            'totalPay': 0,
-                            'msg': 'Nhà xe hoặc đơn hàng không hợp lệ!'
-                        };
-                        return result;
-                    }
-                },
                 validateForm: function () {
                     $("#frmInvoice").validate({
                         rules: {
@@ -1792,8 +1670,9 @@ console.log(debtGarageView.invoiceCode);
                 },
 
                 computeDebt: function (paidAmt) {
+
                     paidAmt = convertStringToNumber(paidAmt);
-                    var debtReal = asNumberFromCurrency("#debt-real");
+                    var debtReal = asNumberFromCurrency("#debt");
                     if (paidAmt > debtReal) {
                         showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
                         paidAmt = debtReal;
@@ -1802,33 +1681,6 @@ console.log(debtGarageView.invoiceCode);
                     var debt = debtReal - paidAmt;
                     debt = (debt < 0) ? 0 : debt;
                     $("input[id=debt]").val(debt);
-                    formatCurrency(".currency");
-                },
-                computeVAT: function (hasVat) {
-                    hasVat = convertStringToNumber(hasVat);
-                    var notVat = asNumberFromCurrency("#notVAT");
-                    var vat = ((hasVat - notVat) / notVat) * 100;
-                    $("input[id=VAT]").val(vat);
-
-                    var prePaid = asNumberFromCurrency("#prePaid");
-                    var paidAmt = asNumberFromCurrency("#paidAmt");
-                    $("input[id=debt-real]").val(hasVat - prePaid);
-                    $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
-                    formatCurrency(".currency");
-                },
-                computeHasVAT: function (vat, e) {
-                    //    if((e.keyCode == 8 || e.keyCode == 46) && (vat == 0 || vat == '')) return;
-
-
-                    if (vat == '') vat = 0;
-                    var notVat = asNumberFromCurrency('#notVAT');
-                    var hasVat = notVat + ((vat / 100) * notVat);
-                    $("input[id=hasVAT]").val(hasVat);
-
-                    var prePaid = asNumberFromCurrency('#prePaid');
-                    var paidAmt = asNumberFromCurrency('#paidAmt');
-                    $("input[id=debt-real]").val(hasVat - prePaid);
-                    $("input[id=debt]").val(hasVat - (prePaid + paidAmt));
                     formatCurrency(".currency");
                 },
                 computeWhenTotalpayChange: function (totalPay) {

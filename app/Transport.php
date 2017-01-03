@@ -88,6 +88,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Transport whereTransportDate($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Transport whereAddScore($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Transport whereDirection($value)
+ * @property string $productCode
+ * @property int $status_invoice Trạng thái phương thức thanh toán đơn hàng cho khác hàng
+ * @property int $status_invoice_garage Trạng thái phương thức thanh toán đơn hàng cho nhà xe
+ * @method static \Illuminate\Database\Query\Builder|\App\Transport whereProductCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Transport whereStatusInvoice($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Transport whereStatusInvoiceGarage($value)
  */
 class Transport extends Model
 {

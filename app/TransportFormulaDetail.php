@@ -24,6 +24,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\TransportFormulaDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TransportFormulaDetail whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $fromPlace Giá trị trong FormulaDetails (Tuyến đường từ)
+ * @property string $toPlace Giá trị trong FormulaDetails (Tuyến đường đến)
+ * @method static \Illuminate\Database\Query\Builder|\App\TransportFormulaDetail whereFromPlace($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TransportFormulaDetail whereToPlace($value)
  */
 class TransportFormulaDetail extends Model
 {
