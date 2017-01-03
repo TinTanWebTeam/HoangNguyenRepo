@@ -353,32 +353,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{--<div class="row ">--}}
-                                    {{--<div class="col-md-4">--}}
-                                        {{--<div class="form-group form-md-line-input ">--}}
-                                            {{--<label for="notVAT"><b>Chưa VAT</b></label>--}}
-                                            {{--<input type="text" class="form-control currency"--}}
-                                                   {{--id="notVAT"--}}
-                                                   {{--name="notVAT" readonly>--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="col-md-4">--}}
-                                        {{--<div class="form-group form-md-line-input ">--}}
-                                            {{--<label for="VAT" class="red"><b>VAT (%)</b></label>--}}
-                                            {{--<input type="number" class="form-control defaultZero"--}}
-                                                   {{--id="VAT" name="VAT"--}}
-                                                   {{--onkeyup="debtGarageView.computeHasVAT(this.value, event)">--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="col-md-4">--}}
-                                        {{--<div class="form-group form-md-line-input ">--}}
-                                            {{--<label for="hasVAT" class="red"><b>Có VAT</b></label>--}}
-                                            {{--<input type="text" class="form-control currency defaultZero"--}}
-                                                   {{--id="hasVAT" name="hasVAT"--}}
-                                                   {{--onkeyup="debtGarageView.computeVAT(this.value)">--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
@@ -404,7 +378,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row ">
+                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="exportDate"><b>Ngày xuất</b></label>
@@ -463,49 +437,49 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-6" id="tbl-history">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <span class="text text-primary">Lịch sử trả nợ</span>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover"
-                                           id="table-invoiceGarageDetail">
-                                        <thead>
-                                        <tr class="active">
-                                            <th>Mã</th>
-                                            <th>Ngày trả</th>
-                                            <th>Tiền trả</th>
-                                            <th>In</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
+                    {{--<div class="col-md-6" id="tbl-history">--}}
+                        {{--<div class="row">--}}
+                            {{--<div class="col-md-12">--}}
+                                {{--<span class="text text-primary">Lịch sử trả nợ</span>--}}
+                                {{--<div class="table-responsive">--}}
+                                    {{--<table class="table table-bordered table-striped table-hover"--}}
+                                           {{--id="table-invoiceGarageDetail">--}}
+                                        {{--<thead>--}}
+                                        {{--<tr class="active">--}}
+                                            {{--<th>Mã</th>--}}
+                                            {{--<th>Ngày trả</th>--}}
+                                            {{--<th>Tiền trả</th>--}}
+                                            {{--<th>In</th>--}}
+                                        {{--</tr>--}}
+                                        {{--</thead>--}}
+                                        {{--<tbody>--}}
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <span class="text text-primary">Lịch sử in</span>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover"
-                                           id="table-printHistory">
-                                        <thead>
-                                        <tr class="active">
-                                            <th>Mã in</th>
-                                            <th>Ngày in</th>
-                                            <th>Người nhận</th>
-                                            <th>Người in</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                        {{--</tbody>--}}
+                                    {{--</table>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<div class="row">--}}
+                            {{--<div class="col-md-12">--}}
+                                {{--<span class="text text-primary">Lịch sử in</span>--}}
+                                {{--<div class="table-responsive">--}}
+                                    {{--<table class="table table-bordered table-striped table-hover"--}}
+                                           {{--id="table-printHistory">--}}
+                                        {{--<thead>--}}
+                                        {{--<tr class="active">--}}
+                                            {{--<th>Mã in</th>--}}
+                                            {{--<th>Ngày in</th>--}}
+                                            {{--<th>Người nhận</th>--}}
+                                            {{--<th>Người in</th>--}}
+                                        {{--</tr>--}}
+                                        {{--</thead>--}}
+                                        {{--<tbody>--}}
+                                        {{--</tbody>--}}
+                                    {{--</table>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
                 </div>
             </div>
         </div>

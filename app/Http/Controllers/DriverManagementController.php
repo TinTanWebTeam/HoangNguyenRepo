@@ -110,6 +110,7 @@ class DriverManagementController extends Controller
                 $driverNew->driverLicenseType = $driverType;
                 $driverNew->identityCardNumber = $governmentId;
                 $driverNew->birthday = $birthdayDate;
+                $driverNew->finishDate = $finishDate;
                 $driverNew->issueDate_identityCard = $issueDateIdDate;
                 $driverNew->issueDate_DriverLicense = $issueDateDriverDate;
                 $driverNew->expireDate_DriverLicense = $expireDateDriverDate;

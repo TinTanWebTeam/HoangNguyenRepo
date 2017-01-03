@@ -136,7 +136,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="phone"><b>Số điện thoại</b></label>
-                                        <input type="number" class="form-control"
+                                        <input type="text" class="form-control"
                                                id="phone"
                                                name="phone">
                                     </div>
@@ -147,7 +147,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group form-md-line-input">
                                         <label for="governmentId"><b>CMND</b></label>
-                                        <input type="number" class="form-control"                                                id="governmentId" maxlength="12" minlength="9"
+                                        <input type="text" class="form-control"                                                id="governmentId" maxlength="12" minlength="9"
                                                name="governmentId">
                                     </div>
                                 </div>
@@ -463,6 +463,7 @@
                     $('input[id=governmentId]').val('');
                     $('input[id=driverType]').val('');
                     $('input[id=driverLicenseNumber]').val('');
+                    $('input[id=finishDate]').val('');
                     $('textarea[id=note]').val('');
                 },
                 deleteDriver: function () {
@@ -472,12 +473,9 @@
 
                 },
                 fillDataToDatatable: function (data) {
-//                    for (var i = 0; i < data.length; i++) {
-//                        data[i].fullNumber = (data[i]['areaCode'] == null || data[i]['vehicleNumber'] == null) ? "" : data[i]['areaCode'] + "-" + data[i]['vehicleNumber'];
-//                    }
-//                    if (driverView.table != null) {
-//                        driverView.table.destroy();
-//                    }
+                    if (driverView.table != null) {
+                        driverView.table.destroy();
+                    }
                     driverView.table = $('#table-data').DataTable({
                         language: languageOptions,
                         data: data,
@@ -567,13 +565,16 @@
                             fullName: "required",
                             governmentId: {
                                 required: true,
+                                number: true,
                                 minlength: 9,
-                                maxlength: 12,
-                                number: true
+                                maxlength: 12
+
                             },
                             driverType: "required",
+                            phone: {
+                                number: true
+                            },
                             permanentAddress: "required",
-                            temporaryAddress: "required",
                             driverLicenseNumber: {
                                 required: true
                             }
@@ -581,14 +582,17 @@
                         ignore: ".ignore",
                         messages: {
                             fullName: "Vui lòng nhập tên",
+                            phone: {
+                                number: "Số điện thoại phải là số"
+                            },
                             governmentId: {
                                 required: "Vui lòng nhập CMND",
+                                number: "CMND phải là số",
                                 minlength: "Số CMND tối thiểu 9 số",
-                                maxlength: "Số CMND tối đa 12 số",
-                                number: "CMND phải là số"
+                                maxlength: "Số CMND tối đa 12 số"
+
                             },
                             driverType: "Vui lòng nhập loại bằng lái",
-                            temporaryAddress: "Vui lòng nhập địa chỉ tạm trú",
                             permanentAddress: "Vui lòng nhập địa chỉ thường trú",
                             driverLicenseNumber: {
                                 required: "Vui lòng nhập số bằng lái"
