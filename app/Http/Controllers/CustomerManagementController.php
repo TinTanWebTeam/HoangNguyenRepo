@@ -281,7 +281,6 @@ class CustomerManagementController extends Controller
                 return response()->json(['msg' => 'Create failed'], 404);
                 break;
             case 'updateStaff':
-
                 $staffUpdate = StaffCustomer::findOrFail($request->input('_object')['id']);
                 $staffUpdate->fullName = $fullNameStaff;
                 $staffUpdate->position = $positionStaff;
@@ -297,6 +296,7 @@ class CustomerManagementController extends Controller
                         ->select('staffCustomers.*')
                         ->join('customers', 'customers.id', '=', 'staffCustomers.customer_id')
                         ->where('staffCustomers.id', '=', $staffUpdate->id)
+                        ->where('staffCustomers.active', '=', 1)
                         ->first();
                     $response = [
                         'msg'         => 'Updated Staff',
@@ -305,22 +305,17 @@ class CustomerManagementController extends Controller
 
                     return response()->json($response, 201);
                 }
-
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
-
             case 'deleteStaff':
-
                 $staffDelete = StaffCustomer::findOrFail($request->input('_object'));
                 $staffDelete->active = 0;
                 if ($staffDelete->update()) {
                     $response = [
                         'msg' => 'Deleted staff',
                     ];
-
                     return response()->json($response, 201);
                 }
-
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:

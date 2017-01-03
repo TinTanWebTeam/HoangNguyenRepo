@@ -1670,17 +1670,25 @@
                 },
 
                 computeDebt: function (paidAmt) {
-
                     paidAmt = convertStringToNumber(paidAmt);
-                    var debtReal = asNumberFromCurrency("#debt");
-                    if (paidAmt > debtReal) {
-                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
-                        paidAmt = debtReal;
-                        $("input[id=paidAmt]").val(paidAmt);
+                    var totalTransport = asNumberFromCurrency("#totalTransport");
+                    if(paidAmt > debtReal){
+//                        $("input[id=debt]").val(totalTransport);
                     }
-                    var debt = debtReal - paidAmt;
-                    debt = (debt < 0) ? 0 : debt;
+                    var debt = totalTransport - paidAmt;
+                    //console.log(debt);
                     $("input[id=debt]").val(debt);
+//                    $("input[id=invoiceCode]").val(debt);
+//                    console.log(paidAmt);
+//                    console.log(debt);
+//                    if (paidAmt > debtReal) {
+//                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
+//                        paidAmt = debtReal;
+//                        $("input[id=paidAmt]").val(paidAmt);
+//                    }
+//                    var debt = debtReal - paidAmt;
+//                   // debt = (debt < 0) ? 0 : debt;
+//                    $("input[id=debt]").val(debt);
                     formatCurrency(".currency");
                 },
                 computeWhenTotalpayChange: function (totalPay) {
