@@ -516,6 +516,14 @@
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
+                    }).on("input change", function (e) {
+                        postageView.getUsingFuel(e.target.value);
+                        if(postageView.dataFuel == null || postageView.dataFuel.length <= 0)
+                            return;
+                        var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
+                        $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
+                        $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
+                        $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
                     });
                     $('#applyDate').datepicker("setDate", new Date());
 
@@ -678,7 +686,7 @@
                             postageView.loadSelectBox(postageView.dataCondition, 'condition', 'name');
                             postageView.fillDataToDatatable(postageView.dataPostage);
 
-                            postageView.getLatestFuel();
+                            postageView.getUsingFuel(moment().format('DD-MM-YYYY'));
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1003,9 +1011,12 @@
                     $("#modal-notification").find(".modal-body").html(tr);
                     postageView.displayModal('show', '#modal-notification');
                 },
-                getLatestFuel: function () {
+                getUsingFuel: function (applyDate) {
+                    if(postageView.dataFuel == null || postageView.dataFuel.length <= 0)
+                        return;
+                    debugger;
                     var fuel = _.maxBy(postageView.dataFuel, function (o) {
-                        if(moment(o.applyDate, "DD-MM-YYYY").hour(0).minute(0).second(0).isAfter(moment().hour(0).minute(0).second(0)))
+                        if(moment(o.applyDate, "DD-MM-YYYY").hour(0).minute(0).second(0).isAfter(moment(applyDate, 'DD-MM-YYYY').hour(0).minute(0).second(0)))
                             return false;
                         return o.applyDate;
                     });
@@ -1171,13 +1182,14 @@
 
                             postageView.fillFormDataToCurrentObjectDetail();
 
-                            var exist = _.filter(postageView.arrayDetai, function(o) {
-                                return o.name == postageView.currentDetail['name'];
-                            });
-
-                            if(typeof exist === 'undefined'){
-                                showNotification("success", "Tên trường trong công thức đã tồn tại!");
-                                return;
+                            if(postageView.arrayDetail.length > 0){
+                                var exist = _.filter(postageView.arrayDetail, function(o) {
+                                    return o.name == postageView.currentDetail['name'];
+                                });
+                                if(typeof exist !== 'undefined'){
+                                    showNotification("success", "Tên trường trong công thức đã tồn tại!");
+                                    return;
+                                }
                             }
 
                             postageView.arrayDetail.push({
