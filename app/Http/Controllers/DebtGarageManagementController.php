@@ -22,12 +22,12 @@ class DebtGarageManagementController extends Controller
     public function generateInvoiceCode($type)
     {
         switch ($type) {
-            case 'customer':
-                $invoiceCode = "IC" . date('ymd');
-                break;
-            case 'garage':
-                $invoiceCode = "IG" . date('ymd');
-                break;
+//            case 'customer':
+//                $invoiceCode = "IC" . date('ymd');
+//                break;
+//            case 'garage':
+//                $invoiceCode = "IG" . date('ymd');
+//                break;
             case 'bill_garage':
                 $invoiceCode = "BG" . date('ymd');
                 break;
@@ -266,61 +266,27 @@ class DebtGarageManagementController extends Controller
 
     public function postModifyInvoiceGarage(Request $request)
     {
-
         $action = $request->input('_action');
         $invoiceCode = $request->input('_invoiceGarage')['invoiceCode'];
-
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
 
-            //Kiem tra xem cac transport nay da xuat hoa don chua
-            //Neu da xuat hoa don thi kiem tra xem ma cac hoa don do co giong nhau khong
+            //Kiem tra xem cac transport nay da xuat phieu thanh toan chua
+            //Neu da xuat phieu thanh toan thi kiem tra xem ma cac phieu do co giong nhau khong
             //Neu giong nhau tien hanh them hoa don them lan nua
 
-            //Kiểm tra xem đã xuất hđ hay chưa
-            $kt = false;
-            $array_transportInvoice = TransportInvoice::whereIn('transport_id', $array_transportId)->get();
-            if (count($array_transportInvoice) > 0)
-                $kt = true;
-
-            //Nếu đã xuất hóa đơn
-            if ($kt) {
-                $arrayInvoice = TransportInvoice::where('transport_id', $array_transportId[0])->pluck('invoiceGarage_id');
-                if ($arrayInvoice == null) {
-                    return response()->json(['msg' => 'Không tìm thấy arrayInvoice'], 203);
-                };
-                $array_match = true;
-                foreach ($arrayInvoice as $invoiceId) {
-                    $arrayTransport = TransportInvoice::where('invoiceGarage_id', $invoiceId)->pluck('transport_id');
-                    if ($arrayTransport == null) {
-                        return response()->json(['msg' => 'Không tìm thấy arrayTransport'], 203);
-                    }
-                    $collectTransportStock = collect($array_transportId);
-                    $diff = $collectTransportStock->diff($arrayTransport);
-                    if (count($diff->all()) > 0) {
-                        //khac nhau
-                        $array_match = false;
-                    }
-                }
-                if (!$array_match) {
-                    return response()->json(['msg' => 'Các đơn hàng đã chọn không khớp nhau.'], 203);
-                }
-            }
 
             $invoiceGarage = new InvoiceGarage();
 
-            if ($invoiceCode == '')
-                $invoiceGarage->invoiceCode = $this->generateInvoiceCode('garage');
+            if ($invoiceCode == ''){
+                $invoiceGarage->invoiceCode = $this->generateInvoiceCode('bill_garage');
+            }
             else {
                 if (InvoiceGarage::where('invoiceCode', $invoiceCode)->get()->count() == 0)
                     $invoiceGarage->invoiceCode = $invoiceCode;
                 else
                     return response()->json(['msg' => 'invoiceCode exists!'], 203);
             }
-
-            $invoiceGarage->VAT = $request->input('_invoiceGarage')['VAT'];
-            $invoiceGarage->notVAT = $request->input('_invoiceGarage')['notVAT'];
-            $invoiceGarage->hasVAT = $request->input('_invoiceGarage')['hasVAT'];
 
             $exportDate = $request->input('_invoiceGarage')['exportDate'];
             $invoiceGarage->exportDate = Carbon::createFromFormat('d-m-Y', $exportDate)->toDateTimeString();
@@ -341,6 +307,7 @@ class DebtGarageManagementController extends Controller
             $invoiceGarage->sendToPerson = $request->input('_invoiceGarage')['sendToPerson'];
 
             try {
+                dd($request->all());
                 DB::beginTransaction();
                 //Insert InvoiceGarage
                 if (!$invoiceGarage->save()) {
@@ -400,7 +367,6 @@ class DebtGarageManagementController extends Controller
             }
         } else {
             $invoiceGarage = InvoiceGarage::find($request->input('_invoiceGarage')['id']);
-
             $exportDate = $request->input('_invoiceGarage')['exportDate'];
             $invoiceGarage->exportDate = Carbon::createFromFormat('d-m-Y', $exportDate)->toDateTimeString();
 

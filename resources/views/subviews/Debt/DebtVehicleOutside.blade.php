@@ -2,7 +2,7 @@
     #divInvoice {
         z-index: 3;
         position: fixed;
-        top: 15%;
+        top: 30%;
         display: none;
         right: 0;
         width: 80%;
@@ -10,7 +10,7 @@
     }
 
     #divInvoice .panel-body {
-        height: 501px;
+        height: 430px;
     }
 
     div.col-lg-12 {
@@ -340,12 +340,19 @@
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
                                             <label for="totalPay"><b>Tổng tiền</b></label>
-                                            <input type="text" class="form-control currency"
+                                            <input type="text" class="form-control currency" readonly
                                                    id="totalPay" name="totalPay" data-totalTransport=""
                                                    onkeyup="debtGarageView.computeWhenTotalpayChange(this.value)">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debt"><b>Còn nợ lại</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="debt" name="debt" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" hidden>
                                         <div class="form-group form-md-line-input ">
                                             <label for="debt-real"><b>Còn nợ</b></label>
                                             <input type="text" class="form-control currency"
@@ -364,12 +371,20 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="debt"><b>Còn nợ lại</b></label>
-                                            <input type="text" class="form-control currency"
-                                                   id="debt" name="debt" readonly>
+                                            <label for="sendToPerson"><b>Người nhận</b></label>
+                                            <input type="text" id="sendToPerson" name="sendToPerson"
+                                                   class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="exportDate"><b>Ngày xuất</b></label>
+                                            <input type="text" class="date form-control ignore"
+                                                   id="exportDate"
+                                                   name="exportDate">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" hidden>
                                         <div class="form-group form-md-line-input ">
                                             <label for="prePaid"><b>Trả trước</b></label>
                                             <input type="text" class="form-control currency"
@@ -379,23 +394,15 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="exportDate"><b>Ngày xuất</b></label>
-                                            <input type="text" class="date form-control ignore"
-                                                   id="exportDate"
-                                                   name="exportDate">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="invoiceDate"><b>Ngày hóa đơn</b></label>
+                                            <label for="invoiceDate"><b>Ngày phiếu thanh toán</b></label>
                                             <input type="text" class="date form-control ignore"
                                                    id="invoiceDate"
                                                    name="invoiceDate">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
                                             <label for="payDate"><b>Ngày trả</b></label>
                                             <input type="text" class="date form-control ignore"
@@ -405,14 +412,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="sendToPerson"><b>Người nhận</b></label>
-                                            <input type="text" id="sendToPerson" name="sendToPerson"
-                                                   class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-12">
                                         <div class="form-group form-md-line-input ">
                                             <label for="note"><b>Ghi chú</b></label>
                                             <textarea class="form-control" id="note" name="note" rows="2"></textarea>
