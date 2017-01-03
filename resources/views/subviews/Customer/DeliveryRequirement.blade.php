@@ -2136,7 +2136,7 @@
                         transportView.retrieveMultiFile();
                     }
                     else {
-                        if (driverView.tableFile != null)
+                        if (transportView.tableFile != null)
                             transportView.tableFile.clear().draw();
                     }
 
@@ -2214,7 +2214,8 @@
                                     tr += '</div>';
                                     tr += '</div>';
                                     return tr;
-                                }
+                                },
+                                visible: false
                             },
                             {
                                 render: function (data, type, full, meta) {

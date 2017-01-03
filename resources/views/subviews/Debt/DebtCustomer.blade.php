@@ -965,47 +965,6 @@
                             "sRowSelect": "multi",
                             "aButtons": ["select_all", "select_none"]
                         },
-                        buttons: [
-                            {
-                                extend: 'copyHtml5',
-                                text: 'Sao chép',
-                                exportOptions: {
-                                    columns: [0, ':visible']
-                                }
-                            },
-                            {
-                                extend: 'excelHtml5',
-                                text: 'Xuất Excel',
-                                exportOptions: {
-                                    columns: ':visible'
-                                },
-                                customize: function (xlsx) {
-                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                }
-                            },
-                            {
-                                extend: 'pdfHtml5',
-                                text: 'Xuất PDF',
-                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
-                                customize: function (doc) {
-                                    doc.content.splice(0, 1);
-                                    doc.styles.tableBodyEven.alignment = 'center';
-                                    doc.styles.tableBodyOdd.alignment = 'center';
-                                    doc.content.columnGap = 10;
-                                    doc.pageOrientation = 'landscape';
-                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
-                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
-                                            doc.content[1].table.body[i].splice(6, 1);
-                                        }
-                                    }
-                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
-                                }
-                            },
-                            {
-                                extend: 'colvis',
-                                text: 'Ẩn cột'
-                            }
-                        ],
                         fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                             switch(aData['status_invoice']) {
                                 case 0:
@@ -1074,48 +1033,7 @@
                                 }
                             }
                         ],
-                        dom: 'Bfrtip',
-                        buttons: [
-                            {
-                                extend: 'copyHtml5',
-                                text: 'Sao chép',
-                                exportOptions: {
-                                    columns: [0, ':visible']
-                                }
-                            },
-                            {
-                                extend: 'excelHtml5',
-                                text: 'Xuất Excel',
-                                exportOptions: {
-                                    columns: ':visible'
-                                },
-                                customize: function (xlsx) {
-                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                }
-                            },
-                            {
-                                extend: 'pdfHtml5',
-                                text: 'Xuất PDF',
-                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
-                                customize: function (doc) {
-                                    doc.content.splice(0, 1);
-                                    doc.styles.tableBodyEven.alignment = 'center';
-                                    doc.styles.tableBodyOdd.alignment = 'center';
-                                    doc.content.columnGap = 10;
-                                    doc.pageOrientation = 'landscape';
-                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
-                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
-                                            doc.content[1].table.body[i].splice(6, 1);
-                                        }
-                                    }
-                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
-                                }
-                            },
-                            {
-                                extend: 'colvis',
-                                text: 'Ẩn cột'
-                            }
-                        ]
+                        dom: 'Bfrtip'
                     })
                 },
                 fillDataToDatatablePTT: function (data) {
@@ -1172,48 +1090,7 @@
                                 }
                             }
                         ],
-                        dom: 'Bfrtip',
-                        buttons: [
-                            {
-                                extend: 'copyHtml5',
-                                text: 'Sao chép',
-                                exportOptions: {
-                                    columns: [0, ':visible']
-                                }
-                            },
-                            {
-                                extend: 'excelHtml5',
-                                text: 'Xuất Excel',
-                                exportOptions: {
-                                    columns: ':visible'
-                                },
-                                customize: function (xlsx) {
-                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                }
-                            },
-                            {
-                                extend: 'pdfHtml5',
-                                text: 'Xuất PDF',
-                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
-                                customize: function (doc) {
-                                    doc.content.splice(0, 1);
-                                    doc.styles.tableBodyEven.alignment = 'center';
-                                    doc.styles.tableBodyOdd.alignment = 'center';
-                                    doc.content.columnGap = 10;
-                                    doc.pageOrientation = 'landscape';
-                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
-                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
-                                            doc.content[1].table.body[i].splice(6, 1);
-                                        }
-                                    }
-                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
-                                }
-                            },
-                            {
-                                extend: 'colvis',
-                                text: 'Ẩn cột'
-                            }
-                        ]
+                        dom: 'Bfrtip'
                     })
                 },
                 fillDataToDatatableInvoiceCustomerDetail: function (data) {

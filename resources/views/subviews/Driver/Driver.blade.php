@@ -902,7 +902,8 @@
                                     tr += '</div>';
                                     tr += '</div>';
                                     return tr;
-                                }
+                                },
+                                visible: false
                             },
                             {
                                 render: function (data, type, full, meta) {
