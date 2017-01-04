@@ -639,6 +639,7 @@
                     $("input[id='timeCheckOut']").val('');
                     $("input[id='nameVehicleType']").val('');
                     $("input[id='price']").val('');
+                    parkingCostView.renderDateTimePicker();
                 },
                 clearInputChangeVehicle: function () {
                     /* form addCost*/
@@ -651,7 +652,6 @@
                 clearInputPrice: function () {
                     /* Form addPrice*/
                     $("input[id='costPrice']").val(0);
-                    $("input[id='totalCost']").val(0);
                     $("input[id='vehicleTypeId']").val('');
                     $("#vehicleTypeId").attr('data-id', '');
                     $("textarea[id='description']").val('');
@@ -1224,7 +1224,7 @@
                                     parkingCostView.tablePrice.push(data['prices']);
                                     parkingCostView.showNotification("success", "Thêm thành công!");
                                     parkingCostView.displayModal("hide", "#modal-addCostPrice");
-                                    parkingCostView.inputPrice(data['prices'].price, data['prices'].id);
+//                                    parkingCostView.inputPrice(data['prices'].price, data['prices'].id);
                                     parkingCostView.clearInputPrice();
                                 } else {
                                     parkingCostView.showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
