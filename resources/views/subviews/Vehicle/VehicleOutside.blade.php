@@ -375,7 +375,7 @@
                                 </div>
                                 <div class="col-sm-6 col-xs-6">
                                     <div class="form-group form-md-line-input">
-                                        <label for="weight"><b>Trọng tải</b></label>
+                                        <label for="weight"><b>Trọng tải (tấn)</b></label>
                                         <input type="text" class="form-control"
                                                id="weight"
                                                name="weight">

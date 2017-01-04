@@ -138,7 +138,7 @@ class DebtGarageManagementController extends Controller
         $response = [
             'msg' => 'Get list all Transport',
             'transports' => $transports,
-//            'invoiceGarages' => $invoiceGarages,
+            'invoiceGarages' => $invoiceGarages,
 //            'invoiceGarageDetails' => $invoiceGarageDetails,
 //            'printHistories' => $printHistories,
             'invoiceCode' => $invoiceCode,

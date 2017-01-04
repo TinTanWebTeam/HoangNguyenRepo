@@ -223,13 +223,13 @@
                                 <table class="table table-bordered  table-striped table-hover" id="table-garageInvoice">
                                     <thead>
                                     <tr class="active">
-                                        <th>Mã</th>
+                                        <th>Mã phiếu</th>
                                         <th>Số xe</th>
                                         <th>Nhà xe</th>
-                                        <th>Tiền giao hàng</th>
-                                        <th>Chi phí</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chi tiết</th>
+                                        <th>Nợ</th>
+                                        <th>Người nhận</th>
+                                        <th>Người tạo</th>
+                                        <th>Ngày tạo</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -241,7 +241,7 @@
                     </div>
 
 
-                    {{--Phiếu Thanh Toán--}}
+                    {{--Tra tien mat--}}
                     <hr>
                     <p class="lead text-primary text-left"><strong>Trả trực tiếp</strong></p>
                     <div class="row">
@@ -282,13 +282,13 @@
                                 <table class="table table-bordered  table-striped table-hover" id="table-garageInvoice">
                                     <thead>
                                     <tr class="active">
-                                        <th>Mã</th>
+                                        <th>Mã phiếu</th>
                                         <th>Số xe</th>
                                         <th>Nhà xe</th>
-                                        <th>Tiền giao hàng</th>
-                                        <th>Chi phí</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chi tiết</th>
+                                        <th>Nợ</th>
+                                        <th>Người nhận</th>
+                                        <th>Người tạo</th>
+                                        <th>Ngày tạo</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -484,11 +484,14 @@
         if (typeof debtGarageView === 'undefined') {
             debtGarageView = {
                 table: null,
-
                 tableTransportCost: null,
                 tableInvoiceGarage: null,
+
+
                 tableInvoiceGarageDetail: null,
-                tablePrintHistory: null,
+
+
+               // tablePrintHistory: null,
 
                 dataTransport: null,
                 dataVehicleCost: null,
@@ -660,8 +663,10 @@
                             debtGarageView.dataTransport = data['transports'];
                             debtGarageView.invoiceCode = data['invoiceCode'];
                             debtGarageView.dataVehicleCost = data['vehicleCost'];
+                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                             debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
+                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
 
 
                             // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
@@ -931,6 +936,32 @@
                     });
                     $("#table-transportCost").css("width", "auto");
                 },
+                fillDataToDatatableInvoiceGarage: function (data) {
+                    if (debtGarageView.tableInvoiceGarage != null)
+                        debtGarageView.tableInvoiceGarage.destroy();
+//                    for (var i = 0; i < data.length; i++) {
+//                        data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+//                    }
+                    debtGarageView.tableInvoiceGarage = $('#table-garageInvoice').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'id'},
+                            {data: 'id'},
+                            {data: 'id'},
+                            {data: 'id'},
+                            {data: 'id'},
+                            {data: 'id'},
+                            {data: 'id'}
+
+                        ]
+                    });
+                    $("#table-garageInvoice").css("width", "auto");
+                },
+
+
+
+
                 computeDebt: function (paidAmt) {
                     paidAmt = convertStringToNumber(paidAmt);
                     var totalTransport = asNumberFromCurrency("#totalTransport");
@@ -1321,7 +1352,8 @@
                             if (jqXHR.status == 201) {
                                 debtGarageView.dataTransport = data['transports'];
                                 debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-
+                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+                                debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
 
 //                                debtGarageView.dataSearch = data['transports'];
 //                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];

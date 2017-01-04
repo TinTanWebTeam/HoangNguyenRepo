@@ -632,7 +632,6 @@ class CostManagementController extends Controller
 
     public function postModifyParkingCost(Request $request)
     {
-
         $vehicle_id = null;
         $checkIn = null;
         $checkOut = null;
@@ -669,11 +668,9 @@ class CostManagementController extends Controller
                 $totalDate = $request->get('_object')['totalDate'];
                 $totalHour = $request->get('_object')['totalTime'];
                 $price = str_replace(',', '', $request->get('_object')['prices_price']);
-                $totalCost = $price * $totalHour;
+                $totalCost = $price * $totalDate;
             }
         }
-
-
         switch ($action) {
             case "add":
                 $parkingCostNew = new Cost();

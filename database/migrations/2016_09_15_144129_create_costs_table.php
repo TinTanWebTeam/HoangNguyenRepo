@@ -20,7 +20,7 @@ class CreateCostsTable extends Migration
             $table->float('literNumber')->nullable();
             $table->dateTime('dateCheckIn')->nullable();
             $table->dateTime('dateCheckOut')->nullable();
-            $table->integer('totalDate')->nullable();
+            $table->float('totalDate')->nullable();
             $table->float('totalHour')->nullable();
             $table->dateTime('dateRefuel')->nullable();
             $table->integer('createdBy')->unsigned();
