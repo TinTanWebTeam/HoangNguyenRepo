@@ -230,6 +230,7 @@
                                         <th>Người nhận</th>
                                         <th>Người tạo</th>
                                         <th>Ngày tạo</th>
+                                        <th>Thanh toán</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -279,7 +280,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered  table-striped table-hover" id="table-garageInvoice">
+                                <table class="table table-bordered  table-striped table-hover" id="table-debtTransport">
                                     <thead>
                                     <tr class="active">
                                         <th>Mã phiếu</th>
@@ -289,6 +290,7 @@
                                         <th>Người nhận</th>
                                         <th>Người tạo</th>
                                         <th>Ngày tạo</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -347,11 +349,11 @@
                                         </div>
                                     </div>
                                     {{--<div class="col-md-4" hidden>--}}
-                                        {{--<div class="form-group form-md-line-input ">--}}
-                                            {{--<label for="debt-real"><b>Còn nợ</b></label>--}}
-                                            {{--<input type="text" class="form-control currency"--}}
-                                                   {{--id="debt-real" name="debt-real" readonly>--}}
-                                        {{--</div>--}}
+                                    {{--<div class="form-group form-md-line-input ">--}}
+                                    {{--<label for="debt-real"><b>Còn nợ</b></label>--}}
+                                    {{--<input type="text" class="form-control currency"--}}
+                                    {{--id="debt-real" name="debt-real" readonly>--}}
+                                    {{--</div>--}}
                                     {{--</div>--}}
                                 </div>
                                 <div class="row">
@@ -379,12 +381,12 @@
                                         </div>
                                     </div>
                                     {{--<div class="col-md-4" hidden>--}}
-                                        {{--<div class="form-group form-md-line-input ">--}}
-                                            {{--<label for="prePaid"><b>Trả trước</b></label>--}}
-                                            {{--<input type="text" class="form-control currency"--}}
-                                                   {{--id="prePaid"--}}
-                                                   {{--name="prePaid" readonly>--}}
-                                        {{--</div>--}}
+                                    {{--<div class="form-group form-md-line-input ">--}}
+                                    {{--<label for="prePaid"><b>Trả trước</b></label>--}}
+                                    {{--<input type="text" class="form-control currency"--}}
+                                    {{--id="prePaid"--}}
+                                    {{--name="prePaid" readonly>--}}
+                                    {{--</div>--}}
                                     {{--</div>--}}
                                 </div>
                                 <div class="row">
@@ -486,16 +488,20 @@
                 table: null,
                 tableTransportCost: null,
                 tableInvoiceGarage: null,
+                tableDebtTransport: null,
 
 
                 tableInvoiceGarageDetail: null,
 
 
-               // tablePrintHistory: null,
+                // tablePrintHistory: null,
 
                 dataTransport: null,
                 dataVehicleCost: null,
                 dataInvoiceGarage: null,
+                dataDebtTransport: null,
+
+
                 dataInvoiceGarageDetail: null,
                 dataPrintHistory: null,
                 dataTransportInvoice: null,
@@ -539,10 +545,7 @@
                 },
                 clearInput: function () {
                     $("input[id='invoiceCode']").val('');
-                    $("input[id='totalPay']").val('');
-                    $("input[id='VAT']").val('');
-                    $("input[id='notVAT']").val('');
-                    $("input[id='hasVAT']").val('');
+                    $("input[id='sendToPerson']").val('');
                     $("input[id='exportDate]").val('');
                     $("input[id='invoiceDate]").val('');
                     $("input[id='payDate]").val('');
@@ -629,7 +632,7 @@
                         var tr = $(this).parent();
                         if (tr.find('td:eq(1)').text() == td.text()) {
                             $("input[id=fullNumber_transport]").val(td.text());
-                            debtGarageView.searchTransport();
+                            // debtGarageView.searchTransport();
                             debtGarageView.selectAll();
                         }
                     });
@@ -661,24 +664,14 @@
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
                             debtGarageView.dataTransport = data['transports'];
+                            debtGarageView.dataDebtTransport = data['debtTransports'];
                             debtGarageView.invoiceCode = data['invoiceCode'];
                             debtGarageView.dataVehicleCost = data['vehicleCost'];
                             debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                             debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
                             debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
-
-                            // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
-                            //debtGarageView.dataSearch = data['transports'];
-//                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-//                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-//                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-//                            debtGarageView.dataPrintHistory = data['printHistories'];
-//                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
-//                            debtGarageView.invoiceCode = data['invoiceCode'];
-
+                            debtGarageView.fillDataToDatatableDebtTransport(debtGarageView.dataDebtTransport);
 
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -762,7 +755,7 @@
                                     var api = this.api(),
                                         intVal = function (i) {
                                             return typeof i === 'string' ?
-                                                i.replace(/[, Rs]|(\.\d{2})/g,"")* 1 :
+                                                i.replace(/[, Rs]|(\.\d{2})/g, "") * 1 :
                                                 typeof i === 'number' ?
                                                     i : 0;
                                         },
@@ -797,22 +790,10 @@
                                         color = 'btn-danger';
                                         text = 'Click để trả đủ';
                                     }
-                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode != "") {
-                                        color = 'btn-info';
-                                        text = 'Đã trả đủ và xuất hóa đơn';
-                                    }
                                     else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode == "") {
                                         color = 'btn-success';
                                         text = 'Đã trả đủ';
                                     }
-                                    else if (full.cashPreDelivery > 0 && full.invoiceCode == "") {
-                                        color = 'btn-primary';
-                                        text = 'Đã xuất hóa đơn';
-                                    } else if (full.invoiceCode != "") {
-                                        color = 'btn-info';
-                                        text = 'Đã xuất hóa đơn';
-                                    }
-
 
                                     var tr = '';
                                     tr += '<div class="text-center">';
@@ -930,49 +911,247 @@
                                 }
                             },
                             {data: 'note'}
-                        ],
-
-
+                        ]
                     });
                     $("#table-transportCost").css("width", "auto");
                 },
                 fillDataToDatatableInvoiceGarage: function (data) {
                     if (debtGarageView.tableInvoiceGarage != null)
                         debtGarageView.tableInvoiceGarage.destroy();
-//                    for (var i = 0; i < data.length; i++) {
-//                        data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
-//                    }
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+                    }
                     debtGarageView.tableInvoiceGarage = $('#table-garageInvoice').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {data: 'id'},
-                            {data: 'id'},
-                            {data: 'id'},
-                            {data: 'id'},
-                            {data: 'id'},
-                            {data: 'id'},
-                            {data: 'id'}
+                            {data: 'invoiceCode'},
+                            {data: 'fullNumber'},
+                            {data: 'garages_name'},
+                            {data: 'debt'},
+                            {data: 'sendToPerson'},
+                            {data: 'users_createdBy'},
+                            {data: 'exportDate'},
+                            {
+                                render: function (data, type, full, meta) {
+                                    var color = 'btn-default';
+                                    var text = '';
+                                    if (full.debt != 0) {
+                                        color = 'btn-danger';
+                                        text = 'Click để trả đủ';
+                                    }
+                                    else if (full.debt == 0) {
+                                        color = 'btn-success';
+                                        text = 'Đã trả đủ';
+                                    }
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtGarageView.autoEditTransportConfirm(" + full.id + ")'>";
+                                    tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
 
+                                }
+                            }
                         ]
                     });
                     $("#table-garageInvoice").css("width", "auto");
                 },
+                fillDataToDatatableDebtTransport: function (data) {
+                        if (debtGarageView.tableDebtTransport != null)
+                            debtGarageView.tableDebtTransport.destroy();
 
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+                        data[i].debt = parseInt(data[i]['cashDelivery']) - parseInt(data[i]['cashPreDelivery']);
 
+                        var transportInvoice = _.filter(debtGarageView.dataTransportInvoice, function (o) {
+                            return o.transport_id == data[i]['id'];
+                        });
+
+                        if (transportInvoice.length > 0) {
+                            transportInvoice = _.map(transportInvoice, 'invoiceGarage_id');
+                            var invoice = _.filter(debtGarageView.dataInvoiceGarage, function (o) {
+                                return _.includes(transportInvoice, o.id);
+                            });
+                            if (invoice.length > 0) {
+                                invoice = _.map(invoice, 'invoiceCode');
+                                data[i].invoiceCode = invoice.toString();
+                            }
+                            else {
+                                data[i].invoiceCode = "";
+                            }
+                        }
+                        else {
+                            data[i].invoiceCode = "";
+                        }
+                        data[i].stt = i + 1;
+                    }
+                    debtGarageView.table = $('#table-data').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {
+                                data: 'id',
+                                visible: false
+                            },
+                            {
+                                data: 'stt'
+                            },
+                            {data: 'fullNumber'},
+                            {data: 'garages_name'},
+                            {
+                                data: 'invoiceCode',
+                                visible: false
+                            },
+
+                            {data: 'deliveryPlace'},
+                            {
+                                data: 'voucherNumber'
+                            },
+                            {
+                                data: 'cashDelivery',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'debt',
+                                render: $.fn.dataTable.render.number(",", ".", 0),
+                                //"footerCallback": function (row, data, start, end, display) {
+                                "footerCallback": function (data, type, full, meta) {
+                                    var api = this.api(),
+                                        intVal = function (i) {
+                                            return typeof i === 'string' ?
+                                                i.replace(/[, Rs]|(\.\d{2})/g, "") * 1 :
+                                                typeof i === 'number' ?
+                                                    i : 0;
+                                        },
+                                        total2 = api
+                                            .column(8)
+                                            .data()
+                                            .reduce(function (a, b) {
+                                                return intVal(a) + intVal(b);
+                                            }, 0);
+
+                                    $(api.column(8).footer()).html(
+                                        ' ( $' + total2 + ' total)'
+                                    );
+                                }
+
+                            },
+                            {data: 'receiver'},
+                            {data: 'users_createdBy'},
+                            {data: 'users_updatedBy'},
+                            {
+                                data: 'receiveDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var color = 'btn-default';
+                                    var text = '';
+
+                                    if (full.cashPreDelivery == 0 && full.invoiceCode == "") {
+                                        color = 'btn-danger';
+                                        text = 'Click để trả đủ';
+                                    }
+                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode == "") {
+                                        color = 'btn-success';
+                                        text = 'Đã trả đủ';
+                                    }
+
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtGarageView.autoEditTransportConfirm(" + full.id + ")'>";
+                                    tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ],
+                        responsive: true,
+                        columnDefs: [
+                            {responsivePriority: 1, targets: 1},
+                            {responsivePriority: 1, targets: 2},
+                            {responsivePriority: 1, targets: 3},
+                            {responsivePriority: 1, targets: 4},
+                            {responsivePriority: 1, targets: 5},
+                            {responsivePriority: 1, targets: 6},
+                            {responsivePriority: 1, targets: 7},
+                            {responsivePriority: 1, targets: 8},
+                            {responsivePriority: 1, targets: 9},
+                            {responsivePriority: 1, targets: 10},
+                            {responsivePriority: 10, targets: 11},
+                            {responsivePriority: 1, targets: 12},
+                            {responsivePriority: 1, targets: 13},
+                        ],
+                        order: [[1, "asc"]],
+                        dom: 'T<"clear">Bfrtip',
+                        tableTools: {
+                            "sRowSelect": "multi",
+                            "aButtons": ["select_all", "select_none"]
+                        },
+                        buttons: [
+                            {
+                                extend: 'copyHtml5',
+                                text: 'Sao chép',
+                                exportOptions: {
+                                    columns: [0, ':visible']
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Xuất Excel',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                customize: function (xlsx) {
+                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                }
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'Xuất PDF',
+                                message: 'Thống Kê Xe Từ Ngày ... Đến Ngày',
+                                customize: function (doc) {
+                                    doc.content.splice(0, 1);
+                                    doc.styles.tableBodyEven.alignment = 'center';
+                                    doc.styles.tableBodyOdd.alignment = 'center';
+                                    doc.content.columnGap = 10;
+                                    doc.pageOrientation = 'landscape';
+                                    for (var i = 0; i < doc.content[1].table.body.length; i++) {
+                                        for (var j = 0; j < doc.content[1].table.body[i].length; j++) {
+                                            doc.content[1].table.body[i].splice(6, 1);
+                                        }
+                                    }
+                                    doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*'];
+                                }
+                            },
+                            {
+                                extend: 'colvis',
+                                text: 'Ẩn cột'
+                            }
+                        ],
+
+                    });
+                    $("#table-data").css("width", "auto");
+                },
 
 
                 computeDebt: function (paidAmt) {
                     paidAmt = convertStringToNumber(paidAmt);
                     var totalTransport = asNumberFromCurrency("#totalTransport");
-                    if(paidAmt > totalTransport ) {
+                    if (paidAmt > totalTransport) {
                         showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
                         $("input[id='debt']").val(0);
-                        $("#button").prop( "disabled", true );
-                    }else {
+                        $("#button").prop("disabled", true);
+                    } else {
                         var debt = totalTransport - paidAmt;
                         $("input[id=debt]").val(debt);
-                        $("#button").prop( "disabled", false );
+                        $("#button").prop("disabled", false);
                     }
 
                     formatCurrency(".currency");
@@ -1104,20 +1283,6 @@
                     debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
                         return o.id == transportId;
                     }), true);
-
-//                    if (debtGarageView.current['invoiceGarage_id'] != null) {
-//                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-//                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã xuất hóa đơn, không được dùng chức năng trả đủ. Vui lòng thanh toán vào hóa đơn của đơn hàng này!");
-//                        debtGarageView.displayModal('show', '#modal-notification');
-//                        return;
-//                    }
-
-//                    if (parseInt(debtGarageView.current['cashDelivery']) == parseInt(debtGarageView.current['cashPreDelivery'])) {
-//                        $("#modal-notification").find(".modal-title").html("Cảnh báo");
-//                        $("#modal-notification").find(".modal-body").html("Đơn hàng này đã trả đủ, không thể tiếp tục thanh toán!");
-//                        debtGarageView.displayModal('show', '#modal-notification');
-//                        return;
-//                    }
 
                     $("#modal-notification").find(".modal-title").html("Có chắc muốn trả đủ cho đơn hàng này không?");
                     tr = '<div class="row">';
@@ -1351,26 +1516,21 @@
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
                                 debtGarageView.dataTransport = data['transports'];
-                                debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+                                debtGarageView.dataDebtTransport = data['debtTransports'];
+                                debtGarageView.invoiceCode = data['invoiceCode'];
+                                debtGarageView.dataVehicleCost = data['vehicleCost'];
                                 debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+                                debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
+                                debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
                                 debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
-
-//                                debtGarageView.dataSearch = data['transports'];
-//                                debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-//                                debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-//                                debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-//                                debtGarageView.dataPrintHistory = data['printHistories'];
-//                                debtGarageView.dataTransportInvoice = data['transportInvoices'];
-//                                debtGarageView.invoiceCode = data['invoiceCode'];
-
-                               // debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage)
+                                debtGarageView.fillDataToDatatableDebtTransport(debtGarageView.dataDebtTransport);
                                 if (debtGarageView.action == 'new') {
                                     //clear Input
                                     debtGarageView.clearInput();
                                     debtGarageView.clearValidation("#frmInvoice");
                                     debtGarageView.hideControl();
                                     debtGarageView.deselectAll();
-                                 //Show notification
+                                    //Show notification
                                     showNotification("success", "Tạo phiếu thanh toán thành công!");
                                 }
                                 formatCurrency(".currency");
@@ -1632,7 +1792,6 @@
                         _token: _token,
                         _transport: debtGarageView.current.id
                     };
-
                     $.ajax({
                         url: url + 'debt-garage/modify',
                         type: "POST",
@@ -1642,19 +1801,22 @@
 
                         if (jqXHR.status == 201) {
                             debtGarageView.dataTransport = data['transports'];
-                            debtGarageView.dataSearch = data['transports'];
-                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
-                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
-                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
-                            debtGarageView.dataPrintHistory = data['printHistories'];
-                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
-                            debtGarageView.invoiceCode = data['invoiceCode'];
+                            debtGarageView.dataDebtTransport = data['debtTransports'];
+
+
+                            //debtGarageView.dataSearch = data['transports'];
+//                            debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+//                            debtGarageView.dataSearchInvoiceGarage = data['invoiceGarages'];
+//                            debtGarageView.dataInvoiceGarageDetail = data['invoiceGarageDetails'];
+//                            debtGarageView.dataPrintHistory = data['printHistories'];
+//                            debtGarageView.dataTransportInvoice = data['transportInvoices'];
+//                            debtGarageView.invoiceCode = data['invoiceCode'];
 
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                            debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
+                            debtGarageView.fillDataToDatatableDebtTransport(debtGarageView.dataDebtTransport);
 
-                            debtGarageView.searchTransport();
-                            debtGarageView.searchInvoice();
+                            //debtGarageView.searchTransport();
+                            // debtGarageView.searchInvoice();
 
                             //clear Input
                             debtGarageView.clearInput();

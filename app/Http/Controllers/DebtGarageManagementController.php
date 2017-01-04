@@ -74,10 +74,48 @@ class DebtGarageManagementController extends Controller
                 ['transports.vehicle_id', '<>', 0],
                 ['transports.customer_id', '<>', 0],
                 ['transports.status_invoice_garage', '=', 0]
-
             ])
             ->orderBy('transports.receiveDate', 'desc')
             ->get();
+
+//        Trả đủ
+        $debtTransports = \DB::table('transports')
+            ->select('transports.*',
+                'products.name as products_name',
+                'customers.fullName as customers_fullName',
+                'garages.name as garages_name',
+                'vehicles.areaCode as vehicles_areaCode',
+                'vehicles.vehicleNumber as vehicles_vehicleNumber',
+                'costs.cost', 'costs.note as costs_note',
+                'costPrices.name as costPrices_name', 'costPrices.id as costPrices_id',
+                'statuses_tran.status as status_transport_', 'statuses_cust.status as status_customer_',
+                'statuses_gar.status as status_garage_',
+                'users_createdBy.fullName as users_createdBy',
+                'users_updatedBy.fullName as users_updatedBy'
+            )
+            ->leftJoin('products', 'products.id', '=', 'transports.product_id')
+            ->leftJoin('customers', 'customers.id', '=', 'transports.customer_id')
+            ->leftJoin('vehicles', 'vehicles.id', '=', 'transports.vehicle_id')
+            ->leftJoin('garages', 'garages.id', '=', 'vehicles.garage_id')
+            ->leftJoin('costs', 'costs.transport_id', '=', 'transports.id')
+            ->leftJoin('prices', 'prices.id', '=', 'costs.price_id')
+            ->leftJoin('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
+            ->leftJoin('statuses as statuses_tran', 'statuses_tran.id', '=', 'transports.status_transport')
+            ->leftJoin('statuses as statuses_cust', 'statuses_cust.id', '=', 'transports.status_customer')
+            ->leftJoin('statuses as statuses_gar', 'statuses_gar.id', '=', 'transports.status_garage')
+            ->leftJoin('users as users_createdBy', 'users_createdBy.id', '=', 'transports.createdBy')
+            ->leftJoin('users as users_updatedBy', 'users_updatedBy.id', '=', 'transports.updatedBy')
+            ->where([
+                ['transports.active', '=', 1],
+                ['transports.product_id', '<>', 0],
+                ['transports.vehicle_id', '<>', 0],
+                ['transports.customer_id', '<>', 0],
+                ['transports.status_invoice_garage', '=', 3]
+            ])
+            ->orderBy('transports.receiveDate', 'desc')
+            ->get();
+
+
 
 
 
@@ -138,6 +176,7 @@ class DebtGarageManagementController extends Controller
         $response = [
             'msg' => 'Get list all Transport',
             'transports' => $transports,
+            'debtTransports' => $debtTransports,
             'invoiceGarages' => $invoiceGarages,
 //            'invoiceGarageDetails' => $invoiceGarageDetails,
 //            'printHistories' => $printHistories,
@@ -160,20 +199,16 @@ class DebtGarageManagementController extends Controller
     {
         //Trả đủ
         $transport_id = $request->input('_transport');
-
         try {
             DB::beginTransaction();
             $transportUpdate = Transport::findOrFail($transport_id);
             $transportUpdate->cashPreDelivery = $transportUpdate->cashDelivery;
-            $transportUpdate->status_garage = 9;
-
+            $transportUpdate->status_invoice_garage = 3;
             $transportUpdate->updatedBy = \Auth::user()->id;
-
             if (!$transportUpdate->update()) {
                 DB::rollBack();
                 return response()->json(['msg' => 'Update failed'], 404);
             }
-
             DB::commit();
             //Response
             $response = $this->DataDebtGarage();
@@ -207,7 +242,6 @@ class DebtGarageManagementController extends Controller
         $invoiceCode = $request->input('_invoiceGarage')['invoiceCode'];
         if ($action == 'new') {
             $array_transportId = $request->input('_array_transportId');
-
             //Kiem tra xem cac transport nay da xuat phieu thanh toan chua
             //Neu da xuat phieu thanh toan thi kiem tra xem ma cac phieu do co giong nhau khong
             //Neu giong nhau tien hanh them hoa don them lan nua
@@ -234,17 +268,13 @@ class DebtGarageManagementController extends Controller
             $invoiceGarage->sendToPerson = $request->input('_invoiceGarage')['sendToPerson'];
             $invoiceGarage->createdBy = \Auth::user()->id;
             $invoiceGarage->updatedBy = \Auth::user()->id;
-
-
             try {
-
                 DB::beginTransaction();
                 //Insert InvoiceGarage
                 if (!$invoiceGarage->save()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Create new Invoice fail!'], 404);
                 }
-
                 //Insert InvoiceGarageDetail
                 $invoiceGarageDetail = new InvoiceGarageDetail();
                 $invoiceGarageDetail->invoiceGarage_id = $invoiceGarage->id;
@@ -254,15 +284,12 @@ class DebtGarageManagementController extends Controller
                 $invoiceGarageDetail->modify = false;
                 $invoiceGarageDetail->createdBy = \Auth::user()->id;
                 $invoiceGarageDetail->updatedBy = \Auth::user()->id;
-
                 if (!$invoiceGarageDetail->save()) {
                     DB::rollBack();
                     return response()->json(['msg' => 'Create InvoiceGarageDetail fail!'], 404);
                 }
-
                 //Update status_invoice_garage for Transport
-
-                foreach ($array_transportId as $transport_id) {
+                foreach($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
                     $transportUpdate->status_invoice_garage = 1;
                     $transportUpdate->updatedBy = \Auth::user()->id;

@@ -934,11 +934,10 @@
                     customerView.clearValidation("#frmStaffCustomer");
                 },
                 editCustomer: function (id) {
-                    console.log(customerView.dataStaff);
+                    debugger;
                     customerView.dataStaffTemp = _.filter(customerView.dataStaff, function (o) {
                         return o.customer_id == id;
                     });
-                    console.log(customerView.dataStaffTemp);
                     customerView.fillDataToDatatableStaff(customerView.dataStaffTemp);
                     $("input[id='idCustomer']").val(id);
                     customerView.current = null;
@@ -1077,12 +1076,12 @@
                             data: sendToServer
                         }).done(function (data, textStatus, jqXHR) {
                             if (jqXHR.status == 201) {
-                                var staffDelete = _.find(customerView.dataStaffTemp, function (o) {
+                                var staffDelete = _.find(customerView.dataStaff, function (o) {
                                     return o.id == sendToServer._object;
                                 });
-                                var indexOfStaffOld = _.indexOf(customerView.dataStaffTemp, staffDelete);
-                                customerView.dataStaffTemp.splice(indexOfStaffOld, 1);
-                                var staffOld = _.filter(customerView.dataStaffTemp, function (o) {
+                                var indexOfStaffOld = _.indexOf(customerView.dataStaff, staffDelete);
+                                customerView.dataStaff.splice(indexOfStaffOld, 1);
+                                var staffOld = _.filter(customerView.dataStaff, function (o) {
                                     return o.customer_id == customerView.current.id;
                                 });
                                 customerView.fillDataToDatatableStaff(staffOld);
@@ -1134,22 +1133,25 @@
                                 if (jqXHR.status == 201) {
                                     switch (customerView.actionStaff) {
                                         case 'addStaff':
-                                            customerView.dataStaffTemp.push(data['staffNew']);
-                                            var StaffOld = _.filter(customerView.dataStaffTemp, function (o) {
+                                            customerView.dataStaff.push(data['staffNew']);
+                                            var StaffOld = _.filter(customerView.dataStaff, function (o) {
                                                 return o.customer_id == customerView.current.id;
                                             });
                                             customerView.fillDataToDatatableStaff(StaffOld);
                                             showNotification("success", "Thêm nhân viên thành công!");
-
                                             break;
                                         case 'updateStaff':
-                                            var StaffOld = _.find(customerView.dataStaffTemp, function (o) {
+                                            var StaffOld = _.find(customerView.dataStaff, function (o) {
                                                 return o.id == sendToServer._object.id;
                                             });
-                                            var indexOfStaffOld = _.indexOf(customerView.dataStaffTemp, StaffOld);
-                                            customerView.dataStaffTemp.splice(indexOfStaffOld, 1, data['updateStaff']);
-                                            customerView.tableStaff.clear().rows.add(customerView.dataStaffTemp).draw();
+                                            var indexOfStaffOld = _.indexOf(customerView.dataStaff, StaffOld);
+                                            customerView.dataStaff.splice(indexOfStaffOld, 1, data['updateStaff']);
+                                            var listStaff = _.filter(customerView.dataStaff, function (o) {
+                                                return o.customer_id == customerView.current.id;
+                                            });
+                                            customerView.fillDataToDatatableStaff(listStaff);
                                             showNotification("success", "Cập nhật nhân viên thành công!");
+
                                             break;
                                         default:
                                             break;
