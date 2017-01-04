@@ -137,6 +137,7 @@ class PostageManagementController extends Controller
                     return response()->json($response, 201);
                     break;
                 case 'update':
+                    //Deactive old Postage
                     $postageDeactive = Formula::findOrFail($request->input('_postage')['id']);
                     $postageDeactive->update(['active' => 0]);
 
@@ -200,8 +201,8 @@ class PostageManagementController extends Controller
                                 $postageDetailNew->to = $detail['to'];
                                 break;
                             case 'P':
-                                $postageDetailNew->fromPlace = $detail['from'];
-                                $postageDetailNew->toPlace = $detail['to'];
+                                $postageDetailNew->fromPlace = $detail['fromPlace'];
+                                $postageDetailNew->toPlace = $detail['toPlace'];
                                 break;
                             case 'O':
                                 $postageDetailNew->from = $detail['from'];
