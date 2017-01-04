@@ -82,9 +82,12 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row" style="padding: 0 10px" id="formula-detail">
-                                            
-                                        </div>
+                                        <fieldset style="margin: 10px 10px">
+                                            <legend>Chi tiết công thức: </legend>
+                                            <div class="row" style="padding: 0 10px" id="formula-detail">
+                                                
+                                            </div>
+                                        </fieldset>
                                         <div class="row" style="padding: 0 10px">
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
@@ -114,8 +117,7 @@
                                                            name="deliveryPlace">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row" style="padding: 0 10px">
+
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="quantumProduct"><b>Lượng hàng</b></label>
@@ -150,8 +152,7 @@
                                                            class="form-control currency">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row" style="padding: 0 10px">
+
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="fine"><b>Công an</b></label>
@@ -176,8 +177,7 @@
                                                     <input type="text" class="form-control currency" id="cashRevenue" name="cashRevenue">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row" style="padding: 0 10px">
+
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="cashDelivery" class="red"><b>Giao xe</b></label>
@@ -209,8 +209,7 @@
                                                     <input type="text" class="form-control" id="productCode" name="productCode">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row" style="padding: 0 10px">
+
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="weight"><b>Trọng tải</b></label>
@@ -237,9 +236,7 @@
                                                            name="voucherNumber">
                                                 </div>
                                             </div>
-                                            
-                                        </div>
-                                        <div class="row" style="padding: 0 10px">
+
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="voucherQuantumProduct"><b>Số hàng chứng từ</b></label>
@@ -283,6 +280,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <div class="row" style="padding: 0 10px">
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input">
@@ -1962,6 +1960,10 @@
                                 $("#receivePlace").attr('disabled', false);
                                 $("#deliveryPlace").attr('disabled', false);
                                 $("#productCode").attr('disabled', false);
+
+                                $("#receivePlace").parent().parent().removeClass('hide');
+                                $("#deliveryPlace").parent().parent().removeClass('hide');
+                                $("#productCode").parent().parent().removeClass('hide');
                                 break;
                             case 'PC': 
                                 var str = '';
@@ -1975,6 +1977,10 @@
                                 $("#receivePlace").attr('disabled', false);
                                 $("#deliveryPlace").attr('disabled', false);
                                 $("#productCode").attr('disabled', true);
+
+                                $("#receivePlace").parent().parent().removeClass('hide');
+                                $("#deliveryPlace").parent().parent().removeClass('hide');
+                                $("#productCode").parent().parent().addClass('hide');
                                 break;
                             case 'P':
                                 var str = '';
@@ -1994,6 +2000,10 @@
                                 $("#receivePlace").attr('disabled', true);
                                 $("#deliveryPlace").attr('disabled', true);
                                 $("#productCode").attr('disabled', false);
+
+                                $("#receivePlace").parent().parent().addClass('hide');
+                                $("#deliveryPlace").parent().parent().addClass('hide');
+                                $("#productCode").parent().parent().removeClass('hide');
                                 break;
                             
                             default: break;

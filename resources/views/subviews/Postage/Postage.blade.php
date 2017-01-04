@@ -784,8 +784,11 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
-                                    tr += '<div class="btn btn-success btn-circle" onclick="postageView.editPostage(' + full.id + ')">';
+                                    tr += '<div class="btn btn-success btn-circle marginRight" onclick="postageView.editPostage(' + full.id + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="postageView.deletePostageConfirm(' + full.id + ')">';
+                                    tr += '<i class="glyphicon glyphicon-trash"></i>';
                                     tr += '</div>';
                                     return tr;
                                 }
@@ -1149,6 +1152,10 @@
                                     postageView.retypeDetail();
                                     break;
                                 case 'delete':
+                                debugger;
+                                    postageView.dataPostage = data['postages'];
+                                    postageView.dataPostageDetail = data['postageDetails'];
+                                    postageView.fillDataToDatatable(postageView.dataPostage);
                                     showNotification("success", "Xóa thành công!");
                                     postageView.displayModal("hide", "#modal-notification");
                                     break;

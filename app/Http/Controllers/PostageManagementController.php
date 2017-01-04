@@ -228,6 +228,12 @@ class PostageManagementController extends Controller
                     return response()->json($response, 201);
                     break;
                 case 'delete':
+                    $postageDeactive = Formula::findOrFail($request->input('_id'));
+                    $postageDeactive->update(['active' => 0]);
+                    DB::commit();
+                    //Response
+                    $response = $this->DataPostage();
+                    return response()->json($response, 201);
                     break;
                 default:
                     return response()->json(['msg' => 'Connection to server failed'], 404);
