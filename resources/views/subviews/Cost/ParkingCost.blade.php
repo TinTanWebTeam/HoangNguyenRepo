@@ -1164,14 +1164,7 @@
                 },
                 ValidateParking: function () {
                     $("#formParkingCost").validate({
-//                        rules: {
-//
-//                           // vehicle_id: "required"
-//                        },
                         ignore: ".ignore"
-//                        messages: {
-//                            vehicle_id: "Vui lòng chọn xe"
-//                        }
                     });
                 },
                 inputPrice: function (price, id) {

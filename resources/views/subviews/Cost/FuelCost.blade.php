@@ -675,7 +675,7 @@
                     fuelCostView.clearInput();
                 },
                 editFuelCost: function (id) {
-                    $("#divControl").find(".titleControl").html("Cập nhật chi phi");
+                    $("#divControl").find(".titleControl").html("Cập nhật chi phí dầu");
                     fuelCostView.current = _.clone(_.find(fuelCostView.tableCost, function (o) {
                         return o.id == id;
                     }), true);
