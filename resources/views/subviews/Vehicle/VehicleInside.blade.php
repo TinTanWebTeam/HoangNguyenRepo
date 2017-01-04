@@ -1,4 +1,3 @@
-
 <style>
 
     #divControl {
@@ -49,6 +48,7 @@
     #listVehicle .table-list-vehicle {
         height: 500px;
     }
+
     #listVehicle .scroll-bar {
         height: 500px;
     }
@@ -534,7 +534,7 @@
                 tableVehicle: null,
                 dataGarage: null,
                 dataAllGarages: null,
-                dataAllVehicle:null,
+                dataAllVehicle: null,
                 dataVehicle: null,
                 dataDriver: null,
                 current: null,
@@ -1277,9 +1277,19 @@
                     } else {
                         garageInsideView.vehicleValidate();
                         garageInsideView.fillFormDataToCurrentObjectVehicle();
+                        var areaCode = $("input[id=areaCode]").val();
+                        var vehicleNumber = $("input[id=vehicleNumber]").val();
+                        var fullNumber = areaCode + vehicleNumber;
+                        var vehicle = _.filter(garageInsideView.dataAllVehicle, function (o) {
+                            return o.areaCode + o.vehicleNumber == fullNumber;
+                        });
                         if ($("#frmVehicle").valid()) {
                             if ($("#vehicleType_id").attr("data-id") == '') {
                                 showNotification("warning", "Loại xe không tồn tại!");
+                                return;
+                            }
+                            else if (vehicle != 0 && garageInsideView.action =="add") {
+                                showNotification("warning", "Xe đã tồn tại!");
                                 return;
                             }
                             else if ($('input[id=transferGarage]').val() != '' && $("#transferGarage").attr("data-idGarage") == '') {

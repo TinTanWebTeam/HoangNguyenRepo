@@ -534,6 +534,7 @@
                 tableVehicle: null,
                 dataGarage: null,
                 dataAllGarages: null,
+                dataAllVehicle:null,
                 dataVehicle: null,
                 dataDriver: null,
                 current: null,
@@ -1046,6 +1047,7 @@
                         if (jqXHR.status == 200) {
                             garageoutsideView.dataVehicleType = data['vehicleTypes'];
                             garageoutsideView.dataVehicle = data['dataVehicles'];
+                            garageoutsideView.dataAllVehicle = data['allVehicles'];
                             garageoutsideView.dataAllGarages = data['allGarage'];
                             garageoutsideView.dataDriver = data['dataDriver'];
                             garageoutsideView.fillDataToDatatableVehicles(data['dataVehicles']);
@@ -1274,9 +1276,18 @@
                     } else {
                         garageoutsideView.vehicleValidate();
                         garageoutsideView.fillFormDataToCurrentObjectVehicle();
+                        var areaCode = $("input[id=areaCode]").val();
+                        var vehicleNumber = $("input[id=vehicleNumber]").val();
+                        var fullNumber = areaCode + vehicleNumber;
+                        var vehicle = _.filter(garageoutsideView.dataAllVehicle, function (o) {
+                            return o.areaCode + o.vehicleNumber == fullNumber;
+                        });
                         if ($("#frmVehicle").valid()) {
                             if ($("#vehicleType_id").attr("data-id") == '') {
                                 showNotification("warning", "Loại xe không tồn tại!");
+                                return;
+                            }else if (vehicle != 0) {
+                                showNotification("warning", "Xe đã tồn tại!");
                                 return;
                             }
                             else if ($('input[id=transferGarage]').val() != '' && $("#transferGarage").attr("data-idGarage") == '') {

@@ -987,7 +987,7 @@
                         }
                         data[i].stt = i + 1;
                     }
-                    debtGarageView.table = $('#table-debtTransport').DataTable({
+                    debtGarageView.tableDebtTransport = $('#table-debtTransport').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [

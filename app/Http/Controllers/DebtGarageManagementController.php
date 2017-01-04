@@ -222,19 +222,15 @@ class DebtGarageManagementController extends Controller
     //Invoice Garage
     public function postValidateTransportGarage(Request $request)
     {
-        dd($request->all());
         $array_transportId = $request->input('_array_transportId');
         //Kiểm tra cùng nhà xe
-        $arrayVehicleId = Transport::whereIn('id', $array_transportId)->pluck('vehicle_id')->toArray();
-        $arrayGarageId = Vehicle::whereIn('id', $arrayVehicleId)->pluck('garage_id');
-        $uniqueGarageId = $arrayGarageId->unique();
-        $GarageId = Garage::whereIn('id', $uniqueGarageId)->pluck('id');
-        if (count($GarageId->values()->all()) != 1) {
-            return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có nhà xe không giống nhau.'], 203);
+        $arrayVehicleId = Transport::whereIn('id', $array_transportId)->pluck('vehicle_id');
+        $uniqueVehicleId = $arrayVehicleId->unique();
+        if (count($uniqueVehicleId->values()->all()) != 1) {
+            return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có xe không giống nhau.'], 203);
         }else {
             return response()->json(['status' => 1, 'totalPay' => 0, 'msg' => 'Các đơn hàng chưa có phiếu thanh toán, hợp lệ cho thêm mới'], 200);
         }
-
     }
 
     public function postModifyInvoiceGarage(Request $request)
