@@ -194,7 +194,7 @@
                                                     <div class="form-actions">
                                                         <div class="form-group">
                                                             <button type="button" class="btn btn-primary marginRight"
-                                                                    onclick="postageView.save()">Hoàn tất
+                                                                    onclick="postageView.save()">Lưu tất cả
                                                             </button>
                                                             <button type="button" class="btn default"
                                                                     onclick="postageView.retype()">Nhập lại
@@ -269,7 +269,7 @@
                                                     <div class="form-actions">
                                                         <div class="form-group">
                                                             <button type="button" class="btn btn-primary marginRight"
-                                                                    onclick="postageView.saveDetail()">Hoàn tất
+                                                                    onclick="postageView.saveDetail()">Thêm
                                                             </button>
                                                             <button type="button" class="btn default"
                                                                     onclick="postageView.retypeDetail()">Nhập lại
@@ -477,7 +477,7 @@
                     $("input[id=cashDelivery]").val(0);
                     $("input[id=unitPrice]").val(0);
                     $("input[id=unit]").val('');
-                    $("input[id=note]").val('');
+                    $("textarea[id=note]").val('');
                 },
                 retypeDetail: function () {
                     $("input[id=value]").val('');
@@ -612,6 +612,10 @@
                             $("#name").val('');
                             var rule_parent = $('input[type=radio][name=rule]:checked').val();
                             option.attr('my-rule', rule_parent);
+
+                            $("input[name=rule]").prop("disabled", false);
+                        } else {
+                            $("input[name=rule]").prop("disabled", true);
                         }
                         var rule = option.attr('my-rule');
                         
@@ -1122,21 +1126,14 @@
                         data: sendToServer
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 201) {
-                            console.log(data);
+                            postageView.dataPostage = data['postages'];
+                            postageView.dataPostageDetail = data['postageDetails'];
+                            postageView.fillDataToDatatable(postageView.dataPostage);
                             switch (postageView.action) {
                                 case 'add':
-                                    postageView.dataPostage = data['postages'];
-                                    postageView.dataPostageDetail = data['postageDetails'];
-                                    postageView.fillDataToDatatable(postageView.dataPostage);
-
                                     showNotification("success", "Thêm thành công!");
-                                    postageView.clearInput();
                                     break;
                                 case 'update':
-                                    postageView.dataPostage = data['postages'];
-                                    postageView.dataPostageDetail = data['postageDetails'];
-                                    postageView.fillDataToDatatable(postageView.dataPostage);
-
                                     var formula_id = data['id'];
                                     postageView.arrayDetail = _.filter(postageView.dataPostageDetail, function (o) {
                                         return o.formula_id == formula_id;
@@ -1152,17 +1149,13 @@
                                     postageView.retypeDetail();
                                     break;
                                 case 'delete':
-                                debugger;
-                                    postageView.dataPostage = data['postages'];
-                                    postageView.dataPostageDetail = data['postageDetails'];
-                                    postageView.fillDataToDatatable(postageView.dataPostage);
                                     showNotification("success", "Xóa thành công!");
                                     postageView.displayModal("hide", "#modal-notification");
                                     break;
-                                default:
-                                    break;
+                                default: break;
                             }
                             postageView.arrayDetail = [];
+                            postageView.clearInput();
                             postageView.hideControl();
                         } else if (jqXHR.status == 203) {
                             showNotification("warning", data['msg']);
@@ -1192,8 +1185,8 @@
                                 var exist = _.filter(postageView.arrayDetail, function(o) {
                                     return o.name == postageView.currentDetail['name'];
                                 });
-                                if(typeof exist !== 'undefined'){
-                                    showNotification("success", "Tên trường trong công thức đã tồn tại!");
+                                if(exist.length > 0) {
+                                    showNotification("warning", "Tên trường trong công thức đã tồn tại!");
                                     return;
                                 }
                             }

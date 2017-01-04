@@ -1956,14 +1956,6 @@
                                 str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
                                 str += '</div>';
                                 str += '</div>';
-
-                                $("#receivePlace").attr('disabled', false);
-                                $("#deliveryPlace").attr('disabled', false);
-                                $("#productCode").attr('disabled', false);
-
-                                $("#receivePlace").parent().parent().removeClass('hide');
-                                $("#deliveryPlace").parent().parent().removeClass('hide');
-                                $("#productCode").parent().parent().removeClass('hide');
                                 break;
                             case 'PC': 
                                 var str = '';
@@ -1973,14 +1965,6 @@
                                 str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
                                 str += '</div>';
                                 str += '</div>';
-
-                                $("#receivePlace").attr('disabled', false);
-                                $("#deliveryPlace").attr('disabled', false);
-                                $("#productCode").attr('disabled', true);
-
-                                $("#receivePlace").parent().parent().removeClass('hide');
-                                $("#deliveryPlace").parent().parent().removeClass('hide');
-                                $("#productCode").parent().parent().addClass('hide');
                                 break;
                             case 'P':
                                 var str = '';
@@ -1996,20 +1980,36 @@
                                 str += '<input value="" type="text" class="form-control name" id="id_' + data[key]["id"] + '_toPlace" data-rule=' + data[key]["rule"] + ' onfocusout="transportView.focusOut_getFormula()">';
                                 str += '</div>';
                                 str += '</div>';
-
-                                $("#receivePlace").attr('disabled', true);
-                                $("#deliveryPlace").attr('disabled', true);
-                                $("#productCode").attr('disabled', false);
-
-                                $("#receivePlace").parent().parent().addClass('hide');
-                                $("#deliveryPlace").parent().parent().addClass('hide');
-                                $("#productCode").parent().parent().removeClass('hide');
                                 break;
                             
                             default: break;
                         }
                         
                         $("#formula-detail").append(str);
+
+                        // Hide input duplicate
+                        var existPair = _.filter(data, function(o) {
+                            return o['rule'] == 'P';
+                        });
+
+                        if(existPair.length > 0) {
+                            $("#receivePlace").parent().parent().addClass('hide');
+                            $("#deliveryPlace").parent().parent().addClass('hide');
+                        } else {
+                            $("#receivePlace").parent().parent().removeClass('hide');
+                            $("#deliveryPlace").parent().parent().removeClass('hide');
+                        }
+
+                        var existProductCode = _.filter(data, function(o) {
+                            return o['rule'] == 'PC';
+                        });
+
+                        if(existProductCode.length > 0) {
+                            $("#productCode").parent().parent().addClass('hide');
+                        } else {
+                            $("#productCode").parent().parent().removeClass('hide');
+                        }
+
 
                         //AutoComplete
                         var dataAutoComplete = _.filter(transportView.currentFormulaDetail, function (o) {

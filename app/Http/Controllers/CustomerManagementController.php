@@ -1245,6 +1245,7 @@ class CustomerManagementController extends Controller
         // Find formulaDetail
         $formulas = DB::table('formulas')
             ->where('formulas.customer_id', $customer_id)
+            ->where('formulas.active', 1)
             ->where(\DB::raw('DATE(formulas.applyDate)'), '<=', Carbon::createFromFormat('Y-m-d', date('Y-m-d'))->toDateString())
             ->leftJoin('units', 'units.id', '=', 'formulas.unit_id')
             ->orderBy('formulas.applyDate', 'desc')
