@@ -180,7 +180,7 @@
                         <div class="col-md-6">
                             <div class="form-actions noborder">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-primary"
+                                    <button type="button" class="btn btn-primary marginRight"
                                             onclick="otherCostView.save()">
                                         Hoàn tất
                                     </button>
@@ -197,42 +197,6 @@
 </div>
 <!-- end #frmControl -->
 
-
-{{--<!-- Modal list searchVehicle -->--}}
-{{--<div class="row">--}}
-    {{--<div id="modal-searchVehicle" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">--}}
-        {{--<div class="modal-dialog modal-lg" role="document">--}}
-            {{--<div class="modal-content">--}}
-                {{--<div class="modal-header">--}}
-                    {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
-                        {{--<span aria-hidden="true">×</span>--}}
-                    {{--</button>--}}
-                    {{--<h5 class="modal-title">Danh sách xe</h5>--}}
-                {{--</div>--}}
-                {{--<div class="modal-body">--}}
-                    {{--<div class="table-responsive">--}}
-                        {{--<table style="width: 100%" class="table table-hover" id="table-vehicles">--}}
-                            {{--<thead>--}}
-                            {{--<tr>--}}
-                                {{--<th>Stt</th>--}}
-                                {{--<th>Mã vùng</th>--}}
-                                {{--<th>Số xe</th>--}}
-                                {{--<th>Trọng tải</th>--}}
-                                {{--<th>Kích thước</th>--}}
-                                {{--<th>Loại xe</th>--}}
-                                {{--<th></th>--}}
-                            {{--</tr>--}}
-                            {{--</thead>--}}
-                            {{--<tbody>--}}
-                            {{--</tbody>--}}
-                        {{--</table>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
-{{--</div>--}}
-{{--<!-- end Modal list garages -->--}}
 
 
 <!-- Modal add Vehicle -->

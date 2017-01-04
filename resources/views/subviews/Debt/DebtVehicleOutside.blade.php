@@ -283,14 +283,20 @@
                                 <table class="table table-bordered  table-striped table-hover" id="table-debtTransport">
                                     <thead>
                                     <tr class="active">
-                                        <th>Mã phiếu</th>
+                                        <th>Mã</th>
+                                        <th>STT</th>
                                         <th>Số xe</th>
                                         <th>Nhà xe</th>
+                                        <th>Mã phiếu thanh toán</th>
+                                        <th>Nơi giao</th>
+                                        <th>Số chứng từ</th>
+                                        <th>Giao xe</th>
                                         <th>Nợ</th>
                                         <th>Người nhận</th>
                                         <th>Người tạo</th>
-                                        <th>Ngày tạo</th>
-
+                                        <th>Người sửa</th>
+                                        <th>Ngày nhận</th>
+                                        <th>Thanh toán</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -687,10 +693,9 @@
                     debtGarageView.renderEventRowClick();
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
-                    defaultZero("#VAT");
-                    defaultZero("#hasVAT");
                     defaultZero("#paidAmt");
                 },
+//                table - transport
                 fillDataToDatatable: function (data) {
                     if (debtGarageView.table != null)
                         debtGarageView.table.destroy();
@@ -783,21 +788,9 @@
                             },
                             {
                                 render: function (data, type, full, meta) {
-                                    var color = 'btn-default';
-                                    var text = '';
-
-                                    if (full.cashPreDelivery == 0 && full.invoiceCode == "") {
-                                        color = 'btn-danger';
-                                        text = 'Click để trả đủ';
-                                    }
-                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode == "") {
-                                        color = 'btn-success';
-                                        text = 'Đã trả đủ';
-                                    }
-
                                     var tr = '';
                                     tr += '<div class="text-center">';
-                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtGarageView.autoEditTransportConfirm(" + full.id + ")'>";
+                                    tr += "<div class='btn btn-circle btn-danger' title='Click để trả đủ' onclick='debtGarageView.autoEditTransportConfirm(" + full.id + ")'>";
                                     tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -872,6 +865,8 @@
                     });
                     $("#table-data").css("width", "auto");
                 },
+
+//                table - chi phi xe
                 fillDataToDatatableTransportCost: function (data) {
                     if (debtGarageView.tableTransportCost != null)
                         debtGarageView.tableTransportCost.destroy();
@@ -915,6 +910,8 @@
                     });
                     $("#table-transportCost").css("width", "auto");
                 },
+
+//                table - phiếu thanh toán
                 fillDataToDatatableInvoiceGarage: function (data) {
                     if (debtGarageView.tableInvoiceGarage != null)
                         debtGarageView.tableInvoiceGarage.destroy();
@@ -958,9 +955,11 @@
                     });
                     $("#table-garageInvoice").css("width", "auto");
                 },
+
+//                table - tra đủ
                 fillDataToDatatableDebtTransport: function (data) {
-                        if (debtGarageView.tableDebtTransport != null)
-                            debtGarageView.tableDebtTransport.destroy();
+                    if (debtGarageView.tableDebtTransport != null)
+                        debtGarageView.tableDebtTransport.destroy();
 
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
@@ -988,7 +987,7 @@
                         }
                         data[i].stt = i + 1;
                     }
-                    debtGarageView.table = $('#table-data').DataTable({
+                    debtGarageView.table = $('#table-debtTransport').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
@@ -1137,7 +1136,7 @@
                         ],
 
                     });
-                    $("#table-data").css("width", "auto");
+                    $("#table-debtTransport").css("width", "auto");
                 },
 
 
@@ -1212,6 +1211,7 @@
                         });
                         return result;
                     } else {
+                        alert('a');
                         var result = {
                             'status': 0,
                             'totalPay': 0,
@@ -1220,7 +1220,7 @@
                         return result;
                     }
                 },
-                createInvoiceGarage: function (flag) {
+                createInvoiceGarage: function (flag, invoiceGarage_id) {
                     if (flag == 0) {
                         var dataAfterValidate = debtGarageView.validateListTransport();
                         if (dataAfterValidate['status'] === 0) {
@@ -1270,6 +1270,56 @@
                     }
                     formatCurrency(".currency");
                 },
+//                createInvoiceGarage: function (flag, invoiceGarage_id) {
+//                    if (flag == 0) {
+//                        var dataAfterValidate = debtGarageView.validateListTransport();
+//                        if (dataAfterValidate['status'] === 0) {
+//                            $("#modal-notification").find(".modal-title").html("Cảnh báo");
+//                            $("#modal-notification").find(".modal-body").html(dataAfterValidate['msg']);
+//                            debtGarageView.displayModal('show', '#modal-notification');
+//                            return;
+//                        }
+//                        $("#divInvoice").find(".titleControl").html("Tạo phiếu thanh toán");
+//                        debtGarageView.showControl(flag);
+//                        debtGarageView.action = "new";
+//                        var prePaid = 0;
+//                        var totalPay = 0;
+//
+//                        for (var i = 0; i < debtGarageView.array_transportId.length; i++) {
+//                            var currentRow = _.find(debtGarageView.dataTransport, function (o) {
+//                                return o.id == debtGarageView.array_transportId[i];
+//                            });
+//                            if (typeof currentRow !== 'undefined') {
+//                                totalPay += parseInt(currentRow['cashDelivery']);
+//                                prePaid += parseInt(currentRow['cashPreDelivery']);
+//                            }
+//                        }
+//                        if (dataAfterValidate['status'] === 1) { //First
+//                            $("input[id=totalTransport]").val(totalPay);
+//                            $("input[id=prePaid]").val(prePaid);
+//                            debt = totalPay - prePaid;
+//                            $("input[id=debt]").val(debt);
+//                            $("input[id=debt-real]").val(debt);
+//                        }
+//                        $("input[id=invoiceCode]").attr("placeholder", debtGarageView.invoiceCode);
+//                        //set default value
+//                        $("input[id=paidAmt]").val(0);
+//                        //remove readly input
+//                        $("input[id=invoiceCode]").prop('readonly', false);
+//                        $("input[id=invoiceCode]").focus();
+//// else if (dataAfterValidate['status'] === 2) { //Exported
+////                            alert('2');
+////                            $("input[id=totalTransport]").val(totalPay);
+////                            totalPay = dataAfterValidate['totalPay'];
+////                            $("input[id=totalPay]").val(totalPay);
+////                            $("input[id=prePaid]").val(prePaid);
+////
+////                            $("input[id=debt]").val(totalPay);
+////                            $("input[id=debt-real]").val(totalPay);
+////                        }
+//                    }
+//                    formatCurrency(".currency");
+//                },
                 autoEditTransport: function (transportId) {
                     debtGarageView.current = null;
                     debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {

@@ -222,6 +222,7 @@ class DebtGarageManagementController extends Controller
     //Invoice Garage
     public function postValidateTransportGarage(Request $request)
     {
+        dd($request->all());
         $array_transportId = $request->input('_array_transportId');
         //Kiểm tra cùng nhà xe
         $arrayVehicleId = Transport::whereIn('id', $array_transportId)->pluck('vehicle_id')->toArray();
