@@ -960,7 +960,7 @@
                             {responsivePriority: 1, targets: 15}, // sua xoa
                         ],
                         order: [[1, "asc"]],
-                        dom: 'T<"clear">Bfrtip',
+                        dom: 'T<"clear">frtip',
                         tableTools: {
                             "sRowSelect": "multi",
                             "aButtons": ["select_all", "select_none"]
@@ -1033,7 +1033,7 @@
                                 }
                             }
                         ],
-                        dom: 'Bfrtip'
+                        dom: 'frtip'
                     })
                 },
                 fillDataToDatatablePTT: function (data) {
@@ -1090,7 +1090,7 @@
                                 }
                             }
                         ],
-                        dom: 'Bfrtip'
+                        dom: 'frtip'
                     })
                 },
                 fillDataToDatatableInvoiceCustomerDetail: function (data) {

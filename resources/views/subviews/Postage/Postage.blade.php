@@ -792,7 +792,7 @@
                             }
                         ],
                         order: [[0, "desc"]],
-                        dom: 'Bfrtip',
+                        dom: 'frtip',
                         buttons: [
                             {
                                 extend: 'copyHtml5',
@@ -1014,7 +1014,6 @@
                 getUsingFuel: function (applyDate) {
                     if(postageView.dataFuel == null || postageView.dataFuel.length <= 0)
                         return;
-                    debugger;
                     var fuel = _.maxBy(postageView.dataFuel, function (o) {
                         if(moment(o.applyDate, "DD-MM-YYYY").hour(0).minute(0).second(0).isAfter(moment(applyDate, 'DD-MM-YYYY').hour(0).minute(0).second(0)))
                             return false;
