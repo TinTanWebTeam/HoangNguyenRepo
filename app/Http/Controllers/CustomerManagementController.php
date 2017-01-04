@@ -859,6 +859,7 @@ class CustomerManagementController extends Controller
                     }
 
                     //Add TransportFormulaDetail
+                    if($formulaDetail == null) $formulaDetail = [];
                     foreach($formulaDetail as $item){
                         $transportFormulaDetail = new TransportFormulaDetail;
                         $transportFormulaDetail->name = $item['name'];
