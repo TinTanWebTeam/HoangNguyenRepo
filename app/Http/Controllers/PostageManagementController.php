@@ -176,7 +176,7 @@ class PostageManagementController extends Controller
                     }
 
                     //Delete FormulaDetail
-                    $ids_to_delete = FormulaDetail::where('formula_id', $postageNew->id)->pluck('id')->toArray();
+                    $ids_to_delete = FormulaDetail::where('formula_id', $postageDeactive->id)->pluck('id')->toArray();
                     if (count($ids_to_delete) > 0) {
                         if (DB::table('formulaDetails')->whereIn('id', $ids_to_delete)->delete() <= 0) {
                             DB::rollBack();

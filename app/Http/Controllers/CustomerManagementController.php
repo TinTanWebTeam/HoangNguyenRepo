@@ -1283,6 +1283,7 @@ class CustomerManagementController extends Controller
         }
         $formula = DB::table('formulas')
             ->where('formulas.id', $formula_id)
+            ->where('formulas.active', 1)
             ->leftJoin('units', 'units.id', '=', 'formulas.unit_id')
             ->select('formulas.*', 'units.name as unit_name')->first();
         $response = [
@@ -1316,7 +1317,7 @@ class CustomerManagementController extends Controller
                         ['name', $fdFind['name']],
                         ['rule', $fdFind['rule']]
                     ])->where('from', '<=',$fdFind['value'])
-                        ->where('to', '>',$fdFind['value'])
+                        ->where('to', '>=',$fdFind['value'])
                         ->pluck('formula_id')->toArray();
                     break;
                 case 'P':
