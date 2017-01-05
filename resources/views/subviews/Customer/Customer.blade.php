@@ -1172,85 +1172,112 @@
                     }
                 },
                 save: function () {
-
-                    if ($("input[id=idCustomer]").val() == "") {
-                        customerView.action = "add";
-                    }
-                    if ($("input[id=idCustomer]").val() != "") {
-                        customerView.action = "update";
-                    }
-                    var nameCustomer = _.map(customerView.tableCustomer, function (o) {
-                        return o.fullName;
-                    });
-                    if (_.indexOf(nameCustomer, $("input[id=fullName]").val()) >= 0) {
-                        showNotification("error", "Khách hàng đã tồn tại!");
-                    } else {
-                        customerView.formValidate();
-                        customerView.formValidateEdit();
-                        if ($("#frmControl").valid() && $("#frmControlEdit").valid()) {
-                            customerView.fillFormDataToCurrentObject();
-                            var sendToServer = {
-                                _token: _token,
-                                _action: customerView.action,
-                                _customer: customerView.current
-                            };
-                            if (customerView.action == 'delete') {
-                                sendToServer._id = customerView.idDelete;
+                    var sendToServer = null;
+                    if (customerView.action == 'delete') {
+                        sendToServer = {
+                            _token: _token,
+                            _action: customerView.action,
+                            _idDelete: customerView.idDelete
+                        };
+                        $.ajax({
+                            url: url + 'customer/modify',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                var customerOld = _.find(customerView.tableCustomer, function (o) {
+                                    return o.id == sendToServer._id;
+                                });
+                                var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
+                                customerView.tableCustomer.splice(indexOfCustomerOld, 1);
+                                showNotification("success", "Xóa thành công!");
+                                customerView.displayModal("hide", "#modal-confirmDelete");
                             }
-                            $.ajax({
-                                url: url + 'customer/modify',
-                                type: "POST",
-                                dataType: "json",
-                                data: sendToServer
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (jqXHR.status == 201) {
-                                    switch (customerView.action) {
-                                        case 'add':
-                                            customerView.tableCustomer.push(data['customer'][0]);
-                                            showNotification("success", "Thêm thành công!");
-                                            break;
-                                        case 'update':
-                                            var customerOld = _.find(customerView.tableCustomer, function (o) {
-                                                return o.id == sendToServer._customer.id;
-                                            });
-                                            var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
-                                            customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
-                                            showNotification("success", "Cập nhật thành công!");
-                                            customerView.hideControl();
-                                            customerView.clearInput();
-                                            break;
-                                        case 'delete':
-                                            var customerOld = _.find(customerView.tableCustomer, function (o) {
-                                                return o.id == sendToServer._id;
-                                            });
-                                            var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
-                                            customerView.tableCustomer.splice(indexOfCustomerOld, 1);
-                                            showNotification("success", "Xóa thành công!");
-                                            customerView.displayModal("hide", "#modal-confirmDelete");
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    customerView.table.clear().rows.add(customerView.tableCustomer).draw();
-                                    customerView.clearInput();
-                                } else if (jqXHR.status == 203) {
-                                    showNotification("error", "Tên khách hàng đã tồn tại!");
-                                } else {
-                                    showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
-                                }
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-                            });
+                            customerView.table.clear().rows.add(customerView.tableCustomer).draw();
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            customerView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    } else {
+                        if ($("input[id=idCustomer]").val() == "") {
+                            customerView.action = "add";
+                        }
+                        if ($("input[id=idCustomer]").val() != "") {
+                            customerView.action = "update";
+                        }
+                        var nameCustomer = _.map(customerView.tableCustomer, function (o) {
+                            return o.fullName;
+                        });
+                        if (_.indexOf(nameCustomer, $("input[id=fullName]").val()) >= 0) {
+                            showNotification("error", "Khách hàng đã tồn tại!");
                         } else {
-                            $("form#frmControl").find("label[class=error]").css("color", "red");
-                            $("form#frmControlEdit").find("label[class=error]").css("color", "red");
+                            customerView.formValidate();
+                            customerView.formValidateEdit();
+                            if ($("#frmControl").valid() && $("#frmControlEdit").valid()) {
+                                customerView.fillFormDataToCurrentObject();
+                                sendToServer = {
+                                    _token: _token,
+                                    _action: customerView.action,
+                                    _customer: customerView.current
+                                };
+                                $.ajax({
+                                    url: url + 'customer/modify',
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: sendToServer
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (jqXHR.status == 201) {
+                                        switch (customerView.action) {
+                                            case 'add':
+                                                customerView.tableCustomer.push(data['customer'][0]);
+                                                showNotification("success", "Thêm thành công!");
+                                                break;
+                                            case 'update':
+                                                var customerOld = _.find(customerView.tableCustomer, function (o) {
+                                                    return o.id == sendToServer._customer.id;
+                                                });
+                                                var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
+                                                customerView.tableCustomer.splice(indexOfCustomerOld, 1, data['customer'][0]);
+                                                showNotification("success", "Cập nhật thành công!");
+                                                customerView.hideControl();
+                                                customerView.clearInput();
+                                                break;
+                                            case 'delete':
+                                                var customerOld = _.find(customerView.tableCustomer, function (o) {
+                                                    return o.id == sendToServer._id;
+                                                });
+                                                var indexOfCustomerOld = _.indexOf(customerView.tableCustomer, customerOld);
+                                                customerView.tableCustomer.splice(indexOfCustomerOld, 1);
+                                                showNotification("success", "Xóa thành công!");
+                                                customerView.displayModal("hide", "#modal-confirmDelete");
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        customerView.table.clear().rows.add(customerView.tableCustomer).draw();
+                                        customerView.clearInput();
+                                    } else if (jqXHR.status == 203) {
+                                        showNotification("error", "Tên khách hàng đã tồn tại!");
+                                    } else {
+                                        showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                                });
+                            } else {
+                                $("form#frmControl").find("label[class=error]").css("color", "red");
+                                $("form#frmControlEdit").find("label[class=error]").css("color", "red");
+                            }
                         }
                     }
+
+
                 },
                 clearInputCustomerType: function () {
                     $("input[id='CustomerType_name']").val('');
                     $("textarea[id='description']").val('');
-                },
+                }
+                ,
                 validateCustomerType: function () {
                     $("#frmCustomerType").validate({
                         rules: {
@@ -1260,11 +1287,13 @@
                             CustomerType_name: "Vui lòng nhập tên loại khách hàng"
                         }
                     });
-                },
+                }
+                ,
                 cancelCustomerType: function () {
                     $('input[id=CustomerType_name]').val('');
                     $('textarea[id=description]').val('');
-                },
+                }
+                ,
                 saveCustomerType: function () {
                     customerView.validateCustomerType();
                     if ($("#frmCustomerType").valid()) {
@@ -1300,11 +1329,13 @@
                         $("form#frmCustomerType").find("label[class=error]").css("color", "red");
                     }
                 }
-            };
+            }
+            ;
             customerView.loadData();
         }
         else {
             customerView.loadData();
         }
-    });
+    })
+    ;
 </script>

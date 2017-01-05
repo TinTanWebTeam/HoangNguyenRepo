@@ -792,15 +792,11 @@
                         return o.garage_id == id;
                     });
                     if(driverOfGarage == 0){
-                        console.log('0');
-                        console.log(driverOfGarage);
                         garageInsideView.action = 'delete';
                         garageInsideView.idDelete = id;
                         $("#modal-confirmDelete").find(".modal-title").html("Bạn muốn xóa nhà xe này ?");
                         garageInsideView.displayModal("show", "#modal-confirmDelete");
                     }else {
-                        console.log('1');
-                        console.log(driverOfGarage);
                         $("#modal-deniedDelete").find(".modal-title").html("Nhà xe có xe không được xóa !");
                         garageInsideView.displayModal("show", "#modal-deniedDelete");
                         return;

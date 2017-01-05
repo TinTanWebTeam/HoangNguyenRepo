@@ -100,7 +100,6 @@ class CustomerManagementController extends Controller
         $noteEdit = null;
         $createdBy = null;
         $updatedBy = null;
-
         $action = $request->input('_action');
         if ($action != 'delete') {
             $validator = ValidateController::ValidateCustomer($request->input('_customer'), $action);
@@ -128,7 +127,6 @@ class CustomerManagementController extends Controller
                 $noteEdit = $request->input('_customer')['note'];
             }
             $customerType_id = $request->input('_customer')['customerType_id'];
-
             $createdBy = \Auth::user()->id;
             $updatedBy = \Auth::user()->id;
         }
@@ -199,9 +197,8 @@ class CustomerManagementController extends Controller
                 return response()->json(['msg' => 'Update failed'], 404);
                 break;
             case 'delete':
-                $customerDelete = Customer::findOrFail($request->input('_id'));
+                $customerDelete = Customer::findOrFail($request->input('_idDelete'));
                 $customerDelete->active = 0;
-
                 if ($customerDelete->update()) {
                     $response = [
                         'msg' => 'Deleted customer',
