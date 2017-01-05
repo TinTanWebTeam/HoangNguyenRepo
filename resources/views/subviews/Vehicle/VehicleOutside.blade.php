@@ -797,7 +797,7 @@
                         $("#modal-confirmDelete").find(".modal-title").html("Bạn muốn xóa nhà xe này ?");
                         garageOutsideView.displayModal("show", "#modal-confirmDelete");
                     }else {
-                        $("#modal-deniedDelete").find(".modal-title").html("Nhà xe có xe không được xóa !");
+                        $("#modal-deniedDelete").find(".modal-title").html("Nhà xe đang có xe. Không được xóa !");
                         garageOutsideView.displayModal("show", "#modal-deniedDelete");
                         return;
                     }

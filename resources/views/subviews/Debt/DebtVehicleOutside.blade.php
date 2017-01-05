@@ -495,54 +495,39 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="debt"><b>Còn nợ lại</b></label>
+                                            <label for="debtVerb"><b>Còn nợ lại</b></label>
                                             <input type="text" class="form-control currency"
-                                                   id="debt" name="debt" readonly>
+                                                   id="debtVerb" name="debtVerb" readonly>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="paidAmt" class="red"><b>Tiền trả</b></label>
+                                            <label for="paidAmtDebtVerb"><b>Tiền đã thanh toán</b></label>
                                             <input type="text" class="form-control currency defaultZero"
-                                                   id="paidAmt" name="paidAmt"
-                                                   onkeyup="debtGarageView.computeDebt(this.value)">
+                                                   id="paidAmtDebtVerb" name="paidAmtDebtVerb"
+                                                   {{--onkeyup="debtGarageView.computeDebt(this.value)"--}}
+                                            >
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="sendToPerson"><b>Người nhận</b></label>
-                                            <input type="text" id="sendToPerson" name="sendToPerson"
+                                            <label for="payMore"><b>Trả tiếp</b></label>
+                                            <input type="text" class="date form-control"
+                                                   id="payMore"
+                                                   name="payMore">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debtVerbPerson"><b>Người thanh toán</b></label>
+                                            <input type="text" id="debtVerbPerson" name="debtVerbPerson"
                                                    class="form-control">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="exportDate"><b>Ngày xuất</b></label>
-                                            <input type="text" class="date form-control ignore"
-                                                   id="exportDate"
-                                                   name="exportDate">
-                                        </div>
-                                    </div>
-                                    {{--<div class="col-md-4" hidden>--}}
-                                    {{--<div class="form-group form-md-line-input ">--}}
-                                    {{--<label for="prePaid"><b>Trả trước</b></label>--}}
-                                    {{--<input type="text" class="form-control currency"--}}
-                                    {{--id="prePaid"--}}
-                                    {{--name="prePaid" readonly>--}}
-                                    {{--</div>--}}
-                                    {{--</div>--}}
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-md-line-input ">
-                                            <label for="invoiceDate"><b>Ngày phiếu thanh toán</b></label>
-                                            <input type="text" class="date form-control ignore"
-                                                   id="invoiceDate"
-                                                   name="invoiceDate">
-                                        </div>
-                                    </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
                                             <label for="payDate"><b>Ngày trả</b></label>
@@ -551,9 +536,7 @@
                                                    name="payDate">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
                                             <label for="note"><b>Ghi chú</b></label>
                                             <textarea class="form-control" id="note" name="note" rows="2"></textarea>

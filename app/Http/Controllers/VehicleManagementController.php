@@ -132,6 +132,7 @@ class VehicleManagementController extends Controller
 
     public function postModifyVehicleInside(Request $request)
     {
+
         $areaCode = null;
         $vehicleNumber = null;
         $size = null;
@@ -165,20 +166,28 @@ class VehicleManagementController extends Controller
 
             if (array_key_exists('idDriver', $request->input('_vehicle'))) {
                 $idDriver = $request->input('_vehicle')['idDriver'];
+
+                dd('IdDriver:' . $idDriver );
             } else {
                 $idDriver = 0;
+                dd('IdDriver:' . $idDriver );
             }
+
             if (array_key_exists('vehicle_id', $request->input('_vehicle'))) {
                 $vehicle_id = $request->input('_vehicle')['vehicle_id'];
+                dd('vehicle_id:' . $vehicle_id );
             } else {
                 $vehicle_id = 0;
+                dd('vehicle_id:' . $vehicle_id );
             }
         }
+
         $driverVehicle = \DB::table('driverVehicles')
             ->where('vehicle_id', $vehicle_id)
             ->where('active', 1)
             ->select('*')
             ->first();
+
         switch ($action) {
             case 'addVehicle':
                 $vehicleNew = new Vehicle();
