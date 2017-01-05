@@ -215,12 +215,12 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title">Bạn có muốn xóa nhà xe này?</h5>
+                    <h5 class="modal-title"></h5>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-offset-8 col-md-4 col-xs-offset-8 col-xs-4">
-                            <button type="button" class="btn btn-primary marginRight"
+                            <button type="button" class="btn btn-primary marginRight hidden-OK"
                                     onclick="garageInsideView.save()">
                                 Đồng ý
                             </button>
@@ -237,6 +237,29 @@
     </div>
 </div>
 <!-- end Modal confirm delete garage -->
+
+
+<!-- Kiem tra nhà xe còn xe khong cho xóa -->
+<div class="row">
+    <div id="modal-deniedDelete" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title"></h5>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Kiem tra nhà xe còn xe khong cho xóa end-->
+
+
+
+
 
 
 <!-- Modal confirm delete Vehicle -->
@@ -511,7 +534,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="garageInsideView.cancelVehiclesType()">Nhập lại
+                                                onclick="garageInsideView.clearInputFormVehicleType()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -537,6 +560,7 @@
                 dataAllVehicle: null,
                 dataVehicle: null,
                 dataDriver: null,
+                dataAllDriver: null,
                 current: null,
                 currentVehicle: null,
                 currentVehicleType: null,
@@ -548,9 +572,10 @@
                 tagsGarageVehicle: [],
                 text2: null,
                 tableAutoCompleteSearch: function () {
+
                     garageInsideView.text2 = $("#driver").tautocomplete({
                         width: "400px",
-                        columns: ['Tài xế', 'CMND', 'Loại bằng'],
+                        columns: ['Tài xế', 'CMND', 'Loại bằng lái'],
                         data: function () {
                             try {
                                 var data = garageInsideView.dataDriver;
@@ -559,7 +584,6 @@
                                 alert(e)
                             }
                             var filterData = [];
-
                             var searchData = eval("/" + garageInsideView.text2.searchdata() + "/gi");
                             $.each(data, function (i, v) {
                                 if (v.fullName.search(new RegExp(searchData)) != -1) {
@@ -734,8 +758,10 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
+                            garageInsideView.dataAllVehicle = data['allVehicles'];
                             garageInsideView.dataGarage = data['dataGarages'];
                             garageInsideView.fillDataToDatatable(data['dataGarages']);
+
                         } else {
                             garageInsideView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -762,9 +788,24 @@
                     });
                 },
                 deleteGarage: function (id) {
-                    garageInsideView.action = 'delete';
-                    garageInsideView.idDelete = id;
-                    garageInsideView.displayModal("show", "#modal-confirmDelete");
+                    var driverOfGarage = _.filter(garageInsideView.dataAllVehicle, function (o) {
+                        return o.garage_id == id;
+                    });
+                    if(driverOfGarage == 0){
+                        console.log('0');
+                        console.log(driverOfGarage);
+                        garageInsideView.action = 'delete';
+                        garageInsideView.idDelete = id;
+                        $("#modal-confirmDelete").find(".modal-title").html("Bạn muốn xóa nhà xe này ?");
+                        garageInsideView.displayModal("show", "#modal-confirmDelete");
+                    }else {
+                        console.log('1');
+                        console.log(driverOfGarage);
+                        $("#modal-deniedDelete").find(".modal-title").html("Nhà xe có xe không được xóa !");
+                        garageInsideView.displayModal("show", "#modal-deniedDelete");
+                        return;
+                    }
+
                 },
                 save: function () {
                     var sendToServer = null;
@@ -925,6 +966,7 @@
                     var name = _.find(garageInsideView.dataGarage, function (o) {
                         return o.id == id;
                     });
+                    console.log(name);
                     $('#transferGarage').attr('data-idGarage', id);
                     $("#listVehicle").find(".titleListVehicle").html("Danh sách xe trong nhà xe " + name.name);
                     garageInsideView.action = 'addVehicle';
@@ -1047,9 +1089,8 @@
                         if (jqXHR.status == 200) {
                             garageInsideView.dataVehicleType = data['vehicleTypes'];
                             garageInsideView.dataVehicle = data['dataVehicles'];
-                            garageInsideView.dataAllVehicle = data['allVehicles'];
-                            garageInsideView.dataAllGarages = data['allGarage'];
                             garageInsideView.dataDriver = data['dataDriver'];
+                            garageInsideView.dataAllDriver = data['allDriver'];
                             garageInsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageInsideView.renderAutoCompleteSearch();
 
@@ -1277,12 +1318,24 @@
                     } else {
                         garageInsideView.vehicleValidate();
                         garageInsideView.fillFormDataToCurrentObjectVehicle();
+                        console.log(garageInsideView.dataAllVehicle);
                         var areaCode = $("input[id=areaCode]").val();
                         var vehicleNumber = $("input[id=vehicleNumber]").val();
                         var fullNumber = areaCode + vehicleNumber;
                         var vehicle = _.filter(garageInsideView.dataAllVehicle, function (o) {
                             return o.areaCode + o.vehicleNumber == fullNumber;
                         });
+                        var inDriver = $("input[id=my-id]").val();
+                        if (inDriver != "") {
+                            var driver = _.find(garageInsideView.dataAllDriver, function (o) {
+                                return o.fullName == inDriver;
+                            });
+                            if (typeof driver == 'undefined') {
+                                showNotification("warning", "Tài xế không tồn tại!");
+                                return;
+                            }
+                        }
+
                         if ($("#frmVehicle").valid()) {
                             if ($("#vehicleType_id").attr("data-id") == '') {
                                 showNotification("warning", "Loại xe không tồn tại!");

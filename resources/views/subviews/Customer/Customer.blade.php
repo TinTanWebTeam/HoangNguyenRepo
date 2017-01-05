@@ -934,7 +934,6 @@
                     customerView.clearValidation("#frmStaffCustomer");
                 },
                 editCustomer: function (id) {
-                    debugger;
                     customerView.dataStaffTemp = _.filter(customerView.dataStaff, function (o) {
                         return o.customer_id == id;
                     });

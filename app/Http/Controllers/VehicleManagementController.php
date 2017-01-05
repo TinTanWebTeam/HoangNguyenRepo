@@ -28,9 +28,14 @@ class VehicleManagementController extends Controller
             ->where('garages.active', 1)
             ->select('garages.*')
             ->get();
+        $allVehicles = \DB::table('vehicles')
+            ->where('active',1)
+            ->get();
         $response = [
             'msg' => 'Get data garages',
             'dataGarages' => $garages,
+            'allVehicles' => $allVehicles,
+
         ];
         return response()->json($response, 200);
     }
@@ -693,16 +698,15 @@ class VehicleManagementController extends Controller
 
     public function postDataVehicle(Request $request)
     {
-        $allVehicles = \DB::table('vehicles')
-            ->where('active',1)
-            ->get();
+//        $allVehicles = \DB::table('vehicles')
+//            ->where('active',1)
+//            ->get();
         $vehicles = \DB::table('vehicles')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
             ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
             ->leftjoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
             ->leftjoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
             ->where('vehicles.active', 1)
-            ->where('driverVehicles.active', 1)
             ->where('vehicles.garage_id', $request->input('_idGarage'))
             ->select('vehicles.*', 'vehicleTypes.name'
                 , 'vehicleTypes.id as vehicleType_id'
@@ -712,6 +716,7 @@ class VehicleManagementController extends Controller
                 , 'garages.name as garageName'
             )
             ->get();
+
         $vehicleTypes = VehicleType::all();
         $allGarage = Garage::all();
 
@@ -721,14 +726,18 @@ class VehicleManagementController extends Controller
             ->where('active', 1)
             ->select('id', 'fullName', 'identityCardNumber', 'driverLicenseType')
             ->get();
-
+        $allDriver = \DB::table('drivers')
+            ->where('active', 1)
+            ->select('id', 'fullName', 'identityCardNumber', 'driverLicenseType')
+            ->get();
         $response = [
             'msg' => 'Get data vehicleType success',
             'vehicleTypes' => $vehicleTypes,
             'dataVehicles' => $vehicles,
             'allGarage' => $allGarage,
             'dataDriver' => $driver,
-            'allVehicles' => $allVehicles
+            'allDriver' => $allDriver,
+//            'allVehicles' => $allVehicles
         ];
         return response()->json($response, 200);
     }

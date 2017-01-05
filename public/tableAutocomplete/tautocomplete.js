@@ -281,7 +281,7 @@
 
         // textbox blur event
         el.ddTextbox.focusout(function () {
-            if($('#my-id').val() ==''){
+            if($('#my-id').val() == ''){
                 $("#my-id").attr('data-id', '');
             }
             hideDropDown();

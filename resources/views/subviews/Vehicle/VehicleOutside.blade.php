@@ -511,7 +511,7 @@
                                             Hoàn tất
                                         </button>
                                         <button type="button" class="btn default"
-                                                onclick="garageoutsideView.cancelVehiclesType()">Nhập lại
+                                                onclick="garageoutsideView.clearInputFormVehicleType()">Nhập lại
                                         </button>
                                     </div>
                                 </div>
@@ -537,6 +537,7 @@
                 dataAllVehicle:null,
                 dataVehicle: null,
                 dataDriver: null,
+                dataAllDriver: null,
                 current: null,
                 currentVehicle: null,
                 currentVehicleType: null,
@@ -1050,6 +1051,7 @@
                             garageoutsideView.dataAllVehicle = data['allVehicles'];
                             garageoutsideView.dataAllGarages = data['allGarage'];
                             garageoutsideView.dataDriver = data['dataDriver'];
+                            garageoutsideView.dataAllDriver = data['allDriver'];
                             garageoutsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageoutsideView.renderAutoCompleteSearch();
                         } else {
@@ -1282,6 +1284,17 @@
                         var vehicle = _.filter(garageoutsideView.dataAllVehicle, function (o) {
                             return o.areaCode + o.vehicleNumber == fullNumber;
                         });
+                        var inDriver =  $("input[id=my-id]").val();
+                        if(inDriver != ""){
+                            var driver = _.find(garageoutsideView.dataAllDriver, function (o) {
+                                return o.fullName == inDriver;
+                            });
+                            if(typeof driver == 'undefined'){
+                                showNotification("warning", "Tài xế không tồn tại!");
+                                return;
+                            }
+                        }
+
                         if ($("#frmVehicle").valid()) {
                             if ($("#vehicleType_id").attr("data-id") == '') {
                                 showNotification("warning", "Loại xe không tồn tại!");
