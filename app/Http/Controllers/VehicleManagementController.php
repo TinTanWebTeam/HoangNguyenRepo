@@ -345,9 +345,13 @@ class VehicleManagementController extends Controller
             ->select('garages.*')
             ->orderBy('id', 'desc')
             ->get();
+        $allVehicles = \DB::table('vehicles')
+            ->where('active',1)
+            ->get();
         $response = [
             'msg' => 'Get data garages',
             'dataGarages' => $garages,
+            'allVehicles' => $allVehicles,
         ];
         return response()->json($response, 200);
 
@@ -699,9 +703,6 @@ class VehicleManagementController extends Controller
 
     public function postDataVehicle(Request $request)
     {
-//        $allVehicles = \DB::table('vehicles')
-//            ->where('active',1)
-//            ->get();
         $vehicles = \DB::table('vehicles')
             ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
             ->join('vehicleTypes', 'vehicleTypes.id', '=', 'vehicles.vehicleType_id')
@@ -738,7 +739,6 @@ class VehicleManagementController extends Controller
             'allGarage' => $allGarage,
             'dataDriver' => $driver,
             'allDriver' => $allDriver,
-//            'allVehicles' => $allVehicles
         ];
         return response()->json($response, 200);
     }

@@ -480,17 +480,17 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="invoiceCode"><b>Mã phiếu thanh toán</b></label>
+                                            <label for="DebtVerbCode"><b>Mã phiếu thanh toán</b></label>
                                             <input type="text" class="form-control"
-                                                   id="invoiceCode"
-                                                   name="invoiceCode">
+                                                   id="DebtVerbCode"
+                                                   name="DebtVerbCode">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="totalTransport"><b>Tổng tiền</b></label>
+                                            <label for="totalDebtVerb"><b>Tổng tiền</b></label>
                                             <input type="text" class="form-control currency" readonly
-                                                   id="totalTransport" name="totalTransport">
+                                                   id="totalDebtVerb" name="totalDebtVerb">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -1196,7 +1196,7 @@
                             }
                         ],
                         order: [[1, "asc"]],
-                        dom: 'TBfrtip',
+                        dom: 'Bfrtip',
                         buttons: [
                             {
                                 extend: 'copyHtml5',
@@ -1237,7 +1237,7 @@
                                 extend: 'colvis',
                                 text: 'Ẩn cột'
                             }
-                        ],
+                        ]
 
                     });
                     $("#table-debtTransport").css("width", "auto");
@@ -1356,7 +1356,7 @@
                         if (dataAfterValidate['status'] === 1) { //First
                             $("input[id=totalTransport]").val(totalPay);
                             $("input[id=prePaid]").val(prePaid);
-                            debt = totalPay - prePaid;
+                            var debt = totalPay - prePaid;
                             $("input[id=debt]").val(debt);
                             $("input[id=debt-real]").val(debt);
                         }
@@ -1438,6 +1438,7 @@
                     debtGarageView.save();
                 },
                 autoEditTransportConfirm: function (transportId) {
+                    debtGarageView.deselectAll();
                     debtGarageView.current = null;
                     debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
                         return o.id == transportId;
