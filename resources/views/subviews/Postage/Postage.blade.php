@@ -429,10 +429,10 @@
                 table: null,
                 tablePostageDetail: null,
 
-                dataPostage: null,
-                dataPostageDetail: null,
-                dataCustomer: null,
-                dataFuel: null,
+                dataPostage: [],
+                dataPostageDetail: [],
+                dataCustomer: [],
+                dataFuel: [],
                 dataFuelLastest: null,
                 dataUnit: null,
                 dataCondition: null,
@@ -445,6 +445,7 @@
                 idDelete: null,
                 idDeleteDetail: null,
                 tagsCustomerName: [],
+                nowDay: null,
 
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -518,12 +519,6 @@
                         'autoclose': true
                     }).on("input change", function (e) {
                         postageView.getUsingFuel(e.target.value);
-                        if(postageView.dataFuel == null || postageView.dataFuel.length <= 0)
-                            return;
-                        var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
-                        $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
-                        $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
-                        $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
                     });
                     $('#applyDate').datepicker("setDate", new Date());
 
@@ -684,13 +679,14 @@
                             postageView.dataPostage = data['postages'];
                             postageView.dataPostageDetail = data['postageDetails'];
                             postageView.dataUnit = data['units'];
+                            postageView.nowDay = data['nowDay'];
                             postageView.createDataCondition();
 
                             postageView.loadSelectBox(postageView.dataUnit, 'unit_id', 'name');
                             postageView.loadSelectBox(postageView.dataCondition, 'condition', 'name');
                             postageView.fillDataToDatatable(postageView.dataPostage);
 
-                            postageView.getUsingFuel(moment().format('DD-MM-YYYY'));
+                            postageView.getUsingFuel(postageView.nowDay);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -987,10 +983,7 @@
                     }
                     postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
 
-                    var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
-                    $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
-                    $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
-                    $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
+                    postageView.getUsingFuel($("#applyDate").val());
 
                     $("#divControl").find(".titleControl").html("Cập nhật cước phí");
 
@@ -1000,8 +993,6 @@
                     formatCurrency(".currency");
                 },
                 addPostage: function () {
-                    postageView.renderDateTimePicker();
-
                     if (postageView.tablePostageDetail != null)
                         postageView.tablePostageDetail.clear().draw();
 
@@ -1012,10 +1003,7 @@
                     postageView.action = 'add';
                     postageView.showControl();
 
-                    var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
-                    $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
-                    $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
-                    $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
+                    postageView.getUsingFuel(postageView.nowDay);
 
                     $("#divControl").find(".titleControl").html("Thêm mới cước phí");
 
@@ -1047,17 +1035,32 @@
                     postageView.displayModal('show', '#modal-notification');
                 },
                 getUsingFuel: function (applyDate) {
-                    if(postageView.dataFuel == null || postageView.dataFuel.length <= 0)
-                        return;
-                    var fuel = _.maxBy(postageView.dataFuel, function (o) {
-                        if(moment(o.applyDate, "DD-MM-YYYY").hour(0).minute(0).second(0).isAfter(moment(applyDate, 'DD-MM-YYYY').hour(0).minute(0).second(0)))
-                            return false;
-                        return o.applyDate;
-                    });
-                    if (typeof fuel === 'undefined') {
-                        postageView.dataFuelLastest = null;
+                    postageView.dataFuelLastest = {
+                        applyDate: "2000-01-01",
+                        price: 0,
+                        id: 0
+                    };
+                    if(postageView.dataFuel != null && postageView.dataFuel.length > 0) {
+                        var filter = _.filter(postageView.dataFuel, function(o) {
+                            return moment(o['applyDate'], "YYYY-MM-DD").hour(0).minute(0).second(0).isSameOrBefore(moment(applyDate, 'DD-MM-YYYY').hour(0).minute(0).second(0))
+                        });
+                        if(filter.length > 0) {
+                            var fuel = _.maxBy(filter, function (o) {
+                                return o['applyDate'];
+                            });
+                            
+                            if (typeof fuel !== 'undefined') {
+                                postageView.dataFuelLastest = fuel;
+                            }
+                        }
                     }
-                    postageView.dataFuelLastest = fuel;
+                    
+                    var oils_applyDate = moment(postageView.dataFuelLastest['applyDate'], "YYYY-MM-DD");
+                    $("input[id='oils_applyDate']").datepicker('update', oils_applyDate.format("DD-MM-YYYY"));
+                    $("input[id=oils_price]").val(postageView.dataFuelLastest['price']);
+                    $("input[id=fuel_id]").val(postageView.dataFuelLastest['id']);
+
+                    formatCurrency(".currency");
                 },
 
                 formValidateJquery: function () {
