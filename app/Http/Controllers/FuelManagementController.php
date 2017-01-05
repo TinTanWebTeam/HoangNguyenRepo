@@ -74,9 +74,11 @@ class FuelManagementController extends Controller
                     ->get();
                 return response()->json($result->first(), 201);
             } else {
-                $currentApplyDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $currentOilPrice->applyDate);
-                if ($oilPrice->applyDate->diffInDays($currentApplyDate, false) >= 0) {
-                    return response()->json(['Error' => 'Vui lòng chọn ngày áp dụng giá dầu phù hợp!'], 500);
+                $currentApplyDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', substr($currentOilPrice->applyDate, 0, 10) . '00:00:00');
+                $input = \Carbon\Carbon::createFromFormat('d-m-Y H:i:s', $request->applyDate . '00:00:00');
+                
+                if ($input->diffInDays($currentApplyDate, false) >= 0) {
+                    return response()->json(['Error' => 'Vui lòng chọn ngày áp dụng lớn hơn ngày áp dụng của giá dầu hiện tại!'], 500);
                 }
                 DB::beginTransaction();
                 if ($oilPrice->save()) {

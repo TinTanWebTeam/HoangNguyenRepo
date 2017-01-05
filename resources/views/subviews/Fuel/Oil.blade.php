@@ -186,74 +186,81 @@
                 },
                 save: function () {
                     oilPriceView.validateForm();
-                    var price = $('input[id=price]').val();
-                    if (price < 1) {
-                        showNotification("error", "Giá phải lớn hơn 1000");
-                        $('input[id=price]').focus();
-                    } else {
-                        if ($("#formFuelPrice").valid()) {
-                            if (oilPriceView.oilObject) {
-                                /* EDIT */
-                                $.ajax({
-                                    url: url + "fuel-price/oil/update",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: {
-                                        _token: _token,
-                                        id: oilPriceView.oilObject.id,
-                                        price: asNumberFromCurrency("#price"),
-                                        note: $("#note").val().trim(),
-                                        applyDate: $("#applyDate").val(),
-                                        applyTime: $("#applyTime").val()
-                                    }
-                                }).done(function (data, textStatus, jqXHR) {
-                                    if (jqXHR.status == 201) {
-                                        var indexOilPriceOld = _.findIndex(oilPriceView.dataForTableOilPrice, function (o) {
-                                                return o.id == oilPriceView.oilObject.id;
-                                            });
-                                        oilPriceView.dataForTableOilPrice.splice(indexOilPriceOld, 1, data);     
-                                        oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
-                                        oilPriceView.hideFormControl();
-                                    } else {
-                                        showNotification('warning', data['Error']);
-                                    }
-                                }).fail(function (jqXHR, textStatus, errorThrown) {
-                                    showNotification("error","Vui lòng nhập giá dầu và ngày áp dụng phù hợp!")
-                                }).always(function () {
-                                    
-                                });
-                            } else {
-                                /* ADD */
-                                $.ajax({
-                                    async: false,
-                                    url: url + "fuel-price/oil/add",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: {
-                                        _token: _token,
-                                        price: asNumberFromCurrency("#price"),
-                                        note: $("#note").val().trim(),
-                                        applyDate: $("#applyDate").val(),
-                                        applyTime: $("#applyTime").val()
-                                    }
-                                }).done(function (data, textStatus, jqXHR) {
-                                    if (jqXHR.status == 201) {
-                                        oilPriceView.dataForTableOilPrice.push(data);
-                                        oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
-                                        oilPriceView.hideFormControl();
-                                    } else {
-                                        showNotification('error', data['Error']);
-                                    }
-                                }).fail(function (jqXHR, textStatus, errorThrown) {
-                                    showNotification("error","Vui lòng nhập giá dầu và ngày áp dụng phù hợp!")     
-                                }).always(function () {
-                                    
-                                });
-                            }
+
+                    if ($("#formFuelPrice").valid()) {
+                        var price = $('input[id=price]').val();
+                        if (price < 1) {
+                            showNotification("error", "Giá phải lớn hơn 1000");
+                            $('input[id=price]').focus();
+                            return;
                         }
-                        else {
-                            $("form#formFuelPrice").find("label[class=error]").css("color", "red");
+
+                        if(moment($("#applyDate").val(), "DD-MM-YYYY").isSameOrBefore(oilPriceView.getMaxDate())){
+                            showNotification("error", "Ngày áp dụng phải lớn hơn ngày áp dụng trước đó.");
+                            return;
                         }
+
+                        if (oilPriceView.oilObject) {
+                            /* EDIT */
+                            $.ajax({
+                                url: url + "fuel-price/oil/update",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    _token: _token,
+                                    id: oilPriceView.oilObject.id,
+                                    price: asNumberFromCurrency("#price"),
+                                    note: $("#note").val().trim(),
+                                    applyDate: $("#applyDate").val(),
+                                    applyTime: $("#applyTime").val()
+                                }
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    var indexOilPriceOld = _.findIndex(oilPriceView.dataForTableOilPrice, function (o) {
+                                            return o.id == oilPriceView.oilObject.id;
+                                        });
+                                    oilPriceView.dataForTableOilPrice.splice(indexOilPriceOld, 1, data);     
+                                    oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
+                                    oilPriceView.hideFormControl();
+                                } else {
+                                    showNotification('warning', data['Error']);
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                showNotification("error","Vui lòng nhập giá dầu và ngày áp dụng phù hợp!")
+                            }).always(function () {
+                                
+                            });
+                        } else {
+                            /* ADD */
+                            $.ajax({
+                                async: false,
+                                url: url + "fuel-price/oil/add",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    _token: _token,
+                                    price: asNumberFromCurrency("#price"),
+                                    note: $("#note").val().trim(),
+                                    applyDate: $("#applyDate").val(),
+                                    applyTime: $("#applyTime").val()
+                                }
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (jqXHR.status == 201) {
+                                    oilPriceView.dataForTableOilPrice.push(data);
+                                    oilPriceView.tableOilPrice.clear().rows.add(oilPriceView.dataForTableOilPrice).draw();
+                                    oilPriceView.hideFormControl();
+                                } else {
+                                    showNotification('error', data['Error']);
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                showNotification("error","Vui lòng nhập giá dầu và ngày áp dụng phù hợp!")     
+                            }).always(function () {
+                                
+                            });
+                        }
+                    }
+                    else {
+                        $("form#formFuelPrice").find("label[class=error]").css("color", "red");
                     }
 
                 },
@@ -331,11 +338,13 @@
                                     // visible: false,
                                     render: function (data, type, full, meta) {
                                         var tr = '';
-                                        tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
-                                        tr += '<div class="btn btn-success  btn-circle" onclick="oilPriceView.showFormForEdit(' + full.id + ')">';
-                                        tr += '<i class="glyphicon glyphicon-pencil"></i>';
-                                        tr += '</div>';
-                                        tr += '</div>';
+                                        if(moment(full['applyDate'], 'YYYY-MM-DD').isSame(oilPriceView.getMaxDate())) {
+                                            tr += '<div class="btn-del-edit" title="Chỉnh sửa">';
+                                            tr += '<div class="btn btn-success  btn-circle" onclick="oilPriceView.showFormForEdit(' + full.id + ')">';
+                                            tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                            tr += '</div>';
+                                            tr += '</div>';
+                                        }
                                         return tr;
                                     }
                                 }
@@ -393,6 +402,12 @@
                         theme: "dark"
                     });
                     oilPriceView.renderDateTimePicker();
+                },
+                getMaxDate: function(){
+                    var objMaxDate = _.maxBy(oilPriceView.dataForTableOilPrice, function(o){
+                        return o['applyDate'];
+                    });
+                    return moment(objMaxDate['applyDate'], "YYYY-MM-DD");
                 }
             };
             oilPriceView.loadDateWhenViewRendComplete();
