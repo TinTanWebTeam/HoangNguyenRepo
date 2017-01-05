@@ -9,6 +9,16 @@
         height: 100%;
     }
 
+    #divDebtVerb {
+        z-index: 3;
+        position: fixed;
+        top: 30%;
+        display: none;
+        right: 0;
+        width: 80%;
+        height: 100%;
+    }
+
     #divInvoice .panel-body {
         height: 430px;
     }
@@ -226,7 +236,8 @@
                                         <th>Mã phiếu</th>
                                         <th>Số xe</th>
                                         <th>Nhà xe</th>
-                                        <th>Nợ</th>
+                                        <th>Đã thanh toán</th>
+                                        <th>Còn nợ</th>
                                         <th>Người nhận</th>
                                         <th>Người tạo</th>
                                         <th>Ngày tạo</th>
@@ -244,7 +255,7 @@
 
                     {{--Tra tien mat--}}
                     <hr>
-                    <p class="lead text-primary text-left"><strong>Trả trực tiếp</strong></p>
+                    <p class="lead text-primary text-left"><strong>Thanh toán tiền mặt</strong></p>
                     <div class="row">
                         <div class="col-md-6" id="dateSearchInvoice">
                             <input type="text" class="date start"/> đến
@@ -290,12 +301,11 @@
                                         <th>Mã phiếu thanh toán</th>
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
-                                        <th>Giao xe</th>
-                                        <th>Nợ</th>
+                                        <th>Đã thanh toán</th>
                                         <th>Người nhận</th>
                                         <th>Người tạo</th>
                                         <th>Người sửa</th>
-                                        <th>Ngày nhận</th>
+                                        <th>Ngày thanh toán</th>
                                         <th>Thanh toán</th>
                                     </tr>
                                     </thead>
@@ -318,9 +328,10 @@
     <div id="divInvoice" class="col-md-offset-2 col-md-10">
         <div class="panel panel-primary box-shadow">
             <div class="panel-heading">
-                <span class="titleControl">Tạo mới hóa đơn</span>
+                <span class="titleControl"></span>
                 <div class="menu-toggles pull-right" onclick="
                                 debtGarageView.clearInput();
+                                debtGarageView.deselectAll();
                                 debtGarageView.clearValidation('#frmInvoice');
                                 debtGarageView.hideControl()">
                     <i class="glyphicon glyphicon-remove"></i>
@@ -446,6 +457,151 @@
 </div>
 <!-- End divInvoice -->
 
+
+<!-- Begin divDebtVerb -->
+<div class="row">
+    <div id="divDebtVerb" class="col-md-offset-2 col-md-10">
+        <div class="panel panel-primary box-shadow">
+            <div class="panel-heading">
+                <span class="titleControl"></span>
+                <div class="menu-toggles pull-right" onclick="
+                                debtGarageView.clearInput();
+                                debtGarageView.deselectAll();
+                                debtGarageView.clearValidation('#frmInvoice');
+                                debtGarageView.hideControl()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6" id="frm-control-debtVerb">
+                        <form role="form" id="frmDebtVerb">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="invoiceCode"><b>Mã phiếu thanh toán</b></label>
+                                            <input type="text" class="form-control"
+                                                   id="invoiceCode"
+                                                   name="invoiceCode">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="totalTransport"><b>Tổng tiền</b></label>
+                                            <input type="text" class="form-control currency" readonly
+                                                   id="totalTransport" name="totalTransport">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="debt"><b>Còn nợ lại</b></label>
+                                            <input type="text" class="form-control currency"
+                                                   id="debt" name="debt" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="paidAmt" class="red"><b>Tiền trả</b></label>
+                                            <input type="text" class="form-control currency defaultZero"
+                                                   id="paidAmt" name="paidAmt"
+                                                   onkeyup="debtGarageView.computeDebt(this.value)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="sendToPerson"><b>Người nhận</b></label>
+                                            <input type="text" id="sendToPerson" name="sendToPerson"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="exportDate"><b>Ngày xuất</b></label>
+                                            <input type="text" class="date form-control ignore"
+                                                   id="exportDate"
+                                                   name="exportDate">
+                                        </div>
+                                    </div>
+                                    {{--<div class="col-md-4" hidden>--}}
+                                    {{--<div class="form-group form-md-line-input ">--}}
+                                    {{--<label for="prePaid"><b>Trả trước</b></label>--}}
+                                    {{--<input type="text" class="form-control currency"--}}
+                                    {{--id="prePaid"--}}
+                                    {{--name="prePaid" readonly>--}}
+                                    {{--</div>--}}
+                                    {{--</div>--}}
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="invoiceDate"><b>Ngày phiếu thanh toán</b></label>
+                                            <input type="text" class="date form-control ignore"
+                                                   id="invoiceDate"
+                                                   name="invoiceDate">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="payDate"><b>Ngày trả</b></label>
+                                            <input type="text" class="date form-control ignore"
+                                                   id="payDate"
+                                                   name="payDate">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group form-md-line-input ">
+                                            <label for="note"><b>Ghi chú</b></label>
+                                            <textarea class="form-control" id="note" name="note" rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-actions noborder">
+                                            <div class="form-group">
+                                                <button id="button" type="button" class="btn btn-primary marginRight"
+                                                        onclick="debtGarageView.saveInvoiceGarage()">
+                                                    Hoàn tất
+                                                </button>
+                                                <button type="button" class="btn default"
+                                                        onclick="debtGarageView.retype()">Nhập lại
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End divInvoice -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Modal notification -->
 <div class="row">
     <div id="modal-notification" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
@@ -455,9 +611,9 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title"></h4>
+                    <h5 class="modal-title" style="padding-bottom: 0"></h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="padding-top: 0; font-size: 15px">
 
                 </div>
             </div>
@@ -475,9 +631,9 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">In review</h4>
+                    <h5 class="modal-title" style="padding-bottom: 0"></h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="padding-top: 0; font-size: 15px">
 
                 </div>
             </div>
@@ -497,7 +653,7 @@
                 tableDebtTransport: null,
 
 
-                tableInvoiceGarageDetail: null,
+              //  tableInvoiceGarageDetail: null,
 
 
                 // tablePrintHistory: null,
@@ -531,16 +687,22 @@
                         $('#divInvoice').css("width", "40%");
                         $("#tbl-history").hide();
                         $("#frm-control").removeClass("col-md-6").addClass("col-md-12");
-                    } else {
-                        $('#divInvoice').css("width", "80%");
-                        $("#tbl-history").show();
-                        $("#frm-control").removeClass("col-md-12").addClass("col-md-6");
+                        $('#divInvoice').fadeIn(300);
+                    } else  {
+                        $('#divDebtVerb').css("width", "40%");
+                        $("#tbl-history").hide();
+                        $("#frm-control-debtVerb").removeClass("col-md-6").addClass("col-md-12");
+                        $('#divDebtVerb').fadeIn(300);
                     }
                     $('.menu-toggle').fadeOut();
-                    $('#divInvoice').fadeIn(300);
+
+
                 },
                 hideControl: function () {
                     $('#divInvoice').fadeOut(300, function () {
+                        $('.menu-toggle').fadeIn();
+                    });
+                    $('#divDebtVerb').fadeOut(300, function () {
                         $('.menu-toggle').fadeIn();
                     });
                 },
@@ -754,27 +916,7 @@
                             },
                             {
                                 data: 'debt',
-                                render: $.fn.dataTable.render.number(",", ".", 0),
-                                //"footerCallback": function (row, data, start, end, display) {
-                                "footerCallback": function (data, type, full, meta) {
-                                    var api = this.api(),
-                                        intVal = function (i) {
-                                            return typeof i === 'string' ?
-                                                i.replace(/[, Rs]|(\.\d{2})/g, "") * 1 :
-                                                typeof i === 'number' ?
-                                                    i : 0;
-                                        },
-                                        total2 = api
-                                            .column(8)
-                                            .data()
-                                            .reduce(function (a, b) {
-                                                return intVal(a) + intVal(b);
-                                            }, 0);
-
-                                    $(api.column(8).footer()).html(
-                                        ' ( $' + total2 + ' total)'
-                                    );
-                                }
+                                render: $.fn.dataTable.render.number(",", ".", 0)
 
                             },
                             {data: 'receiver'},
@@ -860,7 +1002,7 @@
                                 extend: 'colvis',
                                 text: 'Ẩn cột'
                             }
-                        ],
+                        ]
 
                     });
                     $("#table-data").css("width", "auto");
@@ -892,18 +1034,21 @@
                                 render: function (data, type, full, meta) {
                                     return (full.price_id == 2) ? full.cost : "0";
                                 }
+
                             },
                             {
                                 data: 'cost',
                                 render: function (data, type, full, meta) {
                                     return (full.price_id == 4) ? full.cost : "0";
                                 }
+
                             },
                             {
                                 data: 'cost',
                                 render: function (data, type, full, meta) {
                                     return (full.price_id == 1) ? full.cost : "0";
                                 }
+
                             },
                             {data: 'note'}
                         ]
@@ -925,7 +1070,10 @@
                             {data: 'invoiceCode'},
                             {data: 'fullNumber'},
                             {data: 'garages_name'},
-                            {data: 'debt'},
+                            {data: 'paidAmt',
+                                render: $.fn.dataTable.render.number(",", ".", 0)},
+                            {data: 'debt',
+                                render: $.fn.dataTable.render.number(",", ".", 0)},
                             {data: 'sendToPerson'},
                             {data: 'users_createdBy'},
                             {data: 'exportDate'},
@@ -943,7 +1091,7 @@
                                     }
                                     var tr = '';
                                     tr += '<div class="text-center">';
-                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtGarageView.autoEditTransportConfirm(" + full.id + ")'>";
+                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtGarageView.debtVerb(" + full.id + ")'>";
                                     tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -1013,36 +1161,12 @@
                                 data: 'cashDelivery',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
-                            {
-                                data: 'debt',
-                                render: $.fn.dataTable.render.number(",", ".", 0),
-                                //"footerCallback": function (row, data, start, end, display) {
-                                "footerCallback": function (data, type, full, meta) {
-                                    var api = this.api(),
-                                        intVal = function (i) {
-                                            return typeof i === 'string' ?
-                                                i.replace(/[, Rs]|(\.\d{2})/g, "") * 1 :
-                                                typeof i === 'number' ?
-                                                    i : 0;
-                                        },
-                                        total2 = api
-                                            .column(8)
-                                            .data()
-                                            .reduce(function (a, b) {
-                                                return intVal(a) + intVal(b);
-                                            }, 0);
 
-                                    $(api.column(8).footer()).html(
-                                        ' ( $' + total2 + ' total)'
-                                    );
-                                }
-
-                            },
                             {data: 'receiver'},
                             {data: 'users_createdBy'},
-                            {data: 'users_updatedBy'},
+                            {data: 'users_updatedBy',visible: false},
                             {
-                                data: 'receiveDate',
+                                data: 'updated_at',
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("DD/MM/YYYY");
                                 }
@@ -1060,7 +1184,6 @@
                                         color = 'btn-success';
                                         text = 'Đã trả đủ';
                                     }
-
                                     var tr = '';
                                     tr += '<div class="text-center">';
                                     tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtGarageView.autoEditTransportConfirm(" + full.id + ")'>";
@@ -1068,31 +1191,12 @@
                                     tr += '</div>';
                                     tr += '</div>';
                                     return tr;
-                                }
+                                },
+                                visible: false
                             }
                         ],
-                        responsive: true,
-                        columnDefs: [
-                            {responsivePriority: 1, targets: 1},
-                            {responsivePriority: 1, targets: 2},
-                            {responsivePriority: 1, targets: 3},
-                            {responsivePriority: 1, targets: 4},
-                            {responsivePriority: 1, targets: 5},
-                            {responsivePriority: 1, targets: 6},
-                            {responsivePriority: 1, targets: 7},
-                            {responsivePriority: 1, targets: 8},
-                            {responsivePriority: 1, targets: 9},
-                            {responsivePriority: 1, targets: 10},
-                            {responsivePriority: 10, targets: 11},
-                            {responsivePriority: 1, targets: 12},
-                            {responsivePriority: 1, targets: 13},
-                        ],
                         order: [[1, "asc"]],
-                        dom: 'T<"clear">Bfrtip',
-                        tableTools: {
-                            "sRowSelect": "multi",
-                            "aButtons": ["select_all", "select_none"]
-                        },
+                        dom: 'TBfrtip',
                         buttons: [
                             {
                                 extend: 'copyHtml5',
@@ -1138,7 +1242,13 @@
                     });
                     $("#table-debtTransport").css("width", "auto");
                 },
+                debtVerb:function (id) {
+                    var flag = 1;
+                    $("#divDebtVerb").find(".titleControl").html("Cập nhật phiếu thanh toán");
 
+                    debtGarageView.showControl(flag);
+                    debtGarageView.action = "new";
+                },
 
                 computeDebt: function (paidAmt) {
                     paidAmt = convertStringToNumber(paidAmt);
@@ -1211,11 +1321,10 @@
                         });
                         return result;
                     } else {
-                        alert('a');
                         var result = {
                             'status': 0,
                             'totalPay': 0,
-                            'msg': 'Nhà xe hoặc đơn hàng không hợp lệ!'
+                            'msg': 'Vui lòng chọn đơn hàng !'
                         };
                         return result;
                     }

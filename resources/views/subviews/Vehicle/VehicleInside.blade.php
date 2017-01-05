@@ -1288,7 +1288,7 @@
                                 showNotification("warning", "Loại xe không tồn tại!");
                                 return;
                             }
-                            else if (vehicle != 0 && garageInsideView.action =="add") {
+                            else if (vehicle != 0 && garageInsideView.action == "addVehicle") {
                                 showNotification("warning", "Xe đã tồn tại!");
                                 return;
                             }
@@ -1313,6 +1313,7 @@
                                             case 'addVehicle':
                                                 data['addVehicle'].fullNumber = data['addVehicle']['areaCode'] + "-" + data['addVehicle']["vehicleNumber"];
                                                 garageInsideView.dataVehicle.push(data['addVehicle']);
+                                                garageInsideView.dataAllVehicle.push(data['addVehicle']);
                                                 garageInsideView.showNotification("success", "Thêm thành công!");
                                                 break;
                                             case 'updateVehicle':
