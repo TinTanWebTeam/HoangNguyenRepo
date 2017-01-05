@@ -685,8 +685,6 @@
                             postageView.loadSelectBox(postageView.dataUnit, 'unit_id', 'name');
                             postageView.loadSelectBox(postageView.dataCondition, 'condition', 'name');
                             postageView.fillDataToDatatable(postageView.dataPostage);
-
-                            postageView.getUsingFuel(postageView.nowDay);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }

@@ -1849,7 +1849,9 @@
                             $("#unitPrice").val(data['formula']['unitPrice']);
                             $("#unit").val(data['formula']['unit']);
                             $("#formulaCode").val(data['formula']['formulaCode']);
-                            $("#cashDelivery").val(data['formula']['cashDelivery']);
+                            $("#cashDelivery").prop('bak-data', data['formula']['cashDelivery']);
+                            // $("#cashDelivery").val(data['formula']['cashDelivery']);
+                            $("#cashDelivery").val(0);
                             $("#formula_id").val(data['formula']['id']);
                             $("label[for=quantumProduct] b").html('Số lượng (' + data['formula']['unit_name'].toLowerCase() + ')');
                             formatCurrency(".currency");
@@ -1857,7 +1859,7 @@
                             $("#unitPrice").val(0);
                             $("#unit").val('');
                             $("#formulaCode").val('');
-                            $("#cashDelivery").val('');
+                            $("#cashDelivery").val(0);
                             $("#formula_id").val('');
                             $("label[for=quantumProduct] b").html('Lượng hàng');
                             showNotification("warning", data['msg']);
@@ -1867,7 +1869,7 @@
                     });
                 },
                 focusOut_getCustomer: function () {
-                    $("#unitPrice").val('');
+                    $("#unitPrice").val(0);
                     $("#unit").val('');
                     $("label[for=quantumProduct] b").html('Lượng hàng');
 
@@ -1897,9 +1899,12 @@
                 focusOut_calculateCashRevenue: function () {
                     var quantumProduct = parseInt($("#quantumProduct").val());
                     var unitPrice = asNumberFromCurrency("#unitPrice");
+                    var cashDelivery = $("#cashDelivery").prop('bak-data');
 
                     var cashRevenue = quantumProduct * unitPrice;
+                    cashDelivery = quantumProduct * cashDelivery;
                     $("#cashRevenue").val(cashRevenue);
+                    $("#cashDelivery").val(cashDelivery);
                     formatCurrency(".currency");
                 },
                 findFormulaDetail: function () {
