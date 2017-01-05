@@ -1085,6 +1085,7 @@
                             garageOutsideView.dataVehicle = data['dataVehicles'];
                             garageOutsideView.dataDriver = data['dataDriver'];
                             garageOutsideView.dataAllDriver = data['allDriver'];
+                            garageOutsideView.dataAllGarages = data['allGarage'];
                             garageOutsideView.fillDataToDatatableVehicles(data['dataVehicles']);
                             garageOutsideView.renderAutoCompleteSearch();
 
