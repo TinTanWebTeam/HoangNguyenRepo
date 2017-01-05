@@ -929,6 +929,34 @@
                 fillFormDataToCurrentObjectDetail: function () {
                     var option = $("select[id=condition]").find('option:selected');
                     var rule = option.attr('my-rule');
+
+                    switch(rule) {
+                        case 'S':
+                        case 'PC':
+                            if($("#value").val() == '') {
+                                showNotification('warning', 'Trường giá trị không được để trống!');
+                                postageView.currentDetail = null;
+                                return;
+                            }
+                            break;
+                        case 'R':
+                        case 'O':
+                            if($("#from").val() == '' || $("#to").val() == '') {
+                                showNotification('warning', 'Trường từ hoặc đến không được để trống!');
+                                postageView.currentDetail = null;
+                                return;
+                            }
+                            break;
+                        case 'P':
+                            if($("#fromPlace").val() == '' || $("#toPlace").val() == '') {
+                                showNotification('warning', 'Trường từ hoặc đến không được để trống!');
+                                postageView.currentDetail = null;
+                                return;
+                            }
+                            break;
+                        default: break;
+                    }
+
                     postageView.currentDetail = {
                         formula_id: $("#formula_id").val(),
                         rule: rule,
