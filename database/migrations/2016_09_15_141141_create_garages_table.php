@@ -15,7 +15,8 @@ class CreateGaragesTable extends Migration
         Schema::create('garages', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('contactor')->nullable();
+            //$table->string('contactor')->nullable();
+            $table->string('contact')->nullable();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->text('note')->nullable();

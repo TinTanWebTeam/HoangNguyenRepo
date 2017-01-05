@@ -22,7 +22,7 @@ class GarageTableSeeder extends Seeder
         foreach($array_name  as $item){
             \App\Garage::create([
                 'name' => $item,
-                'contactor' => 'Binh',
+                'contact' => 'Binh',
                 'address' => '70 Bis Nguyễn Văn Lượng, P.10, Gò Vấp - TP HCM',
                 'phone' => '0987650650',
                 'note' => '',
@@ -42,7 +42,7 @@ class GarageTableSeeder extends Seeder
         foreach($array_name  as $item){
             \App\Garage::create([
                 'name' => $item,
-                'contactor' => 'Binh',
+                'contact' => 'Binh',
                 'address' => '70 Bis Nguyễn Văn Lượng, P.10, Gò Vấp - TP HCM',
                 'phone' => '0987650650',
                 'note' => '',

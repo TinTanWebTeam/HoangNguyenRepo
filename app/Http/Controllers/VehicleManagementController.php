@@ -44,7 +44,7 @@ class VehicleManagementController extends Controller
     {
         $garage_name = null;
         $address = null;
-        $contactor = null;
+        $contact = null;
         $phone = null;
         $note = null;
         $action = $request->input('_action');
@@ -57,9 +57,10 @@ class VehicleManagementController extends Controller
             }
             $garage_name = $request->input('_garage')['name'];
             $address = $request->input('_garage')['address'];
-            $contactor =  strtoupper($request->input('_garage')['contactor']);
+            $contact =  $request->input('_garage')['contact'];
             $phone = $request->input('_garage')['phone'];
             $note = $request->input('_garage')['note'];
+
         }
 
 
@@ -68,7 +69,7 @@ class VehicleManagementController extends Controller
                 $garageNew = new Garage();
                 $garageNew->name = $garage_name;
                 $garageNew->address = $address;
-                $garageNew->contactor = $contactor;
+                $garageNew->contact = $contact;
                 $garageNew->phone = $phone;
                 $garageNew->note = $note;
                 $garageNew->garageType_id = 1;
@@ -92,7 +93,7 @@ class VehicleManagementController extends Controller
                 $garageUpdate = Garage::findOrFail($request->input('_garage')['id']);
                 $garageUpdate->name = $garage_name;
                 $garageUpdate->address = $address;
-                $garageUpdate->contactor = $contactor;
+                $garageUpdate->contact = $contact;
                 $garageUpdate->note = $note;
                 $garageUpdate->phone = $phone;
                 if ($garageUpdate->update()) {
@@ -356,7 +357,7 @@ class VehicleManagementController extends Controller
     {
         $garage_name = null;
         $address = null;
-        $contactor = null;
+        $contact = null;
         $phone = null;
         $note = null;
         $action = $request->input('_action');
@@ -368,7 +369,7 @@ class VehicleManagementController extends Controller
             }
             $garage_name = $request->input('_garage')['name'];
             $address = $request->input('_garage')['address'];
-            $contactor =  strtoupper($request->input('_garage')['contactor']);
+            $contact =  $request->input('_garage')['contact'];
             $phone = $request->input('_garage')['phone'];
             $note = $request->input('_garage')['note'];
 
@@ -380,7 +381,7 @@ class VehicleManagementController extends Controller
                 $garageNew = new Garage();
                 $garageNew->name = $garage_name;
                 $garageNew->address = $address;
-                $garageNew->contactor = $contactor;
+                $garageNew->contact = $contact;
                 $garageNew->phone = $phone;
                 $garageNew->note = $note;
                 $garageNew->garageType_id = 2;
@@ -404,7 +405,7 @@ class VehicleManagementController extends Controller
                 $garageUpdate = Garage::findOrFail($request->input('_garage')['id']);
                 $garageUpdate->name = $garage_name;
                 $garageUpdate->address = $address;
-                $garageUpdate->contactor = $contactor;
+                $garageUpdate->contact = $contact;
                 $garageUpdate->note = $note;
                 $garageUpdate->phone = $phone;
                 if ($garageUpdate->update()) {

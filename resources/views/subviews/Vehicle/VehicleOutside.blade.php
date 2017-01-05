@@ -155,11 +155,11 @@
                         <div class="row">
                             <div class="col-sm-6 col-xs-6">
                                 <div class="form-group form-md-line-input">
-                                    <label for="contactor"><b>Người liên hệ</b></label>
+                                    <label for="contact"><b>Người liên hệ</b></label>
                                     <div class="row">
                                         <div class="col-sm-12 col-xs-12">
-                                            <input class="form-control uppercase" id="contactor"
-                                                   name="contactor">
+                                            <input class="form-control uppercase" id="contact"
+                                                   name="contact">
                                             </input>
                                         </div>
                                     </div>
@@ -673,7 +673,7 @@
                 clearInput: function () {
                     $("input[id='name']").val('');
                     $("input[id='address']").val('');
-                    $("input[id='contactor']").val('');
+                    $("input[id='contact']").val('');
                     $("input[id='phone']").val('');
                     $("textarea[id='note']").val('');
 
@@ -866,7 +866,7 @@
                         rules: {
                             name: "required",
                             address: "required",
-                            contactor: "required",
+                            contact: "required",
                             phone: {
                                 required: true,
                                 number: true
@@ -875,7 +875,7 @@
                         messages: {
                             name: "Vui lòng nhập tên nhà xe",
                             address: "Vui lòng nhập địa chỉ nhà xe",
-                            contactor: "Vui lòng nhập tên người liên hệ",
+                            contact: "Vui lòng nhập tên người liên hệ",
                             phone: {
                                 required: "Vui lòng nhập số điện thoại",
                                 number: "Điện thoại phải là số"
@@ -893,7 +893,7 @@
                         columns: [
                             {data: 'name'},
                             {data: 'address'},
-                            {data: 'contactor'},
+                            {data: 'contact'},
                             {data: 'phone'},
                             {data: 'note'},
                             {
@@ -938,14 +938,14 @@
                         garageoutsideView.current = {
                             name: $("input[id='name']").val(),
                             address: $("input[id='address']").val(),
-                            contactor: $("input[id='contactor']").val(),
+                            contact: $("input[id='contact']").val(),
                             phone: $("input[id='phone']").val(),
                             note: $("textarea[id='note']").val()
                         };
                     } else if (garageoutsideView.action == 'update') {
                         garageoutsideView.current.name = $("input[id='name']").val();
                         garageoutsideView.current.address = $("input[id='address']").val();
-                        garageoutsideView.current.contactor = $("input[id='contactor']").val().toUpperCase();
+                        garageoutsideView.current.contact = $("input[id='contact']").val().toUpperCase();
                         garageoutsideView.current.phone = $("input[id='phone']").val();
                         garageoutsideView.current.note = $("textarea[id='note']").val();
                     }
@@ -980,7 +980,7 @@
                 fillCurrentObjectToForm: function () {
                     $("input[id='name']").val(garageoutsideView.current["name"]);
                     $("input[id='address']").val(garageoutsideView.current["address"]);
-                    $("input[id='contactor']").val(garageoutsideView.current["contactor"]);
+                    $("input[id='contact']").val(garageoutsideView.current["contact"]);
                     $("input[id='phone']").val(garageoutsideView.current["phone"]);
                     $("textarea[id='note']").val(garageoutsideView.current["note"]);
                 },

@@ -45,13 +45,13 @@ class ValidateController extends Controller
         $rules = [
             'name'      => 'required',
             'address'   => 'required',
-            'contactor' => 'required',
+            'contact' => 'required',
             'phone'     => 'required',
         ];
         $messages = [
             'name.required'       => 'Trường nhà xe bắt buộc nhập',
             'address.required'    => 'Trường địa chỉ bắt buộc nhập',
-            'contactor .required' => 'Trường người liên hệ bắt buộc nhập',
+            'contact .required' => 'Trường người liên hệ bắt buộc nhập',
             'phone.required'      => 'Trường số điện thoại bắt buộc nhập'
         ];
 
@@ -63,13 +63,13 @@ class ValidateController extends Controller
         $rules = [
             'name'      => 'required',
             'address'   => 'required',
-            'contactor' => 'required',
+            'contact' => 'required',
             'phone'     => 'required',
         ];
         $messages = [
             'name.required'       => 'Trường nhà xe bắt buộc nhập',
             'address.required'    => 'Trường địa chỉ bắt buộc nhập',
-            'contactor .required' => 'Trường người liên hệ bắt buộc nhập',
+            'contact .required' => 'Trường người liên hệ bắt buộc nhập',
             'phone.required'      => 'Trường số điện thoại bắt buộc nhập'
         ];
 
@@ -116,13 +116,13 @@ class ValidateController extends Controller
     {
         $rules = [
             'name'      => 'required',
-            'contactor' => 'required',
+            'contact' => 'required',
             'phone'     => 'required',
             'address'   => 'required',
         ];
         $messages = [
             'name.required'      => 'Trường tên nhà xe bắt buộc nhập',
-            'contactor.required' => 'Trường người liên hệ bắt buộc nhập',
+            'contact.required' => 'Trường người liên hệ bắt buộc nhập',
             'phone .required'    => 'Trường điện thoại vùng bắt buộc nhập',
             'address.required'   => 'Trường địa chỉ bắt buộc nhập'
         ];
