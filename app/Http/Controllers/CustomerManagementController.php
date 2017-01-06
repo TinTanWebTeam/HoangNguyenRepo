@@ -1269,13 +1269,15 @@ class CustomerManagementController extends Controller
 
     public function postFindFormula(Request $request)
     {
+        $customerId = $request->input('_customerId');
+
         if (array_key_exists('_formulaCode', $request->all())) {
             $formulaCode = $request->input('_formulaCode');
             $customerId = $request->input('_customerId');
             $formula_id = ($this->findFormulaByFormulaCode($formulaCode, $customerId) == null) ? 0 : $this->findFormulaByFormulaCode($formulaCode, $customerId);
         } else {
             $formulaDetail = $request->input('_formulaDetail');
-            $formula_id = ($this->findFormula($formulaDetail) == null) ? 0 : $this->findFormula($formulaDetail);
+            $formula_id = ($this->findFormula($formulaDetail, $customerId) == null) ? 0 : $this->findFormula($formulaDetail, $customerId);
         }
 
         if($formula_id == 0){
@@ -1293,7 +1295,7 @@ class CustomerManagementController extends Controller
         return response()->json($response, 200);
     }
 
-    public function findFormula($formulaDetail)
+    public function findFormula($formulaDetail, $customerId)
     {
         $arrayFound = [];
         if (array_key_exists('quantumProduct', $formulaDetail)) {
@@ -1304,29 +1306,50 @@ class CustomerManagementController extends Controller
             switch ($fdFind['rule']) {
                 case 'S':
                 case 'PC':
-                    $found = FormulaDetail::where([
-                        ['name', $fdFind['name']],
-                        ['value', $fdFind['value']],
-                        ['rule', $fdFind['rule']]
-                    ])->pluck('formula_id')->toArray();
+                    $found = DB::table('formulaDetails')
+                        ->leftJoin('formulas', 'formulas.id', '=', 'formulaDetails.formula_id')
+                        ->leftJoin('customers', 'customers.id', '=', 'formulas.customer_id')
+                        ->where([
+                            ['customers.id', $customerId],
+                            ['formulaDetails.name', $fdFind['name']],
+                            ['formulaDetails.value', $fdFind['value']],
+                            ['formulaDetails.rule', $fdFind['rule']]
+                        ])
+                        ->select('formulaDetails.*')
+                        ->get();
+                    $found = collect($found)->pluck('formula_id')->toArray();
                     break;
                 case 'R':
                 case 'O':
                     // From ... to ...
-                    $found = FormulaDetail::where([
-                        ['name', $fdFind['name']],
-                        ['rule', $fdFind['rule']]
-                    ])->where('from', '<=',$fdFind['value'])
-                        ->where('to', '>=',$fdFind['value'])
-                        ->pluck('formula_id')->toArray();
+                    $found = DB::table('formulaDetails')
+                        ->leftJoin('formulas', 'formulas.id', '=', 'formulaDetails.formula_id')
+                        ->leftJoin('customers', 'customers.id', '=', 'formulas.customer_id')
+                        ->where([
+                            ['customers.id', $customerId],
+                            ['formulaDetails.name', $fdFind['name']],
+                            ['formulaDetails.rule', $fdFind['rule']]
+                        ])
+                        ->where('formulaDetails.from', '<=',$fdFind['value'])
+                        ->where('formulaDetails.to', '>=',$fdFind['value'])
+                        ->select('formulaDetails.*')
+                        ->get();
+                    $found = collect($found)->pluck('formula_id')->toArray();
                     break;
                 case 'P':
-                    $found = FormulaDetail::where([
-                        ['name', $fdFind['name']],
-                        ['fromPlace', $fdFind['fromPlace']],
-                        ['toPlace', $fdFind['toPlace']],
-                        ['rule', $fdFind['rule']]
-                    ])->pluck('formula_id')->toArray();
+                    $found = DB::table('formulaDetails')
+                        ->leftJoin('formulas', 'formulas.id', '=', 'formulaDetails.formula_id')
+                        ->leftJoin('customers', 'customers.id', '=', 'formulas.customer_id')
+                        ->where([
+                            ['customers.id', $customerId],
+                            ['formulaDetails.name', $fdFind['name']],
+                            ['formulaDetails.fromPlace', $fdFind['fromPlace']],
+                            ['formulaDetails.toPlace', $fdFind['toPlace']],
+                            ['formulaDetails.rule', $fdFind['rule']]
+                        ])
+                        ->select('formulaDetails.*')
+                        ->get();
+                    $found = collect($found)->pluck('formula_id')->toArray();
                     break;
                 
                 default: break;

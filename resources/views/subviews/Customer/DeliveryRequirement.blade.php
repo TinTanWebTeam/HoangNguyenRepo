@@ -1853,7 +1853,8 @@
 
                     var sendToServer = {
                         _token: _token,
-                        _formulaDetail: transportView.formulaDetail
+                        _formulaDetail: transportView.formulaDetail,
+                        _customerId: $("#customer_id").attr("data-customerId")
                     };
 
                     $.ajax({
