@@ -652,6 +652,7 @@ class CustomerManagementController extends Controller
         $formulas = Formula::all();
         $formulaDetails = FormulaDetail::all();
         $transportFormulaDetails = TransportFormulaDetail::all();
+        $fuels = Fuel::where('type', 'oil')->get();
         $oilPrice = Fuel::where('type', 'oil')->orderBy('applyDate', 'desc')->first();
         $oilPrice = $oilPrice->price;
 
@@ -681,9 +682,11 @@ class CustomerManagementController extends Controller
             'formulaDetails'          => $formulaDetails,
             'transportFormulaDetails' => $transportFormulaDetails,
             'oilPrice'                => $oilPrice,
+            'fuels'                   => $fuels,
             'isAdmin'                 => (!$isAdmin) ? 1: 0,
-            'firstDay'               => date("d-m-Y", $this->firstDayUTS),
-            'lastDay'                => date("d-m-Y", $this->lastDayUTS)
+            'firstDay'                => date("d-m-Y", $this->firstDayUTS),
+            'lastDay'                 => date("d-m-Y", $this->lastDayUTS),
+            'today'                   => date("d-m-Y")
         ];
 
         return $response;

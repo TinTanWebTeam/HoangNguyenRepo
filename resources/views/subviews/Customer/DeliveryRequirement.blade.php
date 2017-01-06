@@ -774,6 +774,7 @@
                 dataFormula: null,
                 dataFormulaDetail: null,
                 dataTransportFormulaDetail: null,
+                dataFuel: null,
 
                 tagsProductName: [],
                 tagsCustomerName: [],
@@ -869,7 +870,7 @@
                         format: 'dd-mm-yyyy',
                         autoclose: true
                     }).on("input change", function (e) {
-
+                        
                     });
                     $('#receiveDate').datepicker("setDate", new Date());
 
@@ -878,7 +879,22 @@
                         format: 'dd-mm-yyyy',
                         autoclose: true
                     }).on("input change", function (e) {
+                        if(typeof transportView.formulaDetail === 'undefined')
+                            return;
 
+                        var flag = false;
+                        for(var i in transportView.formulaDetail) {
+                            if(transportView.formulaDetail[i]['rule'] == 'O') {
+                                flag = true;
+                                transportView.getUsingFuel($("#transportDate").val());
+                                $("#id_" + transportView.formulaDetail[i]['id']).val(transportView.oilPrice);
+                            }
+                        }
+
+                        if(flag) {
+                            transportView.focusOut_getFormula();
+                        }
+                        
                     });
                     $('#transportDate').datepicker("setDate", new Date());
                 },
@@ -959,9 +975,11 @@
                     transportView.dataFormulaDetail = data['formulaDetails'];
                     transportView.dataTransportFormulaDetail = data['transportFormulaDetails'];
                     transportView.oilPrice = data['oilPrice'];
+                    transportView.dataFuel = data['fuels'];
                     transportView.isAdmin = data['isAdmin'];
                     transportView.firstDay = data['firstDay'];
                     transportView.lastDay = data['lastDay'];
+                    transportView.today = data['today'];
                 },
                 loadData: function () {
                     $.ajax({
@@ -1793,27 +1811,31 @@
                     transportView.getValueFormFormulaDetail();
 
                     var kt = true;
-                    _.each(transportView.formulaDetail, function (value, key) {
-                        switch (transportView.formulaDetail[key]['rule']) {
-                            case 'S': 
-                            case 'R': 
-                            case 'O': 
-                            case 'PC': 
-                                if (transportView.formulaDetail[key]['value'] == null || transportView.formulaDetail[key]['value'] == "") {
-                                    kt = false;
-                                }
-                                break;
-                            case 'P': 
-                                if (transportView.formulaDetail[key]['fromPlace'] == null || transportView.formulaDetail[key]['fromPlace'] == ""
-                                    || transportView.formulaDetail[key]['toPlace'] == null || transportView.formulaDetail[key]['toPlace'] == ""
-                                ) {
-                                    kt = false;
-                                }
-                                break;
-                            default: break;
-                        }
-                        
-                    });
+                    if(transportView.formulaDetail.length <= 0) {
+                        kt = false;
+                    } else {
+                        _.each(transportView.formulaDetail, function (value, key) {
+                            switch (transportView.formulaDetail[key]['rule']) {
+                                case 'S': 
+                                case 'R': 
+                                case 'O': 
+                                case 'PC': 
+                                    if (transportView.formulaDetail[key]['value'] == null || transportView.formulaDetail[key]['value'] == "") {
+                                        kt = false;
+                                    }
+                                    break;
+                                case 'P': 
+                                    if (transportView.formulaDetail[key]['fromPlace'] == null || transportView.formulaDetail[key]['fromPlace'] == ""
+                                        || transportView.formulaDetail[key]['toPlace'] == null || transportView.formulaDetail[key]['toPlace'] == ""
+                                    ) {
+                                        kt = false;
+                                    }
+                                    break;
+                                default: break;
+                            }
+                        });
+                    }
+                    
                     if (kt == false) {
                         $("#unitPrice").val(0);
                         $("#unit").val('');
@@ -2040,13 +2062,10 @@
                                 break;
                             default: break;
                         }
-                        
-                        
-
-
 
                         if (data[key]["rule"] == 'O') {
                             $("#id_" + data[key]["id"]).prop('readonly', true);
+                            transportView.getUsingFuel(transportView.today);
                             $("#id_" + data[key]["id"]).val(transportView.oilPrice);
                         } else {
                             $("#id_" + data[key]["id"]).prop('readonly', false);
@@ -2064,6 +2083,7 @@
                     });
                 },
                 getValueFormFormulaDetail: function () {
+                    if(transportView.formulaDetail.length <= 0) return;
                     var searchEles = $("#formula-detail input").not($("#formula-detail input[id$=_toPlace]"));
                     for (var i = 0; i < searchEles.length; i++) {
                         switch (transportView.formulaDetail[i]['rule']) {
@@ -2351,6 +2371,24 @@
                     $("#dateOnlySearch").find(".start").datepicker('update', transportView.firstDay);
                     $("#dateOnlySearch").find(".end").datepicker('update', transportView.lastDay);
                 },
+
+                getUsingFuel: function (applyDate) {
+                    transportView.oilPrice = 0;
+                    if(transportView.dataFuel != null && transportView.dataFuel.length > 0) {
+                        var filter = _.filter(transportView.dataFuel, function(o) {
+                            return moment(o['applyDate'], "YYYY-MM-DD").hour(0).minute(0).second(0).isSameOrBefore(moment(applyDate, 'DD-MM-YYYY').hour(0).minute(0).second(0))
+                        });
+                        if(filter.length > 0) {
+                            var fuel = _.maxBy(filter, function (o) {
+                                return o['applyDate'];
+                            });
+                            
+                            if (typeof fuel !== 'undefined') {
+                                transportView.oilPrice = fuel['price'];
+                            }
+                        }
+                    }
+                }
             };
             transportView.loadData();
         } else {

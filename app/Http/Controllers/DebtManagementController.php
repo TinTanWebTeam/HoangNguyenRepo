@@ -37,6 +37,7 @@ class DebtManagementController extends Controller
                 break;
             case 'bill_customer':
                 $invoiceCode = "BC" . date('ymd');
+                break;
             case 'bill_garage':
                 $invoiceCode = "BG" . date('ymd');
                 break;
