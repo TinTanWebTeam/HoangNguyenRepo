@@ -119,7 +119,7 @@ class DebtGarageManagementController extends Controller
 
 
 
-        //Phiếu thanh toán + trả trực tiếp
+        //Phiếu thanh toán
         $invoiceGarages = DB::table('invoiceGarages')
             ->select('invoiceGarages.*',
                 'garages.name as garages_name',
@@ -139,7 +139,8 @@ class DebtGarageManagementController extends Controller
                 ['transports.active', '=', 1],
                 ['transports.product_id', '<>', 0],
                 ['transports.vehicle_id', '<>', 0],
-                ['transports.customer_id', '<>', 0]
+                ['transports.customer_id', '<>', 0],
+                ['transports.status_invoice_garage', '=', 1]
             ])
             ->groupBy('invoiceGarages.id')
             ->get();
@@ -235,6 +236,7 @@ class DebtGarageManagementController extends Controller
 
     public function postModifyInvoiceGarage(Request $request)
     {
+
         $action = $request->input('_action');
         $invoiceCode = $request->input('_invoiceGarage')['invoiceCode'];
         if ($action == 'new') {

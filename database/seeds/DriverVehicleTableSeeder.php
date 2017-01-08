@@ -11,7 +11,7 @@ class DriverVehicleTableSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 1; $i < 5; $i++) {
+        for ($i = 1; $i < 7; $i++) {
             \App\DriverVehicle::create([
                 'vehicle_id' => $i,
                 'driver_id'  => $i,

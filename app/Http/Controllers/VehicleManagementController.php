@@ -167,18 +167,18 @@ class VehicleManagementController extends Controller
             if (array_key_exists('idDriver', $request->input('_vehicle'))) {
                 $idDriver = $request->input('_vehicle')['idDriver'];
 
-                dd('IdDriver:' . $idDriver );
+               // dd('IdDriver:' . $idDriver );
             } else {
                 $idDriver = 0;
-                dd('IdDriver:' . $idDriver );
+                //dd('IdDriver:' . $idDriver );
             }
 
             if (array_key_exists('vehicle_id', $request->input('_vehicle'))) {
                 $vehicle_id = $request->input('_vehicle')['vehicle_id'];
-                dd('vehicle_id:' . $vehicle_id );
+               // dd('vehicle_id:' . $vehicle_id );
             } else {
                 $vehicle_id = 0;
-                dd('vehicle_id:' . $vehicle_id );
+                //dd('vehicle_id:' . $vehicle_id );
             }
         }
 
@@ -718,6 +718,7 @@ class VehicleManagementController extends Controller
             ->leftjoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
             ->leftjoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
             ->where('vehicles.active', 1)
+            ->where('driverVehicles.active', 1)
             ->where('vehicles.garage_id', $request->input('_idGarage'))
             ->select('vehicles.*', 'vehicleTypes.name'
                 , 'vehicleTypes.id as vehicleType_id'
