@@ -239,8 +239,6 @@ class DebtGarageManagementController extends Controller
         $debtVerbPerson = $request->input('_payMore')['debtVerbPerson'];
         $payDateDebtVerb = $request->input('_payMore')['payDateDebtVerb'];
         $noteDebtVerb = $request->input('_payMore')['noteDebtVerb'];
-
-
         $datePay = Carbon::createFromFormat('d-m-Y', $payDateDebtVerb)->toDateTimeString();
 
         try {

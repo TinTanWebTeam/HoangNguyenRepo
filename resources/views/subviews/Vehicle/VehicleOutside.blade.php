@@ -987,6 +987,7 @@
                 },
                 clearInputFormVehicle: function () {
                     $("input[id='areaCode']").val('');
+                    $("input[id='vehicle_id']").val('');
                     $("input[id='long']").val('');
                     $("input[id='wide']").val('');
                     $("input[id='high']").val('');

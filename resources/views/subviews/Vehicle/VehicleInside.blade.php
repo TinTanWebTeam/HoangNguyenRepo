@@ -308,7 +308,7 @@
             <div class="panel-body">
                 <div class="col-md-5 scroll-bar">
                     <form role="form" id="frmVehicle" onsubmit="return false;">
-                        <input id="vehicle_id" style="display: none">
+                        <input id="vehicle_id" style="display: block">
                         <div class="form-body">
                             <div class="row">
                                 <div class="col-md-6 col-sm-6">
@@ -987,6 +987,7 @@
                 },
                 clearInputFormVehicle: function () {
                     $("input[id='areaCode']").val('');
+                    $("input[id='vehicle_id']").val('');
                     $("input[id='long']").val('');
                     $("input[id='wide']").val('');
                     $("input[id='high']").val('');
@@ -1377,8 +1378,8 @@
                                                     garageInsideView.dataVehicle.splice(indexOfVehicleOld, 1);
                                                 }
                                                 garageInsideView.showNotification("success", "Cập nhật thành công!");
-
                                                 garageInsideView.action = "addVehicle";
+
                                                 break;
                                             default:
                                                 break;
