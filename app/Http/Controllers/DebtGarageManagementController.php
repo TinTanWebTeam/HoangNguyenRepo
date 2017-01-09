@@ -116,9 +116,6 @@ class DebtGarageManagementController extends Controller
             ->get();
 
 
-
-
-
         //Phiếu thanh toán
         $invoiceGarages = DB::table('invoiceGarages')
             ->select('invoiceGarages.*',
@@ -166,7 +163,7 @@ class DebtGarageManagementController extends Controller
                 DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
                 , 'costs.cost', 'garages.name'
                 , 'costPrices.name', 'costPrices.id'
-                ,'garages.name as garageName'
+                , 'garages.name as garageName'
             )
             ->where([
                 ['costs.active', '=', 1],
@@ -187,7 +184,6 @@ class DebtGarageManagementController extends Controller
         ];
         return $response;
     }
-
 
 
     public function getViewDebtGarage()
@@ -229,10 +225,57 @@ class DebtGarageManagementController extends Controller
         $uniqueVehicleId = $arrayVehicleId->unique();
         if (count($uniqueVehicleId->values()->all()) != 1) {
             return response()->json(['status' => 0, 'msg' => 'Các đơn hàng có xe không giống nhau.'], 203);
-        }else {
+        } else {
             return response()->json(['status' => 1, 'totalPay' => 0, 'msg' => 'Các đơn hàng chưa có phiếu thanh toán, hợp lệ cho thêm mới'], 200);
         }
     }
+
+    /// trả tiếp
+    public function postModifyPayMore(Request $request)
+    {
+        $id = $request->input('_payMore')['idPayMore'];
+        $debtVerb = $request->input('_payMore')['debtVerb'];
+        $paidAmtDebtVerb = $request->input('_payMore')['payMore'];
+        $debtVerbPerson = $request->input('_payMore')['debtVerbPerson'];
+        $payDateDebtVerb = $request->input('_payMore')['payDateDebtVerb'];
+        $noteDebtVerb = $request->input('_payMore')['noteDebtVerb'];
+
+
+        $datePay = Carbon::createFromFormat('d-m-Y', $payDateDebtVerb)->toDateTimeString();
+
+        try {
+
+            DB::beginTransaction();
+            $payMore = InvoiceGarage::findOrFail($id);
+            $payMore->debt = $debtVerb;
+            $payMore->paidAmt += $paidAmtDebtVerb;
+            $payMore->sendToPerson = $debtVerbPerson;
+            $payMore->payDate = $datePay;
+            $payMore->note = $noteDebtVerb;
+            $payMore->updatedBy = \Auth::user()->id;
+            if (!$payMore->update()) {
+                DB::rollBack();
+                return response()->json(['msg' => 'Update failed'], 404);
+            }
+            $invoiceDetail = new InvoiceGarageDetail();
+            $invoiceDetail->invoiceGarage_id = $id;
+            $invoiceDetail->paidAmt = $paidAmtDebtVerb;
+            $invoiceDetail->payDate = $datePay;
+            if (!$invoiceDetail->save()) {
+                DB::rollBack();
+                return response()->json(['msg' => 'invoiceDetail failed'], 404);
+            }
+
+            DB::commit();
+            //Response
+            $response = $this->DataDebtGarage();
+            return response()->json($response, 201);
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return response()->json(['msg' => $ex], 404);
+        }
+    }
+
 
     public function postModifyInvoiceGarage(Request $request)
     {
@@ -245,10 +288,9 @@ class DebtGarageManagementController extends Controller
             //Neu da xuat phieu thanh toan thi kiem tra xem ma cac phieu do co giong nhau khong
             //Neu giong nhau tien hanh them hoa don them lan nua
             $invoiceGarage = new InvoiceGarage();
-            if ($invoiceCode == ''){
+            if ($invoiceCode == '') {
                 $invoiceGarage->invoiceCode = $this->generateInvoiceCode('bill_garage');
-            }
-            else {
+            } else {
                 if (InvoiceGarage::where('invoiceCode', $invoiceCode)->get()->count() == 0)
                     $invoiceGarage->invoiceCode = $invoiceCode;
                 else
@@ -288,7 +330,7 @@ class DebtGarageManagementController extends Controller
                     return response()->json(['msg' => 'Create InvoiceGarageDetail fail!'], 404);
                 }
                 //Update status_invoice_garage for Transport
-                foreach($array_transportId as $transport_id) {
+                foreach ($array_transportId as $transport_id) {
                     $transportUpdate = Transport::find($transport_id);
                     $transportUpdate->status_invoice_garage = 1;
                     $transportUpdate->updatedBy = \Auth::user()->id;

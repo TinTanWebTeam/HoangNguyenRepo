@@ -1185,7 +1185,7 @@
                                         $('input[id=vehicleType_id]').val(nameVehicleType);
                                         $("#vehicleType_id").attr("data-id", idVehicleType);
                                         garageInsideView.clearInputFormVehicleType();
-                                        if (garageInsideView.currentVehicle != null) {
+                                        if ($('input[id=vehicle_id]').val() != '') {
                                             garageInsideView.action = "updateVehicle"
                                         } else {
                                             garageInsideView.action = "addVehicle"
@@ -1305,6 +1305,7 @@
                                 garageInsideView.dataVehicle.splice(indexOfVehicleOld, 1);
                                 garageInsideView.showNotification("success", "Xóa thành công!");
                                 garageInsideView.displayModal("hide", "#modal-confirmDeleteVehicle");
+
                             }
                             garageInsideView.tableVehicle.clear().rows.add(garageInsideView.dataVehicle).draw();
                         }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -1362,6 +1363,7 @@
                                                 garageInsideView.dataVehicle.push(data['addVehicle']);
                                                 garageInsideView.dataAllVehicle.push(data['addVehicle']);
                                                 garageInsideView.showNotification("success", "Thêm thành công!");
+
                                                 break;
                                             case 'updateVehicle':
                                                 data['updateVehicle'].fullNumber = data['updateVehicle']['areaCode'] + "-" + data['updateVehicle']["vehicleNumber"];
@@ -1375,6 +1377,7 @@
                                                     garageInsideView.dataVehicle.splice(indexOfVehicleOld, 1);
                                                 }
                                                 garageInsideView.showNotification("success", "Cập nhật thành công!");
+
                                                 garageInsideView.action = "addVehicle";
                                                 break;
                                             default:

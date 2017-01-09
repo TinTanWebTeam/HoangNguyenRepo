@@ -1185,7 +1185,7 @@
                                         $('input[id=vehicleType_id]').val(nameVehicleType);
                                         $("#vehicleType_id").attr("data-id", idVehicleType);
                                         garageOutsideView.clearInputFormVehicleType();
-                                        if (garageOutsideView.currentVehicle != null) {
+                                        if ($('input[id=vehicle_id]').val() != '') {
                                             garageOutsideView.action = "updateVehicle"
                                         } else {
                                             garageOutsideView.action = "addVehicle"

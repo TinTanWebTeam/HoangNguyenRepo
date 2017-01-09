@@ -118,6 +118,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/debt-garage/validate', 'DebtGarageManagementController@postValidateTransportGarage');
         Route::post('/debt-garage/modify', 'DebtGarageManagementController@postModifyDebtGarage');
         Route::post('/invoice-garage/modify', 'DebtGarageManagementController@postModifyInvoiceGarage');
+        Route::post('/pay-more/modify', 'DebtGarageManagementController@postModifyPayMore');
     });
     //Chi phí
     Route::group(['middleware' => 'CostManagement'], function () {

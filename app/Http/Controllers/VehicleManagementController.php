@@ -167,18 +167,14 @@ class VehicleManagementController extends Controller
             if (array_key_exists('idDriver', $request->input('_vehicle'))) {
                 $idDriver = $request->input('_vehicle')['idDriver'];
 
-               // dd('IdDriver:' . $idDriver );
             } else {
                 $idDriver = 0;
-                //dd('IdDriver:' . $idDriver );
             }
 
             if (array_key_exists('vehicle_id', $request->input('_vehicle'))) {
                 $vehicle_id = $request->input('_vehicle')['vehicle_id'];
-               // dd('vehicle_id:' . $vehicle_id );
             } else {
                 $vehicle_id = 0;
-                //dd('vehicle_id:' . $vehicle_id );
             }
         }
 
