@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cost;
 use App\Garage;
 use App\InvoiceCustomer;
 use App\InvoiceCustomerDetail;
@@ -151,9 +152,15 @@ class DebtGarageManagementController extends Controller
 //            ->get();
 
         $invoiceCode = $this->generateInvoiceCode('bill_garage');
-
         $transportInvoices = DB::table('transportInvoices')->get();
-
+        $allVehicle = DB::table('vehicles')
+            ->select(
+                'id',
+                'note',
+                DB::raw("CONCAT(areaCode,'-',vehicleNumber)  AS fullNumber")
+            )
+            ->where('active', 1)
+            ->get();
         $vehicleCost = DB::table('costs')
             ->join('prices', 'costs.price_id', '=', 'prices.id')
             ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
@@ -170,9 +177,63 @@ class DebtGarageManagementController extends Controller
                 ['costs.status_invoice_garage', '=', 0]
             ])
             ->get();
+        $arrayDataVehicle = [];
+        foreach ($allVehicle as $item) {
+            $oilPayment = Cost::leftJoin('prices', 'costs.price_id', '=', 'prices.id')
+                ->leftJoin('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                ->where('prices.costPrice_id', 2)
+                ->where('vehicle_id', $item->id)
+                ->select(
+                    'costs.vehicle_id as vehicle_id',
+                    'costs.cost as cost'
+                )
+                ->get()
+                ->sum('cost');
+            $lubePayment = Cost::leftJoin('prices', 'costs.price_id', '=', 'prices.id')
+                ->leftJoin('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                ->where('prices.costPrice_id', 3)
+                ->where('vehicle_id', $item->id)
+                ->select(
+                    'costs.vehicle_id as vehicle_id',
+                    'costs.cost as cost'
+                )
+                ->get()
+                ->sum('cost');
+            $parkingPayment = Cost::leftJoin('prices', 'costs.price_id', '=', 'prices.id')
+                ->leftJoin('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                ->where('prices.costPrice_id', 4)
+                ->where('vehicle_id', $item->id)
+                ->select(
+                    'costs.vehicle_id as vehicle_id',
+                    'costs.cost as cost'
+                )
+                ->get()
+                ->sum('cost');
+            $otherPayment = Cost::leftJoin('prices', 'costs.price_id', '=', 'prices.id')
+                ->leftJoin('costPrices', 'prices.costPrice_id', '=', 'costPrices.id')
+                ->where('prices.costPrice_id', 1)
+                ->where('vehicle_id', $item->id)
+                ->select(
+                    'costs.vehicle_id as vehicle_id',
+                    'costs.cost as cost'
+                )
+                ->get()
+                ->sum('cost');
+            array_push($arrayDataVehicle, [
+                'note' => $item->note,
+                'vehicle_id' => $item->id,
+                'fullNumber' => $item->fullNumber,
+                'oil' => $oilPayment,
+                'lube' => $lubePayment,
+                'parking' => $parkingPayment,
+                'other' => $otherPayment
+            ]);
+        }
+//         dd($arrayDataVehicle);
 
         $response = [
             'msg' => 'Get list all Transport',
+            'arrayCostDataVehicle' => $arrayDataVehicle,
             'transports' => $transports,
             'debtTransports' => $debtTransports,
             'invoiceGarages' => $invoiceGarages,

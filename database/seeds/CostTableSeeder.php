@@ -22,6 +22,17 @@ class CostTableSeeder extends Seeder
             'vehicle_id' => '2',
             'dateRefuel' => '2016-09-29 16:09:48'
         ]);
+        \App\Cost::create([
+            'cost' => '500000',
+            'createdBy' => '1',
+            'updatedBy' => '1',
+            'note' => 'thay nhớt',
+            'active' => '1',
+            'transport_id' => null,
+            'price_id' => '3',
+            'vehicle_id' => '2',
+            'dateRefuel' => '2016-09-29 16:09:48'
+        ]);
 
         \App\Cost::create([
             'cost' => '600000',

@@ -83,7 +83,7 @@
                             </div>
                         </div>
                         <div class="col-md-2" >
-                            <div class="row" style="float: right;">
+                            <div class="row">
                                 <div class="col-md-12">
                                     <div class="radio">
                                         <button id="btnSearchTransport" class="btn btn-sm btn-info marginRight"
@@ -171,7 +171,6 @@
                                     <thead>
                                     <tr class="active">
                                         <th>Số xe</th>
-                                        <th>Nhà xe</th>
                                         <th>Phí thay nhớt</th>
                                         <th>Phí đổ xăng</th>
                                         <th>Phí Đậu bãi</th>
@@ -621,6 +620,7 @@
                 dataVehicleCost: null,
                 dataInvoiceGarage: null,
                 dataDebtTransport: null,
+                arrayCostDataVehicle : null,
 
 
                 action: null, //new, edit, autoEdit
@@ -798,8 +798,15 @@
                         var tr = $(this).parent();
                         if (tr.find('td:eq(1)').text() == td.text()) {
                             $("input[id=fullNumber_transport]").val(td.text());
-                            // debtGarageView.searchTransport();
-                            debtGarageView.selectAll();
+
+                        }
+                    });
+                    $("#table-transportCost").find("tbody").on('click', 'tr td', function () {
+                        var td = $(this);
+                        var tr = $(this).parent();
+                        if (tr.find('td:eq(0)').text() == td.text()) {
+                            $("input[id=fullNumber_cost]").val(td.text());
+
                         }
                     });
 
@@ -831,11 +838,12 @@
                         if (jqXHR.status == 200) {
                             debtGarageView.dataTransport = data['transports'];
                             debtGarageView.dataDebtTransport = data['debtTransports'];
+                            debtGarageView.arrayCostDataVehicle = data['arrayCostDataVehicle'];
                             debtGarageView.invoiceCode = data['invoiceCode'];
-                            debtGarageView.dataVehicleCost = data['vehicleCost'];
+                            //debtGarageView.dataVehicleCost = data['vehicleCost'];
                             debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                            debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
+                            debtGarageView.fillDataToDatatableTransportCost(debtGarageView.arrayCostDataVehicle);
                             debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
                             debtGarageView.fillDataToDatatableDebtTransport(debtGarageView.dataDebtTransport);
                         } else {
@@ -1009,42 +1017,26 @@
                 fillDataToDatatableTransportCost: function (data) {
                     if (debtGarageView.tableTransportCost != null)
                         debtGarageView.tableTransportCost.destroy();
-//                    for (var i = 0; i < data.length; i++) {
-//                        data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
-//
-//                    }
                     debtGarageView.tableTransportCost = $('#table-transportCost').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
                             {data: 'fullNumber'},
-                            {data: 'garageName'},
                             {
-                                data: 'cost',
-                                render: function (data, type, full, meta) {
-                                    return (full.price_id == 3) ? full.cost : "0";
-                                }
-
+                                data: 'oil',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cost',
-                                render: function (data, type, full, meta) {
-                                    return (full.price_id == 2) ? full.cost : "0";
-                                }
-
+                                data: 'lube',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cost',
-                                render: function (data, type, full, meta) {
-                                    return (full.price_id == 4) ? full.cost : "0";
-                                }
-
+                                data: 'parking',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
-                                data: 'cost',
-                                render: function (data, type, full, meta) {
-                                    return (full.price_id == 1) ? full.cost : "0";
-                                }
+                                data: 'other',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
 
                             },
                             {data: 'note'}
