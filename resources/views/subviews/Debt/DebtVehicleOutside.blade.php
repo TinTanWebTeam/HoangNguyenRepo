@@ -497,7 +497,7 @@
                                         <div class="form-group form-md-line-input ">
                                             <label for="debtVerb"><b>Còn nợ lại</b></label>
                                             <input type="text" class="form-control currency"
-                                                   id="debtVerb" name="debtVerb" readonly>
+                                                   id="debtVerb" name="debtVerb" data-id="" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -506,7 +506,7 @@
                                         <div class="form-group form-md-line-input ">
                                             <label for="paidAmtDebtVerb"><b>Tiền đã thanh toán</b></label>
                                             <input type="text" class="form-control currency defaultZero"
-                                                   id="paidAmtDebtVerb" name="paidAmtDebtVerb" readonly >
+                                                   id="paidAmtDebtVerb" name="paidAmtDebtVerb" data-id="" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -546,7 +546,7 @@
                                     <div class="col-md-12">
                                         <div class="form-actions noborder">
                                             <div class="form-group">
-                                                <button id="button" type="button" class="btn btn-primary marginRight"
+                                                <button id="button-debt" type="button" class="btn btn-primary marginRight"
                                                         onclick="debtGarageView.savePaymore()">
                                                     Hoàn tất
                                                 </button>
@@ -565,7 +565,7 @@
         </div>
     </div>
 </div>
-<!-- End divInvoice -->
+<!-- End divDebtVerb -->
 
 <!-- Modal notification -->
 <div class="row">
@@ -688,18 +688,16 @@
                     $("textarea[id='note']").val('');
                 },
                 retype: function (temp) {
-                    alert(temp);
                     if (temp == 0) {
+                        $("#button").prop("disabled", false);
+                        $("input[id='debt']").val('');
                         $("input[id='invoiceCode']").val('');
                         $("input[id='paidAmt']").val(0);
                         $("input[id='sendToPerson']").val('');
                         $("textarea[id='note']").val('');
                         debtGarageView.renderDateTimePicker();
                     } else {
-                        $("input[id='DebtVerbCode']").val('');
-                        $("input[id='totalDebtVerb']").val(0);
-                        $("input[id='debtVerb']").val('');
-                        $("input[id='paidAmtDebtVerb']").val('');
+                        $("#button-debt").prop("disabled", false);
                         $("input[id='payMore']").val('');
                         $("input[id='debtVerbPerson']").val('');
                         $("textarea[id='noteDebtVerb']").val('');
@@ -1249,11 +1247,12 @@
                         return o.id == id;
                     }), true);
 
-                    debt += parseInt(debtGarageView.currentPayMore['debt']);
-                    paidAmt += parseInt(debtGarageView.currentPayMore['paidAmt']);
+//                    debt += parseInt(debtGarageView.currentPayMore['debt']);
+//                    paidAmt += parseInt(debtGarageView.currentPayMore['paidAmt']);
+//
 
-
-
+                    $('#debtVerb').attr('data-id', debtGarageView.currentPayMore['debt']);
+                    $('#paidAmtDebtVerb').attr('data-id', debtGarageView.currentPayMore['paidAmt']);
 
                     $("input[id='DebtVerbCode']").val(debtGarageView.currentPayMore['invoiceCode']);
                     $("input[id='totalDebtVerb']").val(debtGarageView.currentPayMore['totalTransport']);
@@ -1268,28 +1267,22 @@
 
                     formatCurrency(".currency");
                 },
-                payMore: function (paymore) {
+                payMore: function (payMore) {
+                    payMore = convertStringToNumber(payMore);
+                    var debtVerb = $('#debtVerb').attr('data-id');
+                    var paidAmtDebtVerb = $('#paidAmtDebtVerb').attr('data-id');
+                    var NbDebtVerb = convertStringToNumber(paidAmtDebtVerb);
+                    if (payMore > debtVerb) {
+                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
+                        $("input[id='debtVerb']").val(0);
+                        $("#button-debt").prop("disabled", true);
+                    } else {
+                        var finish = debtVerb - payMore;
+                        var pay = NbDebtVerb + payMore;
 
-                    paymore = convertStringToNumber(paymore);
-                    var debtVerb = asNumberFromCurrency("#debtVerb");
-                    var paidAmtDebtVerb = asNumberFromCurrency("#paidAmtDebtVerb");
-                    var xong = debtVerb - paymore;
-console.log(paymore);
-console.log(debtVerb);
-console.log(xong);
-                    $("input[id=debtVerb]").val(xong);
-
-
-
-//                    if (paymore > debtVerb) {
-//                        showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
-//                        //$("input[id='debtVerb']").val(debtVerb);
-//                    } else {
-//                        var xong = debtVerb - paymore;
-//                        //aaa = paidAmtDebtVerb + paymore;
-//                        $("input[id=debtVerb]").val(xong);
-//                        //$("input[id=paidAmtDebtVerb]").val(aaa);
-//                    }
+                        $("input[id=debtVerb]").val(finish);
+                        $("input[id=paidAmtDebtVerb]").val(pay);
+                    }
                     formatCurrency(".currency");
 
                 },
