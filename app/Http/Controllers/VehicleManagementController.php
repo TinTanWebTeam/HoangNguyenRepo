@@ -132,7 +132,6 @@ class VehicleManagementController extends Controller
 
     public function postModifyVehicleInside(Request $request)
     {
-dd($request->all());
         $areaCode = null;
         $vehicleNumber = null;
         $size = null;

@@ -599,9 +599,9 @@
                 },
                 renderEventCloseModal: function () {
                     $('#modal-addVehicleType').on('hidden.bs.modal', function () {
-                        if (garageOutsideView.currentVehicle == null) {
+                        if ($('input[id=vehicle_id]').val() != '') {
                             garageOutsideView.action = "addVehicle"
-                        } else {
+                        }else {
                             garageOutsideView.action = "updateVehicle"
                         }
                     });
@@ -1145,8 +1145,6 @@
                             $("#transferGarage").attr("data-idGarage", name.id);
                         }
                     }));
-
-
                 },
                 saveVehicleType: function () {
                     garageOutsideView.vehicleTypeValidate();
@@ -1193,17 +1191,18 @@
                                         }
                                         break;
                                     case 'updateVehicleType':
-                                        garageOutsideView.dataVehicleType.push(data['dataVehicleTypes']);
+                                        garageOutsideView.dataVehicleType.push(data['updateVehicleType']);
                                         garageOutsideView.showNotification("success", "Cập nhật loại xe thành công");
                                         garageOutsideView.displayModal("hide", "#modal-addVehicleType");
                                         var nameVehicleType = data['updateVehicleType']['name'];
                                         $('input[id=vehicleType_id]').val(nameVehicleType);
-                                        if (garageOutsideView.currentVehicle != null) {
-                                            garageOutsideView.action = "updateVehicle"
-                                        } else {
-                                            garageOutsideView.action = "addVehicle"
-                                        }
-
+                                        $('#modal-addVehicleType').on('hidden.bs.modal', function () {
+                                            if ($('input[id=vehicle_id]').val() != '') {
+                                                garageOutsideView.action = "addVehicle"
+                                            }else {
+                                                garageOutsideView.action = "updateVehicle"
+                                            }
+                                        });
                                         break;
                                     default:
                                         break;
@@ -1320,6 +1319,7 @@
                         var vehicle = _.filter(garageOutsideView.dataAllVehicle, function (o) {
                             return o.areaCode + o.vehicleNumber == fullNumber;
                         });
+
                         var inDriver = $("input[id=my-id]").val();
                         if (inDriver != "") {
                             var driver = _.find(garageOutsideView.dataAllDriver, function (o) {
