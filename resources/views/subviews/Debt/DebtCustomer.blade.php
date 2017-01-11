@@ -1048,7 +1048,7 @@
                                 case 0:
                                     break;
                                 case 2:
-                                    $('td', nRow).css('background-color', '#7FFFD4');
+                                    $('td', nRow).css('background-color', '#FFF9B7');
                                     break;
                                 default:
                                     break;
@@ -1735,10 +1735,12 @@
                             debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
                             debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
+                            debtCustomerView.fillDataToDatatableTransport_fullPay(debtCustomerView.dataTransport_fullPay);
 
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
                             debtCustomerView.searchPTT();
+                            debtCustomerView.searchTransport_fullPay();
 
                             //Show notification
                             showNotification("success", "Xóa hóa đơn thành công!");
@@ -1801,10 +1803,13 @@
                                     return o.invoiceCustomer_id == invoiceDetail.invoiceCustomer_id;
                                 });
                                 debtCustomerView.fillDataToDatatableInvoiceCustomerDetail(dataDetail);
+                                debtCustomerView.fillDataToDatatableTransport_fullPay(debtCustomerView.dataTransport_fullPay);
 
                                 debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
                                 debtCustomerView.searchPTT();
+                                debtCustomerView.searchTransport_fullPay();
+                                
 
                                 var debtInvoice = data['arrayInput']['debtInvoice'];
                                 var debtNotExportInvoice = data['arrayInput']['debtNotExportInvoice'];
@@ -1826,10 +1831,12 @@
                                 debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                                 debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
                                 debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
+                                debtCustomerView.fillDataToDatatableTransport_fullPay(debtCustomerView.dataTransport_fullPay);
 
                                 debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
                                 debtCustomerView.searchPTT();
+                                debtCustomerView.searchTransport_fullPay();
 
                                 //Show notification
                                 showNotification("success", "Xóa chi tiết đơn hàng thành công!");
@@ -2022,10 +2029,13 @@
                             debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
                             debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
+                            debtCustomerView.fillDataToDatatableTransport_fullPay(debtCustomerView.dataTransport_fullPay);
 
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
                             debtCustomerView.searchPTT();
+                            debtCustomerView.searchTransport_fullPay();
+                            debt
 
                             //clear Input
                             debtCustomerView.clearInput();
@@ -2069,10 +2079,12 @@
                                 debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                                 debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
                                 debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
+                                debtCustomerView.fillDataToDatatableTransport_fullPay(debtCustomerView.dataTransport_fullPay);
 
                                 debtCustomerView.searchTransport();
                                 debtCustomerView.searchInvoice();
                                 debtCustomerView.searchPTT();
+                                debtCustomerView.searchTransport_fullPay();
 
                                 if (debtCustomerView.action == 'new') {
                                     //clear Input
