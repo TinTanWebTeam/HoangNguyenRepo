@@ -290,9 +290,6 @@
                                                             <button type="button" class="btn btn-primary marginRight"
                                                                     onclick="transportView.save()">Hoàn tất
                                                             </button>
-                                                            <button type="button" class="btn btn-default marginRight"
-                                                                    onclick="transportView.clearInput()">Nhập lại
-                                                            </button>
                                                             <button type="button" class="btn btn-info" id="attach-file"
                                                                     onclick="transportView.showFormAttachFile()">Thêm tập
                                                                 tin
@@ -1963,7 +1960,7 @@
                             });
                             transportView.appendViewFormulaDetail(dataRender);
                         } else {
-                            showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                            showNotification("warning", data['msg']);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");

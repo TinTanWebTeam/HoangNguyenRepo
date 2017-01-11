@@ -554,9 +554,6 @@
                                                         onclick="debtCustomerView.saveInvoiceCustomer()">
                                                     Hoàn tất
                                                 </button>
-                                                <button type="button" class="btn default"
-                                                        onclick="debtCustomerView.retype()">Nhập lại
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -1501,8 +1498,9 @@
                 },
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
+                    debugger;
                     switch(flag) {
-                        case 0:
+                        case 0: // Tạo mới Hóa đơn
                             var dataAfterValidate = debtCustomerView.validateListTransport();
 
                             //
@@ -1558,8 +1556,8 @@
                             // focus
                             $("input[id=invoiceCode]").focus();
                             break;
-                        case 1:
-                        case 2:
+                        case 1: // Xem chi tiết hoặc trả nợ hóa đơn
+                        case 2: // Xem chi tiết hoặc trả nợ PTT
                             if (typeof invoiceCustomer_id === 'undefined') return;
                             
                             debtCustomerView.showControl(flag);
@@ -2608,6 +2606,10 @@
 
                         $("label[for=invoiceCode] b").text("Mã HĐ");
                         $("label[for=invoiceDate] b").text("Ngày HĐ");
+
+                        $("#VAT").val(10);
+                        debtCustomerView.computeWhenChangeTotalPay(0);
+                        debtCustomerView.computeWhenChangePaidAmt(0);
                     }
                 }
             };

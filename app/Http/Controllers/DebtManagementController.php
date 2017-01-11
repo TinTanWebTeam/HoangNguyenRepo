@@ -384,7 +384,7 @@ class DebtManagementController extends Controller
             if ($statusPrePaid == 0) {
                 $totalPayReal = $prePaid;
                 $hasVat = $totalPayReal + ($totalPayReal * $vat / 100);
-                $debtInvoice = $hasVat;
+                $debtInvoice = $hasVat - $prePaid;
             }
 
             $response = [
