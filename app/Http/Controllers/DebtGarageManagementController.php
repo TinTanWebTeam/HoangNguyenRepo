@@ -156,27 +156,12 @@ class DebtGarageManagementController extends Controller
         $allVehicle = DB::table('vehicles')
             ->select(
                 'id',
-                'note',
-                DB::raw("CONCAT(areaCode,'-',vehicleNumber)  AS fullNumber")
+                DB::raw("CONCAT(areaCode,'-',vehicleNumber)  AS fullNumber"),
+                'note'
             )
             ->where('active', 1)
             ->get();
-        $vehicleCost = DB::table('costs')
-            ->join('prices', 'costs.price_id', '=', 'prices.id')
-            ->join('costPrices', 'costPrices.id', '=', 'prices.costPrice_id')
-            ->join('vehicles', 'costs.vehicle_id', '=', 'vehicles.id')
-            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->select('costs.*', 'vehicles.id',
-                DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
-                , 'costs.cost', 'garages.name'
-                , 'costPrices.name', 'costPrices.id'
-                , 'garages.name as garageName'
-            )
-            ->where([
-                ['costs.active', '=', 1],
-                ['costs.status_invoice_garage', '=', 0]
-            ])
-            ->get();
+
         $arrayDataVehicle = [];
         foreach ($allVehicle as $item) {
             $oilPayment = Cost::leftJoin('prices', 'costs.price_id', '=', 'prices.id')
@@ -185,7 +170,8 @@ class DebtGarageManagementController extends Controller
                 ->where('vehicle_id', $item->id)
                 ->select(
                     'costs.vehicle_id as vehicle_id',
-                    'costs.cost as cost'
+                    'costs.cost as cost',
+                    'costs.note as note'
                 )
                 ->get()
                 ->sum('cost');
@@ -195,7 +181,8 @@ class DebtGarageManagementController extends Controller
                 ->where('vehicle_id', $item->id)
                 ->select(
                     'costs.vehicle_id as vehicle_id',
-                    'costs.cost as cost'
+                    'costs.cost as cost',
+                    'costs.note as note'
                 )
                 ->get()
                 ->sum('cost');
@@ -205,7 +192,8 @@ class DebtGarageManagementController extends Controller
                 ->where('vehicle_id', $item->id)
                 ->select(
                     'costs.vehicle_id as vehicle_id',
-                    'costs.cost as cost'
+                    'costs.cost as cost',
+                    'costs.note as note'
                 )
                 ->get()
                 ->sum('cost');
@@ -215,22 +203,21 @@ class DebtGarageManagementController extends Controller
                 ->where('vehicle_id', $item->id)
                 ->select(
                     'costs.vehicle_id as vehicle_id',
-                    'costs.cost as cost'
+                    'costs.cost as cost',
+                    'costs.note as note'
                 )
                 ->get()
                 ->sum('cost');
             array_push($arrayDataVehicle, [
-                'note' => $item->note,
                 'vehicle_id' => $item->id,
                 'fullNumber' => $item->fullNumber,
+                'note' => $item->note,
                 'oil' => $oilPayment,
                 'lube' => $lubePayment,
                 'parking' => $parkingPayment,
                 'other' => $otherPayment
             ]);
         }
-//         dd($arrayDataVehicle);
-
         $response = [
             'msg' => 'Get list all Transport',
             'arrayCostDataVehicle' => $arrayDataVehicle,
@@ -241,7 +228,7 @@ class DebtGarageManagementController extends Controller
 //            'printHistories' => $printHistories,
             'invoiceCode' => $invoiceCode,
             'transportInvoices' => $transportInvoices,
-            'vehicleCost' => $vehicleCost
+            //'vehicleCost' => $vehicleCost
         ];
         return $response;
     }

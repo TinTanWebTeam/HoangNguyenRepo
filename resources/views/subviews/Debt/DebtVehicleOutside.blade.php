@@ -82,7 +82,7 @@
                                        name="fullNumber_transport" placeholder="Nhập số xe">
                             </div>
                         </div>
-                        <div class="col-md-2" >
+                        <div class="col-md-2">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="radio">
@@ -170,9 +170,10 @@
                                 <table class="table table-bordered table-striped table-hover" id="table-transportCost">
                                     <thead>
                                     <tr class="active">
+                                        <th>STT</th>
                                         <th>Số xe</th>
+                                        <th>Phí đổ dầu</th>
                                         <th>Phí thay nhớt</th>
-                                        <th>Phí đổ xăng</th>
                                         <th>Phí Đậu bãi</th>
                                         <th>Phí khác</th>
                                         <th>Ghi chú</th>
@@ -231,6 +232,7 @@
                                 <table class="table table-bordered  table-striped table-hover" id="table-garageInvoice">
                                     <thead>
                                     <tr class="active">
+                                        <th>STT</th>
                                         <th>Mã phiếu</th>
                                         <th>Số xe</th>
                                         <th>Nhà xe</th>
@@ -267,15 +269,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-10">
-                            <div class="radio" id="invoiceDown">
-                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoice" checked
-                                                                         value="All">Tất cả</label>
-                                <label style="margin-right: 10px"><input type="radio" name="rdoInvoice"
-                                                                         value="StillDebt">Còn nợ</label>
-                                <label><input type="radio" name="rdoInvoice" value="FullPay">Trả đủ</label>
-                            </div>
-                        </div>
                         <div class="col-md-2">
                             <div class="radio">
                                 <button onclick="debtGarageView.searchInvoice()" id="btnSearchInvoice"
@@ -294,11 +287,9 @@
                                 <table class="table table-bordered  table-striped table-hover" id="table-debtTransport">
                                     <thead>
                                     <tr class="active">
-                                        <th>Mã</th>
                                         <th>STT</th>
                                         <th>Số xe</th>
                                         <th>Nhà xe</th>
-                                        <th>Mã phiếu thanh toán</th>
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
                                         <th>Đã thanh toán</th>
@@ -306,7 +297,7 @@
                                         <th>Người tạo</th>
                                         <th>Người sửa</th>
                                         <th>Ngày thanh toán</th>
-                                        <th>Thanh toán</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -617,16 +608,20 @@
                 tableInvoiceGarage: null,
                 tableDebtTransport: null,
                 dataTransport: null,
-                dataVehicleCost: null,
                 dataInvoiceGarage: null,
                 dataDebtTransport: null,
-                arrayCostDataVehicle : null,
+                arrayCostDataVehicle: null,
 
 
                 action: null, //new, edit, autoEdit
                 current: null, //for autoEdit
                 currentPayMore: null, //trả tiếp
                 currentInvoiceGarage: null, //tao phiếu thanh toán
+                invoiceGarageId: null, //for edit
+                payMoreId: null, // id tra tiep
+                invoiceCode: null, //Get invoiceCode newest form Server
+                dataTransportInvoice: null,
+                array_transportId: [], //array_transportId of InvoiceGarage current
 
 
                 //////////////////////
@@ -634,17 +629,10 @@
 
                 dataInvoiceGarageDetail: null,
                 dataPrintHistory: null,
-                dataTransportInvoice: null,
+
                 dataSearch: null,
                 dataSearchInvoiceGarage: null,
                 dataSearchVehicleCost: null,
-
-
-                invoiceGarageId: null, //for edit
-                payMoreId: null, // id tra tiep
-
-                array_transportId: [], //array_transportId of InvoiceGarage current
-                invoiceCode: null, //Get invoiceCode newest form Server
 
                 tagsFullNumberTransport: [], //for search
                 tagsFullNumberInvoice: [], //for search
@@ -758,16 +746,17 @@
                     $('#divDebtVerb').find('.date').datepicker("setDate", new Date());
 
                 },
-                renderEventRadioInput: function () {
-                    $('input[type="radio"][name=rdoTransport]').on('change', function (e) {
-                        debtGarageView.searchTransport(e.currentTarget.defaultValue);
-                        debtGarageView.selectAll();
-                    });
-
-                    $('input[type="radio"][name=rdoInvoice]').on('change', function (e) {
-                        debtGarageView.searchInvoice();
-                    });
-                },
+//                renderEventRadioInput: function () {
+//                    alert('a');
+//                    $('input[type="radio"][name=rdoTransport]').on('change', function (e) {
+//                        debtGarageView.searchTransport(e.currentTarget.defaultValue);
+//                        debtGarageView.selectAll();
+//                    });
+//
+//                    $('input[type="radio"][name=rdoInvoice]').on('change', function (e) {
+//                        debtGarageView.searchInvoice();
+//                    });
+//                },
                 renderAutoCompleteSearch: function () {
                     $("#fullNumber_transport").autocomplete({
                         source: debtGarageView.tagsFullNumberTransport
@@ -793,39 +782,25 @@
                     });
                 },
                 renderEventRowClick: function () {
-                    $("#table-data").find("tbody").on('click', 'tr td', function () {
-                        var td = $(this);
-                        var tr = $(this).parent();
-                        if (tr.find('td:eq(1)').text() == td.text()) {
-                            $("input[id=fullNumber_transport]").val(td.text());
+                    alert('a');
+//                    $("#table-data").find("tbody").on('click', 'tr td', function () {
+//                        var td = $(this);
+//                        var tr = $(this).parent();
+//                        if (tr.find('td:eq(1)').text() == td.text()) {
+//                            $("input[id=fullNumber_transport]").val(td.text());
+//
+//                        }
+//
+//                    });
+//                    $("#table-transportCost").find("tbody").on('click', 'tr td', function () {
+//                        var td = $(this);
+//                        var tr = $(this).parent();
+//                        if (tr.find('td:eq(0)').text() == td.text()) {
+//                            $("input[id=fullNumber_cost]").val(td.text());
+//
+//                        }
+//                    });
 
-                        }
-                    });
-                    $("#table-transportCost").find("tbody").on('click', 'tr td', function () {
-                        var td = $(this);
-                        var tr = $(this).parent();
-                        if (tr.find('td:eq(0)').text() == td.text()) {
-                            $("input[id=fullNumber_cost]").val(td.text());
-
-                        }
-                    });
-
-                    $("#table-garageInvoice").find("tbody").on('click', 'tr td', function () {
-                        var td = $(this);
-                        var tr = $(this).parent();
-                        if (tr.find('td:eq(0)').text() == td.text()) {
-                            $("input[id=fullNumber_invoice]").val(td.text());
-                            debtGarageView.searchInvoice();
-                        }
-                    });
-
-                    $("#table-invoiceGarageDetail").find("tbody").on('click', 'tr', function () {
-                        //Get current object
-                        invoiceGarageDetailId = $(this).find('td:first')[0].innerText;
-                        invoiceGarageDetail = _.find(debtGarageView.dataInvoiceGarageDetail, function (o) {
-                            return o.id == invoiceGarageDetailId;
-                        });
-                    });
                 },
                 loadData: function () {
                     if (debtGarageView.table != null)
@@ -840,7 +815,6 @@
                             debtGarageView.dataDebtTransport = data['debtTransports'];
                             debtGarageView.arrayCostDataVehicle = data['arrayCostDataVehicle'];
                             debtGarageView.invoiceCode = data['invoiceCode'];
-                            //debtGarageView.dataVehicleCost = data['vehicleCost'];
                             debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
                             debtGarageView.fillDataToDatatableTransportCost(debtGarageView.arrayCostDataVehicle);
@@ -855,12 +829,13 @@
 
                     debtGarageView.renderDateTimePicker();
                     debtGarageView.renderScrollbar();
-                    debtGarageView.renderEventRadioInput();
-                    debtGarageView.renderEventKeyCode();
-                    debtGarageView.renderEventRowClick();
+//                    debtGarageView.renderEventRadioInput();
+//                    debtGarageView.renderEventKeyCode();
+                    // debtGarageView.renderEventRowClick();
                     setEventFormatCurrency(".currency");
                     formatCurrency(".currency");
                     defaultZero("#paidAmt");
+
                 },
 //                table - transport
                 fillDataToDatatable: function (data) {
@@ -959,7 +934,7 @@
                             {responsivePriority: 1, targets: 10},
                             {responsivePriority: 10, targets: 11},
                             {responsivePriority: 1, targets: 12},
-                            {responsivePriority: 1, targets: 13},
+                            {responsivePriority: 1, targets: 13}
                         ],
                         order: [[1, "asc"]],
                         dom: 'T<"clear">Bfrtip',
@@ -1008,7 +983,6 @@
                                 text: 'Ẩn cột'
                             }
                         ]
-
                     });
                     $("#table-data").css("width", "auto");
                 },
@@ -1017,11 +991,16 @@
                 fillDataToDatatableTransportCost: function (data) {
                     if (debtGarageView.tableTransportCost != null)
                         debtGarageView.tableTransportCost.destroy();
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].stt = i + 1;
+                    }
                     debtGarageView.tableTransportCost = $('#table-transportCost').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
+                            {data: 'stt'},
                             {data: 'fullNumber'},
+
                             {
                                 data: 'oil',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
@@ -1037,10 +1016,14 @@
                             {
                                 data: 'other',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
-
                             },
                             {data: 'note'}
-                        ]
+                        ],
+                        dom: 'frtip',
+                        tableTools: {
+                            "sRowSelect": "multi",
+                            "aButtons": ["select_all", "select_none"]
+                        }
                     });
                     $("#table-transportCost").css("width", "auto");
                 },
@@ -1051,11 +1034,14 @@
                         debtGarageView.tableInvoiceGarage.destroy();
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
+                        data[i].stt = i + 1;
+
                     }
                     debtGarageView.tableInvoiceGarage = $('#table-garageInvoice').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
+                            {data: 'stt'},
                             {data: 'invoiceCode'},
                             {data: 'fullNumber'},
                             {data: 'garages_name'},
@@ -1116,55 +1102,19 @@
                 fillDataToDatatableDebtTransport: function (data) {
                     if (debtGarageView.tableDebtTransport != null)
                         debtGarageView.tableDebtTransport.destroy();
-
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
-                        data[i].debt = parseInt(data[i]['cashDelivery']) - parseInt(data[i]['cashPreDelivery']);
-
-                        var transportInvoice = _.filter(debtGarageView.dataTransportInvoice, function (o) {
-                            return o.transport_id == data[i]['id'];
-                        });
-
-//                        if (transportInvoice.length > 0) {
-//                            transportInvoice = _.map(transportInvoice, 'invoiceGarage_id');
-//                            var invoice = _.filter(debtGarageView.dataInvoiceGarage, function (o) {
-//                                return _.includes(transportInvoice, o.id);
-//                            });
-//                            if (invoice.length > 0) {
-//                                invoice = _.map(invoice, 'invoiceCode');
-//                                data[i].invoiceCode = invoice.toString();
-//                            }
-//                            else {
-//                                data[i].invoiceCode = "";
-//                            }
-//                        }
-//                        else {
-//                            data[i].invoiceCode = "";
-//                        }
                         data[i].stt = i + 1;
                     }
                     debtGarageView.tableDebtTransport = $('#table-debtTransport').DataTable({
                         language: languageOptions,
                         data: data,
                         columns: [
-                            {
-                                data: 'id',
-                                visible: false
-                            },
-                            {
-                                data: 'stt'
-                            },
+                            {data: 'stt'},
                             {data: 'fullNumber'},
                             {data: 'garages_name'},
-                            {
-                                data: 'invoiceCode',
-                                visible: false
-                            },
-
                             {data: 'deliveryPlace'},
-                            {
-                                data: 'voucherNumber'
-                            },
+                            {data: 'voucherNumber'},
                             {
                                 data: 'cashDelivery',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
@@ -1178,30 +1128,30 @@
                                 render: function (data, type, full, meta) {
                                     return moment(data).format("DD/MM/YYYY");
                                 }
-                            },
-                            {
-                                render: function (data, type, full, meta) {
-                                    var color = 'btn-default';
-                                    var text = '';
-
-                                    if (full.cashPreDelivery == 0 && full.invoiceCode == "") {
-                                        color = 'btn-danger';
-                                        text = 'Click để trả đủ';
-                                    }
-                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode == "") {
-                                        color = 'btn-success';
-                                        text = 'Đã trả đủ';
-                                    }
-                                    var tr = '';
-                                    tr += '<div class="text-center">';
-                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtGarageView.autoEditTransportConfirm(" + full.id + ")'>";
-                                    tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
-                                    return tr;
-                                },
-                                visible: false
                             }
+//                            {
+//                                render: function (data, type, full, meta) {
+//                                    var color = 'btn-default';
+//                                    var text = '';
+//
+//                                    if (full.cashPreDelivery == 0 && full.invoiceCode == "") {
+//                                        color = 'btn-danger';
+//                                        text = 'Click để trả đủ';
+//                                    }
+//                                    else if (full.cashPreDelivery == full.cashDelivery && full.invoiceCode == "") {
+//                                        color = 'btn-success';
+//                                        text = 'Đã trả đủ';
+//                                    }
+//                                    var tr = '';
+//                                    tr += '<div class="text-center">';
+//                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtGarageView.autoEditTransportConfirm(" + full.id + ")'>";
+//                                    tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
+//                                    tr += '</div>';
+//                                    tr += '</div>';
+//                                    return tr;
+//                                },
+//                                visible: false
+//                            }
                         ],
                         order: [[1, "asc"]],
                         dom: 'Bfrtip',
@@ -1433,7 +1383,7 @@
                     debtGarageView.save();
                 },
                 autoEditTransportConfirm: function (transportId) {
-                    debtGarageView.deselectAll();
+
                     debtGarageView.current = null;
                     debtGarageView.current = _.clone(_.find(debtGarageView.dataTransport, function (o) {
                         return o.id == transportId;
@@ -1492,10 +1442,11 @@
                             debtGarageView.dataTransport = data['transports'];
                             debtGarageView.dataDebtTransport = data['debtTransports'];
                             debtGarageView.invoiceCode = data['invoiceCode'];
-                            debtGarageView.dataVehicleCost = data['vehicleCost'];
                             debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+                            debtGarageView.arrayCostDataVehicle = data['arrayCostDataVehicle'];
+
                             debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                            debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
+                            debtGarageView.fillDataToDatatableTransportCost(debtGarageView.arrayCostDataVehicle);
                             debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
                             debtGarageView.fillDataToDatatableDebtTransport(debtGarageView.dataDebtTransport);
                             //Show notification
@@ -1529,10 +1480,10 @@
                                 debtGarageView.dataTransport = data['transports'];
                                 debtGarageView.dataDebtTransport = data['debtTransports'];
                                 debtGarageView.invoiceCode = data['invoiceCode'];
-                                debtGarageView.dataVehicleCost = data['vehicleCost'];
                                 debtGarageView.dataInvoiceGarage = data['invoiceGarages'];
+                                debtGarageView.arrayCostDataVehicle = data['arrayCostDataVehicle'];
+                                debtGarageView.fillDataToDatatableTransportCost(debtGarageView.arrayCostDataVehicle);
                                 debtGarageView.fillDataToDatatable(debtGarageView.dataTransport);
-                                debtGarageView.fillDataToDatatableTransportCost(debtGarageView.dataVehicleCost);
                                 debtGarageView.fillDataToDatatableInvoiceGarage(debtGarageView.dataInvoiceGarage);
                                 debtGarageView.fillDataToDatatableDebtTransport(debtGarageView.dataDebtTransport);
                                 if (debtGarageView.action == 'new') {
@@ -1557,247 +1508,6 @@
                         $("#frmInvoice").find("label[class=error]").css("color", "red");
                     }
                 },
-
-//                printReview: function (invoiceGarageDetail_id) {
-//                    debtGarageView.displayModal('show', '#modal-printReview');
-//                },
-//                attachFile: function (invoiceGarageDetail_id) {
-//                    //    console.log(invoiceGarageDetail_id);
-//                },
-//
-//                clearSearch: function (tableName) {
-//                    if (tableName == "transport") {
-//                        $("#dateSearchTransport").find(".start").datepicker('update', '');
-//                        $("#dateSearchTransport").find(".end").datepicker('update', '');
-//                        $("input[id=fullNumber_transport]").val('');
-//                        debtGarageView.searchTransport();
-//                    } else if (tableName == "vehicleCost") {
-//                        $("#dateSearchVehicleCost").find(".start").datepicker('update', '');
-//                        $("#dateSearchVehicleCost").find(".end").datepicker('update', '');
-//                        $("input[id=fullNumber_cost]").val('');
-//                        debtGarageView.searchVehicleCost();
-//                    } else {
-//                        $("#dateSearchInvoice").find(".start").datepicker('update', '');
-//                        $("#dateSearchInvoice").find(".end").datepicker('update', '');
-//                        $("input[id=fullNumber_invoice]").val('');
-//                        debtGarageView.searchInvoice();
-//                    }
-//
-//                },
-//                searchTransport: function (money) {
-//                    var found = debtGarageView.searchExportInvoice(debtGarageView.dataTransport);
-//                    if (typeof money === 'undefined')
-//                        found = debtGarageView.searchStatusMoney(found);
-//                    else
-//                        found = debtGarageView.searchStatusMoney(found, money.value);
-//                    found = debtGarageView.searchVehicle(found);
-//                    found = debtGarageView.searchDate(found);
-//                    debtGarageView.dataSearch = found;
-//
-//                    debtGarageView.table.clear().rows.add(debtGarageView.dataSearch).draw();
-//                    //fill data to listSearch
-//                    debtGarageView.tagsFullNumberTransport = _.map(debtGarageView.dataSearch, 'fullNumber');
-//                    debtGarageView.tagsFullNumberTransport = _.union(debtGarageView.tagsFullNumberTransport);
-//
-//                    debtGarageView.renderAutoCompleteSearch();
-//
-//                    // fill data to input
-//                    var fromDate = $("#dateSearchTransport").find(".start").val();
-//                    var toDate = $("#dateSearchTransport").find(".end").val();
-//                    $("input[id='dateSearchVehicleCost']").find(".start").datepicker('update', fromDate);
-//                    $("input[id='dateSearchVehicleCost']").find(".end").datepicker('update', toDate);
-//                    $('input[id=fullNumber_cost]').val($('input[id=fullNumber_transport]').val());
-//
-//                    //    var invoice = $("#invoiceUp").find("input:checked").val();
-//                    //    switch(){
-//                    //        case 'All':
-//                    //         $("#costDown[value=All]").prop('checked', true);
-//                    //         break;
-//                    //        case 'StillDebt':
-//                    //         $("#costDown[value=StillDebt").prop('checked', true);
-//                    //         break;
-//                    //        case 'FullPay':
-//                    //         $("#costDown[value=FullPay]").prop('checked', true);
-//                    //         break;
-//                    //    }
-//
-//                    // call search invoice
-//                    debtGarageView.searchCost();
-//
-//                },
-//                searchInvoice: function () {
-//                    var found = debtGarageView.searchStatusMoneyInvoice(debtGarageView.dataInvoiceGarage);
-//                    found = debtGarageView.searchGarageInvoice(found);
-//                    found = debtGarageView.searchDateInvoice(found);
-//                    debtGarageView.dataSearchInvoiceGarage = found;
-//                    debtGarageView.tableInvoiceGarage.clear().rows.add(debtGarageView.dataSearchInvoiceGarage).draw();
-//
-//                    //fill data to listSearch
-//                    debtGarageView.tagsFullNumberInvoice = _.map(debtGarageView.dataSearchInvoiceGarage, 'fullNumber');
-//                    debtGarageView.tagsFullNumberInvoice = _.union(debtGarageView.tagsFullNumberInvoice);
-//                    debtGarageView.renderAutoCompleteSearch();
-//                },
-//                searchCost: function () {
-//                    var found = debtGarageView.searchDateVehicleCost(debtGarageView.dataVehicleCost);
-//                    found = debtGarageView.searchVehicleCost(found);
-//                    found = debtGarageView.searchStatusMoneyVehicleCost(found);
-//
-//                    debtGarageView.dataSearchVehicleCost = found;
-//                    debtGarageView.tableTransportCost.clear().rows.add(debtGarageView.dataSearchVehicleCost).draw();
-//                    //fill data to listSearch
-//                    debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearchVehicleCost, 'fullNumber');
-//                    debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
-//                    debtGarageView.renderAutoCompleteSearch();
-//
-//                },
-//
-//                searchTransportVehicleCost: function () {
-//                    var found = debtGarageView.searchStatusMoneyVehicleCost(debtGarageView.dataVehicleCost);
-//                    found = debtGarageView.searchVehicleCost(found);
-//
-//                    debtGarageView.tagsFullNumberCost = _.map(debtGarageView.dataSearch, 'fullNumber');
-//                    debtGarageView.tagsFullNumberCost = _.union(debtGarageView.tagsFullNumberCost);
-//                    debtGarageView.renderAutoCompleteSearch();
-//                },
-//
-//
-//                searchDate: function (data) {
-//                    var fromDate = $("#dateSearchTransport").find(".start").val();
-//                    var toDate = $("#dateSearchTransport").find(".end").val();
-//                    if (fromDate == '' || toDate == '')
-//                        return data;
-//                    fromDate = moment(fromDate, "DD-MM-YYYY");
-//                    toDate = moment(toDate, "DD-MM-YYYY");
-//                    if (!fromDate.isValid() && !toDate.isValid())
-//                        return data;
-//
-//                    var found = _.filter(data, function (o) {
-//                        var dateFind = moment(o.receiveDate, "YYYY-MM-DD H:m:s");
-//                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
-//                    });
-//                    return found;
-//                },
-//                searchVehicle: function (data) {
-//                    var vehicle = $("#fullNumber_transport").val();
-//                    if (vehicle == '')
-//                        return data;
-//                    var found = _.filter(data, function (o) {
-//                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
-//                    });
-//                    return found;
-//                },
-//                searchExportInvoice: function (data) {
-//                    var invoice = $("#invoiceUp").find("input:checked").val();
-//                    var found = _.filter(data, function (o) {
-//                        if (invoice == 'All') {
-//                            return true;
-//                        } else if (invoice == 'Invoice') {
-//                            return o.invoiceGarage_id != null;
-//                        } else {
-//                            return o.invoiceGarage_id == null;
-//                        }
-//                    });
-//                    return found;
-//                },
-//                searchStatusMoney: function (data, value) {
-//                    if (typeof value === 'undefined')
-//                        var money = $("select[id=statusMoney]").val();
-//                    else
-//                        var money = value;
-//                    var found = _.filter(data, function (o) {
-//                        if (money == 'FullPay') {
-//                            return o.cashDelivery == o.cashPreDelivery;
-//                        } else if (money == 'PrePay') {
-//                            return o.cashPreDelivery != 0 && o.cashDelivery > o.cashPreDelivery;
-//                        } else if (money == 'NotPay') {
-//                            return o.cashPreDelivery == 0;
-//                        } else if (money == 'All') {
-//                            return true;
-//                        }
-//                    });
-//                    return found;
-//                },
-//
-//                searchDateInvoice: function (data) {
-//                    fromDate = $("#dateSearchInvoice").find(".start").val();
-//                    toDate = $("#dateSearchInvoice").find(".end").val();
-//                    if (fromDate == '' || toDate == '')
-//                        return data;
-//
-//                    fromDate = moment(fromDate, "DD-MM-YYYY");
-//                    toDate = moment(toDate, "DD-MM-YYYY");
-//                    if (!fromDate.isValid() && !toDate.isValid())
-//                        return data;
-//
-//                    found = _.filter(data, function (o) {
-//                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
-//                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
-//                    });
-//                    return found;
-//                },
-//                searchGarageInvoice: function (data) {
-//                    garaName = $("#fullNumber_invoice").val();
-//                    if (garaName == '')
-//                        return data;
-//
-//                    found = _.filter(data, function (o) {
-//                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(fullNumber.toLowerCase()));
-//                    });
-//                    return found;
-//                },
-//                searchStatusMoneyInvoice: function (data) {
-//                    money = $("#invoiceDown").find("input:checked").val();
-//                    found = _.filter(data, function (o) {
-//                        if (money == 'All') {
-//                            return true;
-//                        } else if (money == 'StillDebt') {
-//                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
-//                        } else {
-//                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
-//                        }
-//                    });
-//                    return found;
-//                },
-//
-//                searchDateVehicleCost: function (data) {
-//                    var fromDate = $("#dateSearchVehicleCost").find(".start").val();
-//                    var toDate = $("#dateSearchVehicleCost").find(".end").val();
-//                    if (fromDate == '' || toDate == '')
-//                        return data;
-//
-//                    fromDate = moment(fromDate, "DD-MM-YYYY");
-//                    toDate = moment(toDate, "DD-MM-YYYY");
-//                    if (!fromDate.isValid() && !toDate.isValid())
-//                        return data;
-//
-//                    found = _.filter(data, function (o) {
-//                        var dateFind = moment(o.invoiceDate, "YYYY-MM-DD H:m:s");
-//                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
-//                    });
-//                    return found;
-//                },
-//                searchVehicleCost: function (data) {
-//                    var vehicle = $("#fullNumber_cost").val();
-//                    if (vehicle == '')
-//                        return data;
-//                    var found = _.filter(data, function (o) {
-//                        return removeDiacritics(o.fullNumber.toLowerCase()).includes(removeDiacritics(vehicle.toLowerCase()));
-//                    });
-//                    return found;
-//                },
-//                searchStatusMoneyVehicleCost: function (data) {
-//                    var money = $("#costDown").find("input:checked").val();
-//                    var found = _.filter(data, function (o) {
-//                        if (money == 'All') {
-//                            return true;
-//                        } else if (money == 'StillDebt') {
-//                            return parseInt(o.totalPay) > parseInt(o.totalPaid) + parseInt(o.prePaid);
-//                        } else {
-//                            return parseInt(o.totalPay) == parseInt(o.totalPaid) + parseInt(o.prePaid);
-//                        }
-//                    });
-//                    return found;
-//                },
                 save: function () {
                     var sendToServer = {
                         _token: _token,
@@ -1828,6 +1538,58 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                },
+
+                searchDate: function (data) {
+                    var fromDate = $("#dateSearchTransport").find(".start").val();
+                    var toDate = $("#dateSearchTransport").find(".end").val();
+                    if (fromDate == '' || toDate == '')
+                        return data;
+
+                    fromDate = moment(fromDate, "DD-MM-YYYY");
+                    toDate = moment(toDate, "DD-MM-YYYY");
+                    if (!fromDate.isValid() && !toDate.isValid())
+                        return data;
+
+                    var found = _.filter(data, function (o) {
+                        var dateFind = moment(o.transportDate, "YYYY-MM-DD H:m:s");
+                        dateFind.hour(0);
+                        dateFind.minute(0);
+                        dateFind.second(0);
+                        return moment(dateFind).isBetween(fromDate, toDate, null, '[]');
+                    });
+                    return found;
+                },
+                searchCustomer: function (data) {
+                    var custName = $("#custName_transport").val();
+                    if (custName == '')
+                        return data;
+
+                    var found = _.filter(data, function (o) {
+                        if (o.customers_fullName == null)
+                            return false;
+                        else
+                            return removeDiacritics(o.customers_fullName.toLowerCase()).includes(removeDiacritics(custName.toLowerCase()));
+                    });
+                    return found;
+                },
+                searchStatusMoney: function (data, value) {
+                    if (typeof value === 'undefined')
+                        var money = $("select[id=statusMoney]").val();
+                    else
+                        var money = value;
+                    var found = _.filter(data, function (o) {
+                        if (money == 'FullPay') {
+                            return o.cashRevenue == o.cashReceive;
+                        } else if (money == 'PrePay') {
+                            return o.cashReceive != 0 && o.cashRevenue > o.cashReceive;
+                        } else if (money == 'NotPay') {
+                            return o.cashReceive == 0;
+                        } else {
+                            return true;
+                        }
+                    });
+                    return found;
                 }
 
 

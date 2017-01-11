@@ -1316,6 +1316,7 @@
                         var vehicle = _.filter(garageInsideView.dataAllVehicle, function (o) {
                             return o.areaCode + o.vehicleNumber == fullNumber;
                         });
+                        console.log(vehicle.id);
                         var inDriver = $("input[id=my-id]").val();
                         if (inDriver != "") {
                             var driver = _.find(garageInsideView.dataAllDriver, function (o) {
@@ -1326,6 +1327,7 @@
                                 return;
                             }
                         }
+
                         else if (vehicle != 0 && garageInsideView.action == "addVehicle") {
                             showNotification("warning", "Xe đã tồn tại!");
                             return;
