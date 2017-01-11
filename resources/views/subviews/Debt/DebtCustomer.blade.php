@@ -153,6 +153,72 @@
                         </div>
                     </div>
 
+
+                    <!-- Trả trực tiếp -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="lead text-primary text-left"><strong>Trả trực tiếp</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5" id="dateSearchTransport_fullPay">
+                            <input type="text" class="date start"/> đến
+                            <input type="text" class="date end"/>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="ui-widget">
+                                <input type="text" class="form-control" id="custName_transport_fullPay" name="custName_transport_fullPay" placeholder="Nhập tên khách hàng">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="radio">
+                                <button id="btnSearchTransport_fullPay" class="btn btn-sm btn-info marginRight"
+                                        onclick="debtCustomerView.searchTransport_fullPay();">
+                                    <i class="fa fa-search" aria-hidden="true"></i> Tìm
+                                </button>
+                                <button class="btn btn-sm btn-default"
+                                        onclick="debtCustomerView.clearSearch('transport_fullPay')">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover" id="table-transport_fullPay">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Mã</th>
+                                        <th>STT</th>
+                                        <th>Khách hàng</th>
+                                        <th>Ngày vận chuyển</th>
+                                        <th>Số xe</th>
+                                        <th>Nơi nhận</th>
+                                        <th>Nơi giao</th>
+                                        <th>Lượng hàng</th>
+                                        <th>Đơn giá</th>
+                                        <th>Bốc xếp</th>
+                                        <th>Neo đêm</th>
+                                        <th>Công an</th>
+                                        <th>Phí tăng bo</th>
+                                        <th>Thêm điểm</th>
+                                        <th>Doanh thu</th>
+                                        <th>Lợi nhuận</th>
+                                        <th>Thanh toán</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- // Trả trực tiếp -->
+
+
                     <hr>
                     <p class="lead text-primary text-left"><strong>Hóa đơn</strong></p>
                     <div class="row">
@@ -597,6 +663,7 @@
                 tablePTT: null,
                 tableInvoiceCustomerDetail: null,
                 tablePrintHistory: null,
+                tableTransport_fullPay: null,
 
                 dataTransport: null,
                 dataInvoiceCustomer: null,
@@ -605,6 +672,8 @@
                 dataTransportInvoice: null,
                 dataPTT: null,
                 dataSearchPTT: null,
+                dataTransport_fullPay: null,
+                dataSearchTransport_fullPay: null,
 
                 dataSearch: null,
                 dataSearchInvoiceCustomer: null,
@@ -619,6 +688,7 @@
                 tagsCustomerNameTransport: [], //for search
                 tagsCustomerNameInvoice: [], //for search
                 tagsCustomerNamePTT: [], //for search
+                tagsCustomerNameTransport_fullPay: [], //for search
                 statusPrePaid: 0,
                 statusInvoice: 0,
                 firstDay: null,
@@ -700,6 +770,10 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    $('#dateSearchTransport_fullPay .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
 
                     $('#divInvoice').find('.date').datepicker("setDate", new Date());
                 },
@@ -724,6 +798,10 @@
 
                     $("#custName_PTT").autocomplete({
                         source: debtCustomerView.tagsCustomerNamePTT
+                    });
+
+                    $("#custName_transport_fullPay").autocomplete({
+                        source: debtCustomerView.tagsCustomerNameTransport_fullPay
                     });
                 },
                 renderEventKeyCode: function () {
@@ -979,6 +1057,150 @@
                     });
                     $("#table-data").css("width", "auto");
                 },
+                fillDataToDatatableTransport_fullPay: function (data) {
+                    if(debtCustomerView.tableTransport_fullPay != null)
+                        debtCustomerView.tableTransport_fullPay.destroy();
+
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i]['transportType'] === 1) {
+                            data[i].fullNumber = data[i]['vehicle_name'];
+                            data[i].products_name = data[i]['product_name'];
+                            data[i].customers_fullName = data[i]['customer_name'];
+                        } else {
+                            var fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                            data[i].fullNumber = fullNumber;
+                        }
+                        data[i].debt = data[i]['cashRevenue'] - data[i]['cashReceive'];
+
+                        var transportInvoice = _.filter(debtCustomerView.dataTransportInvoice, function(o){
+                            return o.transport_id == data[i]['id'];
+                        });
+
+                        if(transportInvoice.length > 0){
+                            transportInvoice = _.map(transportInvoice, 'invoiceCustomer_id');
+                            var invoice = _.filter(debtCustomerView.dataInvoiceCustomer, function(o){
+                                return _.includes(transportInvoice, o.id);
+                            });
+                            if(invoice.length > 0){
+                                invoice = _.map(invoice, 'invoiceCode');
+                                data[i].invoiceCode = invoice.toString();
+                            }
+                            else {
+                                data[i].invoiceCode = "";
+                            }
+                        }
+                        else {
+                            data[i].invoiceCode = "";
+                        }
+                        data[i].stt = i + 1;
+                    }
+
+                    debtCustomerView.tableTransport_fullPay = $('#table-transport_fullPay').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {
+                                data: 'id',
+                                visible: false
+                            },
+                            {data: 'stt'},
+                            {data: 'customers_fullName'},
+                            {
+                                data: 'transportDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {data: 'fullNumber'},
+                            {data: 'receivePlace'},
+                            {data: 'deliveryPlace'},
+                            {data: 'quantumProduct'},
+                            {
+                                data: 'formula_unitPrice',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'carrying',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'parking',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'fine',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'phiTangBo',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'addScore',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'cashRevenue',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'cashProfit',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var color = 'btn-default';
+                                    var text = '';
+                                    if (full.cashReceive == 0 && full.invoiceCode == ""){
+                                        color = 'btn-danger';
+                                        text = 'Click để trả đủ';
+                                    }
+                                    else if (full.cashReceive == full.cashRevenue){
+                                        color = 'btn-success';
+                                        text = 'Đã trả đủ';
+                                    }
+                                    else if (full.cashReceive > 0 && full.invoiceCode == ""){
+                                        color = 'btn-primary';
+                                        text = 'Click để trả đủ';
+                                    } else if (full.invoiceCode != ""){
+                                        color = 'btn-info';
+                                        text = 'Đã xuất hóa đơn';
+                                    }
+
+                                    var tr = '';
+                                    tr += '<div class="text-center" data-transportId="' + full.id + '">';
+                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' onclick='debtCustomerView.autoEditTransportConfirm(" + full.id + ")'>";
+                                    tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ],
+                        responsive: true,
+                        columnDefs: [
+                            {responsivePriority: 1, targets: 0}, // STT
+                            {responsivePriority: 1, targets: 1}, // KH
+                            {responsivePriority: 1, targets: 2}, // Ngay van chuyen
+                            {responsivePriority: 1, targets: 3}, // Xe
+                            {responsivePriority: 1, targets: 4}, // Noi nhan
+                            {responsivePriority: 1, targets: 5}, // Noi giao
+                            {responsivePriority: 1, targets: 6}, // Luong hang
+                            {responsivePriority: 1, targets: 7}, // Don gia
+                            {responsivePriority: 10, targets: 8}, // Boc xep
+                            {responsivePriority: 10, targets: 9}, // Neo dem
+                            {responsivePriority: 10, targets: 10}, // Cong an
+                            {responsivePriority: 10, targets: 11}, // Phi tang bo
+                            {responsivePriority: 10, targets: 12}, // Them diem
+                            {responsivePriority: 1, targets: 13}, // Doanh thu
+                            {responsivePriority: 1, targets: 14}, // Loi nhuan
+                            {responsivePriority: 1, targets: 15}, // sua xoa
+                        ],
+                        order: [[1, "asc"]],
+                        dom: 'frtip'
+                    });
+                    $("#table-Transport_fullPay").css("width", "auto");
+                },
                 fillDataToDatatableInvoiceCustomer: function (data) {
                     if(debtCustomerView.tableInvoiceCustomer != null)
                         debtCustomerView.tableInvoiceCustomer.destroy();
@@ -1183,6 +1405,12 @@
                     debtCustomerView.dataPTT                   = dataPTT;
                     debtCustomerView.dataSearchPTT             = dataPTT;
 
+                    var dataTransportFullPay = _.filter(data['transports'], function(o){
+                        return o['status_invoice'] == 3;
+                    });
+                    debtCustomerView.dataTransport_fullPay       = dataTransportFullPay;
+                    debtCustomerView.dataSearchTransport_fullPay = dataTransportFullPay;
+
                     debtCustomerView.invoiceCode               = data['invoiceCode'];
                     debtCustomerView.invoiceCodeBill           = data['invoiceCodeBill'];
                     debtCustomerView.firstDay                  = data['firstDay'];
@@ -1201,11 +1429,13 @@
                             debtCustomerView.fillDataToDatatable(debtCustomerView.dataTransport);
                             debtCustomerView.fillDataToDatatableInvoiceCustomer(debtCustomerView.dataInvoiceCustomer);
                             debtCustomerView.fillDataToDatatablePTT(debtCustomerView.dataPTT);
+                            debtCustomerView.fillDataToDatatableTransport_fullPay(debtCustomerView.dataTransport_fullPay);
 
                             debtCustomerView.setCurrentMonth();
                             debtCustomerView.searchTransport();
                             debtCustomerView.searchInvoice();
                             debtCustomerView.searchPTT();
+                            debtCustomerView.searchTransport_fullPay();
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1926,6 +2156,18 @@
                     debtCustomerView.tagsCustomerNameTransport = _.union(debtCustomerView.tagsCustomerNameTransport);
                     debtCustomerView.renderAutoCompleteSearch();
                 },
+                searchTransport_fullPay: function () {
+                    var found = debtCustomerView.searchCustomer(debtCustomerView.dataTransport_fullPay);
+                    found = debtCustomerView.searchDate(found);
+
+                    debtCustomerView.dataSearchTransport_fullPay = found;
+                    debtCustomerView.tableTransport_fullPay.clear().rows.add(debtCustomerView.dataSearchTransport_fullPay).draw();
+
+                    //fill data to listSearch
+                    debtCustomerView.tagsCustomerNameTransport_fullPay = _.map(debtCustomerView.dataSearchTransport_fullPay, 'customers_fullName');
+                    debtCustomerView.tagsCustomerNameTransport_fullPay = _.union(debtCustomerView.tagsCustomerNameTransport_fullPay);
+                    debtCustomerView.renderAutoCompleteSearch();
+                },
                 searchInvoice: function () {
                     var found = debtCustomerView.searchStatusMoneyInvoice(debtCustomerView.dataInvoiceCustomer);
 
@@ -2329,6 +2571,9 @@
 
                     $("#dateSearchPTT").find(".start").datepicker('update', debtCustomerView.firstDay);
                     $("#dateSearchPTT").find(".end").datepicker('update', debtCustomerView.lastDay);
+
+                    $("#dateSearchTransport_fullPay").find(".start").datepicker('update', debtCustomerView.firstDay);
+                    $("#dateSearchTransport_fullPay").find(".end").datepicker('update', debtCustomerView.lastDay);
                 },
                 PTTchecked: function(cb) {
                     if(cb.checked) {
