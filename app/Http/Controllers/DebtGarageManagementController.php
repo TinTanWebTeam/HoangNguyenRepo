@@ -19,6 +19,14 @@ use League\Flysystem\Exception;
 
 class DebtGarageManagementController extends Controller
 {
+    private $firstDayUTS;
+    private $lastDayUTS;
+
+    public function __construct() {
+        $this->firstDayUTS = mktime (0, 0, 0, date("m"), 1, date("Y"));
+        $this->lastDayUTS = mktime (0, 0, 0, date("m"), date('t'), date("Y"));
+    }
+
     //Function
     public function generateInvoiceCode($type)
     {
@@ -219,15 +227,17 @@ class DebtGarageManagementController extends Controller
             ]);
         }
         $response = [
-            'msg' => 'Get list all Transport',
+            'msg'                  => 'Get list all Transport',
             'arrayCostDataVehicle' => $arrayDataVehicle,
-            'transports' => $transports,
-            'debtTransports' => $debtTransports,
-            'invoiceGarages' => $invoiceGarages,
+            'transports'           => $transports,
+            'debtTransports'       => $debtTransports,
+            'invoiceGarages'       => $invoiceGarages,
 //            'invoiceGarageDetails' => $invoiceGarageDetails,
 //            'printHistories' => $printHistories,
-            'invoiceCode' => $invoiceCode,
-            'transportInvoices' => $transportInvoices,
+            'invoiceCode'          => $invoiceCode,
+            'transportInvoices'    => $transportInvoices,
+            'firstDay'             => date("d-m-Y", $this->firstDayUTS),
+            'lastDay'              => date("d-m-Y", $this->lastDayUTS)
             //'vehicleCost' => $vehicleCost
         ];
         return $response;

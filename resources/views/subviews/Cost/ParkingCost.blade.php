@@ -833,7 +833,7 @@
                     var start = moment($('input[id=dateCheckIn]').val() + " " + $('input[id=timeCheckIn]').val(), "DD-MM-YYYY HH:mm");
                     var end = moment($('input[id=dateCheckOut]').val() + " " + $('input[id=timeCheckOut]').val(), "DD-MM-YYYY HH:mm");
                     if (end < start) {
-                        showNotification("error", "Ngày lấy xe phải nhỏ hơn ngày đậu xe!");
+                        showNotification("error", "Ngày lấy xe phải lớn hơn ngày đậu xe!");
                         $('input[id=totalTime]').val(0);
                         $('input[id=totalDate]').val(0);
                         $("input[id=totalCost]").val(0);
