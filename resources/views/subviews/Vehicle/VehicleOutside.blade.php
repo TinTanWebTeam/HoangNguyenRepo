@@ -973,7 +973,7 @@
                         garageOutsideView.current = {
                             name: $("input[id='name']").val(),
                             address: $("input[id='address']").val(),
-                            contact: $("input[id='contact']").val(),
+                            contact: $("input[id='contact']").val().toUpperCase(),
                             phone: $("input[id='phone']").val(),
                             note: $("textarea[id='note']").val()
                         };

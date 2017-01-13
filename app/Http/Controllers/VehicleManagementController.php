@@ -48,7 +48,6 @@ class VehicleManagementController extends Controller
         $phone = null;
         $note = null;
         $action = $request->input('_action');
-
         if ($action != 'delete') {
             $validator = ValidateController::ValidateGarageInside($request->input('_garage'));
             if ($validator->fails()) {
@@ -60,10 +59,7 @@ class VehicleManagementController extends Controller
             $contact =  $request->input('_garage')['contact'];
             $phone = $request->input('_garage')['phone'];
             $note = $request->input('_garage')['note'];
-
         }
-
-
         switch ($action) {
             case 'add':
                 $garageNew = new Garage();
