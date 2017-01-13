@@ -627,7 +627,7 @@
                                         <th>Tổng phiếu thanh toán</th>
                                         <th>Chi phí</th>
                                         <th>Nợ</th>
-                                        <th>Đã trã</th>
+                                        <th>Đã trả</th>
                                         <th>Ngày trả</th>
                                     </tr>
                                     </thead>
