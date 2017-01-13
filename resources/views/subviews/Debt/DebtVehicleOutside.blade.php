@@ -203,17 +203,17 @@
                             <div class="radio" id="PTTDown">
                                 <label style="margin-right: 10px">
                                     <input type="radio" name="rdoPTT" checked value="All"
-                                           onchange="debtVehicleOutSideView.searchPTT()">
+                                           onchange="debtVehicleOutSideView.search('PTT')">
                                     Tất cả
                                 </label>
                                 <label style="margin-right: 10px">
                                     <input type="radio" name="rdoPTT" value="StillDebt"
-                                           onchange="debtVehicleOutSideView.searchPTT()">
+                                           onchange="debtVehicleOutSideView.search('PTT')">
                                     Còn nợ
                                 </label>
                                 <label>
                                     <input type="radio" name="rdoPTT" value="FullPay"
-                                           onchange="debtVehicleOutSideView.searchPTT()">
+                                           onchange="debtVehicleOutSideView.search('PTT')">
                                     Trả đủ
                                 </label>
                             </div>
@@ -693,12 +693,9 @@
                 tagsFullNumberCost: [], //for search
                 tagsFullNumberPTT: [], //for search
                 tagsFullNumberPay: [], //for search
-
                 firstDay: null,
                 lastDay: null,
                 dataDetailPTT: null,
-
-
                 clearSearch: function (temp) {
                     if (temp == 'transport') {
                         $("input[id=fullNumber_transport]").val('');
@@ -781,7 +778,6 @@
                 deselectAll: function () {
                     $('#ToolTables_table-data_1').click();
                 },
-
                 renderScrollbar: function () {
                     $("#divInvoice").find('.panel-body').mCustomScrollbar({
                         theme: "dark"
@@ -822,18 +818,6 @@
                     $('#divDebtVerb').find('.date').datepicker("setDate", new Date());
 
                 },
-
-//                renderEventRadioInput: function () {
-//                    alert('a');
-//                    $('input[type="radio"][name=rdoTransport]').on('change', function (e) {
-//                        debtVehicleOutSideView.searchTransport(e.currentTarget.defaultValue);
-//                        debtVehicleOutSideView.selectAll();
-//                    });
-//
-//                    $('input[type="radio"][name=rdoInvoice]').on('change', function (e) {
-//                        debtVehicleOutSideView.searchInvoice();
-//                    });
-//                },
                 renderAutoCompleteSearch: function () {
                     debtVehicleOutSideView.tagsFullNumberTransport = _.map(debtVehicleOutSideView.dataTransport, function (o) {
                         return o['vehicles_areaCode'] + '-' + o['vehicles_vehicleNumber'];
@@ -1087,7 +1071,6 @@
 
 //                table - chi phi xe
                 fillDataToDatatableTransportCost: function (data) {
-                    console.log(data);
                     if (debtVehicleOutSideView.tableTransportCost != null)
                         debtVehicleOutSideView.tableTransportCost.destroy();
                     for (var i = 0; i < data.length; i++) {
@@ -1129,14 +1112,12 @@
 
 //                table - phiếu thanh toán
                 fillDataToDatatableInvoiceGarage: function (data) {
-
                     if (debtVehicleOutSideView.tableInvoiceGarage != null)
                         debtVehicleOutSideView.tableInvoiceGarage.destroy();
                     for (var i = 0; i < data.length; i++) {
                         data[i].fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + '-' + data[i]['vehicles_vehicleNumber'];
                         data[i].stt = i + 1;
                     }
-
                     debtVehicleOutSideView.tableInvoiceGarage = $('#table-garageInvoice').DataTable({
                         language: languageOptions,
                         data: data,
@@ -1180,21 +1161,29 @@
                                 render: function (data, type, full, meta) {
                                     var color = 'btn-default';
                                     var text = '';
+                                    var display = '';
+                                    var line = '';
                                     if (full.debt != 0) {
                                         color = 'btn-danger';
                                         text = 'Click để trả đủ';
+                                        display = 'block';
+                                        line = 'inline-block';
+
                                     }
                                     else if (full.debt == 0) {
                                         color = 'btn-success';
                                         text = 'Đã trả đủ';
+                                        display = 'none';
+                                        line = 'inline-block';
+
                                     }
                                     var tr = '';
-                                    tr += '<div class="text-center">';
-                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "'  onclick='debtVehicleOutSideView.debtVerb(" + full.id + ")'>";
+                                    tr += '<div class="text-center" style="display:'+ line +';padding-right: 5px"  >';
+                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' style='display:" + display +"'  onclick='debtVehicleOutSideView.debtVerb(" + full.id + ")'>";
                                     tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="text-center">';
+                                    tr += '<div class="text-center" style="display:'+ line +'">';
                                     tr += "<div class='btn btn-circle btn-primary' title='Chi tiết phiếu thanh toán'  onclick='debtVehicleOutSideView.detailPTT(" + full.id + ")'>";
                                     tr += '<i class="glyphicon glyphicon-list"></i>';
                                     tr += '</div>';
@@ -1205,9 +1194,7 @@
                             }
                         ]
                     });
-                    $("#table-garageInvoice").css("width", "auto");
                 },
-
 
 //                table - chi tiet ptt
                 fillDataToDatatableDetailPTT: function (data) {
@@ -1247,7 +1234,6 @@
                 },
 
                 detailPTT: function (id) {
-                    console.log(debtVehicleOutSideView.dataDetailPTT);
                     debtVehicleOutSideView.displayModal('show', '#modal-detailPtt');
                     var detailPtt = _.filter(debtVehicleOutSideView.dataDetailPTT, function (o) {
                         return o.idDetail == id
