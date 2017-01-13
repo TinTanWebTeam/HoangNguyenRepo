@@ -126,6 +126,7 @@ class DebtGarageManagementController extends Controller
                 ['transports.customer_id', '<>', 0],
                 ['transports.status_invoice_garage', '=', 3]
             ])
+            ->groupBy('transports.vehicle_id')
             ->orderBy('transports.receiveDate', 'desc')
             ->get();
 
@@ -282,30 +283,29 @@ class DebtGarageManagementController extends Controller
 
         $transport_id = $request->input('_transport');
         $vehicleId = Transport::where('id', $transport_id)->pluck('vehicle_id');
-        $costId = Cost::where('vehicle_id',$vehicleId)->pluck('id','vehicle_id');
-
-
         $pay = $request->input('_pay');
         try {
             DB::beginTransaction();
             $transportUpdate = Transport::findOrFail($transport_id);
             $transportUpdate->cashPreDelivery = $transportUpdate->cashDelivery;
             $transportUpdate->cashDelivery = $pay;
-            $transportUpdate->status_invoice_garage = 3;
             $transportUpdate->updatedBy = \Auth::user()->id;
             if (!$transportUpdate->update()) {
                 DB::rollBack();
                 return response()->json(['msg' => 'Update failed'], 404);
             }
-            if(count($costId) != "") {
-                $updateCost = Cost::findOrFail($costId);
-                $updateCost->status_invoice_garage = 1;
-                if (!$updateCost->update()) {
-                    DB::rollBack();
-                    return response()->json(['msg' => 'Update cost failed'], 404);
-                }
-            }
-
+            DB::table('transports')
+                ->select('id', 'vehicle_id')
+                ->where('vehicle_id', $vehicleId)
+                ->update(['transports.status_invoice_garage' => 3]);
+            DB::table('costs')
+                ->Join('transports', 'transports.vehicle_id', '=', 'costs.vehicle_id')
+                ->select(
+                    'costs.id as costId',
+                    'costs.vehicle_id'
+                )
+                ->where('transports.id', $transport_id)
+                ->update(['costs.status_invoice_garage' => 1]);
             DB::commit();
             //Response
             $response = $this->DataDebtGarage();
