@@ -1363,15 +1363,14 @@
                 },
                 computeDebt: function (paidAmt) {
                     paidAmt = convertStringToNumber(paidAmt);
-                    var totalTransport = asNumberFromCurrency("#totalTransport");
-                    if (paidAmt > totalTransport) {
-                        paidAmt = totalTransport;
+                    var debt = $('input[id=debt]').attr('data-id');
+                    if (paidAmt > debt) {
+                        paidAmt = debt;
                         showNotification('warning', 'Số tiền trả không được lớn hơn tiền còn nợ.');
                         $("input[id='paidAmt']").val(paidAmt);
                     }
-                    var debt = totalTransport - paidAmt;
+                    debt = debt - paidAmt;
                     $("input[id=debt]").val(debt);
-
                     formatCurrency(".currency");
                 },
                 fillFormDataToCurrentObject: function () {

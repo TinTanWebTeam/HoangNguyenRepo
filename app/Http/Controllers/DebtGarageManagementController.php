@@ -400,7 +400,10 @@ class DebtGarageManagementController extends Controller
                 }
             }
 
-
+            $totalCost =  $request->input('_invoiceGarage')['totalCost'];
+            $paidAmt = $request->input('_invoiceGarage')['paidAmt'];
+            $totalTransport = $request->input('_invoiceGarage')['totalTransport'];
+            $debt = $totalTransport - ($paidAmt + $totalCost);
             $invoiceGarage = new InvoiceGarage();
             if ($invoiceCode == '') {
                 $invoiceGarage->invoiceCode = $this->generateInvoiceCode('bill_garage');
@@ -410,15 +413,14 @@ class DebtGarageManagementController extends Controller
                 else
                     return response()->json(['msg' => 'invoiceCode exists!'], 203);
             }
-            $invoiceGarage->totalTransport = $request->input('_invoiceGarage')['totalTransport'];
-            $invoiceGarage->totalCost = $request->input('_invoiceGarage')['totalCost'];
-            $debt = $request->input('_invoiceGarage')['totalTransport'] - $request->input('_invoiceGarage')['totalCost'];
+            $invoiceGarage->totalTransport = $totalTransport;
+            $invoiceGarage->totalCost = $totalCost;
+            $invoiceGarage->debt = $debt;
+            $invoiceGarage->paidAmt = $paidAmt;
+            $invoiceGarage->note = $request->input('_invoiceGarage')['note'];
+            $invoiceGarage->sendToPerson = $request->input('_invoiceGarage')['sendToPerson'];
             $exportDate = $request->input('_invoiceGarage')['exportDate'];
             $invoiceGarage->exportDate = Carbon::createFromFormat('d-m-Y', $exportDate)->toDateTimeString();
-            $invoiceGarage->note = $request->input('_invoiceGarage')['note'];
-            $invoiceGarage->debt = $debt;
-            $invoiceGarage->paidAmt = $request->input('_invoiceGarage')['paidAmt'];
-            $invoiceGarage->sendToPerson = $request->input('_invoiceGarage')['sendToPerson'];
             $invoiceGarage->createdBy = \Auth::user()->id;
             $invoiceGarage->updatedBy = \Auth::user()->id;
             try {
