@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Garage whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Garage whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $contact
+ * @method static \Illuminate\Database\Query\Builder|\App\Garage whereContact($value)
  */
 class Garage extends Model
 {

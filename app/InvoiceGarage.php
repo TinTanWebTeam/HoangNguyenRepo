@@ -56,6 +56,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage whereDebt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage wherePaidAmt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage whereStatusInvoice($value)
+ * @property float $totalCost Tổng tiền chi phí
+ * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarage whereTotalCost($value)
  */
 class InvoiceGarage extends Model
 {

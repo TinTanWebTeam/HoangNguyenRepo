@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarageDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarageDetail whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property float $debtOld nợ củ
+ * @method static \Illuminate\Database\Query\Builder|\App\InvoiceGarageDetail whereDebtOld($value)
  */
 class InvoiceGarageDetail extends Model
 {
