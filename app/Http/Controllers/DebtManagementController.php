@@ -388,21 +388,22 @@ class DebtManagementController extends Controller
             }
 
             $response = [
-                'status' => 1,
-                'invoiceCode' => $invoiceCode,
-                'totalTransport' => $totalTransport,
-                'prePaid' => $prePaid,
-                'payNeed' => $payNeed,
-                'debt' => $debt,
+                'status'               => 1,
+                'invoiceCode'          => $invoiceCode,
+                'totalTransport'       => $totalTransport,
+                'prePaid'              => $prePaid,
+                'payNeed'              => $payNeed,
+                'debt'                 => $debt,
                 'debtNotExportInvoice' => $debtNotExportInvoice,
-                'debtExportInvoice' => $debtExportInvoice,
-                'debtReal' => $debtReal,
-                'totalPayReal' => $totalPayReal,
-                'hasVat' => $hasVat,
-                'vat' => $vat,
-                'debtInvoice' => $debtInvoice,
-                'statusPrePaid' => $statusPrePaid,
-                'msg' => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'
+                'debtExportInvoice'    => $debtExportInvoice,
+                'debtReal'             => $debtReal,
+                'totalPayReal'         => $totalPayReal,
+                'hasVat'               => $hasVat,
+                'vat'                  => $vat,
+                'debtInvoice'          => $debtInvoice,
+                'statusPrePaid'        => $statusPrePaid,
+                'PTT'                  => 1,
+                'msg'                  => 'Các đơn hàng chưa xuất hóa đơn, hợp lệ cho thêm mới'
             ];
             return response()->json($response, 200);
         } else {
@@ -469,6 +470,23 @@ class DebtManagementController extends Controller
                 //-----------------------------------------------------
                 // Nếu Các Đơn Hàng Khớp Nhau
                 //-----------------------------------------------------
+
+                //======================================================================
+                // NẾU ĐÃ XUẤT HÓA ĐƠN THÌ KHÔNG CHO DÙNG PHIẾU THANH TOÁN
+                //======================================================================
+                $PTT = InvoiceCustomer::whereIn('id', $arrayInvoice)->pluck('status_invoice');
+                if(in_array(2, $PTT->toArray())){
+                    //-----------------------------------------------------
+                    // Nếu Đã Dùng Hóa Đơn
+                    //-----------------------------------------------------
+                    $PTT = 0;
+                } else {
+                    //-----------------------------------------------------
+                    // Nếu Chưa Dùng Hóa Đơn
+                    //-----------------------------------------------------
+                    $PTT = 1;
+                }
+                
 
                 //======================================================================
                 // KIỂM TRA XEM CÁC HÓA ĐƠN TRƯỚC ĐÃ DÙNG TRẢ TRƯỚC HAY CHƯA
@@ -578,7 +596,9 @@ class DebtManagementController extends Controller
                     'vat' => $vat,
                     'debtInvoice' => $debtInvoice,
                     'statusPrePaid' => $statusPrePaid,
+                    'PTT' => $PTT,
                     'msg' => 'Các đơn hàng khớp nhau'
+                    
                 ];
                 return response()->json($response, 200);
             }

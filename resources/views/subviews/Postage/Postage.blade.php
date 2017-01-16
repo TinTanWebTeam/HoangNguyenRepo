@@ -196,9 +196,6 @@
                                                             <button type="button" class="btn btn-primary marginRight"
                                                                     onclick="postageView.save()">Lưu tất cả
                                                             </button>
-                                                            <button type="button" class="btn default"
-                                                                    onclick="postageView.retype()">Nhập lại
-                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -270,9 +267,6 @@
                                                         <div class="form-group">
                                                             <button type="button" class="btn btn-primary marginRight"
                                                                     onclick="postageView.saveDetail()">Thêm
-                                                            </button>
-                                                            <button type="button" class="btn default"
-                                                                    onclick="postageView.retypeDetail()">Nhập lại
                                                             </button>
                                                         </div>
                                                     </div>

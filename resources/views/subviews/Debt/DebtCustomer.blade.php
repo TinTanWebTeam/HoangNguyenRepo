@@ -690,6 +690,7 @@
                 statusInvoice: 0,
                 firstDay: null,
                 lastDay: null,
+                PTT: null,
 
                 showControl: function (flag) {
                     if (flag == 0) {
@@ -715,26 +716,27 @@
                     //Clear Validate
                 },
                 clearInput: function () {
-                    $("input[id='invoiceCode']").val('');
-                    $("textarea[id='note']").val('');
-                    $("input[id='exportDate]").val('');
-                    $("input[id='invoiceDate]").val('');
-                    $("input[id='payDate]").val('');
+                    $("input[id=invoiceCode]").val('');
+                    $("textarea[id=note]").val('');
+                    $("input[id=exportDate]").val('');
+                    $("input[id=invoiceDate]").val('');
+                    $("input[id=payDate]").val('');
 
-                    $("input[id='totalTransport']").val('');
-                    $("input[id='cashReceive']").val('');
-                    $("input[id='debt']").val('');
-                    $("input[id='debt-real']").val('');
-                    $("input[id='totalPay']").val('');
-                    $("input[id='totalPay-real']").val('');
-                    $("input[id='VAT']").val('');
-                    $("input[id='hasVAT']").val('');
-                    $("input[id='paidAmt']").val('');
-                    $("input[id='debtInvoice']").val('');
+                    $("input[id=totalTransport]").val('');
+                    $("input[id=cashReceive]").val('');
+                    $("input[id=debt]").val('');
+                    $("input[id=debt-real]").val('');
+                    $("input[id=totalPay]").val('');
+                    $("input[id=totalPay-real]").val('');
+                    $("input[id=VAT]").val('');
+                    $("input[id=hasVAT]").val('');
+                    $("input[id=paidAmt]").val('');
+                    $("input[id=debtInvoice]").val('');
+                    $("input[id=sendToPerson]").val('');
                 },
                 retype: function () {
-                    $("input[id='invoiceCode']").val('');
-                    $("textarea[id='note']").val('');
+                    $("input[id=invoiceCode]").val('');
+                    $("textarea[id=note]").val('');
                 },
                 selectAll: function () {
                     $('#ToolTables_table-data_0').click();
@@ -1498,7 +1500,6 @@
                 },
 
                 createInvoiceCustomer: function (flag, invoiceCustomer_id) {
-                    debugger;
                     switch(flag) {
                         case 0: // Tạo mới Hóa đơn
                             var dataAfterValidate = debtCustomerView.validateListTransport();
@@ -1518,6 +1519,7 @@
                             debtCustomerView.action = "new";
 
                             debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
+                            debtCustomerView.PTT = dataAfterValidate['PTT'];
                             debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
                             if(debtCustomerView.statusPrePaid === 0) {
                             //    $("input[id=statusPrePaid]").attr('disabled', false);
@@ -1569,6 +1571,7 @@
 
                             //
                             debtCustomerView.statusPrePaid = dataAfterValidate['statusPrePaid'];
+                            debtCustomerView.PTT = dataAfterValidate['PTT'];
                             debtCustomerView.invoiceCode = dataAfterValidate['invoiceCode'];
 
                             $("input[id=statusPrePaid]").attr('disabled', true);
@@ -2587,6 +2590,11 @@
                 },
                 PTTchecked: function(cb) {
                     if(cb.checked) {
+                        if(debtCustomerView.PTT == 0) {
+                            showNotification("warning", "Các đơn hàng đã xuất hóa đơn, không thể xuất phiếu thanh toán.");
+                            $("#PTT").attr('checked', false);
+                            return;
+                        }
                         $("input[id=invoiceCode]").attr("placeholder", debtCustomerView.invoiceCodeBill);
 
                         $("#debt-info").addClass('hide');
