@@ -26,7 +26,7 @@
     div.col-lg-12 {
         height: 40px;
     }
-
+    th { white-space: nowrap; }
     @media (max-height: 500px) {
         #divControl {
             top: 53px;
@@ -49,7 +49,7 @@
                         <li class="active">Nhà xe</li>
                     </ol>
                     <div class="menu-toggle pull-right fixed">
-                        <div class="btn btn-primary btn-circle btn-md" title="Tạo phiếu thanh toán"
+                        <div class="btn btn-primary btn-circle btn-md" title="Tạo Hóa đơn"
                              onclick="debtVehicleOutSideView.createInvoiceGarage(0)">
                             <i class="glyphicon glyphicon-plus icon-center"></i>
                         </div>
@@ -111,7 +111,7 @@
                                         <th>STT</th>
                                         <th>Số xe</th>
                                         <th>Nhà xe</th>
-                                        <th>Mã phiếu thanh toán</th>
+                                        <th>Mã Hóa đơn</th>
                                         <th>Nơi giao</th>
                                         <th>Số chứng từ</th>
                                         <th>Giao xe</th>
@@ -123,9 +123,16 @@
                                         <th>Thanh toán</th>
                                     </tr>
                                     </thead>
+
                                     <tbody>
 
                                     </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="8" style="text-align:right">Total:</td>
+                                        <td colspan="6"></td>
+                                    </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -179,15 +186,16 @@
                                     <tbody>
 
                                     </tbody>
+                                   
                                 </table>
                             </div>
                         </div>
                     </div>
 
 
-                    {{--Phiếu Thanh Toán--}}
+                    {{--Hóa đơn--}}
                     <hr>
-                    <p class="lead text-primary text-left"><strong>Phiếu thanh toán</strong></p>
+                    <p class="lead text-primary text-left"><strong>Hóa đơn</strong></p>
                     <div class="row">
                         <div class="col-md-6" id="dateSearchPTT">
                             <input type="text" class="date start"/> đến
@@ -245,7 +253,7 @@
                                         <th>Mã phiếu</th>
                                         <th>Số xe</th>
                                         <th>Nhà xe</th>
-                                        <th>Tổng phiếu thanh toán</th>
+                                        <th>Tổng Hóa đơn</th>
                                         <th>Chi phí xe</th>
                                         <th>Đã thanh toán</th>
                                         <th>Nợ</th>
@@ -267,7 +275,7 @@
 
                     {{--Tra tien mat--}}
                     <hr>
-                    <p class="lead text-primary text-left"><strong>Thanh toán tiền mặt</strong></p>
+                    <p class="lead text-primary text-left"><strong>Tiền mặt</strong></p>
                     <div class="row">
                         <div class="col-md-6" id="dateSearchPay">
                             <input type="text" class="date start"/> đến
@@ -348,7 +356,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="invoiceCode"><b>Mã phiếu thanh toán</b></label>
+                                            <label for="invoiceCode"><b>Mã Hóa đơn</b></label>
                                             <input type="text" class="form-control"
                                                    id="invoiceCode"
                                                    name="invoiceCode">
@@ -435,7 +443,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="exportDate"><b>Ngày tạo phiếu thanh toán</b></label>
+                                            <label for="exportDate"><b>Ngày tạo Hóa đơn</b></label>
                                             <input type="text" class="date form-control ignore"
                                                    id="exportDate"
                                                    name="exportDate">
@@ -496,7 +504,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group form-md-line-input ">
-                                            <label for="DebtVerbCode"><b>Mã phiếu thanh toán</b></label>
+                                            <label for="DebtVerbCode"><b>Mã Hóa đơn</b></label>
                                             <input type="text" class="form-control"
                                                    id="DebtVerbCode" readonly
                                                    name="DebtVerbCode">
@@ -613,7 +621,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h5 class="modal-title"> Chi tiết phiếu thanh toán</h5>
+                    <h5 class="modal-title"> Chi tiết Hóa đơn</h5>
                 </div>
                 <div class="modal-body" style="padding-top: 0; font-size: 15px">
                     <div class="row">
@@ -624,7 +632,7 @@
                                     <tr class="active">
                                         <th>STT</th>
                                         <th>Số xe</th>
-                                        <th>Tổng phiếu thanh toán</th>
+                                        <th>Tổng Hóa đơn</th>
                                         <th>Chi phí</th>
                                         <th>Nợ</th>
                                         <th>Đã trả</th>
@@ -683,7 +691,7 @@
                 action: null, //new, edit, autoEdit
                 current: null, //for autoEdit
                 currentPayMore: null, //trả tiếp
-                currentInvoiceGarage: null, //tao phiếu thanh toán
+                currentInvoiceGarage: null, //tao Hóa đơn
                 invoiceGarageId: null, //for edit
                 payMoreId: null, // id tra tiep
                 invoiceCode: null, //Get invoiceCode newest form Server
@@ -1064,9 +1072,40 @@
                                 extend: 'colvis',
                                 text: 'Ẩn cột'
                             }
-                        ]
+                        ],
+                        footerCallback: function ( row, temp, start, end, display ) {
+                            var api = this.api(), temp;
+                            // Remove the formatting to get integer data for summation
+                            var intVal = function (i) {
+                                return typeof i === 'string' ?
+                                    i.replace(/[\$,]/g, '') * 1 :
+                                    typeof i === 'number' ?
+                                        i : 0;
+                            };
+
+//                             Total over all pages
+//                            total = api
+//                                .column(8)
+//                                .data()
+//                                .reduce(function (a, b) {
+//                                    return intVal(a) + intVal(b);
+//                                }, 0);
+
+                            // Total over this page
+                            pageTotal = api
+                                .column(8, {page: 'current'})
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                },0);
+
+                            // Update footer
+                            $(api.column(8).footer()).html(
+                                pageTotal + ' Vnd'
+                            );
+
+                        }
                     });
-//                    $("#table-data").css("width", "auto");
                 },
 
 //                table - chi phi xe
@@ -1110,7 +1149,7 @@
                     $("#table-transportCost").css("width", "auto");
                 },
 
-//                table - phiếu thanh toán
+//                table - Hóa đơn
                 fillDataToDatatableInvoiceGarage: function (data) {
                     if (debtVehicleOutSideView.tableInvoiceGarage != null)
                         debtVehicleOutSideView.tableInvoiceGarage.destroy();
@@ -1184,7 +1223,7 @@
                                     tr += '</div>';
                                     tr += '</div>';
                                     tr += '<div class="text-center" style="display:'+ line +'">';
-                                    tr += "<div class='btn btn-circle btn-primary' title='Chi tiết phiếu thanh toán'  onclick='debtVehicleOutSideView.detailPTT(" + full.id + ")'>";
+                                    tr += "<div class='btn btn-circle btn-primary' title='Chi tiết Hóa đơn'  onclick='debtVehicleOutSideView.detailPTT(" + full.id + ")'>";
                                     tr += '<i class="glyphicon glyphicon-list"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
@@ -1338,7 +1377,7 @@
                     $("input[id='payMore']").val(0);
                     $("input[id='debtVerbPerson']").val(debtVehicleOutSideView.currentPayMore['sendToPerson']);
                     $("textarea[id='noteDebtVerb']").val(debtVehicleOutSideView.currentPayMore['note']);
-                    $("#divDebtVerb").find(".titleControl").html("Cập nhật phiếu thanh toán");
+                    $("#divDebtVerb").find(".titleControl").html("Cập nhật Hóa đơn");
                     formatCurrency(".currency");
                 },
                 payMore: function (payMore) {
@@ -1460,7 +1499,7 @@
                             debtVehicleOutSideView.displayModal('show', '#modal-notification');
                             return;
                         }
-                        $("#divInvoice").find(".titleControl").html("Tạo phiếu thanh toán");
+                        $("#divInvoice").find(".titleControl").html("Tạo Hóa đơn");
                         debtVehicleOutSideView.showControl(flag);
                         debtVehicleOutSideView.action = "new";
                         var prePaid = 0;
@@ -1659,7 +1698,7 @@
                                     debtVehicleOutSideView.hideControl();
                                     debtVehicleOutSideView.deselectAll();
                                     //Show notification
-                                    showNotification("success", "Tạo phiếu thanh toán thành công!");
+                                    showNotification("success", "Tạo Hóa đơn thành công!");
                                 }
                                 formatCurrency(".currency");
                             } else if (jqXHR.status == 203) {
