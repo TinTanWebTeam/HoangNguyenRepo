@@ -132,12 +132,7 @@
                                                     <input type="text" class="form-control currency" id="unitPrice" name="unitPrice" data-customerId="" readonly>
                                                 </div>
                                             </div>
-                                            <!--<div class="col-md-3">
-                                                <div class="form-group form-md-line-input">
-                                                    <label for="unit"><b>Đơn vị tính</b></label>
-                                                    <input type="text" class="form-control" id="unit" name="unit" readonly>
-                                                </div>
-                                            </div>-->
+
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="carrying"><b>Bốc xếp</b></label>
@@ -792,6 +787,7 @@
                 vndPerXe: false,
                 firstDay: null,
                 lastDay: null,
+                text2: null,
 
                 displayControl: function (mode) {
                     if (mode === 'show') {
@@ -816,8 +812,8 @@
                     //Clear Validate
                 },
                 clearInput: function () {
-                    $("input[id='vehicle_id']").val('');
-                    $("#vehicle_id").attr("data-vehicleId", "");
+                    $("input[id='my-id']").val('');
+                    $("#my-id").attr("data-id", "");
                     $("input[id='customer_id']").val('');
                     $("#customer_id").attr("data-customerId", "");
                     $("input[id='product_name']").val('');
@@ -902,7 +898,7 @@
                 },
                 renderEventTableModal: function () {
                     $("#table-vehicle").find("tbody").on('click', 'tr', function () {
-                        $('#vehicle_id').attr('data-vehicleId', $(this).find('td:first')[0].innerText);
+                        $('#vehicle_id').attr('data-id', $(this).find('td:first')[0].innerText);
                         $('input[id=vehicle_id]').val($(this).find('td:eq(1)')[0].innerText);
                         transportView.displayModal("hide", "#modal-vehicle");
                     });
@@ -952,9 +948,9 @@
                             $("#modal-notification").find(".modal-title").html("Số xe <label class='text text-danger'>" + fullNumber + "</label> không tồn tại");
                             transportView.displayModal('show', '#modal-notification');
                             $("input[id=vehicle_id]").val('');
-                            $("#vehicle_id").attr("data-vehicleId", '');
+                            $("#vehicle_id").attr("data-id", '');
                         } else {
-                            $("#vehicle_id").attr("data-vehicleId", vehicle.id);
+                            $("#vehicle_id").attr("data-id", vehicle.id);
                         }
                     });
                 },
@@ -1030,13 +1026,39 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-                            for (var i = 0; i < data['vehicles'].length; i++) {
-                                data['vehicles'][i].fullNumber = data['vehicles'][i]['areaCode'] + "-" + data['vehicles']   [i]['vehicleNumber'];
-                            }
+//                            for (var i = 0; i < data['vehicles'].length; i++) {
+//                                data['vehicles'][i].fullNumber = data['vehicles'][i]['areaCode'] + "-" + data['vehicles']   [i]['vehicleNumber'];
+//                            }
                             transportView.dataVehicle = data['vehicles'];
-                            transportView.tagsVehicleName = _.map(transportView.dataVehicle, 'fullNumber');
-                            transportView.tagsVehicleName = _.union(transportView.tagsVehicleName);
-                            renderAutoCompleteSearch('#vehicle_id', transportView.tagsVehicleName);
+//                            transportView.tagsVehicleName = _.map(transportView.dataVehicle, 'fullNumber');
+//                            transportView.tagsVehicleName = _.union(transportView.tagsVehicleName);
+                           // renderAutoCompleteSearch('#vehicle_id', transportView.tagsVehicleName);
+                            console.log(transportView.dataVehicle);
+                            transportView.text2 = $("#vehicle_id").tautocomplete({
+                                width: "350px",
+                                columns: ['Số xe','Loại xe', 'Tài xế'],
+                                data: function () {
+                                    try {
+                                        var data = transportView.dataVehicle;
+                                    }
+                                    catch (e) {
+                                        alert(e)
+                                    }
+                                    var filterData = [];
+                                    var searchData = eval("/" + transportView.text2.searchdata() + "/gi");
+                                    $.each(data, function (i, v) {
+                                        if (v.fullNumber.search(new RegExp(searchData)) != -1) {
+                                            filterData.push(v);
+                                        }
+                                    });
+
+                                    return filterData;
+                                },
+                                onchange: function () {
+                                    $('#my-id').attr('data-id', transportView.text2.id());
+                                }
+                            });
+
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1363,16 +1385,16 @@
                     $("input[id=transportType]").attr('checked', status);
 
                     if (transportView.transportType === 1) {
-                        $("input[id=vehicle_id]").val(transportView.current["vehicle_name"]);
-                        $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicle_id"]);
+                        $("input[id=my-id]").val(transportView.current["vehicle_name"]);
+                        $("#my-id").attr('data-id', transportView.current["vehicle_id"]);
                         $("input[id=customer_id]").val(transportView.current["customer_name"]);
                         $("#customer_id").attr('data-customerId', transportView.current["customer_id"]);
                         $("input[id=product_name]").val(transportView.current["product_name"]);
                         $("#product_name").attr("data-productId", transportView.current["product_id"]);
                     } else {
-                        var fullNumber = (transportView.current["vehicles_areaCode"] == null || transportView.current["vehicles_vehicleNumber"] == null) ? "" : transportView.current["vehicles_areaCode"] + '-' + transportView.current["vehicles_vehicleNumber"];
-                        $("input[id=vehicle_id]").val(fullNumber);
-                        $("#vehicle_id").attr('data-vehicleId', transportView.current["vehicle_id"]);
+                        var fullNumber = (transportView.current["fullNumber"] == null) ? "" : transportView.current["fullNumber"];
+                        $("input[id=my-id]").val(fullNumber);
+                        $("#my-id").attr('data-id', transportView.current["vehicle_id"]);
                         $("input[id=customer_id]").val(transportView.current["customers_fullName"]);
                         $("#customer_id").attr('data-customerId', transportView.current["customer_id"]);
                         $("input[id=product_name]").val(transportView.current["products_name"]);
@@ -1440,7 +1462,7 @@
                 fillFormDataToCurrentObject: function () {
                     if (transportView.action == 'add') {
                         transportView.current = {
-                            vehicle_id: $("#vehicle_id").attr("data-vehicleId"),
+                            vehicle_id: $("#my-id").attr("data-id"),
                             customer_id: $("#customer_id").attr("data-customerId"),
                             product_id: $("#product_name").attr("data-productId"),
                             quantumProduct: $("input[id=quantumProduct]").val(),
@@ -1469,7 +1491,7 @@
                             productCode: $("input[id=productCode]").val()
                         };
                     } else if (transportView.action == 'update') {
-                        transportView.current.vehicle_id = $("#vehicle_id").attr("data-vehicleId");
+                        transportView.current.vehicle_id = $("#my-id").attr("data-id");
                         transportView.current.customer_id = $("#customer_id").attr("data-customerId");
                         transportView.current.product_id = $("#product_name").attr("data-productId");
                         transportView.current.quantumProduct = $("input[id=quantumProduct]").val();
@@ -1498,7 +1520,7 @@
                         transportView.current.productCode = $("input[id=productCode]").val();
                     }
                     if (transportView.transportType === 1) {
-                        transportView.current.vehicle_name = $("input[id=vehicle_id]").val();
+                        transportView.current.vehicle_name = $("input[id=my-id]").val();
                         transportView.current.customer_name = $("input[id=customer_id]").val();
                         transportView.current.product_name = $("input[id=product_name]").val();
                     }
@@ -1573,7 +1595,7 @@
                 formValidate: function () {
                     $("#frmControl").validate({
                         rules: {
-                            vehicle_id: "required",
+                            "my-id": "required",
                             customer_id: "required",
                             product_name: "required",
                             quantumProduct: "required",
@@ -1590,7 +1612,7 @@
                         },
                         ignore: ".ignore",
                         messages: {
-                            vehicle_id: "Vui lòng chọn xe",
+                            "my-id": "Vui lòng chọn xe",
                             customer_id: "Vui lòng chọn khách hàng",
                             product_name: "Vui lòng nhập hàng",
                             quantumProduct: "Vui lòng nhập số lượng hàng",
@@ -1649,7 +1671,7 @@
                                 $("form#frmControl").find("label[class=error]").css("color", "red");
                                 return;
                             }
-                            if ($("#vehicle_id").attr('data-vehicleId') == '') {
+                            if ($("#my-id").attr('data-id') == '') {
                                 showNotification('warning', 'Vui lòng chọn một xe có trong danh sách.');
                                 return;
                             }

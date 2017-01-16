@@ -1217,15 +1217,30 @@ class CustomerManagementController extends Controller
         $garageType = GarageType::all();
         $driver = Driver::all();
         $garages = Garage::all();
-        $vehicles = \DB::table('vehicles')
+        $vehicles = DB::table('vehicles')
             ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-            ->join('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
-            ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
-            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name', 'drivers.fullName as driverName', 'drivers.id as driver_id')
-            ->where('vehicles.active', 1)
-            ->orderBy('vehicles.id', 'desc')
+            ->leftJoin('driverVehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+            ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
+            ->where([
+                ['vehicles.active', 1],
+                ['driverVehicles.active', 1],
+            ])
+            ->select('vehicles.id'
+                , DB::raw("CONCAT(vehicles.areaCode,'-',vehicles.vehicleNumber)  AS fullNumber")
+                , 'vehicleTypes.name'
+                , 'drivers.fullName')
             ->get();
+
+//        $vehicles = \DB::table('vehicles')
+//            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+//            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+//            ->join('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
+//            ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
+//            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name', 'drivers.fullName as driverName', 'drivers.id as driver_id')
+//            ->where('vehicles.active', 1)
+//            ->orderBy('vehicles.id', 'desc')
+//            ->get();
+
         $response = [
             'msg'          => 'Get data vehicle success',
             'vehicles'     => $vehicles,
