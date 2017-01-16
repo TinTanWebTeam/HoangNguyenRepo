@@ -18,6 +18,7 @@ use App\StaffCustomer;
 use App\Status;
 use App\SubRole;
 use App\Transport;
+use App\TransportInvoice;
 use App\VehicleType;
 use App\Voucher;
 use App\VoucherTransport;
@@ -1083,6 +1084,15 @@ class CustomerManagementController extends Controller
 
             return response()->json(['msg' => $ex], 404);
         }
+    }
+
+    public function postValidateEditTransport(Request $request){
+        $id = $request->input('id');
+        $array_TransportInvoice = TransportInvoice::where('transport_id', $id)->get();
+        if(count($array_TransportInvoice) > 0){
+            return response()->json(['msg' => 'success'], 200);
+        }
+        return response()->json(['msg' => 'Không được sửa đơn hàng đã xuất hóa đơn hoặc phiếu thanh toán.'], 203);
     }
 
     /* File */

@@ -299,18 +299,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Chú thích -->
-                    <div class="row" style="margin-bottom: 10px">
-                        <div class="col-md-7" style="font-size: 1.2em">
-                            <i class="fa fa-user" aria-hidden="true"></i> Khách hàng
-                            <i class="fa fa-truck" aria-hidden="true"></i> Nhà xe
-                        </div>
-                        <div class="col-md-5">
-                            <span class="label label-danger" style="font-size: 1em">Chưa thanh toán</span>
-                            <span class="label label-primary" style="font-size: 1em">Đã thanh toán</span>
-                            <span class="label label-success" style="font-size: 1em">Đã thanh toán & xuất hóa đơn</span>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <p id="dateOnlySearch">
@@ -1526,7 +1514,34 @@
                     }
                 },
 
+                validateEditTransport(id){
+                    var result = false;
+                    $.ajax({
+                        url: url + 'transport/validate-edit-transport',
+                        type: "POST",
+                        dataType: "json",
+                        data: { _token: _token, id: id },
+                        async: false
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log("SERVER");
+                        console.log(data);
+                        if (jqXHR.status == 200) {
+                            result = true;
+                        } else {
+                            showNotification("warning", data['msg']);
+                            result = false;
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        result = false;
+                    });
+                    return result;
+                },
                 editTransport: function (id) {
+                    if(!transportView.validateEditTransport(id)){
+                        return;
+                    }
+
                     transportView.displayControl('show');
 
                     $("input[id=transportType]").prop('disabled', true);
