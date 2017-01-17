@@ -27,6 +27,7 @@ class CreateTransportsTable extends Migration
             $table->string('receiver')->nullable()->comment('Người nhận');
             $table->dateTime('receiveDate')->nullable()->comment('Ngày nhận');
             $table->dateTime('transportDate')->nullable()->comment('Ngày vận chuyển');
+            $table->dateTime('paymentDate')->nullable()->comment('Ngày thanh toán');
             $table->string('receivePlace')->nullable()->comment('Nơi nhận');
             $table->string('deliveryPlace')->nullable()->comment('Nơi giao');
             $table->integer('createdBy')->unsigned();

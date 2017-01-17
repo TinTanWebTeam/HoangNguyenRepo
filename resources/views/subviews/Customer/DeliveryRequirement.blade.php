@@ -91,16 +91,22 @@
                                         <div class="row" style="padding: 0 10px">
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
+                                                    <label for="vehicle_id" class="red"><b>Xe</b></label>
+                                                    <input type="text" class="form-control" id="vehicle_id"
+                                                           name="vehicle_id"
+                                                           placeholder="Nhập số xe" data-vehicleId="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-md-line-input">
                                                     <label for="receiveDate" class="red"><b>Ngày vận chuyển</b></label>
                                                     <input type="text" class="date form-control ignore" id="transportDate" name="transportDate">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
-                                                    <label for="vehicle_id" class="red"><b>Xe</b></label>
-                                                    <input type="text" class="form-control" id="vehicle_id"
-                                                           name="vehicle_id"
-                                                           placeholder="Nhập số xe" data-vehicleId="">
+                                                    <label for="paymentDate" class="red"><b>Ngày thanh toán</b></label>
+                                                    <input type="text" class="date form-control ignore" id="paymentDate" name="paymentDate">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -853,6 +859,15 @@
                     });
                     $('#receiveDate').datepicker("setDate", new Date());
 
+                    $('#paymentDate').datepicker({
+                        setDate: new Date(),
+                        format: 'dd-mm-yyyy',
+                        autoclose: true
+                    }).on("input change", function (e) {
+                        
+                    });
+                    $('#paymentDate').datepicker("setDate", new Date());
+
                     $('#transportDate').datepicker({
                         setDate: new Date(),
                         format: 'dd-mm-yyyy',
@@ -1424,6 +1439,8 @@
                     $("input[id=receiveDate]").datepicker('update', receiveDate.format("DD-MM-YYYY"));
                     var transportDate = moment(transportView.current["transportDate"], "YYYY-MM-DD");
                     $("input[id=transportDate]").datepicker('update', transportDate.format("DD-MM-YYYY"));
+                    var paymentDate = moment(transportView.current["paymentDate"], "YYYY-MM-DD");
+                    $("input[id=paymentDate]").datepicker('update', paymentDate.format("DD-MM-YYYY"));
 
                     $("input[id=receivePlace]").val(transportView.current["receivePlace"]);
                     $("input[id=deliveryPlace]").val(transportView.current["deliveryPlace"]);
@@ -1485,6 +1502,7 @@
                             receiver: $("input[id=receiver]").val(),
                             receiveDate: $("input[id=receiveDate]").val(),
                             transportDate: $("input[id=transportDate]").val(),
+                            paymentDate: $("input[id=paymentDate]").val(),
                             receivePlace: $("input[id=receivePlace]").val(),
                             deliveryPlace: $("input[id=deliveryPlace]").val(),
                             voucherNumber: $("input[id=voucherNumber]").val(),
@@ -1514,6 +1532,7 @@
                         transportView.current.receiver = $("input[id=receiver]").val();
                         transportView.current.receiveDate = $("input[id=receiveDate]").val();
                         transportView.current.transportDate = $("input[id=transportDate]").val();
+                        transportView.current.paymentDate = $("input[id=paymentDate]").val();
                         transportView.current.receivePlace = $("input[id=receivePlace]").val();
                         transportView.current.deliveryPlace = $("input[id=deliveryPlace]").val();
                         transportView.current.voucherNumber = $("input[id=voucherNumber]").val();

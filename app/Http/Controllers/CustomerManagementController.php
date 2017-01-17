@@ -723,6 +723,7 @@ class CustomerManagementController extends Controller
         $receiver = null;
         $receiveDate = null;
         $transportDate = null;
+        $paymentDate = null;
         $receivePlace = null;
         $deliveryPlace = null;
         $note = null;
@@ -769,6 +770,8 @@ class CustomerManagementController extends Controller
             $receiveDate = Carbon::createFromFormat('d-m-Y', $receiveDate)->toDateTimeString();
             $transportDate = $request->input('_transport')['transportDate'];
             $transportDate = Carbon::createFromFormat('d-m-Y', $transportDate)->toDateTimeString();
+            $paymentDate = $request->input('_transport')['paymentDate'];
+            $paymentDate = Carbon::createFromFormat('d-m-Y', $paymentDate)->toDateTimeString();
             $receivePlace = $request->input('_transport')['receivePlace'];
             $deliveryPlace = $request->input('_transport')['deliveryPlace'];
             $note = $request->input('_transport')['note'];
@@ -818,6 +821,7 @@ class CustomerManagementController extends Controller
                     $transportNew->receiver = $receiver;
                     $transportNew->receiveDate = $receiveDate;
                     $transportNew->transportDate = $transportDate;
+                    $transportNew->paymentDate = $paymentDate;
                     $transportNew->receivePlace = $receivePlace;
                     $transportNew->deliveryPlace = $deliveryPlace;
                     $transportNew->createdBy = \Auth::user()->id;
@@ -917,6 +921,7 @@ class CustomerManagementController extends Controller
                     $transportUpdate->receiver = $receiver;
                     $transportUpdate->receiveDate = $receiveDate;
                     $transportUpdate->transportDate = $transportDate;
+                    $transportUpdate->paymentDate = $paymentDate;
                     $transportUpdate->receivePlace = $receivePlace;
                     $transportUpdate->deliveryPlace = $deliveryPlace;
                     $createdBy = $transportUpdate->updatedBy;

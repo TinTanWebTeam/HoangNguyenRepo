@@ -451,12 +451,12 @@
                     });
 
                     postageView.clearValidation("#frmControl");
-                    postageView.clearInput();
+                    postageView.resetAll();
                 },
                 displayModal: function (type, idModal) {
                     $(idModal).modal(type);
                     if (postageView.action == 'delete' && type == 'hide') {
-                        postageView.action = null;
+                        postageView.action = "add";
                         postageView.idDelete = null;
                     }
 
@@ -481,6 +481,20 @@
                     $("input[id=to]").val('');
                     $("input[id=fromPlace]").val('');
                     $("input[id=toPlace]").val('');
+                },
+
+                resetAll: function(){
+                    postageView.current = null;
+                    postageView.currentDetail = null;
+                    postageView.arrayDetail = [];
+                    postageView.action = "add";
+                    postageView.actionDetail = "add";
+                    postageView.idDelete = null;
+                    postageView.sttDeleteDetail = null;
+                    postageView.sttEditDetail = null;
+
+                    postageView.clearInput();
+                    postageView.cancelDetail();
                 },
 
                 renderEventClickTableModal: function () {
@@ -524,6 +538,7 @@
                         $("input[id=unit]").val('');
                         $("textarea[id=note]").val('');
                         postageView.retypeDetail();
+                        postageView.cancelDetail();
                     }
                 },
                 renderEventFocusOut: function () {
@@ -911,14 +926,12 @@
                     })
                 },
                 fillCurrentObjectToForm: function () {
-                    var cashDelivery = postageView.current["cashDelivery"] / postageView.current["unitPrice"] * 100;
-
                     $("input[id=customer_id]").val(postageView.current["customers_fullName"]);
                     $("#customer_id").attr('data-customerId', postageView.current["customer_id"]);
                     $("input[id=unitPrice]").val(postageView.current["unitPrice"]);
                     $("select[id=unit_id]").val(postageView.current["unit_id"]);
                     $("textarea[id=note]").val(postageView.current["note"]);
-                    $("input[id=cashDelivery]").val(cashDelivery);
+                    $("input[id=cashDelivery]").val(postageView.current["cashDelivery"]);
                     var applyDate = moment(postageView.current["applyDate"], "YYYY-MM-DD");
                     $("input[id='applyDate']").datepicker('update', applyDate.format("DD-MM-YYYY"));
                     var createdDate = moment(postageView.current["createdDate"], "YYYY-MM-DD");
@@ -1255,7 +1268,6 @@
                                 default: break;
                             }
                             postageView.arrayDetail = [];
-                            postageView.clearInput();
                             postageView.hideControl();
                         } else if (jqXHR.status == 203) {
                             showNotification("warning", data['msg']);
