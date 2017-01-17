@@ -20,10 +20,11 @@ class DebtManagementController extends Controller
     private $firstDayUTS;
     private $lastDayUTS;
 
-    public function __construct() {
-        $this->firstDayUTS = mktime (0, 0, 0, date("m"), 1, date("Y"));
-        $this->lastDayUTS = mktime (0, 0, 0, date("m"), date('t'), date("Y"));
-    }    
+    public function __construct()
+    {
+        $this->firstDayUTS = mktime(0, 0, 0, date("m"), 1, date("Y"));
+        $this->lastDayUTS = mktime(0, 0, 0, date("m"), date('t'), date("Y"));
+    }
 
     //Function
     public function generateInvoiceCode($type)
@@ -220,22 +221,22 @@ class DebtManagementController extends Controller
         # statusPrePaid
 
         $response = [
-            'status' => 3,
-            'invoiceCode' => $invoiceCode,
-            'totalPay' => $totalPay,
-            'totalPayReal' => $totalPayReal,
-            'vat' => $vat,
-            'hasVat' => $hasVat,
-            'debtInvoice' => $debtInvoice,
-            'totalTransport' => $totalTransport,
-            'prePaid' => $prePaid,
-            'payNeed' => $payNeed,
-            'debt' => $debt,
+            'status'               => 3,
+            'invoiceCode'          => $invoiceCode,
+            'totalPay'             => $totalPay,
+            'totalPayReal'         => $totalPayReal,
+            'vat'                  => $vat,
+            'hasVat'               => $hasVat,
+            'debtInvoice'          => $debtInvoice,
+            'totalTransport'       => $totalTransport,
+            'prePaid'              => $prePaid,
+            'payNeed'              => $payNeed,
+            'debt'                 => $debt,
             'debtNotExportInvoice' => $debtNotExportInvoice,
-            'debtExportInvoice' => $debtExportInvoice,
-            'debtReal' => $debtReal,
-            'statusPrePaid' => $statusPrePaid,
-            'msg' => 'Các đơn hàng khớp nhau'
+            'debtExportInvoice'    => $debtExportInvoice,
+            'debtReal'             => $debtReal,
+            'statusPrePaid'        => $statusPrePaid,
+            'msg'                  => 'Các đơn hàng khớp nhau'
         ];
         return $response;
     }
@@ -295,7 +296,7 @@ class DebtManagementController extends Controller
         if (count($unique->values()->all()) != 1) {
             $response = [
                 'status' => 0,
-                'msg' => 'Các đơn hàng có khách hàng không giống nhau.'
+                'msg'    => 'Các đơn hàng có khách hàng không giống nhau.'
             ];
             return response()->json($response, 203);
         }
@@ -419,9 +420,9 @@ class DebtManagementController extends Controller
                 ->pluck('invoiceCustomer_id');
             if ($arrayInvoice == null) {
                 $response = [
-                    'status' => 0,
+                    'status'   => 0,
                     'totalPay' => 0,
-                    'msg' => 'Không tìm thấy arrayInvoice'
+                    'msg'      => 'Không tìm thấy arrayInvoice'
                 ];
                 return response()->json($response, 203);
             };
@@ -429,9 +430,9 @@ class DebtManagementController extends Controller
 
             if (count($arrayInvoice) == 0) {
                 $response = [
-                    'status' => 0,
+                    'status'   => 0,
                     'totalPay' => 0,
-                    'msg' => 'Các đơn hàng không khớp nhau.'
+                    'msg'      => 'Các đơn hàng không khớp nhau.'
                 ];
                 return response()->json($response, 203);
             }
@@ -443,9 +444,9 @@ class DebtManagementController extends Controller
                     ->pluck('transport_id');
                 if ($arrayTransport == null) {
                     $response = [
-                        'status' => 0,
+                        'status'   => 0,
                         'totalPay' => 0,
-                        'msg' => 'Không tìm thấy arrayTransport'
+                        'msg'      => 'Không tìm thấy arrayTransport'
                     ];
                     return response()->json($response, 203);
                 }
@@ -461,9 +462,9 @@ class DebtManagementController extends Controller
             //-----------------------------------------------------
             if (!$array_match) {
                 $response = [
-                    'status' => 0,
+                    'status'   => 0,
                     'totalPay' => 0,
-                    'msg' => 'Các đơn hàng không khớp nhau.'
+                    'msg'      => 'Các đơn hàng không khớp nhau.'
                 ];
                 return response()->json($response, 203);
             } else {
@@ -475,7 +476,7 @@ class DebtManagementController extends Controller
                 // NẾU ĐÃ XUẤT HÓA ĐƠN THÌ KHÔNG CHO DÙNG PHIẾU THANH TOÁN
                 //======================================================================
                 $PTT = InvoiceCustomer::whereIn('id', $arrayInvoice)->pluck('status_invoice');
-                if(in_array(2, $PTT->toArray())){
+                if (in_array(2, $PTT->toArray())) {
                     //-----------------------------------------------------
                     // Nếu Đã Dùng Hóa Đơn
                     //-----------------------------------------------------
@@ -486,7 +487,7 @@ class DebtManagementController extends Controller
                     //-----------------------------------------------------
                     $PTT = 1;
                 }
-                
+
 
                 //======================================================================
                 // KIỂM TRA XEM CÁC HÓA ĐƠN TRƯỚC ĐÃ DÙNG TRẢ TRƯỚC HAY CHƯA
@@ -582,23 +583,23 @@ class DebtManagementController extends Controller
                 $debtInvoice = 0;
 
                 $response = [
-                    'status' => 2,
-                    'invoiceCode' => $invoiceCode,
-                    'totalTransport' => $totalTransport,
-                    'prePaid' => $prePaid,
-                    'payNeed' => $payNeed,
-                    'debt' => $debt,
+                    'status'               => 2,
+                    'invoiceCode'          => $invoiceCode,
+                    'totalTransport'       => $totalTransport,
+                    'prePaid'              => $prePaid,
+                    'payNeed'              => $payNeed,
+                    'debt'                 => $debt,
                     'debtNotExportInvoice' => $debtNotExportInvoice,
-                    'debtExportInvoice' => $debtExportInvoice,
-                    'debtReal' => $debtReal,
-                    'totalPayReal' => $totalPayReal,
-                    'hasVat' => $hasVat,
-                    'vat' => $vat,
-                    'debtInvoice' => $debtInvoice,
-                    'statusPrePaid' => $statusPrePaid,
-                    'PTT' => $PTT,
-                    'msg' => 'Các đơn hàng khớp nhau'
-                    
+                    'debtExportInvoice'    => $debtExportInvoice,
+                    'debtReal'             => $debtReal,
+                    'totalPayReal'         => $totalPayReal,
+                    'hasVat'               => $hasVat,
+                    'vat'                  => $vat,
+                    'debtInvoice'          => $debtInvoice,
+                    'statusPrePaid'        => $statusPrePaid,
+                    'PTT'                  => $PTT,
+                    'msg'                  => 'Các đơn hàng khớp nhau'
+
                 ];
                 return response()->json($response, 200);
             }
@@ -638,6 +639,7 @@ class DebtManagementController extends Controller
         $createdBy = \Auth::user()->id;
         $updatedBy = \Auth::user()->id;
         $invoiceType = 0;
+        $fullPayment = ($totalPay == $totalTransport) ? 1 : 0;
 
         if ($statusPrePaid == 1) {
             if ($totalPaid > $hasVat - $prePaid) {
@@ -654,13 +656,12 @@ class DebtManagementController extends Controller
 
             $invoiceCustomer = new InvoiceCustomer();
 
-            if ($invoiceCode == ''){
+            if ($invoiceCode == '') {
                 if ($status_invoice == 1)
                     $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('bill_customer');
-                else if($status_invoice == 2)
+                else if ($status_invoice == 2)
                     $invoiceCustomer->invoiceCode = $this->generateInvoiceCode('customer');
-            }
-            else {
+            } else {
                 if (InvoiceCustomer::where('invoiceCode', $invoiceCode)->get()->count() == 0)
                     $invoiceCustomer->invoiceCode = $invoiceCode;
                 else
@@ -713,6 +714,7 @@ class DebtManagementController extends Controller
                     $transportUpdate->status_customer = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
                     $transportUpdate->status_invoice = $status_invoice;
+                    $transportUpdate->fullPayment = $fullPayment;
 
                     if (!$transportUpdate->update()) {
                         DB::rollBack();
@@ -787,6 +789,7 @@ class DebtManagementController extends Controller
                     $transportUpdate->status_customer = 7;
                     $transportUpdate->updatedBy = \Auth::user()->id;
                     $transportUpdate->status_invoice = $status_invoice;
+                    $transportUpdate->fullPayment = $fullPayment;
 
                     if (!$transportUpdate->update()) {
                         DB::rollBack();
@@ -843,7 +846,7 @@ class DebtManagementController extends Controller
 
             //Change status_invoice in Transport
             $array_transportId = $array_transportInvoice->pluck('transport_id');
-            foreach($array_transportId as $id) {
+            foreach ($array_transportId as $id) {
                 Transport::findOrFail($id)->update(['status_invoice' => 0]);
             }
 
@@ -985,7 +988,7 @@ class DebtManagementController extends Controller
 
                 //Change status_invoice in Transport
                 $array_transportId = $array_transportInvoice->pluck('transport_id');
-                foreach($array_transportId as $id) {
+                foreach ($array_transportId as $id) {
                     Transport::findOrFail($id)->update(['status_invoice' => 0]);
                 }
 

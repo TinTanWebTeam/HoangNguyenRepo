@@ -48,7 +48,8 @@ class TransportTableSeeder extends Seeder
             'direction'             => 0,
             'transportType'         => 0,
             'formula_id'            => 1,
-            'status_invoice'        => 2
+            'status_invoice'        => 2,
+            'fullPayment'           => true
         ]);
 
         \App\Transport::create([

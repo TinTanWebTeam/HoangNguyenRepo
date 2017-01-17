@@ -1034,7 +1034,8 @@
                                 case 0:
                                     break;
                                 case 2:
-                                    $('td', nRow).css('background-color', '#FFF9B7');
+                                    $('td:first', nRow).css('background-color', '#FFF9B7');
+                                    $('td', nRow).css('font-weight', 'bold');
                                     break;
                                 default:
                                     break;
@@ -1373,8 +1374,11 @@
                 },
 
                 reloadData: function(data){
-                    debtCustomerView.dataTransport             = data['transports'];
-                    debtCustomerView.dataSearch                = data['transports'];
+                    var dataTransport = _.filter(data['transports'], function(o){
+                        return o['fullPayment'] == 0;
+                    });
+                    debtCustomerView.dataTransport             = dataTransport;
+                    debtCustomerView.dataSearch                = dataTransport;
                     debtCustomerView.dataInvoiceCustomerDetail = data['invoiceCustomerDetails'];
                     debtCustomerView.dataPrintHistory          = data['printHistories'];
                     debtCustomerView.dataTransportInvoice      = data['transportInvoices'];
@@ -1391,7 +1395,7 @@
                     debtCustomerView.dataPTT                   = dataPTT;
                     debtCustomerView.dataSearchPTT             = dataPTT;
 
-                    var dataTransportFullPay = _.filter(data['transports'], function(o){
+                    var dataTransportFullPay = _.filter(dataTransport, function(o){
                         return o['status_invoice'] == 3;
                     });
                     debtCustomerView.dataTransport_fullPay       = dataTransportFullPay;
@@ -1548,7 +1552,7 @@
                         case 1: // Xem chi tiết hoặc trả nợ hóa đơn
                         case 2: // Xem chi tiết hoặc trả nợ PTT
                             if (typeof invoiceCustomer_id === 'undefined') return;
-                            
+
                             debtCustomerView.showControl(flag);
                             debtCustomerView.action = "edit";
                             debtCustomerView.invoiceCustomerId = invoiceCustomer_id;
@@ -1797,7 +1801,7 @@
                                 debtCustomerView.searchInvoice();
                                 debtCustomerView.searchPTT();
                                 debtCustomerView.searchTransport_fullPay();
-                                
+
 
                                 var debtInvoice = data['arrayInput']['debtInvoice'];
                                 var debtNotExportInvoice = data['arrayInput']['debtNotExportInvoice'];
@@ -2263,7 +2267,7 @@
                 },
                 searchPayment: function (data) {
                     var value = $("#not-payment").prop('checked');
-                    
+
                     var found = null;
                     if (value){
                         var allNotPayment = _.filter(debtCustomerView.dataTransport, function (o) {
@@ -2396,7 +2400,7 @@
 
                 computeWhenChangeTotalPay: function (totalPay, showNoti = true) {
                     totalPay = convertStringToNumber(totalPay);
-                    
+
                     var statusCheck = $("#statusPrePaid").prop('checked');
                     var debtNotExportInvoice = asNumberFromCurrency("#debtNotExportInvoice");
                     var totalTransport = asNumberFromCurrency("#totalTransport");

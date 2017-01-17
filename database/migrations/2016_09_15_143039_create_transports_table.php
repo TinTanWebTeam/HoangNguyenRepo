@@ -46,7 +46,7 @@ class CreateTransportsTable extends Migration
             $table->decimal('fine', 18, 0)->default(0)->comment('Công an');
             $table->decimal('phiTangBo', 18, 0)->default(0)->comment('Phí tăng bo');
             $table->decimal('addScore', 18, 0)->default(0)->comment('Thêm điểm');
-            $table->boolean('direction', 18, 0)->default(0)->comment('1 Chiều/2 Chiều');
+            $table->boolean('direction')->default(0)->comment('1 Chiều/2 Chiều');
             $table->boolean('transportType')->default(0)->comment('Loại đơn hàng');
             $table->string('vehicle_name')->nullable()->comment('Số xe cho đơn hàng khống');;
             $table->string('product_name')->nullable()->comment('Sản phẩm cho đơn hàng khống');
@@ -54,6 +54,7 @@ class CreateTransportsTable extends Migration
             $table->integer('formula_id')->unsigned()->comment('Mã công thức');
             $table->integer('status_invoice')->default(0)->comment('Trạng thái phương thức thanh toán đơn hàng cho khác hàng');
             $table->integer('status_invoice_garage')->default(0)->comment('Trạng thái phương thức thanh toán đơn hàng cho nhà xe');
+            $table->unsignedTinyInteger('fullPayment')->default(0)->comment('Đã xuất hóa đơn đủ tiền');
             $table->timestamps();
         });
     }
