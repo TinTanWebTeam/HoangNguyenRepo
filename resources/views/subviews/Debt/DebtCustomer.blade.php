@@ -677,6 +677,7 @@
                 statusInvoice: 0,
                 firstDay: null,
                 lastDay: null,
+                today: null,
                 PTT: null,
 
                 showControl: function (flag) {
@@ -761,7 +762,7 @@
                         'autoclose': true
                     });
 
-                    $('#divInvoice').find('.date').datepicker("setDate", new Date());
+                    // $('#divInvoice').find('.date').datepicker("setDate", new Date());
                 },
                 renderEventRadioInput: function () {
                     $('input[type="radio"][name=rdoTransport]').on('change', function (e) {
@@ -1405,6 +1406,7 @@
                     debtCustomerView.invoiceCodeBill           = data['invoiceCodeBill'];
                     debtCustomerView.firstDay                  = data['firstDay'];
                     debtCustomerView.lastDay                   = data['lastDay'];
+                    debtCustomerView.today                     = data['today'];
                 },
 
                 loadData: function () {
@@ -1426,6 +1428,8 @@
                             debtCustomerView.searchInvoice();
                             debtCustomerView.searchPTT();
                             debtCustomerView.searchTransport_fullPay();
+
+                            $('#divInvoice').find('.date').datepicker("update", debtCustomerView.today);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }

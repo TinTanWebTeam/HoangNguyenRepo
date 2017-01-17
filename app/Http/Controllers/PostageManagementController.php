@@ -385,7 +385,7 @@ class PostageManagementController extends Controller
             'postageDetails' => $formulaDetails,
             'fuels'          => $fuels,
             'units'          => $units,
-            'nowDay'         => date("d-m-Y")
+            'today'          => date("d-m-Y")
         ];
         return $response;
     }

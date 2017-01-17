@@ -123,7 +123,8 @@ class DebtManagementController extends Controller
             'invoiceCodeBill'        => $invoiceCodeBill,
             'transportInvoices'      => $transportInvoices,
             'firstDay'               => date("d-m-Y", $this->firstDayUTS),
-            'lastDay'                => date("d-m-Y", $this->lastDayUTS)
+            'lastDay'                => date("d-m-Y", $this->lastDayUTS),
+            'today'                  => date("d-m-Y")
         ];
         return $response;
     }

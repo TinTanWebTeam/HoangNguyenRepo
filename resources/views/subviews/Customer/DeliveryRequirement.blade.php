@@ -857,7 +857,7 @@
                     }).on("input change", function (e) {
                         
                     });
-                    $('#receiveDate').datepicker("setDate", new Date());
+                    // $('#receiveDate').datepicker("setDate", new Date());
 
                     $('#paymentDate').datepicker({
                         setDate: new Date(),
@@ -866,7 +866,7 @@
                     }).on("input change", function (e) {
                         
                     });
-                    $('#paymentDate').datepicker("setDate", new Date());
+                    // $('#paymentDate').datepicker("setDate", new Date());
 
                     $('#transportDate').datepicker({
                         setDate: new Date(),
@@ -890,7 +890,7 @@
                         }
                         
                     });
-                    $('#transportDate').datepicker("setDate", new Date());
+                    // $('#transportDate').datepicker("setDate", new Date());
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -1006,6 +1006,10 @@
                             transportView.fillDataToDatatable(transportView.dataTransport);
                             transportView.setCurrentMonth();
                             transportView.searchFromDateToDate();
+
+                            $("#receiveDate").datepicker('update', transportView.today);
+                            $("#transportDate").datepicker('update', transportView.today);
+                            $("#paymentDate").datepicker('update', transportView.today);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }

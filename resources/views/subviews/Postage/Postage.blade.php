@@ -439,7 +439,7 @@
                 sttDeleteDetail: null,
                 sttEditDetail: null,
                 tagsCustomerName: [],
-                nowDay: null,
+                today: null,
 
                 showControl: function () {
                     $('.menu-toggle').fadeOut();
@@ -554,28 +554,28 @@
                     }).on("input change", function (e) {
                         postageView.getUsingFuel(e.target.value);
                     });
-                    $('#applyDate').datepicker("setDate", new Date());
+                    // $('#applyDate').datepicker("setDate", new Date());
 
                     $('#apply-date').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#apply-date').datepicker("setDate", new Date());
+                    // $('#apply-date').datepicker("setDate", new Date());
 
                     $('#createdDate').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    $('#createdDate').datepicker("setDate", new Date());
+                    // $('#createdDate').datepicker("setDate", new Date());
 
                     $('#oils_applyDate').datepicker({
                         setDate: new Date(),
                         format: 'dd-mm-yyyy',
                         autoclose: true
                     });
-                    $('#oils_applyDate').datepicker("setDate", new Date());
+                    // $('#oils_applyDate').datepicker("setDate", new Date());
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -719,12 +719,17 @@
                             postageView.dataPostage = data['postages'];
                             postageView.dataPostageDetail = data['postageDetails'];
                             postageView.dataUnit = data['units'];
-                            postageView.nowDay = data['nowDay'];
+                            postageView.today = data['today'];
                             postageView.createDataCondition();
 
                             postageView.loadSelectBox(postageView.dataUnit, 'unit_id', 'name');
                             postageView.loadSelectBox(postageView.dataCondition, 'condition', 'name');
                             postageView.fillDataToDatatable(postageView.dataPostage);
+
+                            $('#applyDate').datepicker("update", postageView.today);
+                            $('#apply-date').datepicker("update", postageView.today);
+                            $('#createdDate').datepicker("update", postageView.today);
+                            $('#oils_applyDate').datepicker("update", postageView.today);
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1085,7 +1090,7 @@
                     postageView.action = 'add';
                     postageView.showControl();
 
-                    postageView.getUsingFuel(postageView.nowDay);
+                    postageView.getUsingFuel(postageView.today);
 
                     $("#divControl").find(".titleControl").html("Thêm mới cước phí");
 
