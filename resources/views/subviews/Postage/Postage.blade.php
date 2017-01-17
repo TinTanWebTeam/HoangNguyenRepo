@@ -107,7 +107,6 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="cashDelivery" class="red"><b>Phí giao xe (%)</b></label>
-                                                        <!-- <input type="text" class="form-control currency" id="cashDelivery" name="cashDelivery"> -->
                                                         <input type="number" class="form-control" id="cashDelivery" name="cashDelivery" max="100" min="1">
                                                     </div>
                                                 </div>
@@ -265,9 +264,9 @@
                                                 <div class="col-md-12">
                                                     <div class="form-actions">
                                                         <div class="form-group">
-                                                            <button type="button" class="btn btn-primary marginRight"
-                                                                    onclick="postageView.saveDetail()">Thêm
-                                                            </button>
+                                                            <button type="button" class="btn btn-primary marginRight" onclick="postageView.saveDetail()">Thêm</button>
+                                                            <button type="button" class="btn btn-success marginRight" onclick="postageView.saveDetail()">Cập nhật</button>
+                                                            <button type="button" class="btn btn-default marginRight" onclick="postageView.cancleDetail()">Hủy</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -288,7 +287,7 @@
                                                 <th>Đến</th>
                                                 <th>Từ</th>
                                                 <th>Đến</th>
-                                                <th>Xóa</th>
+                                                <th>Sửa/Xóa</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -502,6 +501,21 @@
                             $("input[id=customer_id]").val('');
                             $("#customer_id").attr("data-customerId", '');
                         } else {
+                            var array_postage = _.filter(postageView.dataPostage, function(o){
+                                return o['customer_id'] == customer.id;
+                            });
+                            if(array_postage.length > 0) {
+                                $("select[id=unit_id]").val(array_postage[0]['unit_id']);
+                                array_postage_detail = _.filter(postageView.dataPostageDetail, function(o){
+                                    return o['formula_id'] == array_postage[0]['id'];
+                                });
+
+                                for(var i = 0; i < array_postage_detail.length; i++){
+                                    array_postage_detail[i]['stt'] = i + 1;
+                                }
+                                postageView.arrayDetail = array_postage_detail;
+                                postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
+                            }
                             $("#customer_id").attr("data-customerId", customer.id);
                         }
                     });
@@ -865,6 +879,9 @@
                             {
                                 render: function (data, type, full, meta) {
                                     var tr = '';
+                                    tr += '<div class="btn btn-success btn-circle" onclick="postageView.editPostageDetail(' + full.stt + ')">';
+                                    tr += '<i class="glyphicon glyphicon-pencil"></i>';
+                                    tr += '</div>';
                                     tr += '<div class="btn btn-danger btn-circle" onclick="postageView.idDeleteDetail = ' + full.stt + ';postageView.actionDetail = \'delete\';postageView.saveDetail()">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
@@ -957,6 +974,13 @@
                     };
                 },
 
+                editPostageDetail: function(id){
+                    console.log(id);
+                    var detail = _.find(postageView.arrayDetail, function(o){
+                        return o['stt'] == id;
+                    });
+                    console.log(detail);
+                },
                 editPostage: function (id) {
                     postageView.current = null;
                     postageView.current = _.clone(_.find(postageView.dataPostage, function (o) {

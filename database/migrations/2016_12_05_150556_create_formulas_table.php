@@ -25,7 +25,7 @@ class CreateFormulasTable extends Migration
             $table->date('applyDate')->nullable();
             $table->string('receivePlace')->nullable();
             $table->string('deliveryPlace')->nullable();
-            $table->decimal('cashDelivery', 18, 0)->default(0);
+            $table->float('cashDelivery', 5, 2)->default(0);
             $table->text('note')->nullable();
             $table->integer('createdBy')->unsigned();
             $table->integer('updatedBy')->unsigned();

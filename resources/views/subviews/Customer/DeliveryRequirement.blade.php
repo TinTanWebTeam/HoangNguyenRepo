@@ -1014,12 +1014,12 @@
                         dataType: "json"
                     }).done(function (data, textStatus, jqXHR) {
                         if (jqXHR.status == 200) {
-//                            for (var i = 0; i < data['vehicles'].length; i++) {
-//                                data['vehicles'][i].fullNumber = data['vehicles'][i]['areaCode'] + "-" + data['vehicles']   [i]['vehicleNumber'];
-//                            }
+                        //    for (var i = 0; i < data['vehicles'].length; i++) {
+                        //        data['vehicles'][i].fullNumber = data['vehicles'][i]['areaCode'] + "-" + data['vehicles']   [i]['vehicleNumber'];
+                        //    }
                             transportView.dataVehicle = data['vehicles'];
-//                            transportView.tagsVehicleName = _.map(transportView.dataVehicle, 'fullNumber');
-//                            transportView.tagsVehicleName = _.union(transportView.tagsVehicleName);
+                        //    transportView.tagsVehicleName = _.map(transportView.dataVehicle, 'fullNumber');
+                        //    transportView.tagsVehicleName = _.union(transportView.tagsVehicleName);
                            // renderAutoCompleteSearch('#vehicle_id', transportView.tagsVehicleName);
                             console.log(transportView.dataVehicle);
                             transportView.text2 = $("#vehicle_id").tautocomplete({
@@ -1544,7 +1544,7 @@
 
                     transportView.displayControl('show');
 
-                    $("input[id=transportType]").prop('disabled', true);
+                    $("input[id=transportType]").attr('disabled', true);
 
                     transportView.current = null;
                     transportView.current = _.clone(_.find(transportView.dataTransport, function (o) {
@@ -1578,7 +1578,7 @@
                 addTransport: function () {
                     transportView.displayControl('show');
 
-                    $("input[id=transportType]").prop('disabled', false);
+                    $("input[id=transportType]").attr('disabled', false);
 
                     transportView.arrayVoucher = [];
                     transportView.current = null;
@@ -1874,7 +1874,7 @@
                         $("#unitPrice").val(0);
                         $("#unit").val('');
                         $("#formulaCode").val('');
-                        $("#cashDelivery").val('');
+                        $("#cashDelivery").val(0);
                         $("label[for=quantumProduct] b").html('Lượng hàng');
                         return;
                     }
@@ -1906,8 +1906,7 @@
                             $("#unitPrice").val(data['formula']['unitPrice']);
                             $("#unit").val(data['formula']['unit']);
                             $("#formulaCode").val(data['formula']['formulaCode']);
-                            $("#cashDelivery").prop('bak-data', data['formula']['cashDelivery']);
-                            // $("#cashDelivery").val(data['formula']['cashDelivery']);
+                            $("#cashDelivery").attr('bak-data', data['formula']['cashDelivery']);
                             $("#cashDelivery").val(0);
                             $("#formula_id").val(data['formula']['id']);
                             $("label[for=quantumProduct] b").html('Số lượng (' + data['formula']['unit_name'].toLowerCase() + ')');
@@ -1956,10 +1955,10 @@
                 focusOut_calculateCashRevenue: function () {
                     var quantumProduct = parseInt($("#quantumProduct").val());
                     var unitPrice = asNumberFromCurrency("#unitPrice");
-                    var cashDelivery = $("#cashDelivery").prop('bak-data');
+                    var cashDelivery = $("#cashDelivery").attr('bak-data');
 
                     var cashRevenue = quantumProduct * unitPrice;
-                    cashDelivery = quantumProduct * cashDelivery;
+                    cashDelivery = (unitPrice * cashDelivery / 100) * quantumProduct;
                     $("#cashRevenue").val(cashRevenue);
                     $("#cashDelivery").val(cashDelivery);
                     formatCurrency(".currency");
@@ -2099,11 +2098,11 @@
                         }
 
                         if (data[key]["rule"] == 'O') {
-                            $("#id_" + data[key]["id"]).prop('readonly', true);
+                            $("#id_" + data[key]["id"]).attr('readonly', true);
                             transportView.getUsingFuel(transportView.today);
                             $("#id_" + data[key]["id"]).val(transportView.oilPrice);
                         } else {
-                            $("#id_" + data[key]["id"]).prop('readonly', false);
+                            $("#id_" + data[key]["id"]).attr('readonly', false);
                         }
 
                         var formulaDetail = {
@@ -2130,7 +2129,7 @@
                                 break;
                             case 'P': 
                                 transportView.formulaDetail[i]['fromPlace'] = $(searchEles[i]).val();
-                                var id_to = $(searchEles[i]).prop('id').split("_fromPlace")[0];
+                                var id_to = $(searchEles[i]).attr('id').split("_fromPlace")[0];
                                 transportView.formulaDetail[i]['toPlace'] = $("#"+id_to+"_toPlace").val();
                                 break;
                             default: break;
@@ -2149,7 +2148,7 @@
                                 break;
                             case 'P': 
                                 $(searchEles[i]).val(formulaDetail[i]['fromPlace']);
-                                var id_to = $(searchEles[i]).prop('id').split("_fromPlace")[0];
+                                var id_to = $(searchEles[i]).attr('id').split("_fromPlace")[0];
                                 $("#"+id_to+"_toPlace").val(formulaDetail[i]['toPlace']);
                                 break;
                             default: break;

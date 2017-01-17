@@ -63,7 +63,7 @@ class PostageManagementController extends Controller
             $updatedBy = \Auth::user()->id;
             $arrayDetail = $request->input('_postageDetail');
 
-            $cashDelivery = $unitPrice * $cashDelivery / 100;
+            // $cashDelivery = $unitPrice * $cashDelivery / 100;
         }
 
         try {
