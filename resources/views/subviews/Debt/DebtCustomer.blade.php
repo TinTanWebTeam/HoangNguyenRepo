@@ -432,7 +432,7 @@
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <span style="font-size: 13px;">Xuất HĐ tiền đã nhận: </span>
                                                 <input type="checkbox" id="statusPrePaid" name="statusPrePaid"
-                                                       onchange="debtCustomerView.renderEventCheckbox(this)">
+                                                       onchange="debtCustomerView.onChange_statusPrePaid(this)">
                                             </legend>
                                             <div class="row" style="padding: 0 10px" id="hide-when-ptt-checked">
                                                 <div class="col-md-3">
@@ -841,7 +841,7 @@
                         });
                     });
                 },
-                renderEventCheckbox: function (cb) {
+                onChange_statusPrePaid: function (cb) {
                     // Thêm mới hóa đơn
                     debtCustomerView.statusPrePaid = (cb.checked) ? 1 : 0;
                     var statusCheck = cb.checked;

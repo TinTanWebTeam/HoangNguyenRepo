@@ -761,7 +761,7 @@ class CustomerManagementController extends Controller
             $phiTangBo = $request->input('_transport')['phiTangBo'];
             $addScore = $request->input('_transport')['addScore'];
             $cashReceive = $request->input('_transport')['cashReceive'];
-            $cashProfit = $cashRevenue - $cashDelivery - $carrying - $parking - $fine - $phiTangBo;
+            $cashProfit = $cashRevenue - $cashDelivery;
             $voucherNumber = $request->input('_transport')['voucherNumber'];
             $voucherQuantumProduct = $request->input('_transport')['voucherQuantumProduct'];
             $receiver = $request->input('_transport')['receiver'];
@@ -1090,9 +1090,10 @@ class CustomerManagementController extends Controller
         $id = $request->input('id');
         $array_TransportInvoice = TransportInvoice::where('transport_id', $id)->get();
         if(count($array_TransportInvoice) > 0){
-            return response()->json(['msg' => 'success'], 200);
+            return response()->json(['msg' => 'Không được sửa đơn hàng đã xuất hóa đơn hoặc phiếu thanh toán.'], 203);
         }
-        return response()->json(['msg' => 'Không được sửa đơn hàng đã xuất hóa đơn hoặc phiếu thanh toán.'], 203);
+        return response()->json(['msg' => 'success'], 200);
+        
     }
 
     /* File */

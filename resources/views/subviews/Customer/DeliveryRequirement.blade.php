@@ -69,7 +69,7 @@
                                         <legend>Đơn hàng:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <span style="font-size: 13px;">ĐH khống: </span>
                                             <input type="checkbox" id="transportType" name="transportType"
-                                                   onchange="transportView.renderEventCheckbox(this)">
+                                                   onchange="transportView.checked_TransportType(this)">
                                         </legend>
                                         <div class="row" style="padding: 0 10px">
                                             <div class="col-md-12">
@@ -121,9 +121,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group form-md-line-input">
                                                     <label for="quantumProduct"><b>Lượng hàng</b></label>
-                                                    <input type="number" class="form-control" id="quantumProduct"
-                                                           name="quantumProduct"
-                                                           onfocusout="transportView.focusOut_calculateCashRevenue()">
+                                                    <input type="number" class="form-control" id="quantumProduct" name="quantumProduct">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -942,7 +940,27 @@
                         }
                     });
                 },
-                renderEventCheckbox: function (cb) {
+                renderEventChange: function(){
+                    $("#carrying").keyup(function () {
+                        transportView.computeWhenCostChange();
+                    });
+                    $("#parking").keyup(function () {
+                        transportView.computeWhenCostChange();
+                    });
+                    $("#fine").keyup(function () {
+                        transportView.computeWhenCostChange();
+                    });
+                    $("#phiTangBo").keyup(function () {
+                        transportView.computeWhenCostChange();
+                    });
+                    $("#addScore").keyup(function () {
+                        transportView.computeWhenCostChange();
+                    });
+                    $("#quantumProduct").keyup(function() {
+                        transportView.computeWhenChangeQuantumProduct(this.value);
+                    });
+                },
+                checked_TransportType: function (cb) {
                     transportView.transportType = (cb.checked) ? 1 : 0;
                 },
 
@@ -984,6 +1002,7 @@
                     transportView.renderScrollbar();
                     transportView.renderEventTableModal();
                     transportView.renderEventFocusOut();
+                    transportView.renderEventChange();
 
                     transportView.loadListProduct();
                     transportView.loadListCustomer();
@@ -1952,17 +1971,7 @@
                         }
                     }
                 },
-                focusOut_calculateCashRevenue: function () {
-                    var quantumProduct = parseInt($("#quantumProduct").val());
-                    var unitPrice = asNumberFromCurrency("#unitPrice");
-                    var cashDelivery = $("#cashDelivery").attr('bak-data');
 
-                    var cashRevenue = quantumProduct * unitPrice;
-                    cashDelivery = (unitPrice * cashDelivery / 100) * quantumProduct;
-                    $("#cashRevenue").val(cashRevenue);
-                    $("#cashDelivery").val(cashDelivery);
-                    formatCurrency(".currency");
-                },
                 findFormulaDetail: function () {
                     if ($("#customer_id").attr('data-customerId') == '')
                         return;
@@ -2194,9 +2203,40 @@
                         showNotification('warning', 'Số tiền nhận từ khách hàng không được lớn hơn doanh thu của đơn hàng.');
                         cashReceive = cashRevenue;
                         $("input[id=cashReceive]").val(cashReceive);
-                        $("input[id=cashRevenue]").val(cashReceive);
                         formatCurrency(".currency");
                     }
+                },
+                computeWhenCostChange: function() {
+                    var quantumProduct = parseInt($("#quantumProduct").val());
+                    var unitPrice = asNumberFromCurrency("#unitPrice");
+
+                    var cashRevenue = quantumProduct * unitPrice;
+                    var carrying = asNumberFromCurrency("#carrying");
+                    var parking = asNumberFromCurrency("#parking");
+                    var fine = asNumberFromCurrency("#fine");
+                    var phiTangBo = asNumberFromCurrency("#phiTangBo");
+                    var addScore = asNumberFromCurrency("#addScore");
+                    cashRevenue += carrying + parking + fine + phiTangBo + addScore;
+
+                    $("input[id=cashRevenue]").val(cashRevenue);
+                    formatCurrency(".currency");
+                },
+                computeWhenChangeQuantumProduct: function (quantumProduct) {
+                    if(quantumProduct == "") quantumProduct = 0;
+                    var unitPrice = asNumberFromCurrency("#unitPrice");
+                    var cashDelivery = $("#cashDelivery").attr('bak-data');
+                    cashDelivery = (unitPrice * cashDelivery / 100) * quantumProduct;
+
+                    var cashRevenue = quantumProduct * unitPrice;
+                    var carrying = asNumberFromCurrency("#carrying");
+                    var parking = asNumberFromCurrency("#parking");
+                    var fine = asNumberFromCurrency("#fine");
+                    var phiTangBo = asNumberFromCurrency("#phiTangBo");
+                    var addScore = asNumberFromCurrency("#addScore");
+                    cashRevenue += carrying + parking + fine + phiTangBo + addScore;
+                    $("#cashRevenue").val(cashRevenue);
+                    $("#cashDelivery").val(cashDelivery);
+                    formatCurrency(".currency");
                 },
 
                 showFormAttachFile: function () {

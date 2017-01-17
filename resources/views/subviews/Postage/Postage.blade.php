@@ -264,9 +264,9 @@
                                                 <div class="col-md-12">
                                                     <div class="form-actions">
                                                         <div class="form-group">
-                                                            <button type="button" class="btn btn-primary marginRight" onclick="postageView.saveDetail()">Thêm</button>
-                                                            <button type="button" class="btn btn-success marginRight" onclick="postageView.saveDetail()">Cập nhật</button>
-                                                            <button type="button" class="btn btn-default marginRight" onclick="postageView.cancleDetail()">Hủy</button>
+                                                            <button type="button" id="add-detail" class="btn btn-primary marginRight" onclick="postageView.saveDetail()">Thêm</button>
+                                                            <button type="button" id="edit-detail" class="btn btn-success marginRight hide" onclick="postageView.saveDetail()">Cập nhật</button>
+                                                            <button type="button" id="cancel-detail" class="btn btn-default marginRight hide" onclick="postageView.cancelDetail()">Hủy</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -434,9 +434,10 @@
                 currentDetail: null,
                 arrayDetail: [],
                 action: null,
-                actionDetail: null,
+                actionDetail: "add",
                 idDelete: null,
-                idDeleteDetail: null,
+                sttDeleteDetail: null,
+                sttEditDetail: null,
                 tagsCustomerName: [],
                 nowDay: null,
 
@@ -467,13 +468,14 @@
                 },
                 retype: function () {
                     $("input[id=customer_id]").val('');
-                    $("#customer_id").prop('data-customerId', '');
+                    $("#customer_id").attr('data-customerId', '');
                     $("input[id=cashDelivery]").val(0);
                     $("input[id=unitPrice]").val(0);
                     $("input[id=unit]").val('');
                     $("textarea[id=note]").val('');
                 },
                 retypeDetail: function () {
+                    $("input[id=name]").val('');
                     $("input[id=value]").val('');
                     $("input[id=from]").val('');
                     $("input[id=to]").val('');
@@ -488,36 +490,45 @@
                         postageView.displayModal("hide", "#modal-customer");
                     });
                 },
+                focusOut_getCustomer: function(custName){
+                    if (custName == '') return;
+                    customer = _.find(postageView.dataCustomer, function (o) {
+                        return o.fullName == custName;
+                    });
+                    if (typeof customer === "undefined") {
+                        $("#modal-notification").find(".modal-title").html("Khách hàng <label class='text text-danger'>" + custName + "</label> không tồn tại");
+                        postageView.displayModal('show', '#modal-notification');
+                        $("input[id=customer_id]").val('');
+                        $("#customer_id").attr("data-customerId", '');
+                    } else {
+                        var array_postage = _.filter(postageView.dataPostage, function(o){
+                            return o['customer_id'] == customer.id;
+                        });
+                        if(array_postage.length > 0) {
+                            $("select[id=unit_id]").val(array_postage[0]['unit_id']);
+                            var array_postage_detail = _.filter(postageView.dataPostageDetail, function(o){
+                                return o['formula_id'] == array_postage[0]['id'];
+                            });
+
+                            for(var i = 0; i < array_postage_detail.length; i++){
+                                array_postage_detail[i]['stt'] = i + 1;
+                            }
+                            postageView.arrayDetail = array_postage_detail;
+                            postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
+                        }
+                        $("#customer_id").attr("data-customerId", customer.id);
+
+                        // Clear input
+                        $("input[id=cashDelivery]").val(0);
+                        $("input[id=unitPrice]").val(0);
+                        $("input[id=unit]").val('');
+                        $("textarea[id=note]").val('');
+                        postageView.retypeDetail();
+                    }
+                },
                 renderEventFocusOut: function () {
                     $("#customer_id").focusout(function () {
-                        custName = this.value;
-                        if (custName == '') return;
-                        customer = _.find(postageView.dataCustomer, function (o) {
-                            return o.fullName == custName;
-                        });
-                        if (typeof customer === "undefined") {
-                            $("#modal-notification").find(".modal-title").html("Khách hàng <label class='text text-danger'>" + custName + "</label> không tồn tại");
-                            postageView.displayModal('show', '#modal-notification');
-                            $("input[id=customer_id]").val('');
-                            $("#customer_id").attr("data-customerId", '');
-                        } else {
-                            var array_postage = _.filter(postageView.dataPostage, function(o){
-                                return o['customer_id'] == customer.id;
-                            });
-                            if(array_postage.length > 0) {
-                                $("select[id=unit_id]").val(array_postage[0]['unit_id']);
-                                array_postage_detail = _.filter(postageView.dataPostageDetail, function(o){
-                                    return o['formula_id'] == array_postage[0]['id'];
-                                });
-
-                                for(var i = 0; i < array_postage_detail.length; i++){
-                                    array_postage_detail[i]['stt'] = i + 1;
-                                }
-                                postageView.arrayDetail = array_postage_detail;
-                                postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
-                            }
-                            $("#customer_id").attr("data-customerId", customer.id);
-                        }
+                        postageView.focusOut_getCustomer(this.value);
                     });
                 },
                 renderDateTimePicker: function () {
@@ -556,103 +567,41 @@
                         theme: "dark"
                     });
                 },
-                renderEventChange: function () {
-                    $('input[type=radio][name=rule]').change(function () {
+                displayRuleInput: function(rule) {
+                    postageView.retypeDetail();
+                    if($("select[id=condition] option:selected").text() == 'Khác'){
+                        $("select[id=condition] option:selected").attr('my-rule', rule);
                         postageView.retypeDetail();
-                        if($("select[id=condition] option:selected").text() == 'Khác'){
-                            $("select[id=condition] option:selected").attr('my-rule', this.value);
-                            postageView.retypeDetail();
-                            switch (this.value) {
-                                case 'S':
-                                case 'PC':
-                                    $("label[for=value]").removeClass('hide');
-                                    $("label[for=from]").addClass('hide');
-                                    $("label[for=to]").addClass('hide');
-                                    $("#name").prop('readonly', false);
-                                    $("#value").removeClass('hide')
-                                    $("#from").addClass('hide');
-                                    $("#to").addClass('hide');
-                                    $("#fromPlace").addClass('hide');
-                                    $("#toPlace").addClass('hide');
-                                    break;
-                                case 'R':
-                                case 'O':
-                                    $("label[for=value]").addClass('hide');
-                                    $("label[for=from]").removeClass('hide');
-                                    $("label[for=to]").removeClass('hide');
-                                    $("#name").prop('readonly', false);
-                                    $("#value").addClass('hide');
-                                    $("#from").removeClass('hide');
-                                    $("#to").removeClass('hide');
-                                    $("#fromPlace").addClass('hide');
-                                    $("#toPlace").addClass('hide');
-                                    break;
-                                case 'P':
-                                    $("label[for=value]").addClass('hide');
-                                    $("label[for=from]").removeClass('hide');
-                                    $("label[for=to]").removeClass('hide');
-                                    $("#name").prop('readonly', false);
-                                    $("#value").addClass('hide');
-                                    $("#from").addClass('hide');
-                                    $("#to").addClass('hide');
-                                    $("#fromPlace").removeClass('hide');
-                                    $("#toPlace").removeClass('hide');
-                                    break;
-                                default: break;
-                            }
-                        }
-                    });
-
-                    $('select[id=condition]').change(function () {
-                        postageView.retypeDetail();
-                        var option = $(this).find('option:selected');
-                        var name = option.text();
-                        var flag = true;
-
-                        $("#name").val(name);
-                        if(name == 'Khác') {
-                            flag = false;
-                            $("#name").val('');
-                            var rule_parent = $('input[type=radio][name=rule]:checked').val();
-                            option.attr('my-rule', rule_parent);
-
-                            $("input[name=rule]").prop("disabled", false);
-                        } else {
-                            $("input[name=rule]").prop("disabled", true);
-                        }
-                        var rule = option.attr('my-rule');
-                        
-                        // $("input[type=radio][name=rule][value="+rule+"]").prop('checked', true);
                         switch (rule) {
-                            case 'S': 
-                            case 'PC': 
+                            case 'S':
+                            case 'PC':
                                 $("label[for=value]").removeClass('hide');
                                 $("label[for=from]").addClass('hide');
                                 $("label[for=to]").addClass('hide');
-                                $("#name").prop('readonly', flag);
+                                $("#name").attr('readonly', false);
                                 $("#value").removeClass('hide')
                                 $("#from").addClass('hide');
                                 $("#to").addClass('hide');
                                 $("#fromPlace").addClass('hide');
                                 $("#toPlace").addClass('hide');
                                 break;
-                            case 'R': 
+                            case 'R':
                             case 'O':
                                 $("label[for=value]").addClass('hide');
                                 $("label[for=from]").removeClass('hide');
                                 $("label[for=to]").removeClass('hide');
-                                $("#name").prop('readonly', flag);
+                                $("#name").attr('readonly', false);
                                 $("#value").addClass('hide');
                                 $("#from").removeClass('hide');
                                 $("#to").removeClass('hide');
                                 $("#fromPlace").addClass('hide');
                                 $("#toPlace").addClass('hide');
                                 break;
-                            case 'P': 
+                            case 'P':
                                 $("label[for=value]").addClass('hide');
                                 $("label[for=from]").removeClass('hide');
                                 $("label[for=to]").removeClass('hide');
-                                $("#name").prop('readonly', flag);
+                                $("#name").attr('readonly', false);
                                 $("#value").addClass('hide');
                                 $("#from").addClass('hide');
                                 $("#to").addClass('hide');
@@ -661,6 +610,74 @@
                                 break;
                             default: break;
                         }
+                    }
+                },
+                displayConditionInput: function(){
+                    postageView.retypeDetail();
+                    var option = $("select[name=condition]").find('option:selected');
+                    var name = option.text();
+                    var flag = true;
+
+                    $("#name").val(name);
+                    if(name == 'Khác') {
+                        flag = false;
+                        $("#name").val('');
+                        var rule_parent = $('input[type=radio][name=rule]:checked').val();
+                        option.attr('my-rule', rule_parent);
+
+                        $("input[name=rule]").attr("disabled", false);
+                    } else {
+                        $("input[name=rule]").attr("disabled", true);
+                    }
+                    var rule = option.attr('my-rule');
+                    
+                    // $("input[type=radio][name=rule][value="+rule+"]").prop('checked', true);
+                    switch (rule) {
+                        case 'S': 
+                        case 'PC': 
+                            $("label[for=value]").removeClass('hide');
+                            $("label[for=from]").addClass('hide');
+                            $("label[for=to]").addClass('hide');
+                            $("#name").attr('readonly', flag);
+                            $("#value").removeClass('hide')
+                            $("#from").addClass('hide');
+                            $("#to").addClass('hide');
+                            $("#fromPlace").addClass('hide');
+                            $("#toPlace").addClass('hide');
+                            break;
+                        case 'R': 
+                        case 'O':
+                            $("label[for=value]").addClass('hide');
+                            $("label[for=from]").removeClass('hide');
+                            $("label[for=to]").removeClass('hide');
+                            $("#name").attr('readonly', flag);
+                            $("#value").addClass('hide');
+                            $("#from").removeClass('hide');
+                            $("#to").removeClass('hide');
+                            $("#fromPlace").addClass('hide');
+                            $("#toPlace").addClass('hide');
+                            break;
+                        case 'P': 
+                            $("label[for=value]").addClass('hide');
+                            $("label[for=from]").removeClass('hide');
+                            $("label[for=to]").removeClass('hide');
+                            $("#name").attr('readonly', flag);
+                            $("#value").addClass('hide');
+                            $("#from").addClass('hide');
+                            $("#to").addClass('hide');
+                            $("#fromPlace").removeClass('hide');
+                            $("#toPlace").removeClass('hide');
+                            break;
+                        default: break;
+                    }
+                },
+                renderEventChange: function () {
+                    $('input[type=radio][name=rule]').change(function () {
+                        postageView.displayRuleInput(this.value);
+                    });
+
+                    $('select[id=condition]').change(function () {
+                        postageView.displayConditionInput();
                     });
                 },
 
@@ -882,7 +899,7 @@
                                     tr += '<div class="btn btn-success btn-circle" onclick="postageView.editPostageDetail(' + full.stt + ')">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
-                                    tr += '<div class="btn btn-danger btn-circle" onclick="postageView.idDeleteDetail = ' + full.stt + ';postageView.actionDetail = \'delete\';postageView.saveDetail()">';
+                                    tr += '<div class="btn btn-danger btn-circle" onclick="postageView.sttDeleteDetail = ' + full.stt + ';postageView.actionDetail = \'delete\';postageView.saveDetail()">';
                                     tr += '<i class="glyphicon glyphicon-pencil"></i>';
                                     tr += '</div>';
                                     return tr;
@@ -974,13 +991,49 @@
                     };
                 },
 
-                editPostageDetail: function(id){
-                    console.log(id);
+                editPostageDetail: function(stt) {
+                    $("button[id=add-detail]").addClass("hide");
+                    $("button[id=edit-detail]").removeClass("hide");
+                    $("button[id=cancel-detail]").removeClass("hide");
+
+                    postageView.sttEditDetail = stt;
+                    postageView.actionDetail = "edit";
+
                     var detail = _.find(postageView.arrayDetail, function(o){
-                        return o['stt'] == id;
+                        return o['stt'] == stt;
                     });
-                    console.log(detail);
+
+                    $("input[type=radio][name=rule][value="+detail['rule']+"]").prop("checked", true);
+                    postageView.displayRuleInput(detail['rule']);
+                    $("select[name=condition]").find("option[value=1]").attr("my-rule", detail['rule']);
+                    $("select[name=condition]").find("option[value=1]").attr("selected", true);
+                    postageView.displayConditionInput();
+
+                    $("#name").val(detail['name']);
+                    switch(detail['rule']){
+                        case 'S':
+                        case 'O':
+                            $("#value").val(detail['value']);
+                            break;
+                        case 'R':
+                            $("#from").val(detail['from']);
+                            $("#to").val(detail['to']);
+                            break;
+                        case 'P':
+                            $("#fromPlace").val(detail['fromPlace']);
+                            $("#toPlace").val(detail['toPlace']);
+                            break;
+                        default: break;
+                    }
                 },
+                cancelDetail: function() {
+                    $("button[id=add-detail]").removeClass("hide");
+                    $("button[id=edit-detail]").addClass("hide");
+                    $("button[id=cancel-detail]").addClass("hide");
+
+                    postageView.sttEditDetail = null;
+                },
+
                 editPostage: function (id) {
                     postageView.current = null;
                     postageView.current = _.clone(_.find(postageView.dataPostage, function (o) {
@@ -1003,8 +1056,8 @@
 
                     $("#divControl").find(".titleControl").html("Cập nhật cước phí");
 
-                    $("input[id=receivePlace]").prop('readonly', true);
-                    $("input[id=deliveryPlace]").prop('readonly', true);
+                    $("input[id=receivePlace]").attr('readonly', true);
+                    $("input[id=deliveryPlace]").attr('readonly', true);
 
                     formatCurrency(".currency");
                 },
@@ -1023,8 +1076,8 @@
 
                     $("#divControl").find(".titleControl").html("Thêm mới cước phí");
 
-                    $("input[id=receivePlace]").prop('readonly', false);
-                    $("input[id=deliveryPlace]").prop('readonly', false);
+                    $("input[id=receivePlace]").attr('readonly', false);
+                    $("input[id=deliveryPlace]").attr('readonly', false);
 
                     postageView.arrayDetail = [];
 
@@ -1214,49 +1267,104 @@
                     });
                 },
                 saveDetail: function () {
-                    if (postageView.actionDetail == 'delete') {
-                        var find = _.find(postageView.arrayDetail, function(o){
-                            return o.stt == postageView.idDeleteDetail;
-                        });
-                        var index = postageView.arrayDetail.indexOf(find); 
-                        postageView.arrayDetail.splice(index, 1);
-                        postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
-                        postageView.actionDetail = null;
-                    } else {
-                        postageView.formValidateJqueryDetail();
-                        if ($("#frmControlDetail").valid()) {
-
-                            postageView.fillFormDataToCurrentObjectDetail();
-
-                            if(postageView.arrayDetail.length > 0){
-                                var exist = _.filter(postageView.arrayDetail, function(o) {
-                                    return o.name == postageView.currentDetail['name'];
-                                });
-                                if(exist.length > 0) {
-                                    showNotification("warning", "Tên trường trong công thức đã tồn tại!");
-                                    return;
-                                }
-                            }
-
-                            postageView.arrayDetail.push({
-                                'action': postageView.action,
-                                'rule': postageView.currentDetail['rule'],
-                                'name': postageView.currentDetail['name'],
-                                'value': postageView.currentDetail['value'],
-                                'from': postageView.currentDetail['from'],
-                                'to': postageView.currentDetail['to'],
-                                'fromPlace': postageView.currentDetail['fromPlace'],
-                                'toPlace': postageView.currentDetail['toPlace']
+                    switch(postageView.actionDetail){
+                        case "delete":
+                            var find = _.find(postageView.arrayDetail, function(o){
+                                return o.stt == postageView.sttDeleteDetail;
                             });
-
-                            for (var i = 0; i < postageView.arrayDetail.length; i++) {
-                                postageView.arrayDetail[i].stt = i + 1;
-                            }
+                            var index = postageView.arrayDetail.indexOf(find); 
+                            postageView.arrayDetail.splice(index, 1);
                             postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
-                        } else {
-                            $("form#frmControlDetail").find("label[class=error]").css("color", "red");
-                            return;
-                        }
+                            postageView.actionDetail = "add";
+                            break;
+                        case "add":
+                            postageView.formValidateJqueryDetail();
+                            if ($("#frmControlDetail").valid()) {
+                                postageView.fillFormDataToCurrentObjectDetail();
+
+                                if(postageView.arrayDetail.length > 0){
+                                    var exist = _.filter(postageView.arrayDetail, function(o) {
+                                        return o.name == postageView.currentDetail['name'];
+                                    });
+                                    if(exist.length > 0) {
+                                        showNotification("warning", "Tên trường trong công thức đã tồn tại!");
+                                        return;
+                                    }
+                                }
+
+                                postageView.arrayDetail.push({
+                                    'action': postageView.action,
+                                    'rule': postageView.currentDetail['rule'],
+                                    'name': postageView.currentDetail['name'],
+                                    'value': postageView.currentDetail['value'],
+                                    'from': postageView.currentDetail['from'],
+                                    'to': postageView.currentDetail['to'],
+                                    'fromPlace': postageView.currentDetail['fromPlace'],
+                                    'toPlace': postageView.currentDetail['toPlace']
+                                });
+
+                                for (var i = 0; i < postageView.arrayDetail.length; i++) {
+                                    postageView.arrayDetail[i].stt = i + 1;
+                                }
+                                postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
+                            } else {
+                                $("form#frmControlDetail").find("label[class=error]").css("color", "red");
+                                return;
+                            }
+                            break;
+                        case "edit":
+                            postageView.formValidateJqueryDetail();
+                            if ($("#frmControlDetail").valid()) {
+                                postageView.fillFormDataToCurrentObjectDetail();
+
+                                // Remove postageDetail edited
+                                var old = _.find(postageView.arrayDetail, function(o){
+                                    return o['stt'] == postageView.sttEditDetail;
+                                });
+                                var index = _.indexOf(postageView.arrayDetail, old);
+                                postageView.arrayDetail.splice(index, 1);
+
+                                // Validate exist name
+                                if(postageView.arrayDetail.length > 0){
+                                    var exist = _.filter(postageView.arrayDetail, function(o) {
+                                        return o.name == postageView.currentDetail['name'];
+                                    });
+                                    if(exist.length > 0) {
+                                        showNotification("warning", "Tên trường trong công thức đã tồn tại!");
+                                        return;
+                                    }
+                                }
+
+                                // Add new postageDetail
+                                postageView.arrayDetail.push({
+                                    'action': postageView.action,
+                                    'rule': postageView.currentDetail['rule'],
+                                    'name': postageView.currentDetail['name'],
+                                    'value': postageView.currentDetail['value'],
+                                    'from': postageView.currentDetail['from'],
+                                    'to': postageView.currentDetail['to'],
+                                    'fromPlace': postageView.currentDetail['fromPlace'],
+                                    'toPlace': postageView.currentDetail['toPlace']
+                                });
+
+                                for (var i = 0; i < postageView.arrayDetail.length; i++) {
+                                    postageView.arrayDetail[i].stt = i + 1;
+                                }
+                                postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
+
+                                $("button[id=add-detail]").removeClass("hide");
+                                $("button[id=edit-detail]").addClass("hide");
+                                $("button[id=cancel-detail]").addClass("hide");
+
+                                postageView.sttEditDetail = null;
+                                postageView.actionDetail = "add";
+                            } else {
+                                $("form#frmControlDetail").find("label[class=error]").css("color", "red");
+                                return;
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 },
 
