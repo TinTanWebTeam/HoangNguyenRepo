@@ -78,6 +78,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/transport/delete-file', 'CustomerManagementController@postDeleteFile');
         Route::post('/transport/download-file', 'CustomerManagementController@postDownloadFile');
         Route::post('/transport/validate-edit-transport', 'CustomerManagementController@postValidateEditTransport');
+        Route::get('/transport/remind-payment', 'CustomerManagementController@getRemindPayment');
     });
     Route::group(['middleware' => 'VehicleManagement'], function () {
         //get View

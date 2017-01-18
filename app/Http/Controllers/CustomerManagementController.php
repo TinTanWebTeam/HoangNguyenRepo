@@ -1101,6 +1101,25 @@ class CustomerManagementController extends Controller
         
     }
 
+    // Nhắc nhở thanh toán đơn hàng
+    public function getRemindPayment() {
+        // $today = date('Y-m-d');
+        $today = \Carbon\Carbon::today()->toDateString();
+        $transports = DB::table('transports')
+            ->whereDate('paymentDate', '=', $today)
+            ->leftJoin('transportInvoices', 'transportInvoices.transport_id', '=', 'transports.id')
+            ->whereNull('transportInvoices.transport_id')
+            ->get();
+        if(count($transports) == 0) {
+            return response()->json(['msg' => 'Không có đơn hàng nào phải thanh toán trong hôm nay.'], 203);
+        }
+        $response = [
+            'msg' => 'Có ' . count($transports) . ' đơn hàng cần phải thanh toán trong ngày hôm nay ' . $today,
+            'transports' => $transports
+        ];
+        return response()->json($response, 200);
+    }
+
     /* File */
     public function postUploadMultiFile(Request $request)
     {
