@@ -44,7 +44,7 @@
     <link rel="stylesheet" href="{{ URL::to('libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/jquery.ptTimeSelect.css') }}">
     <link rel="stylesheet" href="{{ URL::to('libs/datepair.js/lib/pikaday.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{URL::to('tableAutocomplete/tautocomplete.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{URL::to('src/tableAutocomplete/tautocomplete.css')}}"/>
 
     @yield('styles')
 
@@ -66,21 +66,21 @@
 <!-- JAVASCRIPT -->
 
 <!-- jQuery UI -->
-<script src=" {{ URL::to('libs/jquery-ui/jquery-ui.min.js') }}"></script>
+<script src="{{ URL::to('libs/jquery-ui/jquery-ui.min.js') }}"></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src=" {{ URL::to('libs/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ URL::to('libs/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
 <!-- Metis Menu -->
-<script src=" {{ URL::to('libs/metisMenu/dist/metisMenu.min.js') }}"></script>
+<script src="{{ URL::to('libs/metisMenu/dist/metisMenu.min.js') }}"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src=" {{ URL::to('src/js/sb-admin-2.js') }} "></script>
+<script src="{{ URL::to('src/js/sb-admin-2.js') }}"></script>
 
 <!-- Moment -->
-<script src=" {{ URL::to('libs/moment/min/moment.min.js') }} "></script>
-<script src=" {{ URL::to('libs/moment/locale/vi.js') }} "></script>
-<script src=" {{ URL::to('tableAutocomplete/tautocomplete.js') }} "></script>
+<script src="{{ URL::to('libs/moment/min/moment.min.js') }}"></script>
+<script src="{{ URL::to('libs/moment/locale/vi.js') }}"></script>
+<script src="{{ URL::to('src/tableAutocomplete/tautocomplete.js') }}"></script>
 
 <!-- Datatables.net -->
 <script src="{{ URL::to('src/dataTableFull/DataTables-1.10.12/js/jquery.dataTables.min.js') }}"></script>
@@ -123,10 +123,10 @@
 <script src="{{ URL::to('src/jquery.formatCurrency/i18n/jquery.formatCurrency.all.js') }}"></script>
 
 <!-- Lodash -->
-<script src=" {{ URL::to('libs/lodash/dist/lodash.min.js') }} "></script>
+<script src="{{ URL::to('libs/lodash/dist/lodash.min.js') }}"></script>
 
 <!-- Global -->
-<script src=" {{ URL::to('src/js/global.js') }} "></script>
+<script src="{{ URL::to('src/js/global.js') }}"></script>
 
 @yield('javascripts')
 
