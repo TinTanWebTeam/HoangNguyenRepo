@@ -1266,15 +1266,15 @@ class CustomerManagementController extends Controller
                 , 'drivers.fullName')
             ->get();
 
-//        $vehicles = \DB::table('vehicles')
-//            ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-//            ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
-//            ->join('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
-//            ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
-//            ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name', 'drivers.fullName as driverName', 'drivers.id as driver_id')
-//            ->where('vehicles.active', 1)
-//            ->orderBy('vehicles.id', 'desc')
-//            ->get();
+    //    $vehicles = \DB::table('vehicles')
+    //        ->join('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+    //        ->join('garages', 'vehicles.garage_id', '=', 'garages.id')
+    //        ->join('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
+    //        ->leftJoin('drivers', 'drivers.id', '=', 'driverVehicles.driver_id')
+    //        ->select('vehicles.*', 'vehicleTypes.name as vehicleTypes_name', 'garages.name as garages_name', 'drivers.fullName as driverName', 'drivers.id as driver_id')
+    //        ->where('vehicles.active', 1)
+    //        ->orderBy('vehicles.id', 'desc')
+    //        ->get();
 
         $response = [
             'msg'          => 'Get data vehicle success',

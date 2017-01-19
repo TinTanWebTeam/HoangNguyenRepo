@@ -13,13 +13,13 @@ class InvoiceCustomerTableSeeder extends Seeder
     {
        \App\InvoiceCustomer::create([
            'invoiceCode'    => 'IC161230001',
-           'totalTransport' => 14450000,
+           'totalTransport' => 14900000,
            'prePaid'        => 500000,
-           'totalPay'       => 14450000,
-           'totalPaid'      => 15395000,
+           'totalPay'       => 14900000,
+           'totalPaid'      => 15890000,
            'VAT'            => 10,
-           'notVAT'         => 14450000,
-           'hasVAT'         => 15895000,
+           'notVAT'         => 14900000,
+           'hasVAT'         => 16390000,
            'exportDate'     => '2016-12-30 09:53:48',
            'invoiceDate'    => '2016-12-30 09:53:48',
            'payDate'        => '2016-12-30 09:53:48',
@@ -36,7 +36,7 @@ class InvoiceCustomerTableSeeder extends Seeder
 
        \App\InvoiceCustomer::create([
            'invoiceCode'    => 'IC161230002',
-           'totalTransport' => 51929000,
+           'totalTransport' => 52479000,
            'prePaid'        => 10000000,
            'totalPay'       => 30000000,
            'totalPaid'      => 20000000,

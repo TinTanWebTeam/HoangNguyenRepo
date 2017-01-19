@@ -706,9 +706,6 @@
                 clearInput: function () {
                     $("input[id=invoiceCode]").val('');
                     $("textarea[id=note]").val('');
-                    $("input[id=exportDate]").val('');
-                    $("input[id=invoiceDate]").val('');
-                    $("input[id=payDate]").val('');
 
                     $("input[id=totalTransport]").val('');
                     $("input[id=cashReceive]").val('');

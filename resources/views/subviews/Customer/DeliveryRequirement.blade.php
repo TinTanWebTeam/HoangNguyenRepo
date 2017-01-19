@@ -303,6 +303,12 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Đơn hàng -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="lead text-primary text-left"><strong>Đơn hàng</strong></p>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <p id="dateOnlySearch">
@@ -337,9 +343,62 @@
                                         <th>Công an</th>
                                         <th>Phí tăng bo</th>
                                         <th>Thêm điểm</th>
+                                        <th>Nhận</th>
                                         <th id="showRevenue">Doanh thu</th>
                                         <th id="showProfit">Lợi nhuận</th>
                                         <th>Sửa/ Xóa</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Đơn hàng cần thanh toán -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="lead text-primary text-left"><strong>Đơn hàng cần thanh toán</strong></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p id="search-paymentDate">
+                                <input type="text" class="date start"/> đến
+                                <input type="text" class="date end"/>
+                                <button onclick="transportView.searchFromDateToDate_PaymentDate()" class="btn btn-sm btn-info">
+                                    <i class="fa fa-search" aria-hidden="true"></i> Tìm
+                                </button>
+                                <button onclick="transportView.clearSearch_PaymentDate()" class="btn btn-sm btn-default">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped" id="table-paymentDate">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Mã</th>
+                                        <th>STT</th>
+                                        <th>Khách hàng</th>
+                                        <th>Ngày vận chuyển</th>
+                                        <th>Số xe</th>
+                                        <th>Nơi nhận</th>
+                                        <th>Nơi giao</th>
+                                        <th>Lượng hàng</th>
+                                        <th>Đơn giá</th>
+                                        <th>Bốc xếp</th>
+                                        <th>Neo đêm</th>
+                                        <th>Công an</th>
+                                        <th>Phí tăng bo</th>
+                                        <th>Thêm điểm</th>
+                                        <th>Nhận</th>
+                                        <th id="showRevenue">Doanh thu</th>
+                                        <th id="showProfit">Lợi nhuận</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -745,6 +804,7 @@
                 table: null,
                 tableVoucher: null,
                 tableFile: null,
+                tablePaymentDate: null,
 
                 dataTransport: null,
                 dataVehicle: null,
@@ -779,7 +839,9 @@
                 vndPerXe: false,
                 firstDay: null,
                 lastDay: null,
+                today: null,
                 text2: null,
+                quantumTransportNeedPayment: 0,
 
                 displayControl: function (mode) {
                     if (mode === 'show') {
@@ -846,6 +908,10 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
+                    $('#search-paymentDate .date').datepicker({
+                        'format': 'dd-mm-yyyy',
+                        'autoclose': true
+                    });
 
                     var dateOnlySearchEl = document.getElementById('dateOnlySearch');
                     var dateOnlyDatepair = new Datepair(dateOnlySearchEl);
@@ -857,7 +923,6 @@
                     }).on("input change", function (e) {
                         
                     });
-                    // $('#receiveDate').datepicker("setDate", new Date());
 
                     $('#paymentDate').datepicker({
                         setDate: new Date(),
@@ -866,7 +931,6 @@
                     }).on("input change", function (e) {
                         
                     });
-                    // $('#paymentDate').datepicker("setDate", new Date());
 
                     $('#transportDate').datepicker({
                         setDate: new Date(),
@@ -890,7 +954,6 @@
                         }
                         
                     });
-                    // $('#transportDate').datepicker("setDate", new Date());
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -1004,12 +1067,19 @@
                         if (jqXHR.status == 200) {
                             transportView.reloadData(data);
                             transportView.fillDataToDatatable(transportView.dataTransport);
+                            transportView.fillDataToDatatable_PaymentDate(transportView.dataTransport);
                             transportView.setCurrentMonth();
+                            $("#search-paymentDate").find(".start").datepicker('update', transportView.today);
+                            $("#search-paymentDate").find(".end").datepicker('update', transportView.today);
                             transportView.searchFromDateToDate();
+                            transportView.searchFromDateToDate_PaymentDate();
 
                             $("#receiveDate").datepicker('update', transportView.today);
                             $("#transportDate").datepicker('update', transportView.today);
                             $("#paymentDate").datepicker('update', transportView.today);
+
+                            showNotification('info', 'Có ' + transportView.quantumTransportNeedPayment + ' đơn hàng cần thanh toán trong hôm nay.');
+                            
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         }
@@ -1234,7 +1304,6 @@
                 },
 
                 fillDataToDatatable: function (data) {
-                    //  removeDataTable();
                     if (transportView.table != null)
                         transportView.table.destroy();
 
@@ -1294,6 +1363,10 @@
                                 render: $.fn.dataTable.render.number(",", ".", 0)
                             },
                             {
+                                data: 'cashReceive',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
                                 data: 'cashRevenue',
                                 render: function (data, type, row, meta) {
                                     if (transportView.isAdmin == 1)
@@ -1340,14 +1413,12 @@
                             {responsivePriority: 10, targets: 10}, // Cong an
                             {responsivePriority: 10, targets: 11}, // Phi tang bo
                             {responsivePriority: 10, targets: 12}, // Them diem
-                            {responsivePriority: 1, targets: 13}, // Doanh thu
-                            {responsivePriority: 1, targets: 14}, // Loi nhuan
-                            {responsivePriority: 1, targets: 15}, // sua xoa
+                            {responsivePriority: 10, targets: 13}, // Them diem
+                            {responsivePriority: 1, targets: 14}, // Doanh thu
+                            {responsivePriority: 1, targets: 15}, // Loi nhuan
+                            {responsivePriority: 1, targets: 16} // sua xoa
                         ],
                         responsive: true,
-                        //  fixedHeader: {
-                        //      header: true
-                        //  },
                         order: [[1, "asc"]],
                         dom: 'Bfrtip',
                         buttons: [
@@ -1402,8 +1473,96 @@
                         $("#showRevenue").addClass("hide");
                         $("#showProfit").addClass("hide");
                     }
+                },
+                fillDataToDatatable_PaymentDate: function (data) {
+                    if (transportView.tablePaymentDate != null)
+                        transportView.tablePaymentDate.destroy();
 
-                    //  pushDataTable(transportView.table);
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i]['transportType'] === 1) {
+                            data[i].fullNumber = data[i]['vehicle_name'];
+                            data[i].products_name = data[i]['product_name'];
+                            data[i].customers_fullName = data[i]['customer_name'];
+                        } else {
+                            var fullNumber = (data[i]['vehicles_areaCode'] == null || data[i]['vehicles_vehicleNumber'] == null) ? "" : data[i]['vehicles_areaCode'] + "-" + data[i]['vehicles_vehicleNumber'];
+                            data[i].fullNumber = fullNumber;
+                        }
+                        data[i].stt = i + 1;
+                    }
+                    transportView.tablePaymentDate = $('#table-paymentDate').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {
+                                data: 'id',
+                                visible: false
+                            },
+                            {data: 'stt'},
+                            {data: 'customers_fullName'},
+                            {
+                                data: 'transportDate',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            },
+                            {data: 'fullNumber'},
+                            {data: 'receivePlace'},
+                            {data: 'deliveryPlace'},
+                            {data: 'quantumProduct'},
+                            {
+                                data: 'formula_unitPrice',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'carrying',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'parking',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'fine',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'phiTangBo',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'addScore',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'cashReceive',
+                                render: $.fn.dataTable.render.number(",", ".", 0)
+                            },
+                            {
+                                data: 'cashRevenue',
+                                render: function (data, type, row, meta) {
+                                    if (transportView.isAdmin == 1)
+                                        return $.fn.dataTable.render.number(",", ".", 0).display(data);
+                                    else
+                                        return "";
+                                },
+                                visible: (transportView.isAdmin == 1) ? true : false
+                            },
+                            {
+                                data: 'cashProfit',
+                                render: function (data, type, row, meta) {
+                                    if (transportView.isAdmin == 1)
+                                        return $.fn.dataTable.render.number(",", ".", 0).display(data);
+                                    else
+                                        return "";
+                                },
+                                visible: (transportView.isAdmin == 1) ? true : false
+                            }
+                        ],
+                        responsive: true,
+                        order: [[1, "asc"]],
+                        dom: 'frtip',
+                    });
+                    $("#table-paymentDate").css("width", "auto");
                 },
                 fillCurrentObjectToForm: function () {
                     transportView.transportType = transportView.current["transportType"];
@@ -2211,6 +2370,33 @@
                     $("#dateOnlySearch").find(".start").datepicker('update', '');
                     $("#dateOnlySearch").find(".end").datepicker('update', '');
                     transportView.table.clear().rows.add(transportView.dataTransport).draw();
+                },
+                searchFromDateToDate_PaymentDate: function () {
+                    var fromDate = $("#search-paymentDate").find(".start").val();
+                    var toDate = $("#search-paymentDate").find(".end").val();
+                    fromDate = moment(fromDate, "DD-MM-YYYY");
+                    toDate = moment(toDate, "DD-MM-YYYY");
+
+                    if (fromDate.isValid() && toDate.isValid()) {
+                        var found = _.filter(transportView.dataTransport, function (o) {
+                            var find = moment(o['paymentDate'], "YYYY-MM-DD");
+                            find.hour(0);
+                            find.minute(0);
+                            find.second(0);
+                            return moment(find).isBetween(fromDate, toDate, null, '[]');
+                        });
+                        if(found.length > 0){
+                            transportView.quantumTransportNeedPayment = found.length;
+                        }
+                        transportView.tablePaymentDate.clear().rows.add(found).draw();
+                    } else {
+                        showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');
+                    }
+                },
+                clearSearch_PaymentDate: function () {
+                    $("#search-paymentDate").find(".start").datepicker('update', '');
+                    $("#search-paymentDate").find(".end").datepicker('update', '');
+                    transportView.tablePaymentDate.clear().draw();
                 },
                 showCurrentRows: function () {
                     $(transportView.table.$('tr', {"filter": "applied"}).each(function () {

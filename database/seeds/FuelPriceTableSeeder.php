@@ -16,7 +16,7 @@ class FuelPriceTableSeeder extends Seeder
             'price' => 10000,
             'type' => 'oil',
             'note' => $faker->sentence,
-            'applyDate' => date('Y-m-d'),
+            'applyDate' => '2016-01-01 00:00:00',
             'createdBy' => 1,
             'updatedBy' => 1
         ]);
@@ -24,7 +24,7 @@ class FuelPriceTableSeeder extends Seeder
             'price' => 80000,
             'type' => 'lube',
             'note' => $faker->sentence,
-            'applyDate' => date('Y-m-d'),
+            'applyDate' => '2016-01-01 00:00:00',
             'createdBy' => 1,
             'updatedBy' => 1
         ]);
