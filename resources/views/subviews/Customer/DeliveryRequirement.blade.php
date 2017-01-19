@@ -684,10 +684,10 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group form-md-line-input">
-                                    <label for="productCode"><b>Mã hàng</b></label>
+                                    <label for="product-code"><b>Mã hàng</b></label>
                                     <input type="text" class="form-control"
-                                           id="productCode"
-                                           name="productCode">
+                                           id="product-code"
+                                           name="product-code">
                                 </div>
                             </div>
                         </div>
@@ -2007,10 +2007,11 @@
                     transportView.validateProduct();
                     if ($("#frmProduct").valid()) {
                         var product = {
-                            name: $("input[id='productName']").val(),
-                            description: $("textarea[id='description']").val(),
+                            name: $("input[id=productName]").val(),
+                            description: $("textarea[id=description]").val(),
                             productType_id: $("#productType_id").attr('data-id'),
-                            productType: $("input[id='productType_id']").val()
+                            productType: $("input[id=productType_id]").val(),
+                            productCode: $("input[id=product-code]").val()
                         };
                         var sendToServer = {
                             _token: _token,

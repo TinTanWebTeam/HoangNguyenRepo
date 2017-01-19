@@ -400,10 +400,10 @@ function verifyProject() {
     //             showNotification("warning", "Đã hết hạn dùng thử ứng dụng, vui lòng thanh toán để tiếp tục sử dụng.");
     //             window.location.replace(base_url);
     //         } else {
-    //             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+    
     //         }
     //     }).fail(function (jqXHR, textStatus, errorThrown) {
-    //         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+    
     //     });
     // }
 }
@@ -427,10 +427,10 @@ function synDatetime() {
                 document.getElementById("syn-datetime").innerHTML = now.toLocaleString('vi');
             }, 1000);
         } else {
-            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+            
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
-        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+        
     });
 }
 

@@ -12,6 +12,7 @@ use App\FormulaDetail;
 use App\Garage;
 use App\GarageType;
 use App\Product;
+use App\ProductCode;
 use App\ProductType;
 use App\Role;
 use App\StaffCustomer;
@@ -431,47 +432,51 @@ class CustomerManagementController extends Controller
             $productType = $request->input('_product')['productType'];
             $description = $request->input('_product')['description'];
             $productType_id = $request->input('_product')['productType_id'];
+            $str_ProductCode = $request->input('_product')['productCode'];
         }
-
+        DB::beginTransaction();
         switch ($action) {
             case 'add':
-                if (!$productType_id) {
+                $flag = false;
+                if (!$productType_id) { 
+                    // Insert ProductType
                     $productTypeNew = new ProductType;
                     $productTypeNew->name = $productType;
-                    if ($productTypeNew->save()) {
-                        $productNew = new Product;
-                        $productNew->name = $name;
-                        $productNew->description = $description;
-                        $productNew->productType_id = $productTypeNew->id;
-                        if ($productNew->save()) {
-                            $response = [
-                                'msg'         => 'Created Product',
-                                'product'     => $productNew,
-                                'productType' => $productTypeNew,
-                            ];
-
-                            return response()->json($response, 201);
-                        }
-                    }
-
-                    return response()->json(['msg' => 'Create failed'], 404);
-                } else {
-                    $productNew = new Product;
-                    $productNew->name = $name;
-                    $productNew->description = $description;
-                    $productNew->productType_id = $productType_id;
-                    if ($productNew->save()) {
-                        $response = [
-                            'msg'     => 'Created Product',
-                            'product' => $productNew,
-                        ];
-
-                        return response()->json($response, 201);
-                    }
-
-                    return response()->json(['msg' => 'Create failed'], 404);
+                    $productTypeNew->save();
+                    $productType_id = $productTypeNew->id;
+                    $flag = true;
                 }
 
+                // Insert Product
+                $productNew = new Product;
+                $productNew->name = $name;
+                $productNew->description = $description;
+                $productNew->productType_id = $productType_id;
+                $productNew->save();
+
+                // Add ProductCode
+                $arr_ProductCode = explode(",", $str_ProductCode);
+                foreach($arr_ProductCode as $productCode){
+                    $PC = new ProductCode;
+                    $PC->code = $productCode;
+                    $PC->product_id = $productNew->id;
+                    $PC->save();
+                }
+                DB::commit();
+
+                $response = [
+                    'msg'         => 'Created Product',
+                    'product'     => $productNew
+                ];
+
+                if($flag){
+                    $response = [
+                        'msg'         => 'Created Product',
+                        'product'     => $productNew,
+                        'productType' => $productTypeNew,
+                    ];
+                }
+                return response()->json($response, 201);
                 break;
             case 'update':
                 $productUpdate = Product::findOrFail($request->input('_product')['id']);
@@ -479,6 +484,7 @@ class CustomerManagementController extends Controller
                 $productUpdate->description = $description;
                 $productUpdate->productType_id = $productType_id;
                 if ($productUpdate->update()) {
+                    DB::commit();
                     $response = [
                         'msg'     => 'Updated Product',
                         'product' => $productUpdate,
@@ -494,6 +500,7 @@ class CustomerManagementController extends Controller
                 $productDelete->active = 0;
 
                 if ($productDelete->update()) {
+                    DB::commit();
                     $response = [
                         'msg' => 'Deleted Product',
                     ];
@@ -504,6 +511,7 @@ class CustomerManagementController extends Controller
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
             default:
+                DB::rollback();
                 return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;
         }
