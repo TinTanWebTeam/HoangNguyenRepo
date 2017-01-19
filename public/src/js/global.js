@@ -42,6 +42,7 @@
     };
 
     verifyProject();
+    synDatetime();
 })();
 
 function getContentByUrl(element) {
@@ -407,6 +408,32 @@ function verifyProject() {
     // }
 }
 
+function synDatetime() {
+    var serverTime = 0; //this would come from the server obviously
+
+    var base_url = window.location.origin;
+    $.ajax({
+        url: base_url + '/syn-datetime',
+        type: "GET",
+        dataType: "json"
+    }).done(function (data, textStatus, jqXHR) {
+        if (jqXHR.status == 200) {
+            serverTime = data['datetime'];
+            var localTime = +Date.now();
+            var timeDiff = serverTime - localTime;
+
+            setInterval(function () {
+                var now = new Date(+Date.now() + timeDiff);
+                document.getElementById("syn-datetime").innerHTML = now.toLocaleString('vi');
+            }, 1000);
+        } else {
+            showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+    });
+}
+
 function renderAutoCompleteSearch(inputId, dataSource) {
     $(inputId).autocomplete({
         source: dataSource
@@ -494,7 +521,6 @@ var array_city = [
 (function($) {
     $.formatCurrency.regions['tt-TT'].negativeFormat = '-%s%n';
 })(jQuery);
-
 
 
 

@@ -12,6 +12,7 @@
                     style="color:red; text-transform: uppercase;font-style: italic;">Hoàng Nguyễn</span>
         </a>
         <ul class="nav navbar-top-links navbar-right pull-right">
+            <li class="text-info" id="syn-datetime"></li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="fa fa-user-circle-o fa-fw"></i>&nbsp;&nbsp;{{ Auth::user()->username }}&nbsp;&nbsp;&nbsp;&nbsp;<i

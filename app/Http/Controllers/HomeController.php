@@ -98,4 +98,9 @@ class HomeController extends Controller
         \Auth::logout();
         return response()->json(['msg' => '', 200]);
     }
+
+    public function getSynDatetime() {
+        $milliseconds = round(microtime(true) * 1000);
+        return response()->json(['datetime' => $milliseconds], 200);
+    }
 }
