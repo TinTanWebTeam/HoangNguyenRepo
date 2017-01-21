@@ -819,11 +819,13 @@
                 dataFormulaDetail: null,
                 dataTransportFormulaDetail: null,
                 dataFuel: null,
+                dataProductCode: null,
 
                 tagsProductName: [],
                 tagsCustomerName: [],
                 tagsVehicleName: [],
                 tagsProductType: [],
+                tagsProductCode: [],
                 tagsValueFormulaDetail: [],
 
                 arrayVoucher: {},
@@ -987,7 +989,10 @@
                         if (transportView.transportType === 1)
                             return;
                         var productName = this.value;
-                        if (productName == '') return;
+                        if (productName == '') {
+                            transportView.loadListProductCode(0);
+                            return;
+                        } 
                         var product = _.find(transportView.dataProduct, function (o) {
                             return o.name == productName;
                         });
@@ -996,8 +1001,12 @@
                             transportView.loadListProductType();
                             $("input[id=productName]").val(productName);
                             $("input[id=productName]").attr('data-productId', '');
+
+                            transportView.loadListProductCode(0);
                         } else {
                             $("#product_name").attr("data-productId", product.id);
+
+                            transportView.loadListProductCode(product.id);
                         }
                     });
                     $("#vehicle_id").focusout(function () {
@@ -1057,6 +1066,7 @@
                     transportView.firstDay = data['firstDay'];
                     transportView.lastDay = data['lastDay'];
                     transportView.today = data['today'];
+                    transportView.dataProductCode = data['productCodes'];
                 },
                 loadData: function () {
                     $.ajax({
@@ -1078,7 +1088,9 @@
                             $("#transportDate").datepicker('update', transportView.today);
                             $("#paymentDate").datepicker('update', transportView.today);
 
-                            showNotification('info', 'Có ' + transportView.quantumTransportNeedPayment + ' đơn hàng cần thanh toán trong hôm nay.');
+                            if(transportView.quantumTransportNeedPayment > 0){
+                                showNotification('info', 'Có ' + transportView.quantumTransportNeedPayment + ' đơn hàng cần thanh toán trong hôm nay.');
+                            }
                             
                         } else {
                             showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
@@ -1197,6 +1209,14 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
+                },
+                loadListProductCode: function (product_id) {
+                    var lstProductCode = _.filter(transportView.dataProductCode, function(o) {
+                        return o['product_id'] == product_id;
+                    });
+                    transportView.tagsProductCode = _.map(lstProductCode, 'code');
+                    transportView.tagsProductCode = _.union(transportView.tagsProductCode);
+                    renderAutoCompleteSearch('#productCode', transportView.tagsProductCode);
                 },
 
                 loadListVoucher: function () {
@@ -2386,9 +2406,7 @@
                             find.second(0);
                             return moment(find).isBetween(fromDate, toDate, null, '[]');
                         });
-                        if(found.length > 0){
-                            transportView.quantumTransportNeedPayment = found.length;
-                        }
+                        transportView.quantumTransportNeedPayment = found.length;
                         transportView.tablePaymentDate.clear().rows.add(found).draw();
                     } else {
                         showNotification('warning', 'Giá trị nhập vào không phải định dạng ngày tháng, vui lòng nhập lại!');

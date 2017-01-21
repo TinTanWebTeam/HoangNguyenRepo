@@ -680,6 +680,8 @@ class CustomerManagementController extends Controller
             ])->get()->isEmpty();
         }
 
+        $productCodes = ProductCode::all();
+
         $response = [
             'msg'                     => 'Get list all Transport',
             'transports'              => $transports,
@@ -692,6 +694,7 @@ class CustomerManagementController extends Controller
             'transportFormulaDetails' => $transportFormulaDetails,
             'oilPrice'                => $oilPrice,
             'fuels'                   => $fuels,
+            'productCodes'            => $productCodes,
             'isAdmin'                 => (!$isAdmin) ? 1: 0,
             'firstDay'                => date("d-m-Y", $this->firstDayUTS),
             'lastDay'                 => date("d-m-Y", $this->lastDayUTS),

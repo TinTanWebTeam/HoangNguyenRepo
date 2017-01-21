@@ -138,15 +138,15 @@
                                                 </div>
                                             </div>
                                             <div class="row" style="padding: 0 10px">
-                                                <div class="col-md-6">
-                                                    <div class="form-group form-md-line-input ">
+                                                <div class="col-md-6 hide">
+                                                    <div class="form-group form-md-line-input">
                                                         <label for="createdDate"><b>Ngày tạo</b></label>
                                                         <input type="text" class="date ignore form-control"
                                                                id="createdDate"
                                                                name="createdDate" disabled>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <div class="form-group form-md-line-input">
                                                         <label for="applyDate" class="red"><b>Ngày áp dụng</b></label>
                                                         <input type="text" class="date ignore form-control"
@@ -167,7 +167,7 @@
                                             <div class="row" style="padding: 0 10px">
                                                 <div class="col-sm-12">
                                                     <fieldset>
-                                                        <legend>Thông tin giá dầu:</legend>
+                                                        <legend>Thông tin giá dầu đang được sử dụng:</legend>
                                                         <div class="col-md-6">
                                                             <div class="form-group form-md-line-input">
                                                                 <label for="oils_price"><b>Giá dầu</b></label>
@@ -514,6 +514,9 @@
                         postageView.displayModal('show', '#modal-notification');
                         $("input[id=customer_id]").val('');
                         $("#customer_id").attr("data-customerId", '');
+
+                        if (postageView.tablePostageDetail != null)
+                            postageView.tablePostageDetail.clear().draw();
                     } else {
                         var array_postage = _.filter(postageView.dataPostage, function(o){
                             return o['customer_id'] == customer.id;
@@ -529,6 +532,9 @@
                             }
                             postageView.arrayDetail = array_postage_detail;
                             postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
+                        } else {
+                            if (postageView.tablePostageDetail != null)
+                                postageView.tablePostageDetail.clear().draw();
                         }
                         $("#customer_id").attr("data-customerId", customer.id);
 
@@ -552,30 +558,26 @@
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     }).on("input change", function (e) {
-                        postageView.getUsingFuel(e.target.value);
+                        // postageView.getUsingFuel(e.target.value);
                     });
-                    // $('#applyDate').datepicker("setDate", new Date());
 
                     $('#apply-date').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    // $('#apply-date').datepicker("setDate", new Date());
 
                     $('#createdDate').datepicker({
                         "setDate": new Date(),
                         'format': 'dd-mm-yyyy',
                         'autoclose': true
                     });
-                    // $('#createdDate').datepicker("setDate", new Date());
 
                     $('#oils_applyDate').datepicker({
                         setDate: new Date(),
                         format: 'dd-mm-yyyy',
                         autoclose: true
                     });
-                    // $('#oils_applyDate').datepicker("setDate", new Date());
                 },
                 renderScrollbar: function () {
                     $("#divControl").find('.panel-body').mCustomScrollbar({
@@ -1070,12 +1072,14 @@
                     }
                     postageView.fillDataToDatatablePostageDetail(postageView.arrayDetail);
 
-                    postageView.getUsingFuel($("#applyDate").val());
+                    // postageView.getUsingFuel($("#applyDate").val());
+                    postageView.getUsingFuel(postageView.today);
 
                     $("#divControl").find(".titleControl").html("Cập nhật cước phí");
 
                     $("input[id=receivePlace]").attr('readonly', true);
                     $("input[id=deliveryPlace]").attr('readonly', true);
+                    $("#applyDate").attr('disabled', true);
 
                     formatCurrency(".currency");
                 },
@@ -1096,6 +1100,7 @@
 
                     $("input[id=receivePlace]").attr('readonly', false);
                     $("input[id=deliveryPlace]").attr('readonly', false);
+                    $("#applyDate").attr('disabled', false);
 
                     postageView.arrayDetail = [];
 

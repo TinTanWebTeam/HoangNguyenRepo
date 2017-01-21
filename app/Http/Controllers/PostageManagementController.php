@@ -53,8 +53,7 @@ class PostageManagementController extends Controller
             $cashDelivery = $request->input('_postage')['cashDelivery'];
             $unitPrice = $request->input('_postage')['unitPrice'];
             $unit_id = $request->input('_postage')['unit_id'];
-            $createdDate = $request->input('_postage')['createdDate'];
-            $createdDate = Carbon::createFromFormat('d-m-Y', $createdDate);
+            $createdDate = date('Y-m-d');
             $applyDate = $request->input('_postage')['applyDate'];
             $applyDate = Carbon::createFromFormat('d-m-Y', $applyDate);
             $note = $request->input('_postage')['note'];
@@ -78,7 +77,7 @@ class PostageManagementController extends Controller
                     $postageNew->cashDelivery = $cashDelivery;
                     $postageNew->unitPrice = $unitPrice;
                     $postageNew->unit_id = $unit_id;
-                    $postageNew->createdDate = $createdDate->toDateString();
+                    $postageNew->createdDate = $createdDate;
                     $postageNew->applyDate = $applyDate->toDateString();
                     $postageNew->note = $note;
                     $postageNew->active = 1;
@@ -161,7 +160,7 @@ class PostageManagementController extends Controller
                     $postageNew->cashDelivery = $cashDelivery;
                     $postageNew->unitPrice = $unitPrice;
                     $postageNew->unit_id = $unit_id;
-                    $postageNew->createdDate = $createdDate->toDateString();
+                    $postageNew->createdDate = $createdDate;
                     $postageNew->applyDate = $applyDate->toDateString();
                     $postageNew->note = $note;
                     $postageNew->active = 1;
