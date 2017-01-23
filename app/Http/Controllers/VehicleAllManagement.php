@@ -72,7 +72,7 @@ class VehicleAllManagement extends Controller
         $yearOfProduction = null;
         $status_id = null;
         $action = $request->input('_action');
-        if ($action != 'delete' && $action != 'updateStatus' && $action != 'history') {
+        if ($action != 'delete' && $action != 'updateStatus' && $action != 'history' && $action != 'searchStt') {
             $validator = ValidateController::ValidateVehicle($request->input('_vehicle'));
             if ($validator->fails()) {
                 return $validator->errors();
@@ -138,7 +138,6 @@ class VehicleAllManagement extends Controller
                 }
                 return response()->json(['msg' => 'Deletion failed'], 404);
                 break;
-
             case 'updateStatus':
                 if ($request->input('_flag') == 0) {
                     $statusVehicle = Vehicle::findOrFail($request->input('_idVehicle'));
@@ -210,6 +209,25 @@ class VehicleAllManagement extends Controller
 
                 return response()->json(['msg' => 'load failed'], 404);
                 break;
+            case 'searchStt':
+                $searchStt = \DB::table('vehicles')
+                    ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+                    ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
+                    ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                    ->where('vehicles.active', 1)
+                    ->where('vehicles.status_id', $request->input('_status'))
+                    ->select('vehicles.*',
+                        'vehicleTypes.name',
+                        'vehicleTypes.id as vehicleType_id',
+                        'garages.name as garagesName',
+                        'statuses.status'
+                    )
+                    ->get();
+                $response = [
+                    'msg' => 'search status vehicle',
+                    'searchStatus' => $searchStt
+                ];
+                return response()->json($response, 201);
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
                 break;

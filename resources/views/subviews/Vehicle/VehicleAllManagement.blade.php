@@ -930,13 +930,14 @@
                     });
                 },
                 changeStatus: function (value) {
+                    var sendToServer = null;
                     array = $.map(vehicleAllView.table.rows('.selected').data(), function (value, index) {
                         return [value];
                     });
                     vehicleAllView.array_vehicleId = [];
                     vehicleAllView.array_vehicleId = _.map(array, 'id');
                     if (vehicleAllView.array_vehicleId.length > 0) {
-                        var sendToServer = {
+                        sendToServer = {
                             _token: _token,
                             _action: 'updateStatus',
                             _status: value,
@@ -962,10 +963,37 @@
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             vehicleAllView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                         });
+                    }else {
+                        sendToServer = {
+                            _token: _token,
+                            _action: 'searchStt',
+                            _status: value
+                        };
+                        $.ajax({
+                            url: url + 'vehicle-all-management/post-data-vehicle',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                for (var index in data['searchStatus']) {
+                                    data['searchStatus'][index].fullNumber = data['searchStatus'][index]['areaCode'] + "-" + data['searchStatus'][index]["vehicleNumber"];
+                                }
+                                vehicleAllView.dataVehicle = data['searchStatus'];
+
+                            }
+                            vehicleAllView.table.clear().rows.add(vehicleAllView.dataVehicle).draw();
+
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            vehicleAllView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
                     }
                 },
-
+                deselectAll: function () {
+                    $('#ToolTables_table-data_1').click();
+                },
                 historyPt: function (id) {
+                    vehicleAllView.deselectAll();
                     vehicleAllView.displayModal('show', '#modal-historyPt');
                     var sendToServer = {
                         _token: _token,
