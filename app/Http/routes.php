@@ -97,12 +97,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/garage-inside/modify', 'VehicleManagementController@postModifyGarageInside');
         Route::post('/vehicle-inside/modify', 'VehicleManagementController@postModifyVehicleInside');
 
-
         //post Modify Garage Outside
         Route::post('/garage-outside/modify', 'VehicleManagementController@postModifyGarageOutside');
         Route::post('/vehicle-outside/modify', 'VehicleManagementController@postModifyVehicleOutside');
-
-
 
 
     });
@@ -219,6 +216,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/vehicle-all-management/get-data-vehicle','VehicleAllManagement@getDataVehicleAll');
         /*--------------------------------------*/
         Route::POST('/vehicle-all-management/post-data-vehicle','VehicleAllManagement@postDataVehicleAll');
+        Route::POST('/all-vehicle-type/modify', 'VehicleAllManagement@postModifyVehicleType');
 
 
     });

@@ -93,6 +93,23 @@ class ValidateController extends Controller
 
         return Validator::make($data, $rules, $messages);
     }
+    public static function ValidateVehicle(array $data)
+    {
+        $rules = [
+            'vehicleType_id' => 'required',
+            'areaCode'       => 'required',
+            'vehicleNumber'  => 'required',
+            'owner'          => 'required',
+        ];
+        $messages = [
+            'vehicleType_id.required' => 'Trường loại xe bắt buộc nhập',
+            'areaCode.required'       => 'Trường mã vùng bắt buộc nhập',
+            'vehicleNumber .required' => 'Trường số xe bắt buộc nhập',
+            'owner.required'          => 'Trường chủ xe bắt buộc nhập'
+        ];
+
+        return Validator::make($data, $rules, $messages);
+    }
 
     public static function ValidateVehicleOutside(array $data)
     {

@@ -26,7 +26,11 @@
     div.col-lg-12 {
         height: 40px;
     }
-    th { white-space: nowrap; }
+
+    th {
+        white-space: nowrap;
+    }
+
     @media (max-height: 500px) {
         #divControl {
             top: 53px;
@@ -128,9 +132,9 @@
 
                                     </tbody>
                                     <tfoot>
-                                    <tr>
-                                        <td colspan="8" style="text-align:right">Total:</td>
-                                        <td colspan="6"></td>
+                                    <tr class="active">
+                                        <td colspan="8" style="text-align:right;font-weight: bold">Total:</td>
+                                        <td colspan="6" style="font-weight: bold"></td>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -186,7 +190,12 @@
                                     <tbody>
 
                                     </tbody>
-                                   
+                                    {{--<tfoot>--}}
+                                    {{--<tr class="active">--}}
+                                        {{--<td colspan="2" style="text-align:right;font-weight: bold">Total:</td>--}}
+                                        {{--<td colspan="5" style="font-weight: bold"></td>--}}
+                                    {{--</tr>--}}
+                                    {{--</tfoot>--}}
                                 </table>
                             </div>
                         </div>
@@ -1073,7 +1082,7 @@
                                 text: 'Ẩn cột'
                             }
                         ],
-                        footerCallback: function ( row, temp, start, end, display ) {
+                        footerCallback: function (row, temp, start, end, display) {
                             var api = this.api(), temp;
                             // Remove the formatting to get integer data for summation
                             var intVal = function (i) {
@@ -1097,13 +1106,12 @@
                                 .data()
                                 .reduce(function (a, b) {
                                     return intVal(a) + intVal(b);
-                                },0);
+                                }, 0);
 
                             // Update footer
                             $(api.column(8).footer()).html(
                                 pageTotal + ' Vnd'
                             );
-
                         }
                     });
                 },
@@ -1121,7 +1129,6 @@
                         columns: [
                             {data: 'stt'},
                             {data: 'fullNumber'},
-
                             {
                                 data: 'oil',
                                 render: $.fn.dataTable.render.number(",", ".", 0)
@@ -1140,13 +1147,40 @@
                             },
                             {data: 'note'}
                         ],
-                        dom: 'frtip',
-                        tableTools: {
-                            "sRowSelect": "multi",
-                            "aButtons": ["select_all", "select_none"]
+
+                        footerCallback: function (row, temp, start, end, display) {
+                            var api = this.api(), temp;
+                            // Remove the formatting to get integer data for summation
+                            var intVal = function (i) {
+                                return typeof i === 'string' ?
+                                    i.replace(/[\$,]/g, '') * 1 :
+                                    typeof i === 'number' ?
+                                        i : 0;
+                            };
+//                             Total over all pages
+                            total = api
+                                .column(2)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+
+                            // Total over this page
+                            pageTotal = api
+                                .column(2, {page: 'current'})
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+
+                            // Update footer
+                            $(api.column(2).footer()).html(
+                                pageTotal + ' Vnd'
+                            );
+
                         }
                     });
-                    $("#table-transportCost").css("width", "auto");
+//                    $("#table-transportCost").css("width", "auto");
                 },
 
 //                table - Hóa đơn
@@ -1217,12 +1251,12 @@
 
                                     }
                                     var tr = '';
-                                    tr += '<div class="text-center" style="display:'+ line +';padding-right: 5px"  >';
-                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' style='display:" + display +"'  onclick='debtVehicleOutSideView.debtVerb(" + full.id + ")'>";
+                                    tr += '<div class="text-center" style="display:' + line + ';padding-right: 5px"  >';
+                                    tr += "<div class='btn btn-circle " + color + "' title='" + text + "' style='display:" + display + "'  onclick='debtVehicleOutSideView.debtVerb(" + full.id + ")'>";
                                     tr += '<i class="fa fa-usd" aria-hidden="true"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="text-center" style="display:'+ line +'">';
+                                    tr += '<div class="text-center" style="display:' + line + '">';
                                     tr += "<div class='btn btn-circle btn-primary' title='Chi tiết Hóa đơn'  onclick='debtVehicleOutSideView.detailPTT(" + full.id + ")'>";
                                     tr += '<i class="glyphicon glyphicon-list"></i>';
                                     tr += '</div>';
