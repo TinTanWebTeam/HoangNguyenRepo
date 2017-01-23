@@ -55,6 +55,10 @@ class VehicleAllManagement extends Controller
 //        }
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function postDataVehicleAll(Request $request)
     {
         $areaCode = null;
@@ -68,13 +72,13 @@ class VehicleAllManagement extends Controller
         $yearOfProduction = null;
         $status_id = null;
         $action = $request->input('_action');
-        if ($action != 'delete' && $action != 'updateStatus' ) {
+        if ($action != 'delete' && $action != 'updateStatus' && $action != 'history') {
             $validator = ValidateController::ValidateVehicle($request->input('_vehicle'));
             if ($validator->fails()) {
                 return $validator->errors();
 //                return response()->json(['msg' => 'Input data fail'], 404);
             }
-           // $id = $request->input('_vehicle')['id'];
+            // $id = $request->input('_vehicle')['id'];
             $areaCode = $request->input('_vehicle')['areaCode'];
             $vehicleNumber = $request->input('_vehicle')['vehicleNumber'];
             $size = $request->input('_vehicle')['size'];
@@ -114,7 +118,7 @@ class VehicleAllManagement extends Controller
                         )
                         ->first();
                     $response = [
-                        'msg' => 'Updated vehicle',
+                        'msg'           => 'Updated vehicle',
                         'updateVehicle' => $updateVehicle
                     ];
                     return response()->json($response, 201);
@@ -136,29 +140,75 @@ class VehicleAllManagement extends Controller
                 break;
 
             case 'updateStatus':
-                $statusVehicle = Vehicle::findOrFail($request->input('_idVehicle'));
-                $statusVehicle->status_id = $request->input('_status');
-                if ($statusVehicle->update()) {
-                    $updateStatus = \DB::table('vehicles')
-                        ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
-                        ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
-                        ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
-                        ->where('vehicles.active', 1)
-                        ->where('vehicles.id', $request->input('_idVehicle'))
-                        ->select('vehicles.*',
-                            'vehicleTypes.name',
-                            'vehicleTypes.id as vehicleType_id',
-                            'garages.name as garagesName',
-                            'statuses.status'
+                if ($request->input('_flag') == 0) {
+                    $statusVehicle = Vehicle::findOrFail($request->input('_idVehicle'));
+                    $statusVehicle->status_id = $request->input('_status');
+                    if ($statusVehicle->update()) {
+                        $updateStatus = \DB::table('vehicles')
+                            ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+                            ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
+                            ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                            ->where('vehicles.active', 1)
+                            ->where('vehicles.id', $request->input('_idVehicle'))
+                            ->select('vehicles.*',
+                                'vehicleTypes.name',
+                                'vehicleTypes.id as vehicleType_id',
+                                'garages.name as garagesName',
+                                'statuses.status'
+                            )
+                            ->first();
+                        $response = [
+                            'msg'          => 'Updated status',
+                            'updateStatus' => $updateStatus
+                        ];
+                        return response()->json($response, 201);
+                    }
+                }
+                if ($request->input('_flag') == 1) {
+                    if (Vehicle::whereIn('id', $request->get('_idVehicle'))->update(
+                        ['vehicles.status_id' => $request->get('_status')]
+                    )
+                    ) {
+                        $updateStatus = \DB::table('vehicles')
+                            ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+                            ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
+                            ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                            ->where('vehicles.active', 1)
+                            ->select('vehicles.*',
+                                'vehicleTypes.name',
+                                'vehicleTypes.id as vehicleType_id',
+                                'garages.name as garagesName',
+                                'statuses.status'
+                            )
+                            ->get();
+
+                        $response = [
+                            'msg'          => 'Updated status',
+                            'updateStatus' => $updateStatus
+                        ];
+                        return response()->json($response, 201);
+                    }
+                }
+                return response()->json(['msg' => 'change status failed'], 404);
+                break;
+            case 'history':
+                $historyPt = \DB::table('driverVehicles')
+                    ->leftJoin('vehicles','driverVehicles.vehicle_id','=','vehicles.id')
+                    ->leftJoin('drivers','driverVehicles.driver_id','=','drivers.id')
+                    ->where('vehicles.id',$request->get('_idVehicle'))
+                    ->select('vehicles.*',
+                        'drivers.fullName',
+                        'driverVehicles.created_at as date_created'
                         )
-                        ->first();
+                    ->get();
+//                vehicles.id,vehicles.areaCode, drivers.fullName,drivervehicles.created_at
                     $response = [
-                        'msg' => 'Updated status',
-                        'updateStatus' => $updateStatus
+                        'msg' => 'history PT vehicle',
+                        'listHistory' => $historyPt
                     ];
                     return response()->json($response, 201);
-                }
-                return response()->json(['msg' => 'Deletion failed'], 404);
+
+                return response()->json(['msg' => 'load failed'], 404);
                 break;
             default:
                 return response()->json(['msg' => 'Connection to server failed'], 404);
@@ -166,6 +216,7 @@ class VehicleAllManagement extends Controller
         }
 
     }
+
     public function postModifyVehicleType(Request $request)
     {
 
@@ -192,7 +243,7 @@ class VehicleAllManagement extends Controller
                 $vehicleTypes = \DB::table('vehicleTypes')
                     ->get();
                 $response = [
-                    'msg' => 'Created vehicleType',
+                    'msg'              => 'Created vehicleType',
                     'dataVehicleTypes' => $vehicleTypes,
                 ];
                 return response()->json($response, 201);
@@ -209,7 +260,7 @@ class VehicleAllManagement extends Controller
                     $vehicleTypes = \DB::table('vehicleTypes')
                         ->get();
                     $response = [
-                        'msg' => 'Updated Vehicle',
+                        'msg'                => 'Updated Vehicle',
                         'updateVehicleTypes' => $vehicleTypes
                     ];
                     return response()->json($response, 201);

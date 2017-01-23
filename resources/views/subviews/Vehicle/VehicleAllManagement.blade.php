@@ -49,11 +49,15 @@
 
             <div class="row" style="margin: 15px 0 0 0">
                 <div class="col-lg-12">
-                   <span class="label" onclick="alert(1)" style="font-size: 1em;background-color:rgba(78,79,76,0.9);cursor:pointer">Chưa phân tài</span>
+                    <span class="label btn" onclick="vehicleAllView.changeStatus(1)"
+                          style="font-size: 1em;background-color:rgba(78,79,76,0.9);cursor:pointer">Chưa phân tài</span>
 
-                    <span class="label label-primary" style="font-size: 1em;">Đang giao hàng</span>
-                    <span class="label label-success" style="font-size: 1em;">Đã giao hàng</span>
-                    <span class="label label-danger" style="font-size: 1em;">Không giao được</span>
+                    <span class="label  label-primary btn" onclick="vehicleAllView.changeStatus(2)"
+                          style="font-size: 1em;">Đang giao hàng</span>
+                    <span class="label label-success btn" onclick="vehicleAllView.changeStatus(3)"
+                          style="font-size: 1em;">Đã giao hàng</span>
+                    <span class="label label-danger btn" onclick="vehicleAllView.changeStatus(4)"
+                          style="font-size: 1em;">Không giao được</span>
                 </div>
             </div>
 
@@ -71,7 +75,7 @@
                             <th style="width:5%">Trọng tải (tấn)</th>
                             <th style="width:20%">Trạng thái</th>
                             <th>Ghi chú</th>
-                            <th style="width:10%">Sửa/ Xóa/ lịch sử phân tài </th>
+                            <th style="width:10%">Sửa/ Xóa/ lịch sử phân tài</th>
                         </tr>
                         </thead>
                         <tbody id="tbodyVehicleAllList">
@@ -204,11 +208,11 @@
                                     </div>
                                 </div>
                                 {{--<div class="col-sm-6 col-xs-6" id="input-transfer-garage">--}}
-                                    {{--<div class="form-group form-md-line-input">--}}
-                                        {{--<label for="status_transport"><b>Trạng thái</b></label>--}}
-                                        {{--<select id="status_transport" name="status_transport"--}}
-                                                {{--class="form-control"></select>--}}
-                                    {{--</div>--}}
+                                {{--<div class="form-group form-md-line-input">--}}
+                                {{--<label for="status_transport"><b>Trạng thái</b></label>--}}
+                                {{--<select id="status_transport" name="status_transport"--}}
+                                {{--class="form-control"></select>--}}
+                                {{--</div>--}}
                                 {{--</div>--}}
                             </div>
                             <div class="row">
@@ -328,11 +332,52 @@
 </div>
 <!-- Modal Add vehicleType -->
 
+
+<!-- Modal History -->
+<div class="row">
+    <div id="modal-historyPt" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title"> Lịch sử phân tài của xe</h5>
+                </div>
+                <div class="modal-body" style="padding-top: 0; font-size: 15px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered  table-striped table-hover" id="table-historyPt">
+                                    <thead>
+                                    <tr class="active">
+                                        <th>Số xe</th>
+                                        <th>Tài xế</th>
+                                        <th>Ngày tạo</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end History -->
+
+
 <script>
     $(function () {
         if (typeof (vehicleAllView) === 'undefined') {
             vehicleAllView = {
                 table: null,
+                tableHistory: null,
+                dataHistory: null,
                 data: null,
                 action: null,
                 actionVehicleType: null,
@@ -345,6 +390,7 @@
                 dataVehicleType: null,
                 text2: null,
                 tagsVehicleType: [],
+                array_vehicleId: [],
                 tableAutoCompleteSearch: function () {
                     vehicleAllView.text2 = $("#driver").tautocomplete({
                         width: "400px",
@@ -853,11 +899,12 @@
                     }
 
                 },
-                updateStatus: function (value,idVehicle) {
+                updateStatus: function (value, idVehicle) {
                     var sendToServer = {
                         _token: _token,
                         _action: 'updateStatus',
                         _status: value,
+                        _flag: '0',
                         _idVehicle: idVehicle
                     };
                     $.ajax({
@@ -882,6 +929,65 @@
                         vehicleAllView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                     });
                 },
+                changeStatus: function (value) {
+                    array = $.map(vehicleAllView.table.rows('.selected').data(), function (value, index) {
+                        return [value];
+                    });
+                    vehicleAllView.array_vehicleId = [];
+                    vehicleAllView.array_vehicleId = _.map(array, 'id');
+                    if (vehicleAllView.array_vehicleId.length > 0) {
+                        var sendToServer = {
+                            _token: _token,
+                            _action: 'updateStatus',
+                            _status: value,
+                            _flag: '1',
+                            _idVehicle: vehicleAllView.array_vehicleId
+                        };
+                        $.ajax({
+                            url: url + 'vehicle-all-management/post-data-vehicle',
+                            type: "POST",
+                            dataType: "json",
+                            data: sendToServer
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (jqXHR.status == 201) {
+                                for (var index in data['updateStatus']) {
+                                    data['updateStatus'][index].fullNumber = data['updateStatus'][index]['areaCode'] + "-" + data['updateStatus'][index]["vehicleNumber"];
+                                }
+                                vehicleAllView.dataVehicle = data['updateStatus'];
+                                vehicleAllView.showNotification("success", "Cập nhật trạng thái xe thành công!");
+                                vehicleAllView.hide();
+                            }
+                            vehicleAllView.table.clear().rows.add(vehicleAllView.dataVehicle).draw();
+
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            vehicleAllView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                        });
+                    }
+                },
+
+                historyPt: function (id) {
+                    vehicleAllView.displayModal('show', '#modal-historyPt');
+                    var sendToServer = {
+                        _token: _token,
+                        _action: 'history',
+                        _idVehicle: id
+                    };
+                    $.ajax({
+                        url: url + 'vehicle-all-management/post-data-vehicle',
+                        type: "POST",
+                        dataType: "json",
+                        data: sendToServer
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            vehicleAllView.dataHistory = data['listHistory'];
+                            vehicleAllView.fillDataToDatatableHistory(data['listHistory']);
+
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        vehicleAllView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+
+                },
                 fillDataToDatatable: function (data, status) {
                     if (vehicleAllView.table != null) {
                         vehicleAllView.table.destroy();
@@ -895,7 +1001,6 @@
                         status[j].status_id = status[j]['id'];
                         lstStatus.push({id: status[j]['id'], status: status[j]['status']});
                     }
-
 
                     vehicleAllView.table = $('#table-data').DataTable({
                         language: languageOptions,
@@ -977,50 +1082,48 @@
                                     tr += '</div>';
                                     tr += '</div>';
                                     tr += '<div class="btn-del-edit">';
-                                    tr += '<div class="btn btn-danger btn-circle" onclick="vehicleAllView.history(' + full.id + ')">';
-                                    tr += '<i class="glyphicon glyphicon-remove"></i>';
+                                    tr += '<div class="btn btn-primary btn-circle" onclick="vehicleAllView.historyPt(' + full.id + ')">';
+                                    tr += '<i class="glyphicon glyphicon-list"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
                                     return tr;
                                 }
                             }
+                        ],
+                        dom: 'T<"clear">frtip',
+                        tableTools: {
+                            "sRowSelect": "multi",
+                            "aButtons": ["select_all", "select_none"]
+                        }
+                    });
+                },
+
+
+                fillDataToDatatableHistory: function (data, status) {
+                    if (vehicleAllView.tableHistory != null) {
+                        vehicleAllView.tableHistory.destroy();
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].fullNumber = (data[i]['areaCode'] == null || data[i]['vehicleNumber'] == null) ? "" : data[i]['areaCode'] + "-" + data[i]['vehicleNumber'];
+                    }
+                    vehicleAllView.tableHistory = $('#table-historyPt').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {data: 'fullNumber'},
+                            {data: 'fullName'},
+                            {
+                                data: 'date_created',
+                                render: function (data, type, full, meta) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            }
                         ]
                     });
-                }
-//                save: function () {
-//                    var sendToServer = null;
-//                    var _obj = {
-//                        status_id: $("select[id='status']").val(),
-//                        note: $("textarea[id='note']").val(),
-//                        idVehicle: vehicleAllView.idVehicle
-//                    };
-//                    sendToServer = {
-//                        _token: _token,
-//                        _action: "updateStatusVehicle",
-//                        _object: _obj
-//                    };
-//                    $.ajax({
-//                        url: url + 'vehicle-all-management/post-data-vehicle',
-//                        type: "POST",
-//                        dataType: "json",
-//                        data: sendToServer
-//                    }).done(function (data, textStatus, jqXHR) {
-//                        if (jqXHR.status == 201) {
-//                            data['vehicle'].fullNumber = data['vehicle']['areaCode'] + "-" + data['vehicle']["vehicleNumber"];
-//                            var VehicleOld = _.find(vehicleAllView.dataVehicle, function (o) {
-//                                return o.id == sendToServer._object.idVehicle;
-//                            });
-//                            var indexOfVehicleOld = _.indexOf(vehicleAllView.dataVehicle, VehicleOld);
-//                            vehicleAllView.dataVehicle.splice(indexOfVehicleOld, 1, data['vehicle']);
-//                            vehicleAllView.showNotification("success", "Cập nhật thành công!");
-//                            vehicleAllView.displayModal("hide", "#modal-confirmUpdate");
-//                        }
-//                        vehicleAllView.fillDataToDatatable(vehicleAllView.dataVehicle);
-////                        vehicleAllView.table.clear().rows.add(vehicleAllView.dataVehicle).draw();
-//                    }).fail(function (jqXHR, textStatus, errorThrown) {
-//                        vehicleAllView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
-//                    });
-//                }
+                    $("#table-historyPt").css("width", "100%");
+                },
+
+
             };
             vehicleAllView.loadData();
         }
