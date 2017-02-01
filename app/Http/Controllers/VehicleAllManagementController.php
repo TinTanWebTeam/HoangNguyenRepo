@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DriverVehicle;
 use App\Status;
 use App\Vehicle;
 use App\VehicleType;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use League\Flysystem\Exception;
 
-class VehicleAllManagement extends Controller
+class VehicleAllManagementController extends Controller
 {
     public function getViewVehicleAll()
     {
@@ -23,13 +24,22 @@ class VehicleAllManagement extends Controller
             ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
             ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
             ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+            ->leftJoin('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
+            ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
             ->where('vehicles.active', 1)
             ->select('vehicles.*',
                 'vehicleTypes.name',
                 'vehicleTypes.id as vehicleType_id',
                 'garages.name as garagesName',
-                'statuses.status'
+                'statuses.status',
+                'drivers.id as idDriver',
+                'drivers.fullName as nameDriver'
             )
+            ->get();
+
+        $garages = \DB::table('garages')
+            ->select('id', 'name')
+            ->where('active', 1)
             ->get();
         $statuses = Status::where('tableName', 'vehicles')->get();
         $vehicleType = \DB::table('vehicleTypes')->get();
@@ -44,15 +54,9 @@ class VehicleAllManagement extends Controller
             'dataStatus'      => $statuses,
             'dataVehicleType' => $vehicleType,
             'dataDrivers'     => $drivers,
+            'dataGarages'     => $garages,
         ];
         return response()->json($response, 200);
-
-//        try {
-//
-//        } catch (\Exception $ex) {
-//            return $ex;
-//
-//        }
     }
 
     /**
@@ -61,6 +65,7 @@ class VehicleAllManagement extends Controller
      */
     public function postDataVehicleAll(Request $request)
     {
+
         $areaCode = null;
         $vehicleNumber = null;
         $size = null;
@@ -70,7 +75,8 @@ class VehicleAllManagement extends Controller
         $owner = null;
         $trademark = null;
         $yearOfProduction = null;
-        $status_id = null;
+        $idDriver = null;
+        $garage_id = null;
         $action = $request->input('_action');
         if ($action != 'delete' && $action != 'updateStatus' && $action != 'history' && $action != 'searchStt') {
             $validator = ValidateController::ValidateVehicle($request->input('_vehicle'));
@@ -88,9 +94,58 @@ class VehicleAllManagement extends Controller
             $owner = $request->input('_vehicle')['owner'];
             $trademark = $request->input('_vehicle')['trademark'];
             $yearOfProduction = $request->input('_vehicle')['yearOfProduction'];
-            $status_id = $request->input('_vehicle')['status_id'];
+            if(Empty($request->input('_vehicle')['idDriver'])){
+                $idDriver = '';
+            }else{
+                $idDriver = $request->input('_vehicle')['idDriver'];
+            }
+            $garage_id = $request->input('_vehicle')['garage_id'];
         }
         switch ($action) {
+            case 'add':
+                $addVehicle = new Vehicle();
+                $addVehicle->areaCode = $areaCode;
+                $addVehicle->vehicleNumber = $vehicleNumber;
+                $addVehicle->size = $size;
+                $addVehicle->weight = $weight;
+                $addVehicle->note = $note;
+                $addVehicle->vehicleType_id = $vehicleType_id;
+                $addVehicle->owner = $owner;
+                $addVehicle->trademark = $trademark;
+                $addVehicle->yearOfProduction = $yearOfProduction;
+                $addVehicle->garage_id = $garage_id;
+                if ($addVehicle->save()) {
+                    $addDriverVehicle = new DriverVehicle();
+                    $addDriverVehicle->driver_id = $idDriver;
+                    $addDriverVehicle->vehicle_id = $addVehicle->id;
+                    $addDriverVehicle->createdBy = \Auth::id();
+                    $addDriverVehicle->updatedBy = \Auth::id();
+                    $addDriverVehicle->save();
+                    $newVehicle = \DB::table('vehicles')
+                        ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
+                        ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
+                        ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                        ->leftJoin('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
+                        ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
+                        ->where('vehicles.active', 1)
+                        ->where('vehicles.id', $addVehicle->id)
+                        ->select('vehicles.*',
+                            'vehicleTypes.name',
+                            'vehicleTypes.id as vehicleType_id',
+                            'garages.name as garagesName',
+                            'statuses.status',
+                            'drivers.id as idDriver',
+                            'drivers.fullName as nameDriver'
+                        )
+                        ->first();
+                    $response = [
+                        'msg'        => 'add vehicle',
+                        'newVehicle' => $newVehicle
+                    ];
+                    return response()->json($response, 201);
+                }
+                return response()->json(['msg' => 'Update failed'], 404);
+                break;
             case 'update':
                 $vehicleUpdate = Vehicle::findOrFail($request->input('_vehicle')['id']);
                 $vehicleUpdate->areaCode = $areaCode;
@@ -102,19 +157,26 @@ class VehicleAllManagement extends Controller
                 $vehicleUpdate->owner = $owner;
                 $vehicleUpdate->trademark = $trademark;
                 $vehicleUpdate->yearOfProduction = $yearOfProduction;
-                $vehicleUpdate->status_id = $status_id;
+                $vehicleUpdate->garage_id = $garage_id;
                 if ($vehicleUpdate->update()) {
+                    \DB::table('driverVehicles')
+                        ->where('vehicle_id', $request->input('_vehicle')['id'])
+                        ->update(['driver_id' => $idDriver],['updatedBy' => \Auth::id()]);
                     $updateVehicle = \DB::table('vehicles')
                         ->leftJoin('garages', 'vehicles.garage_id', '=', 'garages.id')
                         ->leftJoin('statuses', 'vehicles.status_id', '=', 'statuses.id')
                         ->leftJoin('vehicleTypes', 'vehicles.vehicleType_id', '=', 'vehicleTypes.id')
+                        ->leftJoin('driverVehicles', 'vehicles.id', '=', 'driverVehicles.vehicle_id')
+                        ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
                         ->where('vehicles.active', 1)
                         ->where('vehicles.id', $request->input('_vehicle')['id'])
                         ->select('vehicles.*',
                             'vehicleTypes.name',
                             'vehicleTypes.id as vehicleType_id',
                             'garages.name as garagesName',
-                            'statuses.status'
+                            'statuses.status',
+                            'drivers.id as idDriver',
+                            'drivers.fullName as nameDriver'
                         )
                         ->first();
                     $response = [
@@ -192,20 +254,20 @@ class VehicleAllManagement extends Controller
                 break;
             case 'history':
                 $historyPt = \DB::table('driverVehicles')
-                    ->leftJoin('vehicles','driverVehicles.vehicle_id','=','vehicles.id')
-                    ->leftJoin('drivers','driverVehicles.driver_id','=','drivers.id')
-                    ->where('vehicles.id',$request->get('_idVehicle'))
+                    ->leftJoin('vehicles', 'driverVehicles.vehicle_id', '=', 'vehicles.id')
+                    ->leftJoin('drivers', 'driverVehicles.driver_id', '=', 'drivers.id')
+                    ->where('vehicles.id', $request->get('_idVehicle'))
                     ->select('vehicles.*',
                         'drivers.fullName',
                         'driverVehicles.created_at as date_created'
-                        )
+                    )
                     ->get();
 //                vehicles.id,vehicles.areaCode, drivers.fullName,drivervehicles.created_at
-                    $response = [
-                        'msg' => 'history PT vehicle',
-                        'listHistory' => $historyPt
-                    ];
-                    return response()->json($response, 201);
+                $response = [
+                    'msg'         => 'history PT vehicle',
+                    'listHistory' => $historyPt
+                ];
+                return response()->json($response, 201);
 
                 return response()->json(['msg' => 'load failed'], 404);
                 break;
@@ -224,7 +286,7 @@ class VehicleAllManagement extends Controller
                     )
                     ->get();
                 $response = [
-                    'msg' => 'search status vehicle',
+                    'msg'          => 'search status vehicle',
                     'searchStatus' => $searchStt
                 ];
                 return response()->json($response, 201);
@@ -290,5 +352,4 @@ class VehicleAllManagement extends Controller
                 break;
         }
     }
-
 }

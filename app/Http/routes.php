@@ -212,11 +212,11 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['middleware' => 'VehicleAllManagement'], function () {
-        Route::get('/vehicle-all-management','VehicleAllManagement@getViewVehicleAll');
-        Route::get('/vehicle-all-management/get-data-vehicle','VehicleAllManagement@getDataVehicleAll');
+        Route::get('/vehicle-all-management','VehicleAllManagementController@getViewVehicleAll');
+        Route::get('/vehicle-all-management/get-data-vehicle','VehicleAllManagementController@getDataVehicleAll');
         /*--------------------------------------*/
-        Route::POST('/vehicle-all-management/post-data-vehicle','VehicleAllManagement@postDataVehicleAll');
-        Route::POST('/all-vehicle-type/modify', 'VehicleAllManagement@postModifyVehicleType');
+        Route::POST('/vehicle-all-management/post-data-vehicle','VehicleAllManagementController@postDataVehicleAll');
+        Route::POST('/all-vehicle-type/modify', 'VehicleAllManagementController@postModifyVehicleType');
 
 
     });
