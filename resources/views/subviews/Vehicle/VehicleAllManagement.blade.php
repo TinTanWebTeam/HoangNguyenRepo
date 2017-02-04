@@ -722,7 +722,6 @@
                             showNotification("warning", "Xe đã tồn tại!");
                             return;
                         }
-                        console.log(vehicle.id);
                         if ($("#frmVehicle").valid()) {
                             if ($("#vehicleType_id").attr("data-id") == '') {
                                 showNotification("warning", "Loại xe không tồn tại!");

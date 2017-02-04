@@ -65,13 +65,18 @@
                 <div class="dataTable_wrapper">
                     <!-- Chú thích -->
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-8">
                             <p class="lead text-primary text-left"><strong>Đơn hàng</strong></p>
                         </div>
-                        <div class="col-md-offset-8 col-md-2">
+                        <div class="col-md-2">
+                            <label for="not-payment">Chưa thanh toán</label>
+                            <input type="checkbox" id="not-payment" onchange="debtVehicleOutSideView.search('transport')">
+                        </div>
+                        <div class="col-md-2">
                             <span class="label label-danger" style="font-size: 1em;">Chưa trả</span>
                             <span class="label label-success" style="font-size: 1em;">Đã trả đủ</span>
                         </div>
+
                     </div>
                     <div class="row">
                         <div class="col-md-6" id="dateSearchTransport">
