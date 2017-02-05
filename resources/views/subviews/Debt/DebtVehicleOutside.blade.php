@@ -1828,7 +1828,6 @@
                 },
 /////////////////searchPTT
                 searchFull: function (data) {
-                    console.log(data);
                     var full = null;
                     var found = null;
                     if(data == true){
