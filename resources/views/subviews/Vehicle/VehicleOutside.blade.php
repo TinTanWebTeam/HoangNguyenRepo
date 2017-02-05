@@ -944,11 +944,11 @@
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit" title="Danh sách xe công ty">';
-                                    tr += '<div class="btn btn-primary btn-circle" onclick="garageOutsideView.addVehicle(' + full.id + ')">';
-                                    tr += '<i class="glyphicon glyphicon-list"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
+//                                    tr += '<div class="btn-del-edit" title="Danh sách xe công ty">';
+//                                    tr += '<div class="btn btn-primary btn-circle" onclick="garageOutsideView.addVehicle(' + full.id + ')">';
+//                                    tr += '<i class="glyphicon glyphicon-list"></i>';
+//                                    tr += '</div>';
+//                                    tr += '</div>';
                                     return tr;
                                 }
                             }

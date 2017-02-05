@@ -941,11 +941,11 @@
                                     tr += '<i class="glyphicon glyphicon-remove"></i>';
                                     tr += '</div>';
                                     tr += '</div>';
-                                    tr += '<div class="btn-del-edit" title="Danh sách xe công ty">';
-                                    tr += '<div class="btn btn-primary btn-circle" onclick="garageInsideView.addVehicle(' + full.id + ')">';
-                                    tr += '<i class="glyphicon glyphicon-list"></i>';
-                                    tr += '</div>';
-                                    tr += '</div>';
+//                                    tr += '<div class="btn-del-edit" title="Danh sách xe công ty">';
+//                                    tr += '<div class="btn btn-primary btn-circle" onclick="garageInsideView.addVehicle(' + full.id + ')">';
+//                                    tr += '<i class="glyphicon glyphicon-list"></i>';
+//                                    tr += '</div>';
+//                                    tr += '</div>';
                                     return tr;
                                 }
                             }
@@ -954,17 +954,17 @@
                     });
 
                 },
-                addVehicle: function (id) {
-                    var name = _.find(garageInsideView.dataGarage, function (o) {
-                        return o.id == id;
-                    });
-                    $('#transferGarage').attr('data-idGarage', id);
-                    $("#listVehicle").find(".titleListVehicle").html("Danh sách xe trong nhà xe " + name.name);
-                    garageInsideView.action = 'addVehicle';
-                    $("#listVehicle").find(".titleControl").html("Thêm mới xe");
-                    garageInsideView.showControl();
-                    garageInsideView.loadVehicleTypeInput(id);
-                },
+//                addVehicle: function (id) {
+//                    var name = _.find(garageInsideView.dataGarage, function (o) {
+//                        return o.id == id;
+//                    });
+//                    $('#transferGarage').attr('data-idGarage', id);
+//                    $("#listVehicle").find(".titleListVehicle").html("Danh sách xe trong nhà xe " + name.name);
+//                    garageInsideView.action = 'addVehicle';
+//                    $("#listVehicle").find(".titleControl").html("Thêm mới xe");
+//                    garageInsideView.showControl();
+//                    garageInsideView.loadVehicleTypeInput(id);
+//                },
                 fillFormDataToCurrentObject: function () {
                     if (garageInsideView.action == 'add') {
                         garageInsideView.current = {

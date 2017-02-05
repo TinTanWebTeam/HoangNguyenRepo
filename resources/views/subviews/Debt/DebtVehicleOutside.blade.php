@@ -70,7 +70,8 @@
                         </div>
                         <div class="col-md-2">
                             <label for="not-payment">Chưa thanh toán</label>
-                            <input type="checkbox" id="not-payment" onchange="debtVehicleOutSideView.search('transport')">
+                            <input type="checkbox" id="not-payment"
+                                   onchange="debtVehicleOutSideView.searchFull(this.checked)">
                         </div>
                         <div class="col-md-2">
                             <span class="label label-danger" style="font-size: 1em;">Chưa trả</span>
@@ -197,8 +198,8 @@
                                     </tbody>
                                     {{--<tfoot>--}}
                                     {{--<tr class="active">--}}
-                                        {{--<td colspan="2" style="text-align:right;font-weight: bold">Total:</td>--}}
-                                        {{--<td colspan="5" style="font-weight: bold"></td>--}}
+                                    {{--<td colspan="2" style="text-align:right;font-weight: bold">Total:</td>--}}
+                                    {{--<td colspan="5" style="font-weight: bold"></td>--}}
                                     {{--</tr>--}}
                                     {{--</tfoot>--}}
                                 </table>
@@ -1826,7 +1827,21 @@
                     }
                 },
 /////////////////searchPTT
+                searchFull: function (data) {
+                    console.log(data);
+                    var full = null;
+                    var found = null;
+                    if(data == true){
+                        full = debtVehicleOutSideView.dataTransport;
+                        debtVehicleOutSideView.fillDataToDatatable(full);
+                    }else {
+                        found = debtVehicleOutSideView.searchDateTransport(debtVehicleOutSideView.dataTransport);
+                        found = debtVehicleOutSideView.searchFullNumberTransport(found);
+                        debtVehicleOutSideView.fillDataToDatatable(found);
+                    }
 
+
+                },
                 searchDatePTT: function (data) {
                     var fromDate = $("#dateSearchPTT").find(".start").val();
                     var toDate = $("#dateSearchPTT").find(".end").val();
