@@ -240,6 +240,9 @@
                                                     onclick="vehicleAllView.clearInputFormVehicle()">
                                                 Nhập lại
                                             </button>
+                                            <button type="button" class="btn btn-info" id="attach-file"
+                                                    onclick="vehicleAllView.showFormAttachFile()">Thêm tập tin
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -372,6 +375,50 @@
 </div>
 <!-- end History -->
 
+<!-- Modal attach file -->
+<div class="row">
+    <div id="modal-attachFile" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h5 class="modal-title">Thêm tập tin cho xe</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="upload" onsubmit="return false;">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="tableId" id="tableId" value="">
+                        <input type="hidden" name="tableName" id="tableName" value="vehicle">
+                        <label for="file">Chọn tập tin:</label>
+                        <input type="file" id="file" name="file[]" multiple class="form-control">
+                    </form>
+                    <h5>Danh sách tập tin</h5>
+                    <table class="table table-bordered table-hover table-striped" id="table-file">
+                        <thead>
+                        <tr class="active">
+                            <th>Mã</th>
+                            <th>Tên tập tin</th>
+                            <th>Xem</th>
+                            <th>Xóa</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                    <hr>
+                    <div id="thumbnail">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal attach file -->
+
 
 <script>
     $(function () {
@@ -379,6 +426,7 @@
             vehicleAllView = {
                 table: null,
                 tableHistory: null,
+                tableFile: null,
                 dataHistory: null,
                 data: null,
                 action: null,
@@ -469,7 +517,7 @@
                             vehicleAllView.dataGarages = data['dataGarages'];
                             vehicleAllView.fillDataToDatatable(data['dataAllVehicle'], data['dataStatus']);
                             vehicleAllView.dataStatus = data['dataStatus'];
-//                            vehicleAllView.loadSelectBox(data['dataStatus']);
+                        //    vehicleAllView.loadSelectBox(data['dataStatus']);
                             vehicleAllView.dataVehicleType = (data['dataVehicleType']);
                             vehicleAllView.renderAutoCompleteSearch();
 
@@ -745,14 +793,17 @@
                                 data: sendToServer
                             }).done(function (data, textStatus, jqXHR) {
                                 if (jqXHR.status == 201) {
+                                    var tableId = null;
                                     switch (vehicleAllView.action) {
                                         case 'add':
+                                            tableId = data['newVehicle'].id;
                                             data['newVehicle'].fullNumber = data['newVehicle']['areaCode'] + "-" + data['newVehicle']["vehicleNumber"];
                                             vehicleAllView.dataVehicle.push(data['newVehicle']);
                                             vehicleAllView.showNotification("success", "Thêm thành công!");
                                             vehicleAllView.clearInputFormVehicle();
                                             break;
                                         case 'update':
+                                            tableId = data['updateVehicle'].id;
                                             data['updateVehicle'].fullNumber = data['updateVehicle']['areaCode'] + "-" + data['updateVehicle']["vehicleNumber"];
                                             var vehicleOld = _.find(vehicleAllView.dataVehicle, function (o) {
                                                 return o.id == sendToServer._vehicle.id;
@@ -765,6 +816,12 @@
                                         default:
                                             break;
                                     }
+
+                                    if ($("input[id=file]").val() != "") {
+                                        $("input[id=tableId]").val(tableId);
+                                        vehicleAllView.uploadMultiFile();
+                                    }
+
                                     vehicleAllView.table.clear().rows.add(vehicleAllView.dataVehicle).draw();
                                 } else {
                                     vehicleAllView.showNotification("error", "Tác vụ thất bại! Vui lòng làm mới trình duyệt và thử lại.");
@@ -773,7 +830,7 @@
                                 vehicleAllView.showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
                             });
 
-//                            }
+                        //    }
                         } else {
                             $("form#frmVehicle").find("label[class=error]").css("color", "red");
                         }
@@ -800,7 +857,7 @@
                     }
                 },
                 saveVehicleType: function () {
-//                    vehicleAllView.vehicleTypeValidate();
+                //    vehicleAllView.vehicleTypeValidate();
                     var vehicleType = null;
                     if ($("#vehicleType_id").attr("data-id") != "") {
                         vehicleType = {
@@ -874,7 +931,6 @@
                         $("form#frmVehicleType").find("label[class=error]").css("color", "red");
                     }
                 },
-                ////
                 clearValidation: function () {
                     $('label[class=error]').hide();
                 },
@@ -1081,25 +1137,25 @@
                                     return tr;
                                 }
                             },
-//                            {
-//                                render: function (data, type, full, meta) {
-//                                    var tr = '';
-//                                    tr += '<div class="col-md-6 col-sm-6">';
-//                                    tr += '<select class="form-control" onchange="vehicleAllView.updateStatus(this.value,' + full.id + ')">';
-//                                    for (var status in lstStatus) {
-//                                        var select = "";
-//                                        if (lstStatus[status]['id'] == full.status_id) {
-//                                            select = 'selected';
-//                                        }
-//                                        tr += '<option value="' + lstStatus[status]['id'] + '"' + select + '>';
-//                                        tr += lstStatus[status]['status'];
-//                                        tr += '</option>';
-//                                    }
-//                                    tr += '</select>';
-//                                    tr += '</div>';
-//                                    return tr;
-//                                }
-//                            },
+                        //    {
+                        //        render: function (data, type, full, meta) {
+                        //            var tr = '';
+                        //            tr += '<div class="col-md-6 col-sm-6">';
+                        //            tr += '<select class="form-control" onchange="vehicleAllView.updateStatus(this.value,' + full.id + ')">';
+                        //            for (var status in lstStatus) {
+                        //                var select = "";
+                        //                if (lstStatus[status]['id'] == full.status_id) {
+                        //                    select = 'selected';
+                        //                }
+                        //                tr += '<option value="' + lstStatus[status]['id'] + '"' + select + '>';
+                        //                tr += lstStatus[status]['status'];
+                        //                tr += '</option>';
+                        //            }
+                        //            tr += '</select>';
+                        //            tr += '</div>';
+                        //            return tr;
+                        //        }
+                        //    },
                             {data: 'note'},
                             {
                                 render: function (data, type, full, meta) {
@@ -1153,7 +1209,144 @@
                     });
                     $("#table-historyPt").css("width", "100%");
                 },
+                showFormAttachFile: function () {
+                    if (vehicleAllView.current != null) {
+                        $("input[name=tableId]").val(vehicleAllView.current.id);
+                        vehicleAllView.retrieveMultiFile();
+                    }
+                    else {
+                        if (vehicleAllView.tableFile != null)
+                            vehicleAllView.tableFile.clear().draw();
+                    }
 
+                    vehicleAllView.displayModal('show', '#modal-attachFile');
+                },
+                uploadMultiFile: function () {
+                    $.ajax({
+                        url: url + 'file/upload-file',
+                        type: 'POST',
+                        data: new FormData(document.getElementById('upload')),
+                        processData: false,  // tell jQuery not to process the data
+                        contentType: false,  // tell jQuery not to set contentType
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            showNotification("success", "Thêm tập tin thành công!");
+                            $("input[id=file]").val('');
+                            $("input[id=tableId]").val('');
+                            $("div[id=thumbnail]").html('');
+                            vehicleAllView.displayModal("hide", "#modal-attachFile");
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                retrieveMultiFile: function () {
+                    var sendToServer = {
+                        _token: _token,
+                        tableId: vehicleAllView.current.id,
+                        tableName: $("input[id=tableName]").val()
+                    };
+                    $.ajax({
+                        url: url + 'file/retrieve-file',
+                        type: 'POST',
+                        data: sendToServer,
+                        dataType: 'json'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            var files = data['files'];
+                            console.log(files);
+                            vehicleAllView.fillFileToDatatable(files);
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                fillFileToDatatable: function (data) {
+                    if (vehicleAllView.tableFile != null)
+                        vehicleAllView.tableFile.destroy();
+
+                    vehicleAllView.tableFile = $('#table-file').DataTable({
+                        language: languageOptions,
+                        data: data,
+                        columns: [
+                            {
+                                data: 'id',
+                                visible: false
+                            },
+                            {
+                                data: 'fileName',
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    //    tr += "<span onclick='transportView.downloadFile("+full.id+")'>" + full.fileName + "</span>";
+                                    tr += "<a href='" + full.filePath + "' download>" + full.fileName + "</a>";
+                                    return tr;
+                                }
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div title="Xem" class="btn btn-primary btn-circle text-center" onclick="vehicleAllView.showThumbnail(\'' + full.filePath + '\')">';
+                                    tr += '<i class="fa fa-eye"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                },
+                                visible: false
+                            },
+                            {
+                                render: function (data, type, full, meta) {
+                                    var tr = '';
+                                    tr += '<div class="text-center">';
+                                    tr += '<div title="Xóa" class="btn btn-danger btn-circle" onclick="vehicleAllView.deleteFile(' + full.id + ')">';
+                                    tr += '<i class="fa fa-trash"></i>';
+                                    tr += '</div>';
+                                    tr += '</div>';
+                                    return tr;
+                                }
+                            }
+                        ],
+                        dom: "t"
+                    });
+                },
+                showThumbnail: function (filePath) {
+                    var tr = "";
+                    tr += "<embed src='" + filePath + "'>";
+                    $("#thumbnail").html(tr);
+                },
+                deleteFile: function (fileId) {
+                    $.ajax({
+                        url: url + 'file/delete-file/' + fileId,
+                        type: 'GET'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            var files = data['files'];
+                            vehicleAllView.tableFile.clear().rows.add(files).draw();
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                },
+                downloadFile: function (fileId) {
+                    $.ajax({
+                        url: url + 'vehicle-all/download-file/' + fileId,
+                        type: 'GET'
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (jqXHR.status == 201) {
+                            console.log(data);
+                        } else {
+                            showNotification("error", "Thêm thất bại! Vui lòng làm mới trình duyệt và thử lại.");
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        showNotification("error", "Kết nối đến máy chủ thất bại. Vui lòng làm mới trình duyệt và thử lại.");
+                    });
+                }
             };
             vehicleAllView.loadData();
         }

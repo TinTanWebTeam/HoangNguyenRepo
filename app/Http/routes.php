@@ -29,6 +29,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/verify-project', 'HomeController@getVerifyProject');
     Route::get('/syn-datetime', 'HomeController@getSynDatetime');
     Route::get('/dashboard', 'HomeController@getDashboard');
+
+    Route::group(['prefix' => 'file'], function () {
+        Route::post('upload-file', 'FileController@postUploadMultiFile');
+        Route::post('retrieve-file', 'FileController@postRetrieveMultiFile');
+        Route::get('delete-file/{id}', 'FileController@getDeleteFile');
+        Route::get('download-file/{id}', 'FileController@getDownloadFile');
+    });
+
     Route::group(['middleware' => 'Admin'], function () {
         Route::post('/invoice-customer/delete', 'DebtManagementController@postDeleteInvoiceCustomer');
         Route::post('/invoice-customer-detail/delete', 'DebtManagementController@postDeleteInvoiceCustomerDetail');

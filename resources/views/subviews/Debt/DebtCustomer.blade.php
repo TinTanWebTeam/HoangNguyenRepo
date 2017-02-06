@@ -149,14 +149,19 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-5" id="dateSearchTransport_fullPay">
+                        <div class="col-md-6" id="dateSearchTransport_fullPay">
                             <input type="text" class="date start"/> đến
                             <input type="text" class="date end"/>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <div class="ui-widget">
                                 <input type="text" class="form-control" id="custName_transport_fullPay" name="custName_transport_fullPay" placeholder="Nhập tên khách hàng">
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 hide">
+                            
                         </div>
                         <div class="col-md-2">
                             <div class="radio">
